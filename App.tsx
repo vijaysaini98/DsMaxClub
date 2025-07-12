@@ -1,28 +1,39 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import Navigator from "@navigations/Navigator";
+import React, { JSX, useEffect } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+function App(): JSX.Element {
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+
+  // useEffect(() => {
+  //   onAppStart(store);
+  //   setTimeout(() => {
+  //     SplashScreen.hide();
+  //   }, 2000);
+  //   checkApplicationPermission();
+  // }, []);
+
+  // const checkApplicationPermission = async () => {
+  //   if (Platform.OS === "android") {
+  //     try {
+  //       await PermissionsAndroid.request(
+  //         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+  //       );
+  //     } catch (error) {
+  //       console.log("error::::::", error);
+  //     }
+  //   }
+  // };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <NewAppScreen templateFileName="App.tsx" />
-    </View>
+    <SafeAreaProvider>
+      {/* <Provider store={store}> */}
+        {/* <RootComponent> */}
+          <Navigator />
+        {/* </RootComponent> */}
+      {/* </Provider> */}
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
