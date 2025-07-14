@@ -42,6 +42,7 @@ export const BLACK = "BLACK";
 export const BUTTON_BG = "BUTTON_BG";
 export const PLACEHOLDER = "PLACEHOLDER";
 export const BUTTON_TEXT = "BUTTON_TEXT";
+export const ERROR_TEXT = "ERROR_TEXT";
 
 interface AppTextProps extends TextProps {
   type?: string;
@@ -162,9 +163,12 @@ const AppText = ({
       case PLACEHOLDER:
         style["color"] = colors.placeholder;
         break;
-    //   case BUTTON_TEXT:
-    //     style["color"] = colors.textColor;
-    //     break;
+         case BUTTON_TEXT:
+        style["color"] = colors.buttonText;
+        break;
+         case ERROR_TEXT:
+        style["color"] = colors.red;
+        break;
       default:
         style["color"] = colors.black;
     }

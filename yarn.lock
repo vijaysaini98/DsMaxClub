@@ -5652,6 +5652,11 @@ react-is@^19.1.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.1.0.tgz#805bce321546b7e14c084989c77022351bbdd11b"
   integrity sha512-Oe56aUPnkHyyDxxkvqtd7KkdQP5uIUfHxd5XTb3wE9d/kRnZLmKbDB0GWk919tdQ+mxxPtG6EAs6RMT6i1qtHg==
 
+react-native-confirmation-code-field@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-confirmation-code-field/-/react-native-confirmation-code-field-8.0.1.tgz#0c6b232497348d728c2f628e9833f7e6bfb8efd1"
+  integrity sha512-pwrhQtspFEp0y/gxZRp8hrra+UjAYfwAsW5Sn3yYtdUZVyRjAZPBnUb3rOc+z5L5o2ml03z5P3uvTK0yQwXsmA==
+
 react-native-gesture-handler@^2.27.1:
   version "2.27.1"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.27.1.tgz#8865b2345f4c65536517f20cedc420481fc72d49"
@@ -5675,6 +5680,11 @@ react-native-is-edge-to-edge@^1.1.7:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz#64e10851abd9d176cbf2b40562f751622bde3358"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
+
+react-native-raw-bottom-sheet@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-raw-bottom-sheet/-/react-native-raw-bottom-sheet-3.0.0.tgz#8e7838ab9b8113bcccdc9648b41eb2bd54e86243"
+  integrity sha512-kHR7j2ExCLqf/AO3MECozMJXi48O1+YxUYSRgRo/5Ftm7mEcrxJEzvjqMmqUbVhhKlfk5hLCGFnEQ5Z9OHCUtg==
 
 react-native-reanimated@^3.18.0:
   version "3.18.0"

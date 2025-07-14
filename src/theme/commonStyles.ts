@@ -75,7 +75,7 @@ export const commonStyles = StyleSheet.create({
     paddingHorizontal: universalPaddingHorizontal,
   },
   tabFocused: {
-    backgroundColor: colors.buttonBg,
+    backgroundColor: colors.tabBag,
     borderRadius: 30,
     width: 150,
     height: smallButtonHeight,
