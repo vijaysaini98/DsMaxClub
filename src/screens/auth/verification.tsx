@@ -20,7 +20,7 @@ import {
     useBlurOnFulfill,
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-import NavigationSevice from '@navigations/NavigationSevice'
+import NavigationService from '@navigations/NavigationService';
 import { RESET_PASSWORD_SCREEN } from '@navigations/routes'
 
 const Verification = () => {
@@ -51,7 +51,7 @@ const Verification = () => {
     const handleVerifyBtn = () => {
         setCountdown(60)
         setShowResend(false)
-         NavigationSevice.navigate(RESET_PASSWORD_SCREEN)
+         NavigationService.navigate(RESET_PASSWORD_SCREEN)
     }
 
 
@@ -59,7 +59,7 @@ const Verification = () => {
         setValue(text);
         if (text.length === 6) {
             console.log("Verification code entered:", text);
-            NavigationSevice.navigate(RESET_PASSWORD_SCREEN)
+            NavigationService.navigate(RESET_PASSWORD_SCREEN)
         }
     };
 

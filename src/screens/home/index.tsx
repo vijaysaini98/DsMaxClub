@@ -1,112 +1,148 @@
-import React, { useRef, useState } from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import { FlatList, Image, ScrollView, StyleSheet, View } from 'react-native';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
-import { AppText, BOLD, BUTTON_TEXT, SEMI_BOLD, SIXTEEN, TWENTY_TWO } from '@components/AppText';
+import { AppText, BOLD, BUTTON_BG, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, THIRTEEN, TWELVE, TWENTY_TWO, WHITE } from '@components/AppText';
 import { colors } from '@theme/colors';
-import { downArrowIcon, locationIcon, searchIcon } from '@helper/imagesAssets';
-import { cities } from '@helper/dumyData';
+import { locationIcon, nearByIcon, searchIcon, starIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
-import CityDropDown, { CityOption } from '@components/cityDropDown';
-import RBSheet from 'react-native-raw-bottom-sheet';
 import Input from '@components/Input';
-
-interface HomeHeaderProps {
-  handleOnPress: () => void;
-  userName: string;
-  city: string;
-}
-
-const HomeHeader: React.FC<HomeHeaderProps> = ({ handleOnPress, userName, city }) => (
-  <View style={styles.headerContainer}>
-    <View>
-      <AppText type={SIXTEEN}>Hello!</AppText>
-      <AppText type={SIXTEEN} weight={BOLD}>
-        {userName}
-      </AppText>
-    </View>
-    <TouchableOpacityView
-      style={styles.locationContainer}
-      onPress={handleOnPress}
-    >
-      <Image
-        source={locationIcon}
-        style={styles.locationIcon}
-        resizeMode="contain"
-      />
-      <AppText type={SIXTEEN} style={styles.cityText}>
-        {city}
-      </AppText>
-      <Image
-        source={downArrowIcon}
-        style={styles.downArrowIcon}
-        resizeMode="contain"
-      />
-    </TouchableOpacityView>
-  </View>
-);
+import Header from '@components/Header';
+import { categoryList, trendingData } from '@helper/dumyData';
+import Card from './ui/card';
 
 const Home: React.FC = () => {
-  const [selectedCity, setSelectedCity] = useState<CityOption>(cities[0]);
-  const [searchCityText, setSearchCityText] = useState<string>('');
-  const [filteredLocations, setFilteredLocations] = useState<CityOption[]>(cities);
-  const [searchText,setSeachText] = useState<string>('');
-
-  const bottomSheetRef = useRef<RBSheet>(null);
-
-  const openBottomSheet = () => {
-    setSearchCityText('');
-    setFilteredLocations(cities);
-    bottomSheetRef.current?.open();
-  };
-
-  const handleSearch = (text: string) => {
-    setSearchCityText(text);
-    const filtered = cities.filter((location) =>
-      location.label.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilteredLocations(filtered);
-  };
-
-  const selectLocation = (location: CityOption) => {
-    setSelectedCity(location);
-    bottomSheetRef.current?.close();
-  };
+  const [searchText, setSeachText] = useState<string>('');
 
   return (
-    <AppSafeAreaView style={styles.mainContainer}>
-      <HomeHeader
-        handleOnPress={openBottomSheet}
-        city={selectedCity?.label}
+    // <AppSafeAreaView style={styles.mainContainer}>
+    <View style={styles.mainContainer}>
+      <Header
         userName="Anil Kumawat"
       />
-      <View style={{paddingHorizontal:16,marginTop:8}}>
-      <Input
-      leftIcon={searchIcon}
-      placeholder='Search...'
-      placeholderTextColor={colors.placeholder}
-     value= {searchText}
-     onChangeText={(text)=> setSeachText(text)}
-      />
+      <View style={styles.seachContainer}>
+        <Input
+          leftIcon={searchIcon}
+          placeholder='Search...'
+          placeholderTextColor={colors.placeholder}
+          value={searchText}
+          onChangeText={(text) => setSeachText(text)}
+        />
       </View>
-      <ScrollView>
-        <View style={{paddingVertical:18}}>
-            <View style={{flexDirection:"row",alignItems:'center',justifyContent:'space-between',paddingHorizontal:16}}>
-                <AppText type={TWENTY_TWO} weight={SEMI_BOLD}>Categories</AppText>
-                <TouchableOpacityView>
-                    <AppText type={SIXTEEN} color={BUTTON_TEXT}>See All</AppText>
-                </TouchableOpacityView>
-                
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ paddingBottom: 50 }}
+      >
+        <View style={styles.categoriesMainContainer}>
+          <View style={styles.categoriesHeaderContainer}>
+            <AppText type={TWENTY_TWO} weight={SEMI_BOLD}
+              style={styles.cateTitle}
+            >Categories</AppText>
+            <TouchableOpacityView style={styles.cateSeeAllBtn}>
+              <AppText type={SIXTEEN} color={BUTTON_TEXT}>See All</AppText>
+            </TouchableOpacityView>
+            <View>
             </View>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.categoriesContainer}>
+            {categoryList.map((item, index) => (
+              <TouchableOpacityView key={index} style={styles.cateCardStyle(item?.borderColor)}>
+                <Image source={item.icon} style={styles.cateLogoImage} resizeMode="contain" />
+                <AppText type={SIXTEEN} weight={MEDIUM} style={styles.cateText}>{item.title}</AppText>
+              </TouchableOpacityView>
+            ))}
+          </ScrollView>
         </View>
+        {/* <View style={{ marginLeft: 16, marginTop: 8, gap: 12 }}>
+          <AppText type={TWENTY_TWO} weight={SEMI_BOLD}
+            style={styles.cateTitle}
+          >Trending</AppText>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 12 }}
+          >
+            {trendingData.map((item, index) => (
+              <View style={{
+                borderRadius: 10, backgroundColor: colors.white,
+                // Drop shadow for iOS
+                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                shadowOffset: {
+                  width: 0,
+                  height: 4,
+                },
+                shadowOpacity: 0.1,
+                shadowRadius: 6,
+
+                // Drop shadow for Android
+                elevation: 6,
+                borderWidth: 1,
+                overflow: 'hidden'
+
+              }}>
+                <Image
+                  source={item.image}
+                  style={{ height: 210, width: 310, }}
+                  resizeMode='cover'
+                />
+                <View style={{
+                  backgroundColor: colors.white, paddingHorizontal: 8,
+                  paddingVertical: 5, position: "absolute", borderRadius: 12, top: 12, left: 12
+                }}>
+                  <AppText type={TWELVE} weight={SEMI_BOLD} >{"Guest Favourite"}</AppText>
+                </View>
+
+                <View style={{ paddingHorizontal: 12, paddingVertical: 10 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center' }}>
+                      <View style={{ backgroundColor: colors.placeholder, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 15 }}>
+                        <AppText type={FOURTEEN} color={WHITE} weight={BOLD}>{"4.3"}</AppText>
+                      </View>
+
+                      <AppText type={FOURTEEN} weight={BOLD} color={PLACEHOLDER}>Excellent
+                        <AppText type={FOURTEEN} weight={MEDIUM} style={{ color: colors.disTextColor }}> (552 Ratings)</AppText></AppText>
+                    </View>
+                    <View style={{
+                      flexDirection: 'row',
+
+                    }}>
+                      {[...Array(item.stars)].map((_, idx) => (
+                        <Image
+                          source={starIcon}
+                          style={{ width: 9, height: 9 }}
+                          resizeMode="contain"
+                        />
+                      ))}
+                    </View>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
+                    <AppText type={EIGHTEEN} weight={MEDIUM}>{"Mauritius Beach"}</AppText>
+                    <AppText type={FOURTEEN} weight={BOLD} color={BUTTON_BG}>{`Rs. 11,700`}</AppText>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 5 }}>
+                    <Image
+                      source={nearByIcon}
+                      style={{ width: 15, height: 15, tintColor: colors.disTextColor }}
+                      resizeMode='contain'
+                    />
+                    <AppText>{"Bel Ombre"}</AppText>
+                  </View>
+                </View>
+              </View>
+            ))
+            }
+
+          </ScrollView>
+        </View> */}
+        <Card
+        title={"Trendiing"}
+        data={trendingData}
+        />
       </ScrollView>
-      <CityDropDown
-        bottomSheetRef={bottomSheetRef}
-        value={searchCityText}
-        handleSearch={handleSearch}
-        data={filteredLocations}
-        handleSelectOption={selectLocation}
-      />
-    </AppSafeAreaView>
+      {/* </AppSafeAreaView> */}
+    </View>
   );
 };
 
@@ -118,27 +154,50 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     paddingTop: 40,
   },
-  headerContainer: {
-    padding: 16,
-    flexDirection: 'row',
+  seachContainer: {
+    paddingHorizontal: 16,
+    marginTop: 8
+  },
+  categoriesMainContainer: {
+    paddingVertical: 18
+  },
+  categoriesHeaderContainer: {
+    flexDirection: "row",
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    paddingHorizontal: 16,
   },
-  locationContainer: {
+  cateTitle: {
+    width: "80%"
+  },
+  cateSeeAllBtn: {
+    width: "20%",
+    alignItems: 'flex-end'
+  },
+  categoriesContainer: {
     flexDirection: 'row',
+    paddingTop: 16,
+    paddingLeft: 16,
+    gap: 16
+  },
+  cateCardStyle: (borderColor: boolean) => ({
+    height: 120,
+    borderWidth: 1,
+    borderColor: borderColor,
+    borderRadius: 12,
     alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 10,
+    minWidth: 110
+  }),
+  cateLogoImage: {
+    width: 40,
+    height: 40,
+    marginBottom: 10,
   },
-  locationIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 5,
+  cateText: {
+    textAlign: 'center',
   },
-  cityText: {
-    marginRight: 6,
-  },
-  downArrowIcon: {
-    width: 20,
-    height: 8,
-    tintColor: colors.placeholder,
-  },
+
 });

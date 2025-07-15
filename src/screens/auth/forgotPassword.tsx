@@ -7,7 +7,7 @@ import ToolBar from '@components/ToolBar'
 import { AppText, BOLD, EIGHTEEN, TWENTY_EIGHT, WHITE } from '@components/AppText'
 import Input from '@components/Input'
 import TouchableOpacityView from '@components/TouchableOpacityView'
-import NavigationSevice from '@navigations/NavigationSevice'
+import NavigationService from '@navigations/NavigationService';
 import { emailRegex } from '@utils/index'
 import { VERIFICATION_SCREEN } from '@navigations/routes'
 
@@ -30,7 +30,7 @@ const ForgotPassword = () => {
         } else {
             setState({ ...state, emailErrorText: "" })
             console.log("Email:", state.email);
-            NavigationSevice.navigate(VERIFICATION_SCREEN);
+            NavigationService.navigate(VERIFICATION_SCREEN);
         }
     }
 

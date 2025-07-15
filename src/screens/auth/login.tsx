@@ -10,12 +10,14 @@ import { colors } from '@theme/colors';
 import { authBg, emailIcon, eyeCloseIcon, eyeOpenIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import Input from '@components/Input';
-import NavigationSevice from '@navigations/NavigationSevice';
+import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
 import { emailRegex } from '@utils/index';
+import { useAppDispatch } from '@redux/hooks';
+import { login } from '../../actions/auth/authAction';
 
 const Login = () => {
-
+const dispatch = useAppDispatch()
     const [state, setState] = useState({
         email: '',
         password: '',
@@ -26,8 +28,6 @@ const Login = () => {
 
     const handleLoginBtn = () => {
         // Logic to handle login
-        console.log("Email:", state.email);
-        console.log("Password", state.password);
         if (state.email === '') {
             setState({ ...state, emailError: "Email is required" })
         } else if (state.password === '') {
@@ -36,8 +36,12 @@ const Login = () => {
             setState({ ...state, emailError: "Invalid Email" })
 
         } else {
+//             const formData = new FormData();
+//            formData.append('name', 'Anil Kumawat');
+// formData.append('email', 'anil@example.com');
+//             dispatch(login(formData))
             setState({ ...state, emailError: "", passwordError: "" })
-            NavigationSevice.navigate(routes.BOTTOM_TAB_NAVIGATOR);
+            NavigationService.navigate(routes.BOTTOM_TAB_NAVIGATOR);
         }
     }
 
@@ -76,7 +80,7 @@ const Login = () => {
                 />
                 <View style={styles.forgotWrapper}>
                     <TouchableOpacityView
-                        onPress={() => NavigationSevice.navigate('FORGOT_PASSWORD_SCREEN')}>
+                        onPress={() => NavigationService.navigate('FORGOT_PASSWORD_SCREEN')}>
                         <AppText type={SIXTEEN} weight={MEDIUM}>Forgot Password?</AppText>
                     </TouchableOpacityView>
                 </View>
@@ -92,7 +96,7 @@ const Login = () => {
             <View style={styles.bottomRow}>
                 <AppText type={SIXTEEN} >Don’t Have an Account? </AppText>
                 <TouchableOpacityView
-                    onPress={() => NavigationSevice.navigate(routes.SIGNUP_SCREEN)}
+                    onPress={() => NavigationService.navigate(routes.SIGNUP_SCREEN)}
                 >
                     <AppText type={SIXTEEN} color={BUTTON_TEXT} weight={BOLD} >Create Account</AppText>
                 </TouchableOpacityView>

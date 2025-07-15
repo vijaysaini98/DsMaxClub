@@ -16,3 +16,20 @@ export const proflieIcon = require('@assets/images/profileIcon.png');
 export const locationIcon = require('@assets/images/locationIcon.png');
 export const downArrowIcon = require("@assets/images/downIcon.png");
 export const searchIcon =require("@assets/images/searchIcon.png")
+export const starIcon =require('@assets/images/starIcon.png')
+
+
+//categaories Image 
+export const automobile = require("@assets/images/automobile.png")
+export const gameZone = require("@assets/images/gameZone.png")
+export const cinemahall = require("@assets/images/cinemahall.png")
+export const healthCare = require("@assets/images/healthcare.png")
+export const resort = require("@assets/images/resort.png")
+export const restaurant = require("@assets/images/restaurant.png")
+export const salon = require("@assets/images/salon.png")
+export const waterPark = require("@assets/images/waterpark.png")
+export const hotelsDeals = require("@assets/images/hotel.png")
+
+
+// trending images
+export const beachImage = require('@assets/images/beachImage.png')

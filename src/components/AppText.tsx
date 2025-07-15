@@ -157,9 +157,9 @@ const AppText = ({
       case BLACK:
         style["color"] = colors.black;
         break;
-    //   case BUTTON_BG:
-    //     style["color"] = colors.buttonBg;
-    //     break;
+      case BUTTON_BG:
+        style["color"] = colors.buttonBg;
+        break;
       case PLACEHOLDER:
         style["color"] = colors.placeholder;
         break;

@@ -9,7 +9,7 @@ import { colors } from '@theme/colors';
 import { authBg, eyeCloseIcon, eyeOpenIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import Input from '@components/Input';
-import NavigationSevice from '@navigations/NavigationSevice';
+import NavigationService from '@navigations/NavigationService';
 import ToolBar from '@components/ToolBar';
 import { LOGIN_SCREEN } from '@navigations/routes';
 
@@ -37,7 +37,7 @@ const ResetPassword = () => {
         } else {
             setState({ ...state, newPasswordError: "", confirmPasswordError: "" });
             console.log("New Password:", state.newPassword);
-            NavigationSevice.navigate(LOGIN_SCREEN);
+            NavigationService.navigate(LOGIN_SCREEN);
         }
     }
 

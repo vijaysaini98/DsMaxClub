@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View, ImageSourcePropType, TextProps, TextStyle, ViewStyle } from "react-native";
 import { backIcon } from "@helper/imagesAssets";// Ensure correct import
-import NavigationSevice from "@navigations/NavigationSevice";
+import NavigationService from "@navigations/NavigationService";
 import { AppText, TWENTY_EIGHT, TWENTY_TWO } from "./AppText";
 
 interface ToolBarProps {
@@ -28,7 +28,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
       {isLeftIcon && (
         <TouchableOpacity
           style={styles.backArrow}
-          onPress={handleLeftIconPress ? handleLeftIconPress : NavigationSevice.goBack}
+          onPress={handleLeftIconPress ? handleLeftIconPress : NavigationService.goBack()}
         >
           <Image source={leftIcon || backIcon} style={styles.icon} />
         </TouchableOpacity>

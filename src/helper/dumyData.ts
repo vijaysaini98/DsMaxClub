@@ -1,3 +1,5 @@
+import { automobile, beachImage, cinemahall, gameZone, healthCare, hotelsDeals, resort, restaurant, salon, waterPark } from "./imagesAssets";
+
 export const cities = [
   { label: 'Jaipur', value: 'jaipur' },
   { label: 'Delhi', value: 'delhi' },
@@ -5,4 +7,57 @@ export const cities = [
   { label: 'Bangalore', value: 'bangalore' },
   { label: 'Hyderabad', value: 'hyderabad' },
   { label: 'Chennai', value: 'chennai' },
-];;
+];
+
+export const categoryList = [
+  { id: '1', title: 'Restaurant', icon:restaurant, borderColor: '#FFA07A' },
+  { id: '2', title: 'Resort', icon: resort, borderColor: '#DA70D6' },
+  { id: '3', title: 'Waterpark', icon: waterPark, borderColor: '#87CEFA' },
+  { id: '4', title: 'Salon', icon: salon, borderColor: '#FFB6C1' },
+  { id: '5', title: 'Game Zone', icon: gameZone, borderColor: '#FFD700' },
+  { id: '6', title: 'Cinema Hall', icon: cinemahall, borderColor: '#CD5C5C' },
+  { id: '7', title: 'Healthcare', icon: healthCare, borderColor: '#20B2AA' },
+  { id: '8', title: 'Hotels Deals', icon: hotelsDeals, borderColor: '#F0E68C' },
+  { id: '9', title: 'Automobiles', icon: automobile, borderColor: '#1E90FF' },
+];
+
+
+export const trendingData = [
+  {
+    id: '1',
+    title: 'Mauritius Beach',
+    location: 'Bel Ombre',
+    rating: 4.2,
+    tag: 'Guest Favourite',
+    description: 'Excellent',
+    reviews: 552,
+    price: 'Rs. 11,700',
+    stars: 4,
+    image: beachImage,
+  },
+  {
+    id: '2',
+    title: 'Hilltop Resort',
+    location: 'Shimla',
+    rating: 4.5,
+    tag: 'Top Rated',
+    description: 'Outstanding',
+    reviews: 312,
+    price: 'Rs. 9,200',
+    stars: 5,
+    image: beachImage
+  },
+  {
+    id: '2',
+    title: 'Hilltop Resort',
+    location: 'Shimla',
+    rating: 4.5,
+    tag: 'Top Rated',
+    description: 'Outstanding',
+    reviews: 312,
+    price: 'Rs. 9,200',
+    stars: 5,
+    image: beachImage
+  },
+  // add more if needed
+];

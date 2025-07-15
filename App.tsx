@@ -1,6 +1,8 @@
 import Navigator from "@navigations/Navigator";
+import store from "@redux/store";
 import React, { JSX, useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Provider } from "react-redux";
 
 function App(): JSX.Element {
 
@@ -27,11 +29,11 @@ function App(): JSX.Element {
 
   return (
     <SafeAreaProvider>
-      {/* <Provider store={store}> */}
+      <Provider store={store}>
         {/* <RootComponent> */}
           <Navigator />
         {/* </RootComponent> */}
-      {/* </Provider> */}
+      </Provider>
     </SafeAreaProvider>
   );
 }

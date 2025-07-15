@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { NavigationContainer, DarkTheme } from "@react-navigation/native";
 import "react-native-gesture-handler";
-import NavigationService from "./NavigationSevice";
+import NavigationService from "./NavigationService";
 import * as React from "react";
 import { RootStackScreen } from "./StackNavigation";
 

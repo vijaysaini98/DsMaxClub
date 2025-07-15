@@ -5,13 +5,12 @@ import {
     Dimensions,
     FlatList,
     Animated,
-    TouchableOpacity,
-    ImageBackground,
+  ImageBackground,
 } from 'react-native';
 import { getStartBg1, getStartBg2, getStartBg3, getStartBg4 } from '../../helper/imagesAssets';
 import { colors } from '@theme/colors';
 import { AppText, BLACK, BOLD, EIGHTEEN, NORMAL, TWENTY_EIGHT, WHITE } from '@components/AppText';
-import NavigationSevice from '@navigations/NavigationSevice';
+import NavigationService from '@navigations/NavigationService';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import * as routes from '@navigations/routes';
 
@@ -41,7 +40,7 @@ const OnboardingScreen = () => {
         if (currentIndex < slides.length - 1) {
             flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
         } else {
-            NavigationSevice.replace(routes.LOGIN_SCREEN);
+            NavigationService.replace(routes.LOGIN_SCREEN);
         }
     };
 
@@ -99,7 +98,7 @@ const OnboardingScreen = () => {
                     </View>)}
 
                 {currentIndex < slides.length - 1 ? (
-                    <TouchableOpacityView containerStyle={styles.skipButtons} onPress={() => NavigationSevice.replace(routes.LOGIN_SCREEN)}>
+                    <TouchableOpacityView containerStyle={styles.skipButtons} onPress={() => NavigationService.replace(routes.LOGIN_SCREEN)}>
                         <AppText type={EIGHTEEN}  >Skip</AppText>
                     </TouchableOpacityView>
                 ) : null}

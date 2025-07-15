@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
         height: 100,
         paddingTop: 10,
         borderTopWidth: 0,
+        
     },
     container: {
         alignItems: 'center',

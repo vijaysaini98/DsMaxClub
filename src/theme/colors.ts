@@ -10,5 +10,6 @@ tabBag:"",
 buttonText:"#7A231C",
 borderColor:"rgba(4, 34, 44, 0.3)",
 tabBg:"rgba(250, 246, 246, 1)",
+disTextColor:"rgba(1, 52, 64, 0.4)"
 // activeTab:"rgba(122, 35, 28, 1)"
 };

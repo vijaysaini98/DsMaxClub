@@ -10,7 +10,7 @@ import { colors } from '@theme/colors';
 import { authBg, emailIcon, eyeCloseIcon, eyeOpenIcon, phoneIcon, userIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import Input from '@components/Input';
-import NavigationSevice from '@navigations/NavigationSevice';
+import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
 import ToolBar from '@components/ToolBar';
 import { emailRegex, phoneRegex } from '@utils/index';
@@ -50,7 +50,7 @@ const SingUp = () => {
             setState({ ...state, passwordError: "Password is required" })
         } else {
             setState({ ...state, nameError: "", phoneError: "", emailError: "", passwordError: "" })
-            NavigationSevice.navigate(routes.LOGIN_SCREEN);
+            NavigationService.navigate(routes.LOGIN_SCREEN);
         }
     }
 
@@ -117,7 +117,7 @@ const SingUp = () => {
             <View style={styles.bottomRow}>
                 <AppText type={SIXTEEN} >Already Have an Account? </AppText>
                 <TouchableOpacityView
-                    onPress={() => NavigationSevice.reset(routes.LOGIN_SCREEN)}
+                    onPress={() => NavigationService.reset(routes.LOGIN_SCREEN)}
                 >
                     <AppText type={SIXTEEN} color={BUTTON_TEXT} weight={BOLD} >Login</AppText>
                 </TouchableOpacityView>
