@@ -1,12 +1,9 @@
-import { AppText, BUTTON_TEXT, MEDIUM } from "@components/AppText";
-import { dealIcon, helpLineIcon, historyIcon, homeIcon, nearByIcon, proflieIcon, scanIcon } from "@helper/imagesAssets";
+import { dealIcon, historyIcon, proflieIcon, scanIcon } from "@helper/imagesAssets";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Help_Line from "@screens/helpLine";
-import Home from "@screens/home";
 import NearBy from "@screens/nearBy";
-import Profile from "@screens/profile/inidex";
+import Profile from "@screens/profile/index";
 import { colors } from "@theme/colors";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { TabIcon } from "./BottomNavigation";
 import Deal from "@screens/deals";
 import Scan from "@screens/scan";

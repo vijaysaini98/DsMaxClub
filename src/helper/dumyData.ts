@@ -1,4 +1,4 @@
-import { automobile, beachImage, cinemahall, gameZone, healthCare, hotelsDeals, resort, restaurant, salon, waterPark } from "./imagesAssets";
+import { automobile, banerImages, beachImage, cinemahall, gameZone, healthCare, hotelsDeals, resort, restaurant, salon, waterPark } from "./imagesAssets";
 
 export const cities = [
   { label: 'Jaipur', value: 'jaipur' },
@@ -48,7 +48,7 @@ export const trendingData = [
     image: beachImage
   },
   {
-    id: '2',
+    id: '3',
     title: 'Hilltop Resort',
     location: 'Shimla',
     rating: 4.5,
@@ -89,3 +89,9 @@ export const cardDummyData =[
   },
   
 ]
+
+export const banerData = [
+  {id:1,image:beachImage}, // Your image 1
+  {id:2,image:beachImage},     // Your image 2
+  {id:3,image:beachImage},     // Your image 3
+];

@@ -22,8 +22,14 @@ import {
 } from 'react-native-confirmation-code-field';
 import NavigationService from '@navigations/NavigationService';
 import { RESET_PASSWORD_SCREEN } from '@navigations/routes'
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
+import { sendOtp, verifyOtp } from '@actions/auth/authAction'
 
-const Verification = () => {
+const Verification = ({ route }) => {
+    let { email } = route?.params ?? ''
+    const dispatch = useAppDispatch()
+    const { isLoading } = useAppSelector((state) => state.auth)
+
     const [showResend, setShowResend] = useState(false)
     const [countdown, setCountdown] = useState(60)
     const [value, setValue] = useState('');
@@ -49,21 +55,34 @@ const Verification = () => {
     }, [countdown])
 
     const handleVerifyBtn = () => {
-        setCountdown(60)
-        setShowResend(false)
-         NavigationService.navigate(RESET_PASSWORD_SCREEN)
+        // setCountdown(60)
+        // setShowResend(false)
+        //  NavigationService.navigate(RESET_PASSWORD_SCREEN)
+        let data = {
+            email: email,
+            otp: value
+
+        }
+        dispatch(verifyOtp(data, handleSucess))
     }
 
 
     const handleOnChange = (text: string) => {
         setValue(text);
         if (text.length === 6) {
-            console.log("Verification code entered:", text);
-            NavigationService.navigate(RESET_PASSWORD_SCREEN)
+            // console.log("Verification code entered:", text);
+            // NavigationService.navigate(RESET_PASSWORD_SCREEN)
         }
     };
 
-    const handleResetBtn =()=>{
+    const handleResetBtn = () => {
+        let data = {
+            email: email
+        }
+        dispatch(sendOtp(data, handleSucess))
+    }
+
+    const handleSucess = () => {
         setCountdown(60)
         setShowResend(false)
         setValue('')
@@ -117,9 +136,10 @@ const Verification = () => {
                     renderCell={renderCell}
                 />
             </View>
-            <TouchableOpacityView 
-            onPress={handleVerifyBtn}
-            style={styles.verifyBtn}>
+            <TouchableOpacityView
+                onPress={handleVerifyBtn}
+                loader={isLoading}
+                style={styles.verifyBtn}>
                 <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>
                     VERIFY
                 </AppText>

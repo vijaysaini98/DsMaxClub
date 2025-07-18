@@ -28,7 +28,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
       {isLeftIcon && (
         <TouchableOpacity
           style={styles.backArrow}
-          onPress={handleLeftIconPress ? handleLeftIconPress : NavigationService.goBack()}
+          onPress={handleLeftIconPress ? handleLeftIconPress : ()=> NavigationService.goBack()}
         >
           <Image source={leftIcon || backIcon} style={styles.icon} />
         </TouchableOpacity>

@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Help_Line from "@screens/helpLine";
 import Home from "@screens/home";
 import NearBy from "@screens/nearBy";
-import Profile from "@screens/profile/inidex";
+import Profile from "@screens/profile";
 import { colors } from "@theme/colors";
 import { Image, StyleSheet, View } from "react-native";
 
@@ -88,7 +88,7 @@ export default function BottomNavigation() {
 const styles = StyleSheet.create({
     tabBarStyle: {
         backgroundColor: colors.tabBg,
-        height: 100,
+        height: 80,
         paddingTop: 10,
         borderTopWidth: 0,
         

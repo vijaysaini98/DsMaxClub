@@ -138,13 +138,14 @@ const AppSafeAreaView = ({
     <View style={[commonStyles.screenSize, style]}>
       <StatusBar
         translucent
-        backgroundColor={
-          statusColor
-            ? statusColor
-            : isSecond
-            ? colors.transparent
-            : colors.mainBg
-        }
+        backgroundColor={colors.white}
+        // backgroundColor={
+        //   statusColor
+        //     ? statusColor
+        //     : isSecond
+        //     ? colors.transparent
+        //     : colors.mainBg
+        // }
         barStyle={isLight ? "light-content" : "dark-content"}
       />
       {isSecond ? (

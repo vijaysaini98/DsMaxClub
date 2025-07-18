@@ -23,6 +23,20 @@ export const scanIcon =require('@assets/images/scanIcon.png')
 export const historyIcon =require('@assets/images/historyIcon.png')
 
 
+//profile Icon
+export const forwardIcon =require('@assets/images/forwardIcon.png')
+export const logOutIcon =require('@assets/images/logoutIcon.png')
+export const myCardIcon = require('@assets/images/myCardIcon.png')
+export const myRequestIcon = require('@assets/images/myRequestIcon.png')
+export const privacyIcon = require('@assets/images/privacyIcon.png')
+export const shareIcon = require('@assets/images/shareIcon.png')
+export const termsCondIcon = require('@assets/images/terms&ConditionIcon.png')
+export const cameraIcon=require('@assets/images/cameraIcon.png')
+export const galleryIcon = require('@assets/images/galleryIcon.png')
+
+export const dummyUser = require('@assets/images/dummyUser.png')
+
+
 
 //categaories Image 
 export const automobile = require("@assets/images/automobile.png")
@@ -35,7 +49,15 @@ export const salon = require("@assets/images/salon.png")
 export const waterPark = require("@assets/images/waterpark.png")
 export const hotelsDeals = require("@assets/images/hotel.png")
 
+export const restro2= require('@assets/images/resturantimiage2.jpg')
+export const restro3= require('@assets/images/restrurant3.jpg')
+
+export const categaoriesIcon =require('@assets/images/categoriesIcon.png')
+
 
 // trending images
 export const beachImage = require('@assets/images/beachImage.png')
+
+//banerImages 
+export const banerImages= require('@assets/images/banerImage.png')
 

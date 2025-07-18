@@ -13,11 +13,13 @@ import Input from '@components/Input';
 import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
 import { emailRegex } from '@utils/index';
-import { useAppDispatch } from '@redux/hooks';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { login } from '../../actions/auth/authAction';
+import KeyBoardAware from '@components/KeyBoardAware';
 
 const Login = () => {
-const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch()
+    const{isLoading} = useAppSelector((state)=>state.auth)
     const [state, setState] = useState({
         email: '',
         password: '',
@@ -36,13 +38,17 @@ const dispatch = useAppDispatch()
             setState({ ...state, emailError: "Invalid Email" })
 
         } else {
-//             const formData = new FormData();
-//            formData.append('name', 'Anil Kumawat');
-// formData.append('email', 'anil@example.com');
-//             dispatch(login(formData))
-            setState({ ...state, emailError: "", passwordError: "" })
-            NavigationService.navigate(routes.BOTTOM_TAB_NAVIGATOR);
+            let data = {
+                email: state?.email,
+                password: state?.password
+            }
+            dispatch(login(data, handleSucess))
+            // NavigationService.navigate(routes.BOTTOM_TAB_NAVIGATOR)
         }
+    }
+
+    const handleSucess = () => {
+        setState({ ...state, emailError: "", passwordError: "" })
     }
 
 
@@ -51,6 +57,7 @@ const dispatch = useAppDispatch()
             isSecond
             bgImage={authBg}
             style={styles.mainContainer}>
+                <KeyBoardAware style={styles.container}>
             <View style={styles.heading}>
                 <AppText type={TWENTY_EIGHT} weight={BOLD}>WELCOME BACK</AppText>
                 <AppText type={EIGHTEEN} >
@@ -80,7 +87,7 @@ const dispatch = useAppDispatch()
                 />
                 <View style={styles.forgotWrapper}>
                     <TouchableOpacityView
-                        onPress={() => NavigationService.navigate('FORGOT_PASSWORD_SCREEN')}>
+                        onPress={() => NavigationService.navigate(routes.FORGOT_PASSWORD_SCREEN)}>
                         <AppText type={SIXTEEN} weight={MEDIUM}>Forgot Password?</AppText>
                     </TouchableOpacityView>
                 </View>
@@ -89,6 +96,8 @@ const dispatch = useAppDispatch()
             {/* Login Button */}
             <TouchableOpacityView
                 onPress={() => handleLoginBtn()}
+                loader={isLoading}
+                // onPress={()=>  NavigationService.navigate(routes.BOTTOM_TAB_NAVIGATOR)}
                 style={styles.loginBtn}>
                 <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>LOG IN</AppText>
             </TouchableOpacityView>
@@ -101,6 +110,7 @@ const dispatch = useAppDispatch()
                     <AppText type={SIXTEEN} color={BUTTON_TEXT} weight={BOLD} >Create Account</AppText>
                 </TouchableOpacityView>
             </View>
+            </KeyBoardAware>
         </AppSafeAreaView>
     );
 };
@@ -113,6 +123,9 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         paddingTop: 40,
         paddingHorizontal: 16,
+    },
+    container:{
+        backgroundColor:colors.white
     },
     heading: {
         marginTop: 120,

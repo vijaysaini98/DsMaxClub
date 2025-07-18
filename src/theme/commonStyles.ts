@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
 import { colors } from './colors';
 
 export const Screen = {
@@ -22,6 +22,11 @@ export const inputHeight = 55;
 export const borderWidth = 2;
 
 export const commonStyles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingTop: Platform.OS=="android"? 30:  40,
+  },
   center: {
     alignItems: 'center',
     justifyContent: 'center',
