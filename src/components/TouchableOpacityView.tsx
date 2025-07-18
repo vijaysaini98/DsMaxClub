@@ -37,7 +37,7 @@ const TouchableOpacityView = ({
         {...props}>
           {
             loader ? (
-              <ActivityIndicator size={"small"} color={ loaderColor? loaderColor : colors.buttonBg}/> 
+              <ActivityIndicator size={"small"} color={ loaderColor? loaderColor : colors.white}/> 
               ):
             children
           }

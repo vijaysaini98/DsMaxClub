@@ -13,6 +13,7 @@ import { AppText, BLACK, BOLD, EIGHTEEN, NORMAL, TWENTY_EIGHT, WHITE } from '@co
 import NavigationService from '@navigations/NavigationService';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import * as routes from '@navigations/routes';
+import { AppSafeAreaView } from '@components/AppSafeAreaView';
 
 const { width, height } = Dimensions.get('window');
 
@@ -57,7 +58,7 @@ const OnboardingScreen = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <AppSafeAreaView style={styles.container}>
             <FlatList
                 data={slides}
                 horizontal
@@ -109,7 +110,7 @@ const OnboardingScreen = () => {
                     </TouchableOpacityView>
                 ) : null}
             </View>
-        </View>
+        </AppSafeAreaView>
     );
 };
 
@@ -118,6 +119,7 @@ export { OnboardingScreen };
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:colors.white
     },
     image: {
         width,

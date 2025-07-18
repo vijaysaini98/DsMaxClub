@@ -10,9 +10,12 @@ import TouchableOpacityView from '@components/TouchableOpacityView'
 import NavigationService from '@navigations/NavigationService';
 import { emailRegex } from '@utils/index'
 import { VERIFICATION_SCREEN } from '@navigations/routes'
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
+import { sendOtp } from '@actions/auth/authAction'
 
 const ForgotPassword = () => {
-
+const dispatch = useAppDispatch();
+const {isLoading} = useAppSelector((state)=>state?.auth)
     const [state, setState] = React.useState({
         email: '',
         emailErrorText: "",
@@ -20,7 +23,7 @@ const ForgotPassword = () => {
 
     const handleSendOpt = () => {
         // Logic to send OTP or reset password
-        console.log("Send OTP to:", state.email);
+        // console.log("Send OTP to:", state.email);
         if (state.email === '') {
             setState({ ...state, emailErrorText: "Email is required" })
             return;
@@ -28,10 +31,15 @@ const ForgotPassword = () => {
             setState({ ...state, emailErrorText: "Invalid Email" })
             return;
         } else {
-            setState({ ...state, emailErrorText: "" })
-            console.log("Email:", state.email);
-            NavigationService.navigate(VERIFICATION_SCREEN);
+            let data={
+                email:state.email
+            }
+            dispatch(sendOtp(data,handleSucess))
         }
+    }
+
+    const handleSucess = () =>{
+         setState({ ...state, emailErrorText: "" })
     }
 
 
@@ -46,7 +54,6 @@ const ForgotPassword = () => {
             <View style={styles.heading}>
                 <AppText type={TWENTY_EIGHT} weight={BOLD}>Reset Password</AppText>
                 <AppText type={EIGHTEEN} >
-                    {/* We happy to see you here again. {'\n'}Enter your Phone number */}
                     You Will Receive {'\n'} Password Reset Instructions Via Email
                 </AppText>
             </View>
@@ -62,6 +69,7 @@ const ForgotPassword = () => {
                 />
             </View>
             <TouchableOpacityView
+            loader={isLoading}
                 onPress={handleSendOpt}
                 style={styles.sendOptBtn}>
                 <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>SEND OTP</AppText>

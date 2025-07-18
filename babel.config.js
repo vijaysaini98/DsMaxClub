@@ -16,6 +16,7 @@ module.exports = {
           '@navigations': './src/navigations',
           '@theme': './src/theme',
           '@helper': './src/helper',
+          '@actions':'./src/actions',
         },
       },
     ],

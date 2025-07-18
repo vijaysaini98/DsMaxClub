@@ -15,7 +15,8 @@ interface InputProps extends TextInputProps {
   value?: string;
   onChangeText?: (text: string) => void;
   leftIcon?: ImageSourcePropType;
-  errorText?: string
+  errorText?: string,
+  editable:boolean
 }
 
 const Input: React.FC<InputProps> = ({
@@ -29,6 +30,7 @@ const Input: React.FC<InputProps> = ({
   onChangeText,
   leftIcon,
   errorText,
+  editable = true,
   ...rest
 }) => {
   return (
@@ -36,6 +38,7 @@ const Input: React.FC<InputProps> = ({
       <View
         style={[
           styles.inputContainer(errorText),
+          !editable && styles.disabledInput,
           inputContainerStyle,
         ]}
       >
@@ -54,6 +57,7 @@ const Input: React.FC<InputProps> = ({
           placeholderTextColor={placeholderTextColor}
           style={[styles.inputStyle(leftIcon), inputStyle]}
           secureTextEntry={secureTextEntry}
+          editable={editable}
           {...rest}
         />
 
@@ -76,10 +80,13 @@ const styles = StyleSheet.create({
     borderColor: errorText ? colors.red:colors.borderColor,
     borderRadius: 30,
     paddingHorizontal: 16,
-    backgroundColor: colors.white,
+    backgroundColor:  colors.white ,
     gap: 10,
     width: "100%"
   }),
+   disabledInput: {
+    backgroundColor:colors.disableInputBg, 
+  },
   leftIconStyle: {
     width: 24,
     height: 24

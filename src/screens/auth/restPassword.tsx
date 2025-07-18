@@ -12,9 +12,13 @@ import Input from '@components/Input';
 import NavigationService from '@navigations/NavigationService';
 import ToolBar from '@components/ToolBar';
 import { LOGIN_SCREEN } from '@navigations/routes';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
+import { resetPassword } from '@actions/auth/authAction';
 
-const ResetPassword = () => {
-
+const ResetPassword = ({ route }) => {
+    const { email } = route?.params ?? ''
+    const dispatch = useAppDispatch()
+    const { isLoading } = useAppSelector((state) => state.auth)
     const [state, setState] = useState({
         newPassword: '',
         confirmPassword: '',
@@ -35,10 +39,17 @@ const ResetPassword = () => {
             setState({ ...state, confirmPasswordError: "Passwords do not match" });
             return;
         } else {
-            setState({ ...state, newPasswordError: "", confirmPasswordError: "" });
-            console.log("New Password:", state.newPassword);
-            NavigationService.navigate(LOGIN_SCREEN);
+            let data = {
+                email: email,
+                new_password: state.newPassword,
+                confirm_new_password: state.confirmPassword
+            }
+            dispatch(resetPassword(data, handleSuccess))
         }
+    }
+
+    const handleSuccess = () => {
+        setState({ ...state, newPasswordError: "", confirmPasswordError: "" });
     }
 
     return (
@@ -80,6 +91,7 @@ const ResetPassword = () => {
             </View>
 
             <TouchableOpacityView
+                loader={isLoading}
                 onPress={handleSaveBtn}
                 style={styles.saveBtn}>
                 <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>Save</AppText>

@@ -15,8 +15,12 @@ import * as routes from '@navigations/routes';
 import ToolBar from '@components/ToolBar';
 import { emailRegex, phoneRegex } from '@utils/index';
 import KeyBoardAware from '@components/KeyBoardAware';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
+import { singUp } from '../../actions/auth/authAction';
 
 const SingUp = () => {
+    const dispatch = useAppDispatch()
+    const{isLoading}= useAppSelector((state)=>state?.auth)
 
     const [state, setState] = useState({
         name: '',
@@ -49,9 +53,21 @@ const SingUp = () => {
         else if (state.password === '') {
             setState({ ...state, passwordError: "Password is required" })
         } else {
-            setState({ ...state, nameError: "", phoneError: "", emailError: "", passwordError: "" })
-            NavigationService.navigate(routes.LOGIN_SCREEN);
+            // setState({ ...state, nameError: "", phoneError: "", emailError: "", passwordError: "" })
+            // // NavigationService.navigate(routes.LOGIN_SCREEN);
+            const formData = new FormData();
+
+            formData.append('name', state?.name)
+            formData.append('mobile', state?.phone)
+            formData.append('email', state?.email);
+            formData.append("password", state?.password);
+
+            dispatch(singUp(formData,handleSuccess))
         }
+    }
+
+    const handleSuccess = () =>{
+        setState({ ...state, nameError: "", phoneError: "", emailError: "", passwordError: "" })
     }
 
     return (
@@ -109,6 +125,7 @@ const SingUp = () => {
 
                 {/* SignUp Button */}
                 <TouchableOpacityView
+                loader={isLoading}
                     onPress={handleSignUpBtn}
                     style={styles.createAccountBtn}>
                     <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>CREATE ACCOUNT</AppText>

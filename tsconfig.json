@@ -11,7 +11,8 @@
       "@redux/*": ["src/redux/*"],
       "@navigations/*": ["src/navigations/*"],
       "@theme/*": ["src/theme/*"],
-      "@helper/*": ["src/helper/*"]
+      "@helper/*": ["src/helper/*"],
+      "@actions/*":["./src/actions/*"],
     }
   }
 }
