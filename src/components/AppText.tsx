@@ -43,6 +43,9 @@ export const BUTTON_BG = "BUTTON_BG";
 export const PLACEHOLDER = "PLACEHOLDER";
 export const BUTTON_TEXT = "BUTTON_TEXT";
 export const ERROR_TEXT = "ERROR_TEXT";
+export const FIRST = "FIRST";
+export const SECOND = "SECOND";
+export const THIRD = "THIRD";
 
 interface AppTextProps extends TextProps {
   type?: string;
@@ -168,6 +171,15 @@ const AppText = ({
         break;
          case ERROR_TEXT:
         style["color"] = colors.red;
+        break;
+         case FIRST:
+        style["color"] = colors.first;
+        break;
+         case SECOND:
+        style["color"] = colors.second;
+        break;
+         case THIRD:
+        style["color"] = colors.third;
         break;
       default:
         style["color"] = colors.black;

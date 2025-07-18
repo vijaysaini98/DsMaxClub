@@ -53,6 +53,7 @@ const Home: React.FC = () => {
     setRefreshing(false);
   };
 
+
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
       <Header

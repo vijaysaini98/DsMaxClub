@@ -12,6 +12,8 @@ import EditProfile from "@screens/profile/editProfile";
 import Categories from "@screens/categories";
 import CategoriesList from "@screens/categories/categoriesList";
 
+import Home from "@screens/home";
+import BottomNavigationVendor from "./BottomNavigationVendor";
 
 const Stack = createStackNavigator();
 
@@ -28,7 +30,8 @@ const MyAuthLoadingStack = () => (
       name={routes.NAVIGATION_AUTH_STACK}
       component={AuthStack}
     />
-<Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigation}/>
+     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigation}/>
+     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigationVendor}/>
 <Stack.Screen name={routes.CATEGORIES_SCCREEN} component={Categories}/>
 <Stack.Screen name={routes.CATEGORIES_LIST_SCCREEN} component={CategoriesList}/>
 <Stack.Screen name={routes.EDIT_PROFILE_SCREEN} component={EditProfile}/>
