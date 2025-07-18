@@ -10,27 +10,33 @@ import { Image, StyleSheet, View } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
-const TabIcon = ({ focused, icon, title }: any) => {
+export const TabIcon = ({ focused, icon, title }: any) => {
     return (
         <View style={styles.container}>
+            {/* TOP INDICATOR */}
             {focused && <View style={styles.indicator} />}
+
+            {/* ICON */}
             <Image
                 source={icon}
-                style={[styles.icon, { tintColor: focused ? colors.buttonBg : colors.black }]}
+                style={[
+                    styles.icon,
+                    { tintColor: focused ? colors.buttonBg : colors.black },
+                ]}
                 resizeMode="contain"
             />
+
+            {/* TEXT */}
             <AppText
                 weight={MEDIUM}
-                color={focused ? BUTTON_TEXT : colors.black}
+                color={focused ? colors.buttonBg : colors.black}
+                style={{ fontSize: 12, marginTop: 4 }}
             >
                 {title}
             </AppText>
-
         </View>
     );
 };
-
-
 
 
 export default function BottomNavigation() {
@@ -41,6 +47,7 @@ export default function BottomNavigation() {
                 headerShown: false,
                 tabBarShowLabel: false,
                 tabBarHideOnKeyboard: true,
+                 tabBarAllowFontScaling: false,
                 tabBarStyle: styles.tabBarStyle,
             }}
         >
@@ -88,17 +95,16 @@ const styles = StyleSheet.create({
     tabBarStyle: {
         backgroundColor: colors.tabBg,
         height: 80,
-        paddingTop: 10,
         borderTopWidth: 0,
-        
     },
     container: {
         alignItems: 'center',
-        justifyContent: 'center',
-        height: 60,
+        justifyContent: 'flex-end',
+        height: 80,
         width: 100,
-        gap: 10,
-        paddingTop: 20,
+        gap: 4,
+        paddingBottom: 10,
+        backgroundColor: colors.tabBg
     },
     icon: {
         width: 24,

@@ -6,37 +6,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   gridContainer: {
-    marginTop:48,
+    marginTop: 30,
     paddingBottom: 20,
     alignItems: 'flex-start',
-    
+
   },
   row: {
-    justifyContent: 'space-between',
     marginBottom: 20,
+    // width: "100%"
+    justifyContent:'flex-start'
   },
-  cateCardStyle: (borderColor: string) => ({
-    // width: '30%', // Ensures 3 per row with spacing
-    width: 100,
-    marginHorizontal:8,
-    aspectRatio: 1,
+  cateCardStyle: (borderColor: boolean) => ({
+    maxheight: 130,
     borderWidth: 1,
-    borderColor: borderColor || '#E5E7EB',
-    borderRadius: 16,
+    borderColor: borderColor,
+    borderRadius: 12,
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-    backgroundColor: colors.white,
-    
+    marginBottom: 16,
+    paddingHorizontal: 2,
+    width: 110,
+    marginRight: 15,
+    paddingVertical: 2
   }),
   cateLogoImage: {
-    width: 40,
-    height: 40,
-    marginBottom: 10,
+    width: 75,
+    height: 75,
+    marginVertical: 8,
   },
   cateText: {
     textAlign: 'center',
-    fontSize: 14,
   },
 });
 

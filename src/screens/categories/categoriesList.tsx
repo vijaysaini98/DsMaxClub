@@ -71,7 +71,7 @@ const CategoriesList = ({ route }) => {
 
     return (
         <AppSafeAreaView style={styles.mainContainer}>
-            <ToolBar isLeftIcon title={title} />
+            <ToolBar isLeftIcon title={title.charAt(0)?.toUpperCase() + title?.slice(1).toLowerCase()} />
             <View style={styles.containerStyle}>
                 <Input
                     leftIcon={searchIcon}

@@ -60,9 +60,9 @@ const CityDropDown: React.FC<CityDropDownProps> = ({
           keyExtractor={(item) => item.value}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }: ListRenderItemInfo<CityOption>) => (
+          renderItem={({ item,index }: ListRenderItemInfo<CityOption>) => (
             <TouchableOpacityView
-            key={item?.id}
+            key={index}
               onPress={() => handleSelectOption(item)}
               style={styles.option}
             >

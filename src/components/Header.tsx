@@ -17,8 +17,9 @@ const Header: React.FC<HeaderProps> = ({ userName, city, }) => {
 
   const { userData, cityList } = useAppSelector((state) => state.auth)
   const bottomSheetRef = useRef<RBSheet>(null);
+console.log("userData?.city_name",userData?.city_name);
 
-  const [selectedCity, setSelectedCity] = useState<CityOption>(userData?.city_name);
+  const [selectedCity, setSelectedCity] = useState<CityOption>({id:userData?.city,label:userData?.city_name});
   const [searchCityText, setSearchCityText] = useState<string>('');
   const [filteredLocations, setFilteredLocations] = useState<CityOption[]>(cityList);
 
@@ -37,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ userName, city, }) => {
   };
 
   const selectLocation = (location) => {
-    setSelectedCity(location?.name);
+    setSelectedCity({id:location?.id,label:location?.name});
     bottomSheetRef.current?.close();
   };
 
@@ -66,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ userName, city, }) => {
             style={styles.cityText}
             color={!selectedCity ?? colors.placeholder}
             >
-            {selectedCity || "Select your city"}
+            {selectedCity.label || "Select your city"}
           </AppText>
           <Image
             source={downArrowIcon}

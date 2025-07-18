@@ -3,6 +3,7 @@ import React from 'react'
 import { AppText, BUTTON_TEXT, FOURTEEN, MEDIUM, SEMI_BOLD, SIXTEEN, TWENTY_TWO } from '@components/AppText'
 import TouchableOpacityView from '@components/TouchableOpacityView'
 import { categaoriesIcon, restaurant } from '@helper/imagesAssets'
+import { getCategoryDetails, width } from '@utils/index'
 
 const CategoriesComponent = ({data,handleSeeAll}) => {
   return (
@@ -24,14 +25,18 @@ const CategoriesComponent = ({data,handleSeeAll}) => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.categoriesContainer}>
             {data?.category?.map((item:any, index:number) => {
+              const {icon,borderColor} =getCategoryDetails(item?.name)
               return(
-              <TouchableOpacityView key={index} style={styles.cateCardStyle(item?.border_color)}>
+              <TouchableOpacityView key={index} 
+              style={styles.cateCardStyle(item?.border_color)}
+              // style={styles.cateCardStyle(borderColor)}
+              >
                 <Image 
                 source={item?.icon ? {uri:data?.baseurl + item?.icon} :categaoriesIcon}
-                // source={restaurant}
+                // source={icon}
                  style={styles.cateLogoImage} resizeMode="cover" />
                 <AppText 
-                numberOfLines={1}
+                numberOfLines={2}
                 type={FOURTEEN} weight={MEDIUM} style={styles.cateText}>{item?.name}</AppText>
               </TouchableOpacityView>
             )})}
@@ -72,15 +77,16 @@ const styles = StyleSheet.create({
     borderColor: borderColor,
     borderRadius: 12,
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     marginBottom: 16,
-    paddingHorizontal: 10,
-    maxWidth: 110
+    // paddingHorizontal: 10,
+    width:110
   }),
   cateLogoImage: {
-    width: 40,
-    height: 40,
-    marginBottom: 10,
+    width: 60,
+    height: 60,
+    marginVertical: 10,
+    // borderRadius:30
   },
   cateText: {
     textAlign: 'center',

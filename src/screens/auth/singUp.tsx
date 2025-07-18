@@ -130,8 +130,7 @@ const SingUp = () => {
                     style={styles.createAccountBtn}>
                     <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>CREATE ACCOUNT</AppText>
                 </TouchableOpacityView>
-            </KeyBoardAware>
-            <View style={styles.bottomRow}>
+                <View style={styles.bottomRow}>
                 <AppText type={SIXTEEN} >Already Have an Account? </AppText>
                 <TouchableOpacityView
                     onPress={() => NavigationService.reset(routes.LOGIN_SCREEN)}
@@ -139,6 +138,8 @@ const SingUp = () => {
                     <AppText type={SIXTEEN} color={BUTTON_TEXT} weight={BOLD} >Login</AppText>
                 </TouchableOpacityView>
             </View>
+            </KeyBoardAware>
+            
         </AppSafeAreaView>
     );
 };

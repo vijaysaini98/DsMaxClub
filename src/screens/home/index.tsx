@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Image, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '@theme/colors';
 import Header from '@components/Header';
 import { banerData, categoryList, trendingData } from '@helper/dumyData';
@@ -10,10 +10,12 @@ import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import styles from './styles';
 import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes'
-import { AppText, SEMI_BOLD, TWENTY_TWO } from '@components/AppText';
+import { AppText, BOLD, BUTTON_BG, FOURTEEN, SEMI_BOLD, TWENTY_TWO, WHITE } from '@components/AppText';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { getCategoryBooklet, getCategoryList } from '@actions/home/homeAction';
 import { commonStyles } from '@theme/commonStyles';
+import TouchableOpacityView from '@components/TouchableOpacityView';
+import { rightArrowIcon } from '@helper/imagesAssets';
 
 
 
@@ -97,7 +99,8 @@ const Home: React.FC = () => {
                   <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={[styles.listStyle, item.booklets.length === 1 && styles.singleItemCentered,]}
+                    contentContainerStyle={[styles.listStyle,
+                    ]}
                   >
                     {item.booklets.map((booklet: any, i: number) => (
                       <View key={booklet.id || i} style={styles.categoryBookletContainer}>
@@ -109,8 +112,32 @@ const Home: React.FC = () => {
                             // Add navigation or logic here
                           }}
                         />
+
                       </View>
                     ))}
+                    {/* <View
+                    style={{alignItems:'center',justifyContent:'center',backgroundColor:colors.buttonBg,padding:10}}
+                    > */}
+                    <TouchableOpacityView
+                      style={{
+                        flexDirection: 'row', alignItems: 'center',
+                        borderRadius: 10,
+                        justifyContent: 'center', backgroundColor: colors.tabBg, padding: 20
+                      }}
+                    >
+                      {/* <AppText
+                      weight={BOLD}
+                      type={FOURTEEN}
+                      color={WHITE}
+                      style={{textDecorationColor:colors.white,textDecorationLine:'underline'}}
+                      >{"See All"}</AppText> */}
+                      <Image
+                        source={rightArrowIcon}
+                        style={{ height: 30, width: 30, tintColor: colors.buttonBg }}
+                        resizeMode='contain'
+                      />
+                    </TouchableOpacityView>
+                    {/* </View> */}
                   </ScrollView>
                 </View>
               );

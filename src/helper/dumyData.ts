@@ -64,7 +64,7 @@ export const trendingData = [
 
 
 export const banerData = [
-  {id:1,image:beachImage}, // Your image 1
-  {id:2,image:beachImage},     // Your image 2
-  {id:3,image:beachImage},     // Your image 3
+  {id:1,image:banerImages}, // Your image 1
+  {id:2,image:banerImages},     // Your image 2
+  {id:3,image:banerImages},     // Your image 3
 ];

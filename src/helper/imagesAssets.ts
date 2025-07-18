@@ -29,6 +29,8 @@ export const termsCondIcon = require('@assets/images/terms&ConditionIcon.png')
 export const cameraIcon=require('@assets/images/cameraIcon.png')
 export const galleryIcon = require('@assets/images/galleryIcon.png')
 
+export const rightArrowIcon = require('@assets/images/rightarrowIcon.png')
+
 export const dummyUser = require('@assets/images/dummyUser.png')
 
 
@@ -55,4 +57,6 @@ export const beachImage = require('@assets/images/beachImage.png')
 
 //banerImages 
 export const banerImages= require('@assets/images/banerImage.png')
+
+
 

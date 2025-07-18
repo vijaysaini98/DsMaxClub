@@ -5,7 +5,7 @@ import { colors } from '@theme/colors'
 import ToolBar from '@components/ToolBar'
 import { categoryList } from '@helper/dumyData'
 import TouchableOpacityView from '@components/TouchableOpacityView'
-import { AppText, MEDIUM, SIXTEEN } from '@components/AppText'
+import { AppText, FOURTEEN, MEDIUM, SIXTEEN } from '@components/AppText'
 import NavigationService from '@navigations/NavigationService'
 import { CATEGORIES_LIST_SCCREEN } from '@navigations/routes'
 import styles from './styles'
@@ -13,6 +13,8 @@ import { commonStyles } from '@theme/commonStyles'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { getCategoryList } from '@actions/home/homeAction'
 import { SpinnerSecond } from '@components/Spinner'
+import { categaoriesIcon } from '@helper/imagesAssets'
+import { getCategoryDetails } from '@utils/index'
 
 
 const Categories = () => {
@@ -23,17 +25,21 @@ const Categories = () => {
     dispatch(getCategoryList())
   }, [])
 
-  console.log("categoryListData?.category",categoryListData?.category);
-  
+  console.log("categoryListData?.category", categoryListData?.category);
+
 
   const renderItem = ({ item, index }: any) => {
-    
+    const { icon, borderColor } = getCategoryDetails(item?.name)
     return (
-      <TouchableOpacityView
-        onPress={() => NavigationService.navigate(CATEGORIES_LIST_SCCREEN, { title: item?.title })}
-        key={index} style={styles.cateCardStyle(item?.border_color)}>
-        <Image source={{uri : categoryListData?.baseurl + item.icon}} style={styles.cateLogoImage} resizeMode="contain" />
-        <AppText type={SIXTEEN} weight={MEDIUM} style={styles.cateText}>{item.name}</AppText>
+      <TouchableOpacityView key={index}
+        style={styles.cateCardStyle(item?.border_color)}>
+        <Image
+          source={item?.icon ? { uri: categoryListData?.baseurl + item?.icon } : categaoriesIcon}
+          // source={icon}
+          style={styles.cateLogoImage} resizeMode="cover" />
+        <AppText
+          numberOfLines={2}
+          type={FOURTEEN} weight={MEDIUM} style={styles.cateText}>{item?.name}</AppText>
       </TouchableOpacityView>
     );
   };
@@ -43,7 +49,7 @@ const Categories = () => {
       <ToolBar isLeftIcon title="Categories" />
       {
         isLoading ? (
-         <SpinnerSecond/>
+          <SpinnerSecond />
         ) : (
           <FlatList
             data={categoryListData?.category}

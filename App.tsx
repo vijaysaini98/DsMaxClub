@@ -1,6 +1,6 @@
 import Navigator from "@navigations/Navigator";
 import store from "@redux/store";
-import React, { JSX, useEffect } from "react";
+import React, { JSX } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 

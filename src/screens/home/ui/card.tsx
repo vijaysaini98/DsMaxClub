@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, ScrollView, StyleSheet, View, ImageSourcePropType } from 'react-native';
 import { AppText, BOLD, BUTTON_BG, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, TWELVE, TWENTY_TWO, WHITE } from '@components/AppText';
 import { colors } from '@theme/colors';
-import { nearByIcon, starIcon } from '@helper/imagesAssets';
+import { nearByIcon, restro2, starIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 
 export interface CardItem {
@@ -20,21 +20,19 @@ export interface CardProps {
 
 const Card: React.FC<CardProps> = ({ handleCardOnPress, item, index, cardContainerStyle, imageStyle, imageBaseUrl }) => {
   return (
-
     <TouchableOpacityView
-      onPress={() => handleCardOnPress(item)}
-      key={item.id ?? index}
-      style={[styles.shadowWrapper, cardContainerStyle]}
-    >
-      <View style={styles.shadowWrapper}>
+  onPress={() => handleCardOnPress(item)}
+  key={item.id ?? index}
+  style={[styles.cardInner, cardContainerStyle]}
+>
         <Image
-          source={{ uri: imageBaseUrl + item.booklet }}
+          source={item.booklet ? { uri: imageBaseUrl + item.booklet } : restro2}
           style={[styles.bannerImage, imageStyle]}
           resizeMode='cover'
         />
-        <View style={styles.tagContainer}>
+        {/* <View style={styles.tagContainer}>
           <AppText type={TWELVE} weight={SEMI_BOLD}>Guest Favourite</AppText>
-        </View>
+        </View> */}
         {/* details container */}
         <View style={styles.detailContainer}>
           {/* <View style={styles.ratingContainer}>
@@ -77,7 +75,6 @@ const Card: React.FC<CardProps> = ({ handleCardOnPress, item, index, cardContain
             </AppText>
           </View>
         </View>
-      </View>
     </TouchableOpacityView>
   );
 };
@@ -85,40 +82,16 @@ const Card: React.FC<CardProps> = ({ handleCardOnPress, item, index, cardContain
 export default Card;
 
 const styles = StyleSheet.create({
-  mainContainer: { marginLeft: 16, gap: 12 },
-  titleStyle: {
-    width: "80%"
-  },
-  listStyle: { gap: 12 },
-  //   shadowWrapper: {
-  //     borderRadius: 10,
-  //     backgroundColor: colors.white,
-  //     shadowColor: 'rgba(0, 0, 0, 0.1)',
-  //     shadowOffset: {
-  //       width: -3,
-  //       height: -4,
-  //     },
-  //     shadowOpacity: 0.18,
-  //     shadowRadius: 6,
-  //     overflow: 'hidden'
-  //   },
-  // shadowWrapper: {
-  //   borderRadius: 10,
-  //   backgroundColor: colors.white,
-  //   // iOS shadow
-  //   shadowColor: 'rgba(0, 0, 0, 0.2)',
-  //   shadowOffset: { width: 0, height: 4 },
-  //   shadowOpacity: 0.18,
-  //   shadowRadius: 8,
-  //   // Android shadow
-  //   elevation: 8,
-  //   marginBottom: 15,
-  // }
-
+ 
   bannerImage: {
     height: 210,
-    width: 310,
+    width: 300,
   },
+  cardInner: {
+  borderRadius: 10,
+  backgroundColor: colors.white,
+  overflow: 'hidden',
+},
   tagContainer: {
     backgroundColor: colors.white,
     paddingHorizontal: 8,

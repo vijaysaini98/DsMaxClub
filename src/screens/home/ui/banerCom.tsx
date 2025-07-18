@@ -4,7 +4,7 @@ import Swiper from 'react-native-swiper'
 import { colors } from '@theme/colors'
 import { width } from '@utils/index'
 
-const BanerComponent = ({data}) => {
+const BanerComponent = ({data}:{data:any}) => {
   return (
    <View style={styles.container}>
       <Swiper
@@ -12,11 +12,11 @@ const BanerComponent = ({data}) => {
         loop
         dotColor={colors.inActiveDot}
         activeDotColor={colors.placeholder}
-        paginationStyle={{ bottom:0  }}
+        paginationStyle={{ bottom:-10  }}
       >
         {data.map((item, index) => (
           <View key={item?.id} style={styles.slider}>
-            <Image source={item?.image} style={styles.imageStyle} resizeMode="cover" />
+            <Image source={item?.image} style={styles.imageStyle} resizeMode='contain' />
           </View>
         ))}
       </Swiper>
@@ -28,14 +28,15 @@ export default BanerComponent
 
 const styles = StyleSheet.create({
     container:{
-        height: 280,
+        height: 238,
         marginHorizontal: 16,
-        marginTop: 16,
+        // marginTop: 16,
         borderRadius: 26,
         shadowColor: '#000',    
         shadowOpacity: 0.1,
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 2 },
+        // backgroundColor:'red'
         // elevation: 0.2,
       },
       slider:{

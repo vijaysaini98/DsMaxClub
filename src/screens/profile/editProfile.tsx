@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Image, StyleSheet, View, ImageSourcePropType } from 'react-native';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import { colors } from '@theme/colors';
-import { cameraIcon, downArrowIcon, emailIcon, locationIcon, userIcon } from '@helper/imagesAssets';
+import { cameraIcon, downArrowIcon, emailIcon, locationIcon, phoneIcon, userIcon } from '@helper/imagesAssets';
 import ToolBar from '@components/ToolBar';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import KeyBoardAware from '@components/KeyBoardAware';
@@ -15,6 +15,7 @@ import { updateUserProfile, updateUserProfileImage } from '@actions/auth/authAct
 import { commonStyles } from '@theme/commonStyles';
 import { SpinnerSecond } from '@components/Spinner';
 import { IMGE_URL } from '@services/config';
+import Toast from "react-native-simple-toast";
 
 interface ProfileState {
     name: string;
@@ -40,10 +41,13 @@ const EditProfile: React.FC = () => {
         email: userData?.email,
         phone: userData?.mobile,
         city: userData?.city_name,
-        cityId: "",
+        cityId: userData?.city,
     });
+console.log("userData",userData);
 
     const [imageUri, setImageUri] = useState<string | ImageSourcePropType | null>(userData?.profile_image);
+
+// const disableSaveBtn = state?.city == userData?.city || state?.name == userData || state?.phone
 
 
     const openBottomSheet = () => {
@@ -79,13 +83,25 @@ const EditProfile: React.FC = () => {
     }
 
     const handleSaveBtn = () => {
-        // Save logic here
+        // console.log("ansdlkcnkl",
+        //     state?.cityId ,"==>", userData?.city , state?.name ,"==>", userData?.name , state?.phone ,"==>", userData?.mobile
+        // );
+        
+        // console.log("bajcsjjajkbsdc",state?.cityId === userData?.city && state?.name === userData?.name && state?.phone === userData?.mobile);
+        
+        if(state?.cityId === userData?.city && state?.name === userData?.name && state?.phone === userData?.mobile ){
+             Toast.show("There is no change", Toast.LONG);
+        }
+        else{
+//  // Save logic here
         let data = {
             name: state?.name,
-            phone: state?.phone,
+            mobile: state?.phone,
             city: state?.cityId,
         }
         dispatch(updateUserProfile(data, { userid: userData?.uuid }))
+        }
+       
     };
 
     return (
@@ -137,9 +153,9 @@ const EditProfile: React.FC = () => {
                         placeholder="Phone Number"
                         value={state.phone}
                         onChangeText={(text: string) => setState({ ...state, phone: text })}
-                        leftIcon={emailIcon}
+                        leftIcon={phoneIcon}
                         maxLength={10}
-                        keyboardType="phone-pad"
+                        keyboardType="number-pad"
                     />
                     <TouchableOpacityView
                         style={styles.citySelector}
@@ -158,6 +174,7 @@ const EditProfile: React.FC = () => {
                     onPress={handleSaveBtn}
                     style={styles.saveBtn}
                     loader={isBtnLoading}
+                    // disabled={disableSaveBtn}
                 >
                     <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>SAVE</AppText>
                 </TouchableOpacityView>
