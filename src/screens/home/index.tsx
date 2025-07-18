@@ -1,31 +1,52 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, View } from 'react-native';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
-import { AppText, BOLD, BUTTON_BG, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, THIRTEEN, TWELVE, TWENTY_TWO, WHITE } from '@components/AppText';
+import {
+  AppText,
+  BOLD,
+  BUTTON_BG,
+  BUTTON_TEXT,
+  EIGHTEEN,
+  FOURTEEN,
+  MEDIUM,
+  PLACEHOLDER,
+  SEMI_BOLD,
+  SIXTEEN,
+  THIRTEEN,
+  TWELVE,
+  TWENTY_TWO,
+  WHITE,
+} from '@components/AppText';
 import { colors } from '@theme/colors';
-import { locationIcon, nearByIcon, searchIcon, starIcon } from '@helper/imagesAssets';
+import {
+  locationIcon,
+  nearByIcon,
+  searchIcon,
+  starIcon,
+} from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import Input from '@components/Input';
 import Header from '@components/Header';
-import { categoryList, trendingData } from '@helper/dumyData';
+import { cardDummyData, categoryList, trendingData } from '@helper/dumyData';
 import Card from './ui/card';
+import CommonCard from '@components/CommonCard';
+import ViewDetailsBottomSheet from './ui/viewDetailsBottomSheet';
 
 const Home: React.FC = () => {
   const [searchText, setSeachText] = useState<string>('');
 
+
   return (
     // <AppSafeAreaView style={styles.mainContainer}>
     <View style={styles.mainContainer}>
-      <Header
-        userName="Anil Kumawat"
-      />
+      <Header userName="Anil Kumawat" />
       <View style={styles.seachContainer}>
         <Input
           leftIcon={searchIcon}
-          placeholder='Search...'
+          placeholder="Search..."
           placeholderTextColor={colors.placeholder}
           value={searchText}
-          onChangeText={(text) => setSeachText(text)}
+          onChangeText={text => setSeachText(text)}
         />
       </View>
       <ScrollView
@@ -34,23 +55,38 @@ const Home: React.FC = () => {
       >
         <View style={styles.categoriesMainContainer}>
           <View style={styles.categoriesHeaderContainer}>
-            <AppText type={TWENTY_TWO} weight={SEMI_BOLD}
+            <AppText
+              type={TWENTY_TWO}
+              weight={SEMI_BOLD}
               style={styles.cateTitle}
-            >Categories</AppText>
+            >
+              Categories
+            </AppText>
             <TouchableOpacityView style={styles.cateSeeAllBtn}>
-              <AppText type={SIXTEEN} color={BUTTON_TEXT}>See All</AppText>
+              <AppText type={SIXTEEN} color={BUTTON_TEXT}>
+                See All
+              </AppText>
             </TouchableOpacityView>
-            <View>
-            </View>
+            <View></View>
           </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.categoriesContainer}>
+            contentContainerStyle={styles.categoriesContainer}
+          >
             {categoryList.map((item, index) => (
-              <TouchableOpacityView key={index} style={styles.cateCardStyle(item?.borderColor)}>
-                <Image source={item.icon} style={styles.cateLogoImage} resizeMode="contain" />
-                <AppText type={SIXTEEN} weight={MEDIUM} style={styles.cateText}>{item.title}</AppText>
+              <TouchableOpacityView
+                key={index}
+                style={styles.cateCardStyle(item?.borderColor)}
+              >
+                <Image
+                  source={item.icon}
+                  style={styles.cateLogoImage}
+                  resizeMode="contain"
+                />
+                <AppText type={SIXTEEN} weight={MEDIUM} style={styles.cateText}>
+                  {item.title}
+                </AppText>
               </TouchableOpacityView>
             ))}
           </ScrollView>
@@ -136,10 +172,8 @@ const Home: React.FC = () => {
 
           </ScrollView>
         </View> */}
-        <Card
-        title={"Trendiing"}
-        data={trendingData}
-        />
+       
+        
       </ScrollView>
       {/* </AppSafeAreaView> */}
     </View>
@@ -156,29 +190,29 @@ const styles = StyleSheet.create({
   },
   seachContainer: {
     paddingHorizontal: 16,
-    marginTop: 8
+    marginTop: 8,
   },
   categoriesMainContainer: {
-    paddingVertical: 18
+    paddingVertical: 18,
   },
   categoriesHeaderContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
   cateTitle: {
-    width: "80%"
+    width: '80%',
   },
   cateSeeAllBtn: {
-    width: "20%",
-    alignItems: 'flex-end'
+    width: '20%',
+    alignItems: 'flex-end',
   },
   categoriesContainer: {
     flexDirection: 'row',
     paddingTop: 16,
     paddingLeft: 16,
-    gap: 16
+    gap: 16,
   },
   cateCardStyle: (borderColor: boolean) => ({
     height: 120,
@@ -189,7 +223,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 16,
     paddingHorizontal: 10,
-    minWidth: 110
+    minWidth: 110,
   }),
   cateLogoImage: {
     width: 40,
@@ -199,5 +233,4 @@ const styles = StyleSheet.create({
   cateText: {
     textAlign: 'center',
   },
-
 });

@@ -82,4 +82,7 @@ export const commonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  marginHorizontal:{
+  marginHorizontal:20
+  }
 });

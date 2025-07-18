@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     width: isIcon ? "90%" : "100%",
     fontSize: 16,
     fontFamily: fontFamily,
+    color:colors.black
   }),
   errorTextStyle: {
     marginLeft: 15,

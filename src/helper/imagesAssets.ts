@@ -17,6 +17,11 @@ export const locationIcon = require('@assets/images/locationIcon.png');
 export const downArrowIcon = require("@assets/images/downIcon.png");
 export const searchIcon =require("@assets/images/searchIcon.png")
 export const starIcon =require('@assets/images/starIcon.png')
+export const checkReedemIcon =require('@assets/images/checkRedeemIcon.png')
+export const dealIcon =require('@assets/images/dealIcon.png')
+export const scanIcon =require('@assets/images/scanIcon.png')
+export const historyIcon =require('@assets/images/historyIcon.png')
+
 
 
 //categaories Image 
@@ -33,3 +38,4 @@ export const hotelsDeals = require("@assets/images/hotel.png")
 
 // trending images
 export const beachImage = require('@assets/images/beachImage.png')
+

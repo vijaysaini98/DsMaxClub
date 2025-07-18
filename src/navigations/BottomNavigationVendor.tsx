@@ -1,5 +1,5 @@
 import { AppText, BUTTON_TEXT, MEDIUM } from "@components/AppText";
-import { helpLineIcon, homeIcon, nearByIcon, proflieIcon } from "@helper/imagesAssets";
+import { dealIcon, helpLineIcon, historyIcon, homeIcon, nearByIcon, proflieIcon, scanIcon } from "@helper/imagesAssets";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Help_Line from "@screens/helpLine";
 import Home from "@screens/home";
@@ -7,37 +7,18 @@ import NearBy from "@screens/nearBy";
 import Profile from "@screens/profile/inidex";
 import { colors } from "@theme/colors";
 import { Image, StyleSheet, View } from "react-native";
+import { TabIcon } from "./BottomNavigation";
+import Deal from "@screens/deals";
+import Scan from "@screens/scan";
 
 const Tab = createBottomTabNavigator();
 
-export const TabIcon = ({ focused, icon, title }: any) => {
-    return (
-        <View style={styles.container}>
-            {focused && <View style={styles.indicator} />}
-            <Image
-                source={icon}
-                style={[styles.icon, { tintColor: focused ? colors.buttonBg : colors.black }]}
-                resizeMode="contain"
-            />
-            <AppText
-                weight={MEDIUM}
-                color={focused ? BUTTON_TEXT : colors.black}
-            >
-                {title}
-            </AppText>
-
-        </View>
-    );
-};
 
 
-
-
-
-export default function BottomNavigation() {
+export default function BottomNavigationVendor() {
     return (
         <Tab.Navigator
-            initialRouteName="Home"
+            initialRouteName="Deal"
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
@@ -46,29 +27,29 @@ export default function BottomNavigation() {
             }}
         >
             <Tab.Screen
-                name="Home"
-                component={Home}
+                name="Deal"
+                component={Deal}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <TabIcon focused={focused} icon={homeIcon} title="HOME" />
+                        <TabIcon focused={focused} icon={dealIcon} title="DEAL" />
                     ),
                 }}
             />
             <Tab.Screen
-                name="HelpLine"
-                component={Help_Line}
+                name="Scan"
+                component={Scan}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <TabIcon focused={focused} icon={helpLineIcon} title="HELPLINE" />
+                        <TabIcon focused={focused} icon={scanIcon} title="SCAN" />
                     ),
                 }}
             />
             <Tab.Screen
-                name="NearBy"
+                name="History"
                 component={NearBy}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <TabIcon focused={focused} icon={nearByIcon} title="NEARRBY" />
+                        <TabIcon focused={focused} icon={historyIcon} title="HISTORY" />
                     ),
                 }}
             />

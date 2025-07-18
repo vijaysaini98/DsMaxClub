@@ -61,3 +61,31 @@ export const trendingData = [
   },
   // add more if needed
 ];
+
+export const cardDummyData =[
+  {
+    id:"1",
+    heading:"Dinner Buffet For 2 Person",
+    description:"Two Breakfast Buffet Valid for 2 People One Time.",
+    status:"Active",
+    price:"400",
+    actualPrice:"800",
+  },
+  {
+    id:"2",
+    heading:"Lunch Buffet For 2 Person",
+    description:"Two Lunch Buffet Valid for 2 People One Time.",
+    status:"Expired",
+    price:"500",
+    actualPrice:"1000",
+  },
+  {
+    id:"3",
+    heading:"Spa Package For 1 Person",
+    description:"Relaxing Spa Package Valid for 1 Person.",
+    status:"Active",
+    price:"1200",
+    actualPrice:"1500",
+  },
+  
+]
