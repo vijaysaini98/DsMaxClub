@@ -63,7 +63,7 @@ export const logout =
         removeAccessToken()
         dispatch(resetAuth())
         // dispatch()
-        NavigationService.navigate(routes?.NAVIGATION_AUTH_STACK);
+        NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
         Toast.show(response?.message, Toast.LONG);
         return;
       } else {
@@ -72,7 +72,7 @@ export const logout =
     } catch (e: any) {
       console.log("e", e);
       removeAccessToken()
-      NavigationService.navigate(routes?.NAVIGATION_AUTH_STACK);
+      NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false))

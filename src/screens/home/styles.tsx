@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
   categoryBookletContainer: {
     borderRadius: 15,
-    backgroundColor: "red",
+    backgroundColor: colors.white,
     // iOS shadow
     shadowColor: colors.placeholder,
     shadowOffset: { width: 0, height: 4 },
