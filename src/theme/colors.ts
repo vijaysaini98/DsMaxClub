@@ -22,8 +22,9 @@ fifth:'rgba(0, 0, 0, 0.75)',
 inActiveDot:'rgba(4, 34, 44, 0.2)',
 borderColor3:'rgba(0, 33, 81, 0.16)',
 disableInputBg:"rgba(243, 243, 245, 1)",
-shadowColor:'rgba(0, 0, 0, 0.3)'
-// activeTab:"rgba(122, 35, 28, 1)"
+shadowColor:'rgba(0, 0, 0, 0.3)',
+// activeTab:"rgba(122, 35, 28, 1)",
+sixth:'rgba(122, 35, 28, 0.15)',
 
 
 };

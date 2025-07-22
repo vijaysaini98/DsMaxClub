@@ -89,5 +89,8 @@ export const commonStyles = StyleSheet.create({
   },
   marginHorizontal:{
   marginHorizontal:20
+  },
+  flexDirectionRow:{
+flexDirection:'row'
   }
 });

@@ -28,14 +28,18 @@ const AuthLoading = () => {
       const customerToken = await getItem(Access_Token);
       const userId = await getItem(USER_ID);
       const userType:any = await getItem(USER_TYPE);
+      console.log(userType,'userType');
+      console.log(customerToken,'customerToken-');
+      
+      
       if (customerToken) {
         dispatch(userProfile({ userid: userId }));
         dispatch(getCityList());
-        if (userType == 2) {
-          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
-        } else {
+        // if (userType !== 2) {
+        //   NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+        // } else {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
-        }
+        // }
       } else {
         NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
       }

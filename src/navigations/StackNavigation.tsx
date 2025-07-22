@@ -14,6 +14,7 @@ import CategoriesList from "@screens/categories/categoriesList";
 
 import Home from "@screens/home";
 import BottomNavigationVendor from "./BottomNavigationVendor";
+import RedeemSuccessfull from "@screens/scan/redeemSuccessfull";
 
 const Stack = createStackNavigator();
 
@@ -31,10 +32,11 @@ const MyAuthLoadingStack = () => (
       component={AuthStack}
     />
      <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigation}/>
-     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigationVendor}/>
+     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR_VENDOR} component={BottomNavigationVendor}/>
 <Stack.Screen name={routes.CATEGORIES_SCCREEN} component={Categories}/>
 <Stack.Screen name={routes.CATEGORIES_LIST_SCCREEN} component={CategoriesList}/>
 <Stack.Screen name={routes.EDIT_PROFILE_SCREEN} component={EditProfile}/>
+<Stack.Screen name={routes.REDEEM_SUCCESSFULL_SCREEN} component={RedeemSuccessfull}/>
   </Stack.Navigator>
 );
 

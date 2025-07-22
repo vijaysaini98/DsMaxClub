@@ -7,4 +7,15 @@ export interface CardProps {
   onViewPress: () => void;
   onRedeemPress?: () => void;
   cardStyle?:()=>StyleProp<TextStyle>;
+  showRedeemedBtn?:boolean
 }
+
+export interface DetailFieldProps {
+  title: string;
+  containerStyle: StyleProp<TextStyle>;
+  value: any;
+  titleStyle: StyleProp<TextStyle>;
+  valueStyle: StyleProp<TextStyle>;
+}
+
+

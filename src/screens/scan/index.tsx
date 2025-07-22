@@ -13,33 +13,21 @@ import {
   useCodeScanner,
 } from 'react-native-vision-camera';
 
+
 const Scan = () => {
-    const dispatch = useAppDispatch();
-
-
+  const dispatch = useAppDispatch();
   const [enableOnCodeScanned, setEnableOnCodeScanned] = useState(true);
   const [cameraHasPermission, setCameraHasPermission] = useState(false);
-  const [setIsCameraActive] = useState(false);
 
   const device = useCameraDevice('back');
-  const {requestPermission: requestCameraPermission} = useCameraPermission();
+  const { requestPermission: requestCameraPermission } = useCameraPermission();
 
   const codeScanner = useCodeScanner({
-    codeTypes: [
-      'ean-13',
-      'code-128',
-      'code-39',
-      'upc-a',
-      'upc-e',
-      'ean-8',
-      'qr',
-    ],
-
+    codeTypes: ['qr'],
     onCodeScanned: codes => {
       if (enableOnCodeScanned) {
-        const {value, type} = codes[0] || {};
-        // console.log('Scanned Code:', value, 'Type:', type);
-
+        const { value, type } = codes[0] || {};
+        console.log('Scanned Code:', value, 'Type:', type);
 
         setEnableOnCodeScanned(false);
         setTimeout(() => setEnableOnCodeScanned(true), 3000);
@@ -53,50 +41,49 @@ const Scan = () => {
 
   const handleCameraPermission = async () => {
     const granted = await requestCameraPermission();
-
     if (granted) {
       setCameraHasPermission(true);
-      setIsCameraActive(true);
     } else {
       Alert.alert(
         'Permission Required',
-        'Camera permission is required to use the scanner. Please grant permission in your device settings.',
+        'Camera permission is required to scan QR codes.',
         [
           {
             text: 'Open Settings',
             onPress: () => Linking.openSettings(),
           },
-          {text: 'Cancel', style: 'cancel'},
-        ],
+          { text: 'Cancel', style: 'cancel' },
+        ]
       );
     }
   };
-  return (
-     <View style={styles.mainContainer}>
-    
-       <Header userName="Anil Kumawat" />
 
-      <View style={styles.scannerContainer}>
+  return (
+    <View style={styles.mainContainer}>
+      <Header userName="Anil Kumawat" />
+
+        <View style={styles.scannerWrapper}>
         {cameraHasPermission && device ? (
-          <View style={{flex: 1, marginTop: 10}}>
-            <Camera
-              codeScanner={codeScanner}
-              style={styles.loadingContainer}
-              device={device}
-              isActive={true}
-              onTouchEnd={() => setEnableOnCodeScanned(true)}
-            />
-          </View>
+          <Camera
+            codeScanner={codeScanner}
+            style={styles.cameraView}
+            device={device}
+            isActive={true}
+          />
         ) : (
           <View style={styles.noPermissionContainer}>
-            <AppText>
-              Please grant camera permission to use the scanner.
-            </AppText>
+            <AppText>Please grant camera permission to use the scanner.</AppText>
           </View>
         )}
+         <View style={styles.overlayCornerTL} />
+        <View style={styles.overlayCornerTR} />
+        <View style={styles.overlayCornerBL} />
+        <View style={styles.overlayCornerBR} />
       </View>
+      
+      
     </View>
-  )
-}
+  );
+};
 
 export default Scan

@@ -23,6 +23,7 @@ const CommonCard = ({
         <AppText type={SIXTEEN} weight={SEMI_BOLD}>
           {heading}
         </AppText>
+        
         {status && (
           <View
             style={[
