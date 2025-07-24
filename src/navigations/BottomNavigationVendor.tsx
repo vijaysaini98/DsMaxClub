@@ -7,6 +7,7 @@ import { StyleSheet } from "react-native";
 import { TabIcon } from "./BottomNavigation";
 import Deal from "@screens/deals";
 import Scan from "@screens/scan";
+import History from "@screens/history";
 
 const Tab = createBottomTabNavigator();
 
@@ -43,7 +44,7 @@ export default function BottomNavigationVendor() {
             />
             <Tab.Screen
                 name="History"
-                component={NearBy}
+                component={History}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <TabIcon focused={focused} icon={historyIcon} title="HISTORY" />

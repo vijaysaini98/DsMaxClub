@@ -19,11 +19,11 @@ const CommonCard = ({
   btnStyle,
   btnTextColor,
   handleRightIcon,
-  heading, description, price, actualPrice
+  heading, description,
+   price,
+    actualPrice
 }: CardProps) => {
    if (!data) return null; 
-  // const { heading, description, price, actualPrice,  } = data;
-console.log("commonCarddata ====>>>",data);
 
   return (
     <View style={styles.card}>
@@ -31,6 +31,7 @@ console.log("commonCarddata ====>>>",data);
         <AppText type={SIXTEEN} weight={SEMI_BOLD}>
           {heading}
         </AppText>
+        
         {status && (
           <View
             style={[

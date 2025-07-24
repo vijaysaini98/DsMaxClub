@@ -14,9 +14,10 @@ import CategoriesList from "@screens/categories/categoriesList";
 
 import Home from "@screens/home";
 import BottomNavigationVendor from "./BottomNavigationVendor";
+import RedeemSuccessfull from "@screens/scan/redeemSuccessfull";
 import Details from "@screens/detail";
 import MyCard from "@screens/myCard";
-import RedeemSucessfull from "@screens/myCard/redeemSucessfull";
+import UserRedeemSucessfull from "@screens/myCard/redeemSucessfull";
 
 const Stack = createStackNavigator();
 
@@ -40,7 +41,8 @@ const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.EDIT_PROFILE_SCREEN} component={EditProfile} />
     <Stack.Screen name={routes.DETAILS_SCREEN} component={Details} />
     <Stack.Screen name={routes.MY_CARD_SCREEN} component={MyCard} />
-    <Stack.Screen name={routes.REDEEM_SUCCESSFULL_SCREEN} component={RedeemSucessfull} />
+    <Stack.Screen name={routes.REDEEM_SUCCESSFULL_SCREEN_USER} component={UserRedeemSucessfull} />
+<Stack.Screen name={routes.REDEEM_SUCCESSFULL_SCREEN} component={RedeemSuccessfull}/>
   </Stack.Navigator>
 );
 

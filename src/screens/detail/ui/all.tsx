@@ -17,14 +17,14 @@ interface CardItem {
 const All: React.FC = () => {
     const { bookletDetailAllDeals, isLoading } = useAppSelector((state) => state?.home)
 
-const [couponDetail,setCouponDetail] = useState();
+    const [couponDetail, setCouponDetail] = useState();
     const viewDetailSheet = useRef<null>(null)
 
     const onViewPress = useCallback((item) => {
         setCouponDetail(item)
-        setTimeout(()=>{
-viewDetailSheet?.current?.open()
-        },200)
+        setTimeout(() => {
+            viewDetailSheet?.current?.open()
+        }, 200)
     }, []);
     const handleShareOnPress = useCallback((item: any) => {
         shareToAny('hello');
@@ -38,7 +38,7 @@ viewDetailSheet?.current?.open()
                     heading={item?.heading}
                     description={item?.short_desc}
                     rightIcon
-                    onViewPress={()=>onViewPress(item)}
+                    onViewPress={() => onViewPress(itemm)}
                     onRedeemPress={() => console.log('Redeem Pressed:', item.id)}
                     btnStyle={styles.viewBtnStyle}
                     handleRightIcon={handleShareOnPress}
@@ -59,18 +59,19 @@ viewDetailSheet?.current?.open()
                         keyExtractor={item => item.id.toString()}
                         contentContainerStyle={styles.containerStyle}
                         showsVerticalScrollIndicator={false}
-                        ListEmptyComponent={()=>(
+                        ListEmptyComponent={() => (
                             <View style={{
-                                justifyContent:'center',alignItems:'center'}}>
+                                justifyContent: 'center', alignItems: 'center'
+                            }}>
                                 <AppText>{"No Coupons Available"}</AppText>
                             </View>
                         )}
                     />
                 )
             }
-            <ViewDetailsBottomSheet 
-            data={couponDetail}
-            ref={viewDetailSheet} />
+            <ViewDetailsBottomSheet
+                data={couponDetail}
+                ref={viewDetailSheet} />
         </View>
     );
 };

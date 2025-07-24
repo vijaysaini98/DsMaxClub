@@ -96,6 +96,74 @@ export const banerData = [
   {id:3,image:banerImages},     // Your image 3
 ];
 
+export const scanViewDealsDummyData=[
+  {
+    id:1,
+    title:'Price : ',
+    value:'Rs. 400/-'
+  },
+  {
+    id:2,
+    title:'Valid Till : ',
+    value:'31 July 2025'
+  },
+  {
+    id:3,
+    title:'Location :  ',
+    value:'25 A Tonk Road Jaipur'
+  },
+  {
+    id:4,
+    title:'Customer : ',
+    value:'Anil Kumawat'
+  },
+  {
+    id:5,
+    title:'Customer Number :',
+    value:'+91-9876543210'
+  }
+
+]
+
+export const historyViewDealsDummyData=[
+  {
+    id:1,
+    title:'Price : ',
+    value:'Rs. 400/-'
+  },
+  {
+    id:2,
+    title:'Valid Till : ',
+    value:'31 July 2025'
+  },
+  {
+    id:3,
+    title:'Location :  ',
+    value:'25 A Tonk Road Jaipur'
+  },
+  {
+    id:4,
+    title:'Customer : ',
+    value:'Anil Kumawat'
+  },
+  {
+    id:5,
+    title:'Customer Number :',
+    value:'+91-9876543210'
+  },
+  {
+    id:6,
+     title:'Status :',
+    value:'Redeemed'
+  },
+  {
+    id:7,
+     title:'Date & Time :',
+    value:'12 July 2025'
+  }
+
+]
+
 
 export const galleryData =[
   {id:1,image:gImg1},

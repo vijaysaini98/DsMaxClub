@@ -9,7 +9,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { giftIcon } from '@helper/imagesAssets'
 import Svg, { Line } from 'react-native-svg'
 
-const RedeemSucessfull = () => {
+const UserRedeemSucessfull = () => {
   return (
     <AppSafeAreaView style={[commonStyles.mainContainer, styles.mainContainer]}>
       <ToolBar isLeftIcon title="Redeem" />
@@ -65,7 +65,7 @@ const RedeemSucessfull = () => {
   )
 }
 
-export default RedeemSucessfull
+export default UserRedeemSucessfull
 const styles = StyleSheet.create({
   mainContainer: {
     paddingHorizontal: 16

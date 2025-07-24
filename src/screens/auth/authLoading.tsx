@@ -28,12 +28,16 @@ const AuthLoading = () => {
       // const loginType = await AsyncStorage.getItem(LOGIN_TYPE);
       const customerToken = await getItem(Access_Token);
       const userId = await getItem(USER_ID);
-      const userType:any = await getItem(USER_TYPE);
+      const userType: any = await getItem(USER_TYPE);
+      console.log(userType, 'userType');
+      console.log(customerToken, 'customerToken-');
+
+
       if (customerToken) {
         dispatch(userProfile({ userid: userId }));
-        dispatch(getBannerList({screen:'1'}))
+        dispatch(getBannerList({ screen: '1' }))
         dispatch(getCityList());
-        if (userType == 2) {
+        if (userType !== 2) {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
         } else {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
