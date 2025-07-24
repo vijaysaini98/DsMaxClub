@@ -1,4 +1,4 @@
-import { automobile, banerImages, beachImage, cinemahall, gameZone, healthCare, hotelsDeals, resort, restaurant, salon, waterPark } from "./imagesAssets";
+import { automobile, banerImages, beachImage, cinemahall, gameZone, gImg1, gImg2, gImg3, gImg4, gImg5, gImg6, healthCare, hotelsDeals, resort, restaurant, salon, waterPark } from "./imagesAssets";
 
 export const cities = [
   { label: 'Jaipur', value: 'jaipur' },
@@ -95,3 +95,14 @@ export const banerData = [
   {id:2,image:banerImages},     // Your image 2
   {id:3,image:banerImages},     // Your image 3
 ];
+
+
+export const galleryData =[
+  {id:1,image:gImg1},
+  {id:2,image:gImg2},
+  {id:3,image:gImg3},
+  {id:4,image:gImg4},
+  {id:5,image:gImg5},
+  {id:6,image:gImg6},
+
+]

@@ -2,9 +2,10 @@ import {StyleSheet, Image, View, TextInput, Dimensions} from 'react-native';
 import React from 'react';
 
 import {colors} from '../theme/colors';
-import { AppText, BOLD, FOURTEEN, MEDIUM, SEMI_BOLD, SIXTEEN } from './AppText';
+import { AppText, BLACK, BOLD, FOURTEEN, MEDIUM, SEMI_BOLD, SIXTEEN } from './AppText';
 import { CardProps } from 'src/types/common';
 import TouchableOpacityView from './TouchableOpacityView';
+import { shareIcon } from '@helper/imagesAssets';
 
 
 const {width} = Dimensions.get('window');
@@ -13,9 +14,16 @@ const CommonCard = ({
   showRedeemBtn = false,
   onViewPress,
   onRedeemPress,
+  rightIcon,
+  status,
+  btnStyle,
+  btnTextColor,
+  handleRightIcon,
+  heading, description, price, actualPrice
 }: CardProps) => {
    if (!data) return null; 
-  const { heading, description, price, actualPrice, status } = data;
+  // const { heading, description, price, actualPrice,  } = data;
+console.log("commonCarddata ====>>>",data);
 
   return (
     <View style={styles.card}>
@@ -35,36 +43,53 @@ const CommonCard = ({
             <AppText style={styles.statusText}>{status}</AppText>
           </View>
         )}
+        {
+          rightIcon && (
+            <TouchableOpacityView
+            activeOpacity={handleRightIcon ? 0.8 : 1} 
+            onPress={handleRightIcon}
+            >
+            <Image
+            source={shareIcon}
+            style={styles.shareIcon}
+            tintColor={colors.disTextColor}
+            />
+            </TouchableOpacityView>
+          )
+        }
       </View>
 
-      <View style={{flexDirection: 'row',gap:10}}>
-        <View style={{width: '60%'}}>
-          <AppText style={styles.description}>{description}</AppText>
-        </View>
+      <View style={styles.rowContainer}>
+        {/* <View > */}
+          <AppText 
+          // numberOfLines={2}
+          style={styles.description}>{description}</AppText>
+        {/* </View> */}
 
-        <View style={styles.priceRow}>
-          <AppText weight={BOLD} type={FOURTEEN} style={styles.price}>
+        {/* <View style={styles.priceRow}>
+          <AppText weight={BOLD} type={FOURTEEN}
+          color={BLACK}
+          style={styles.price}>
             {`Rs. ${price}`}
+            
           </AppText>
           {actualPrice && (
             <AppText weight={MEDIUM} style={styles.strikeThrough}>
               {`Rs.${actualPrice}`}
             </AppText>
           )}
-        </View>
+        </View> */}
       </View>
 
       <View style={styles.buttonRow}>
         <TouchableOpacityView
-          style={showRedeemBtn ? styles.viewButton2 : styles.viewButton1}
+          style={[showRedeemBtn ? styles.viewButton2 : styles.viewButton1,btnStyle]}
           onPress={onViewPress}>
           <AppText
             type={SIXTEEN}
             weight={BOLD}
-            style={[
-              styles.viewText,
-              {color: showRedeemBtn ? colors.third : colors.white},
-            ]}>
+            color={btnTextColor ? btnTextColor :showRedeemBtn ? colors.third : colors.white}
+            >
             VIEW
           </AppText>
         </TouchableOpacityView>
@@ -110,17 +135,16 @@ const styles = StyleSheet.create({
   },
   description: {
     marginVertical: 8,
-    color:colors.third
+    width:"60%",
+    letterSpacing:0.5
   },
   priceRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginTop:15
+    alignItems: 'flex-end',
+    gap:5
   },
   price: {
-    // fontSize: 16,
-    color: colors.black,
-    marginRight: 8,
+    // marginRight: 8,
   },
   strikeThrough: {
     textDecorationLine: 'line-through',
@@ -149,9 +173,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  viewText: {
-    color: colors.white,
-  },
+  // viewText: {
+  //   color: colors.white,
+  // },
   redeemButton: {
    marginTop:20,
 backgroundColor: colors.buttonText,
@@ -164,6 +188,14 @@ backgroundColor: colors.buttonText,
   redeemText: {
     color: colors.white,
   },
+  shareIcon:{
+    width:20,
+    height:20
+  },
+  rowContainer:{
+    flexDirection: 'row',
+    justifyContent:'space-between',
+  }
 });
 
 export default CommonCard;

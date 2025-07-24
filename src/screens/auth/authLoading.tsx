@@ -9,6 +9,7 @@ import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import { colors } from '@theme/colors';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { getCityList, userProfile } from '@actions/auth/authAction';
+import { getBannerList } from '@actions/home/homeAction';
 
 const AuthLoading = () => {
   const dispatch = useAppDispatch();
@@ -30,6 +31,7 @@ const AuthLoading = () => {
       const userType:any = await getItem(USER_TYPE);
       if (customerToken) {
         dispatch(userProfile({ userid: userId }));
+        dispatch(getBannerList({screen:'1'}))
         dispatch(getCityList());
         if (userType == 2) {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);

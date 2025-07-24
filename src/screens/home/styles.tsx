@@ -1,30 +1,31 @@
+import { rightArrowIcon } from "@helper/imagesAssets";
 import { colors } from "@theme/colors";
 import { Platform, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  containerStyle: { 
-    // paddingBottom: 50 
+  containerStyle: {
+    paddingBottom: 20 
   },
   seachContainer: {
     paddingHorizontal: 16,
     marginTop: 8
   },
   trendingContainer: {
-     paddingLeft: 16, gap: 12 ,
-// backgroundColor:'green',
+    paddingLeft: 16, gap: 12,
+    // backgroundColor:'green',
 
-marginBottom:10,
-     overflow:'hidden',
-     paddingVertical:5
-    },
+    marginBottom: 10,
+    overflow: 'hidden',
+    paddingVertical: 5
+  },
   titleStyle: {
     width: "80%"
   },
-  listStyle: { 
-    gap: 10 ,
-    paddingRight:16,
-    backgroundColor:colors.white,
-    paddingVertical:5
+  listStyle: {
+    gap: 10,
+    paddingRight: 16,
+    backgroundColor: colors.white,
+    paddingVertical: 5
   },
   categoryBookletContainer: {
     borderRadius: 10,
@@ -40,9 +41,31 @@ marginBottom:10,
     // overflow:'hidden',
   },
   singleItemCentered: {
-  justifyContent: 'center',
-  flexGrow: 1,
-}
+    justifyContent: 'center',
+    flexGrow: 1,
+  },
+  seeAllContainer2: {
+    flexDirection: 'row', alignItems: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+    //  backgroundColor: colors.tabBg,
+
+    padding: 10
+  },
+  seeAllBtn2Style: {
+    borderRadius: 25,
+    backgroundColor: colors.white,
+    padding: 10,
+    shadowColor: colors.shadowColor,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    // Android shadow
+    elevation: 3,
+
+  },
+  rightArrowIconStyle:{ height: 30, width: 30, tintColor: colors.buttonBg }
+
 });
 
 export default styles;

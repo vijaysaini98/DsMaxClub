@@ -64,4 +64,17 @@ export const beachImage = require('@assets/images/beachImage.png')
 export const banerImages= require('@assets/images/banerImage.png')
 
 
+export const detailsDummy = require('@assets/images/detailsDummyImage.png')
+export const unlikeIcon = require('@assets/images/unLikeIcon.png')
+
+//gallery Images
+export const gImg1 = require('@assets/images/gallery1.png')
+export const gImg2 = require('@assets/images/gallery2.png')
+export const gImg3 = require('@assets/images/gallery3.png')
+export const gImg4 = require('@assets/images/gallery4.png')
+export const gImg5 = require('@assets/images/gallery5.png')
+export const gImg6 = require('@assets/images/gallery6.png')
+
+export const giftIcon = require('@assets/images/giftImage.png')
+
 

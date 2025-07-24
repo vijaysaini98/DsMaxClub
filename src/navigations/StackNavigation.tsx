@@ -14,6 +14,9 @@ import CategoriesList from "@screens/categories/categoriesList";
 
 import Home from "@screens/home";
 import BottomNavigationVendor from "./BottomNavigationVendor";
+import Details from "@screens/detail";
+import MyCard from "@screens/myCard";
+import RedeemSucessfull from "@screens/myCard/redeemSucessfull";
 
 const Stack = createStackNavigator();
 
@@ -30,22 +33,25 @@ const MyAuthLoadingStack = () => (
       name={routes.NAVIGATION_AUTH_STACK}
       component={AuthStack}
     />
-     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigation}/>
-     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigationVendor}/>
-<Stack.Screen name={routes.CATEGORIES_SCCREEN} component={Categories}/>
-<Stack.Screen name={routes.CATEGORIES_LIST_SCCREEN} component={CategoriesList}/>
-<Stack.Screen name={routes.EDIT_PROFILE_SCREEN} component={EditProfile}/>
+    <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigation} />
+    <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR_VENDOR} component={BottomNavigationVendor} />
+    <Stack.Screen name={routes.CATEGORIES_SCCREEN} component={Categories} />
+    <Stack.Screen name={routes.CATEGORIES_LIST_SCCREEN} component={CategoriesList} />
+    <Stack.Screen name={routes.EDIT_PROFILE_SCREEN} component={EditProfile} />
+    <Stack.Screen name={routes.DETAILS_SCREEN} component={Details} />
+    <Stack.Screen name={routes.MY_CARD_SCREEN} component={MyCard} />
+    <Stack.Screen name={routes.REDEEM_SUCCESSFULL_SCREEN} component={RedeemSucessfull} />
   </Stack.Navigator>
 );
 
 const AuthStack = () => (
   <Stack.Navigator screenOptions={options}>
-    <Stack.Screen name={routes.ONBOARDING} component={OnboardingScreen}/>
+    <Stack.Screen name={routes.ONBOARDING} component={OnboardingScreen} />
     <Stack.Screen name={routes.LOGIN_SCREEN} component={Login} />
     <Stack.Screen name={routes.FORGOT_PASSWORD_SCREEN} component={ForgotPassword} />
     <Stack.Screen name={routes.VERIFICATION_SCREEN} component={Verification} />
     <Stack.Screen name={routes.RESET_PASSWORD_SCREEN} component={ResetPassword} />
-     <Stack.Screen name={routes.SIGNUP_SCREEN} component={SingUp} />
+    <Stack.Screen name={routes.SIGNUP_SCREEN} component={SingUp} />
   </Stack.Navigator>
 );
 

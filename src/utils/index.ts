@@ -1,15 +1,14 @@
 import { automobile, cinemahall, gameZone, healthCare, hotelsDeals, resort, restaurant, salon, waterPark } from "@helper/imagesAssets";
-import { Dimensions } from "react-native";
+import { Dimensions, Share } from "react-native";
 
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-export const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // At least 8 characters, one letter and one number
+// export const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // At least 8 characters, one letter and one number
+export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\W]{8}$/
 
 export const { width,height } = Dimensions.get('window');
 
 export const getCategoryDetails = (title:string) => {
-    console.log("title",title);
-    
   switch (title) {
     case 'Restro BAR':
       return { icon: restaurant, borderColor: '#FFA07A' };
@@ -32,4 +31,12 @@ export const getCategoryDetails = (title:string) => {
     default:
       return { icon: null, borderColor: '#000000' }; // fallback
   }
+};
+
+export const shareToAny = (message: string) => {
+  const shareOptions = {
+    message: message,
+  };
+
+  Share.share(shareOptions);
 };

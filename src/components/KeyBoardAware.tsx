@@ -14,7 +14,7 @@ const KeyBoardAware = (props:KeyboardAwareScrollViewProps) => {
       contentContainerStyle={{flexGrow: 1}}
       style={[
         commonStyles.main,
-        {backgroundColor: props?.isSecond ? colors.transparent : colors.mainBg},
+        {backgroundColor: props?.isSecond ? colors.transparent : colors.white},
         props.style,
       ]}
       showsVerticalScrollIndicator={false}>

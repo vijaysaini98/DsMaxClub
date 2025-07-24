@@ -11,10 +11,12 @@ import { CATEGORIES_LIST_SCCREEN } from '@navigations/routes'
 import styles from './styles'
 import { commonStyles } from '@theme/commonStyles'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
-import { getCategoryList } from '@actions/home/homeAction'
+import { getBannerList, getBookletList, getCategoryList } from '@actions/home/homeAction'
 import { SpinnerSecond } from '@components/Spinner'
 import { categaoriesIcon } from '@helper/imagesAssets'
 import { getCategoryDetails } from '@utils/index'
+// import SvgUri from 'react-native-svg-uri'
+import { SvgImageFromUri } from '@screens/home/ui/categoriesComponent'
 
 
 const Categories = () => {
@@ -25,18 +27,22 @@ const Categories = () => {
     dispatch(getCategoryList())
   }, [])
 
-  console.log("categoryListData?.category", categoryListData?.category);
-
-
   const renderItem = ({ item, index }: any) => {
     const { icon, borderColor } = getCategoryDetails(item?.name)
     return (
       <TouchableOpacityView key={index}
-        style={styles.cateCardStyle(item?.border_color)}>
-        <Image
-          source={item?.icon ? { uri: categoryListData?.baseurl + item?.icon } : categaoriesIcon}
-          // source={icon}
-          style={styles.cateLogoImage} resizeMode="cover" />
+        style={styles.cateCardStyle(item?.border_color)}
+        onPress={()=>
+          NavigationService.navigate(CATEGORIES_LIST_SCCREEN,{title:item?.name,id:item?.uuid})
+        }
+        >
+          {item?.icon?.includes('.svg') ? (
+                          <SvgImageFromUri uri={categoryListData?.baseurl + item?.icon} />
+                        ) :
+                          (<Image
+                            source={item?.icon ? { uri: categoryListData?.baseurl + item?.icon } : categaoriesIcon}
+                            style={styles.cateLogoImage} resizeMode="cover" />)
+                        }
         <AppText
           numberOfLines={2}
           type={FOURTEEN} weight={MEDIUM} style={styles.cateText}>{item?.name}</AppText>
@@ -56,7 +62,7 @@ const Categories = () => {
             renderItem={renderItem}
             keyExtractor={(_, index) => index.toString()}
             numColumns={3}
-            columnWrapperStyle={styles.row}
+            columnWrapperStyle={styles.row(categoryListData?.category?.length>2)}
             contentContainerStyle={styles.gridContainer}
             showsVerticalScrollIndicator={false}
           />

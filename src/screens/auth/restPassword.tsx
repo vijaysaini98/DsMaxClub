@@ -14,6 +14,7 @@ import ToolBar from '@components/ToolBar';
 import { LOGIN_SCREEN } from '@navigations/routes';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { resetPassword } from '@actions/auth/authAction';
+import { passwordRegex } from '@utils/index';
 
 const ResetPassword = ({ route }) => {
     const { email } = route?.params ?? ''
@@ -26,9 +27,13 @@ const ResetPassword = ({ route }) => {
         isConfrimPasswordVisible: false,
         newPasswordError: '',
         confirmPasswordError: '',
+
     })
 
     const handleSaveBtn = () => {
+        if(passwordRegex.test(state?.newPassword) === false){
+setState({ ...state, newPasswordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
+        }
         if (state.newPassword === '') {
             setState({ ...state, newPasswordError: "New Password is required" });
             return;

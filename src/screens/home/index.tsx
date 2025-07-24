@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '@theme/colors';
 import Header from '@components/Header';
-import { banerData, categoryList, trendingData } from '@helper/dumyData';
+// import { banerData, categoryList, trendingData } from '@helper/dumyData';
 import Card from './ui/card';
 import BanerComponent from './ui/banerCom';
 import CategoriesComponent from './ui/categoriesComponent';
@@ -12,10 +12,12 @@ import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes'
 import { AppText, BOLD, BUTTON_BG, FOURTEEN, SEMI_BOLD, TWENTY_TWO, WHITE } from '@components/AppText';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
-import { getCategoryBooklet, getCategoryList } from '@actions/home/homeAction';
+import { getBannerList, getCategoryBooklet, getCategoryList } from '@actions/home/homeAction';
 import { commonStyles } from '@theme/commonStyles';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import { rightArrowIcon } from '@helper/imagesAssets';
+import { userProfile } from '@actions/auth/authAction';
+import { banerData } from '@helper/dumyData';
 
 
 
@@ -23,35 +25,35 @@ const Home: React.FC = () => {
   const dispatch = useAppDispatch()
 
   const { userData } = useAppSelector((state) => state?.auth)
-  const { categoryListData, categoryBookletData, isLoading } = useAppSelector((state) => state?.home)
+  const { categoryListData, categoryBookletData, isLoading, bannerList } = useAppSelector((state) => state?.home)
+  
+  const [show,setShow] = useState(false)
 
   const [refreshing, setRefreshing] = useState(false)
 
-  // useEffect(() => {
-  //   dispatch(getCategoryList(5))
-  //   dispatch(getCategoryBooklet())
-  // }, [])
-
-  // // console.log("categoryListData", categoryListData);
-
-  // const onRefresh = () =>{
-  //   setRefreshing(true)
-  // }
-
   const fetchData = async () => {
+    await dispatch(userProfile())
     await dispatch(getCategoryList(5));
     await dispatch(getCategoryBooklet());
+    await dispatch(getBannerList({ screen_name: "1" }))
   };
-
   useEffect(() => {
     fetchData();
   }, []);
+
+useEffect(() => {
+    if (!isLoading) {
+      const timer = setTimeout(() => setShow(true), 700);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
 
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchData();
     setRefreshing(false);
   };
+  
 
 
   return (
@@ -59,7 +61,7 @@ const Home: React.FC = () => {
       <Header
         userName={userData?.name}
       />
-      {isLoading && !refreshing ? (
+      {!show && !refreshing ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size={"large"} color={colors.buttonBg} />
         </View>
@@ -68,7 +70,7 @@ const Home: React.FC = () => {
         (
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={styles.containerStyle}
+            contentContainerStyle={styles.containerStyle}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -77,9 +79,12 @@ const Home: React.FC = () => {
                 tintColor={colors.buttonBg} // iOS spinner color
               />
             }  >
-            <BanerComponent
-              data={banerData}
-            />
+            {bannerList?.banner?.length > 0 &&(
+              <BanerComponent
+                data={bannerList?.banner}
+              // data={banerData}
+              />
+            )}
             <CategoriesComponent
               data={categoryListData}
               handleSeeAll={() => NavigationService.navigate(routes?.CATEGORIES_SCCREEN)}
@@ -100,8 +105,7 @@ const Home: React.FC = () => {
                   <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={[styles.listStyle,
-                    ]}
+                    contentContainerStyle={styles.listStyle}
                   >
                     {item.booklets.map((booklet: any, i: number) => (
                       <View key={booklet.id || i} style={styles.categoryBookletContainer}>
@@ -111,34 +115,31 @@ const Home: React.FC = () => {
                           index={i}
                           handleCardOnPress={() => {
                             // Add navigation or logic here
+                            NavigationService.navigate(routes.DETAILS_SCREEN,{data:booklet})
                           }}
+                          imageUrl={categoryBookletData?.baseurl + booklet?.booklet}
+                          name={booklet?.name}
+                          price={booklet.price}
+                          address={(booklet?.city || booklet?.state) ? booklet?.city?.name + booklet?.state?.name : "---"}
                         />
 
                       </View>
                     ))}
-                    {/* <View
-                    style={{alignItems:'center',justifyContent:'center',backgroundColor:colors.buttonBg,padding:10}}
-                    > */}
-                    <TouchableOpacityView
-                      style={{
-                        flexDirection: 'row', alignItems: 'center',
-                        borderRadius: 10,
-                        justifyContent: 'center', backgroundColor: colors.tabBg, padding: 20
-                      }}
+                    <View
+                      style={
+                        styles.seeAllContainer2
+                      }
                     >
-                      {/* <AppText
-                      weight={BOLD}
-                      type={FOURTEEN}
-                      color={WHITE}
-                      style={{textDecorationColor:colors.white,textDecorationLine:'underline'}}
-                      >{"See All"}</AppText> */}
-                      <Image
-                        source={rightArrowIcon}
-                        style={{ height: 30, width: 30, tintColor: colors.buttonBg }}
-                        resizeMode='contain'
-                      />
-                    </TouchableOpacityView>
-                    {/* </View> */}
+                      <TouchableOpacityView
+                        style={styles.seeAllBtn2Style}
+                      >
+                        <Image
+                          source={rightArrowIcon}
+                          style={styles.rightArrowIconStyle}
+                          resizeMode='contain'
+                        />
+                      </TouchableOpacityView>
+                    </View>
                   </ScrollView>
                 </View>
               );

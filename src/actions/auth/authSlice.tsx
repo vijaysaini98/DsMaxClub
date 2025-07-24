@@ -17,13 +17,9 @@ export const authSlice = createSlice({
       state.isBtnLoading = payload;
     },
     setUserData: (state, { payload }) => {
-      console.log("payload", payload);
-
       state.userData = payload;
     },
     setCityList: (state, { payload }) => {
-      console.log("payload", payload);
-
       state.cityList = payload;
     },
     resetAuth: (state, { payload }) => {

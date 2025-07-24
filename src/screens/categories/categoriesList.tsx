@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import { colors } from '@theme/colors'
 import ToolBar from '@components/ToolBar'
@@ -7,6 +7,12 @@ import { restro2, searchIcon } from '@helper/imagesAssets'
 import Input from '@components/Input'
 import Card from '@screens/home/ui/card'
 import { width } from '@utils/index'
+import { getBookletList } from '@actions/home/homeAction'
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
+import { SpinnerSecond } from '@components/Spinner'
+import { AppText } from '@components/AppText'
+import NavigationService from '@navigations/NavigationService'
+import { DETAILS_SCREEN } from '@navigations/routes'
 
 const restaurantList = [
     {
@@ -52,9 +58,32 @@ const restaurantList = [
 ];
 
 const CategoriesList = ({ route }) => {
-    const { title } = route?.params ?? ""
+    const dispatch = useAppDispatch()
+    const { title, id } = route?.params ?? ""
+    const { bookletList, isLoading } = useAppSelector((state) => state.home)
+    console.log(route?.params, "route?.params ");
+    console.log("bookletList", bookletList);
+
+    useEffect(() => {
+        dispatch(getBookletList({ id }))
+    }, [id, dispatch])
+
+
+    const debounceRef = useRef<NodeJS.Timeout | null>(null)
 
     const [searchText, setSeachText] = useState("")
+
+    const onChangeHandler = (value: string) => {
+        setSeachText(value)
+        clearTimeout(debounceRef.current);
+        if (value) {
+            debounceRef.current = setTimeout(() => {
+                dispatch(getBookletList({ id, search: value }))
+            }, 500);
+        } else {
+            dispatch(getBookletList({ id }))
+        }
+    };
 
     const renderItem = ({ item, index }: any) => {
 
@@ -63,7 +92,13 @@ const CategoriesList = ({ route }) => {
                 <Card item={item} index={index}
                     handleCardOnPress={() => { }}
                     imageStyle={styles.imageStyle}
-                // cardContainerStyle={{backgroundCo}}
+                    imageUrl={bookletList?.baseurl + item?.booklet}
+                    name={item?.name}
+                    price={item.price}
+                    address={item?.city_name ? item?.city_name : "---"}
+                    handleCardOnPress={() => {
+                        NavigationService.navigate(DETAILS_SCREEN, { data: item })
+                    }}
                 />
             </View>
         )
@@ -71,23 +106,35 @@ const CategoriesList = ({ route }) => {
 
     return (
         <AppSafeAreaView style={styles.mainContainer}>
-            <ToolBar isLeftIcon title={title.charAt(0)?.toUpperCase() + title?.slice(1).toLowerCase()} />
+            <ToolBar isLeftIcon title={title?.charAt(0)?.toUpperCase() + title?.slice(1).toLowerCase()} />
             <View style={styles.containerStyle}>
                 <Input
                     leftIcon={searchIcon}
                     placeholder='Search...'
                     placeholderTextColor={colors.placeholder}
                     value={searchText}
-                    onChangeText={(text) => setSeachText(text)}
+                    // onChangeText={(text) => setSeachText(text)}
+                    onChangeText={(text) => onChangeHandler(text)}
                     inputContainerStyle={styles.searchContainer}
                 />
-                <FlatList
-                    data={restaurantList}
-                    renderItem={renderItem}
-                    contentContainerStyle={styles.listContainerStyle}
-                    showsVerticalScrollIndicator={false}
-                />
             </View>
+            {
+                isLoading ?
+                    <SpinnerSecond /> :
+                    <FlatList
+                        data={bookletList?.booklets}
+                        renderItem={renderItem}
+                        contentContainerStyle={styles.listContainerStyle}
+                        showsVerticalScrollIndicator={false}
+                        ListEmptyComponent={() => (
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}>
+                                <AppText>{"No Booklet Availble"}</AppText>
+                            </View>
+                        )}
+                    />
+            }
+
+
         </AppSafeAreaView>
     )
 }
@@ -102,7 +149,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     containerStyle: {
-        marginTop: 40
+        marginTop: 20
     },
     searchContainer: {
         marginBottom: 10

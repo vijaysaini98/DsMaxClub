@@ -13,7 +13,7 @@ import Input from '@components/Input';
 import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
 import ToolBar from '@components/ToolBar';
-import { emailRegex, phoneRegex } from '@utils/index';
+import { emailRegex, passwordRegex, phoneRegex } from '@utils/index';
 import KeyBoardAware from '@components/KeyBoardAware';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { singUp } from '../../actions/auth/authAction';
@@ -52,7 +52,11 @@ const SingUp = () => {
         }
         else if (state.password === '') {
             setState({ ...state, passwordError: "Password is required" })
-        } else {
+        } 
+         if(passwordRegex.test(state?.password) === false){
+        setState({ ...state, passwordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
+                }
+        else {
             // setState({ ...state, nameError: "", phoneError: "", emailError: "", passwordError: "" })
             // // NavigationService.navigate(routes.LOGIN_SCREEN);
             const formData = new FormData();

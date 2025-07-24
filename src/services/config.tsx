@@ -15,10 +15,13 @@ const REST_PASSWORD:string = `${BASE_URL}reset-password`;
  const UPDATE_USER_PROFILE:string = `${BASE_URL}update-profile`;
  const CITY_LIST:string=`${BASE_URL}cities`;
  const USER_PROFILE_IMAGE :string = `${BASE_URL}update-profile-image`
+ const BANNER_API:string =`${BASE_URL}banner-list`;
 
  //categories Api
  const CATEGORY_LIST :string = `${BASE_URL}category-list`;
 const CATEGORY_BOOKLET:string = `${BASE_URL}category-booklet`;
+const BOOKLET_LIST:string = `${BASE_URL}booklet-list`;
+const BOOKLET_DETAIL:string = `${BASE_URL}booklet-details`;
 
 const config = {
   BASE_URL,
@@ -36,6 +39,11 @@ const config = {
 
   CATEGORY_LIST,
   CATEGORY_BOOKLET,
+  BANNER_API,
+
+  BOOKLET_LIST,
+  BOOKLET_DETAIL
+
 };
 
 export default config;

@@ -1,4 +1,4 @@
-import { StyleProp, TextStyle } from "react-native";
+import { StyleProp, TextStyle, ViewStyle } from "react-native";
 
 export interface CardProps {
   key?:string,
@@ -7,4 +7,9 @@ export interface CardProps {
   onViewPress: () => void;
   onRedeemPress?: () => void;
   cardStyle?:()=>StyleProp<TextStyle>;
+  rightIcon?:boolean;
+  status?:string;
+  btnStyle?:ViewStyle,
+  btnTextColor?:string,
+  handleRightIcon?:()=>void
 }

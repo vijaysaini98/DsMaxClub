@@ -8,10 +8,11 @@ interface ToolBarProps {
   handleLeftIconPress?: () => void;
   leftIcon?: ImageSourcePropType;
   isLeftIcon?: boolean;
-  title?:string,
-  textType?:string
-  titleStyle?:TextStyle,
-  mainContainerStyle:ViewStyle
+  title?: string,
+  textType?: string
+  titleStyle?: TextStyle,
+  mainContainerStyle: ViewStyle,
+  leftIconTintColor?: string
 }
 
 const ToolBar: React.FC<ToolBarProps> = ({
@@ -21,20 +22,22 @@ const ToolBar: React.FC<ToolBarProps> = ({
   title,
   textType,
   titleStyle,
-  mainContainerStyle
+  mainContainerStyle,
+  leftIconTintColor
 }) => {
   return (
-    <View style={[styles.mainContainer,mainContainerStyle]}>
+    <View style={[styles.mainContainer, mainContainerStyle]}>
       {isLeftIcon && (
         <TouchableOpacity
           style={styles.backArrow}
-          onPress={handleLeftIconPress ? handleLeftIconPress : ()=> NavigationService.goBack()}
+          onPress={handleLeftIconPress ? handleLeftIconPress : () => NavigationService.goBack()}
         >
-          <Image source={leftIcon || backIcon} style={styles.icon} />
+          <Image source={leftIcon || backIcon} style={styles.icon}
+            tintColor={leftIconTintColor} />
         </TouchableOpacity>
       )}
       {title && (
-        <AppText type={textType? textType :TWENTY_TWO }  style={[styles.titleStyle ,titleStyle]}>
+        <AppText type={textType ? textType : TWENTY_TWO} style={[styles.titleStyle, titleStyle]}>
           {title}
         </AppText>
       )}
@@ -59,5 +62,5 @@ const styles = StyleSheet.create({
     width: 12,
     height: 24,
   },
-  titleStyle:{ marginLeft: 10 }
+  titleStyle: { marginLeft: 10 }
 });

@@ -7,7 +7,6 @@ import ToolBar from '@components/ToolBar';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import KeyBoardAware from '@components/KeyBoardAware';
 import Input from '@components/Input';
-import CityDropDown, { CityOption } from '@components/cityDropDown';
 import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, FOURTEEN, PLACEHOLDER, SIXTEEN, THIRTY, WHITE } from '@components/AppText';
 import ImagePickersheet from '@components/ImagePickerSheet';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
@@ -16,6 +15,7 @@ import { commonStyles } from '@theme/commonStyles';
 import { SpinnerSecond } from '@components/Spinner';
 import { IMGE_URL } from '@services/config';
 import Toast from "react-native-simple-toast";
+import CityDropDown, { CityOption } from '@components/cityDropDown';
 
 interface ProfileState {
     name: string;

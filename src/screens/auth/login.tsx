@@ -37,7 +37,12 @@ const Login = () => {
         } else if (emailRegex.test(state.email) === false) {
             setState({ ...state, emailError: "Invalid Email" })
 
-        } else {
+        } 
+        // if(passwordRegex.test(state?.newPassword) === false){
+        // setState({ ...state, newPasswordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
+        //         } 
+        
+        else {
             let data = {
                 email: state?.email,
                 password: state?.password

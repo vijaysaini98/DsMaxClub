@@ -8,29 +8,29 @@ import { cardDummyData } from '@helper/dumyData'
 import ViewDetailsBottomSheet from '@screens/home/ui/viewDetailsBottomSheet'
 
 const Deal = () => {
-    const ViewDetailsSheet = useRef();
-  const onViewPress=()=>{
- ViewDetailsSheet.current.open();
+  const ViewDetailsSheet = useRef();
+  const onViewPress = () => {
+    ViewDetailsSheet.current.open();
   }
   return (
-   <View style={styles.mainContainer}>
+    <View style={styles.mainContainer}>
       <Header userName="Anil Kumawat" />
-     
-              {cardDummyData.map(item => {
-  return (
-    <View style={{paddingVertical:10}}>
-    <CommonCard
-      key={item.id}
-      data={item}
-      // showRedeemBtn={item.status === 'Active'}
-      onViewPress={() => onViewPress()}
-      onRedeemPress={() => console.log('Redeem Pressed:', item.id)}
-    />
-    </View>
-  );
-})}
-            
-            <ViewDetailsBottomSheet ref={ViewDetailsSheet} />
+
+      {cardDummyData.map(item => {
+        return (
+          <View style={{ paddingVertical: 10 }}>
+            <CommonCard
+              key={item.id}
+              data={item}
+              // showRedeemBtn={item.status === 'Active'}
+              onViewPress={() => onViewPress()}
+              onRedeemPress={() => console.log('Redeem Pressed:', item.id)}
+            />
+          </View>
+        );
+      })}
+
+      <ViewDetailsBottomSheet ref={ViewDetailsSheet} />
     </View>
   )
 }
@@ -38,9 +38,9 @@ const Deal = () => {
 export default Deal
 
 const styles = StyleSheet.create({
-   mainContainer: {
-      flex: 1,
-      backgroundColor: colors.white,
-      paddingTop: 40,
-    }
+  mainContainer: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingTop: 40,
+  }
 })

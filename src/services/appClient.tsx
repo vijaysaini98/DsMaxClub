@@ -326,5 +326,9 @@ export const API = {
   return apiClient.get(url);
 },
     category_booklet: (data: any) => apiClient.post(config.CATEGORY_BOOKLET, data),
+    banner_api:(data: any) => apiClient.post(config.BANNER_API, data),
+    booklet_list:(data: any) => apiClient.get(`${config.BOOKLET_LIST}/${data?.id}?search=${data?.search ?? ""}`,),
+    booklet_detail:(data:any)=>apiClient.post(config.BOOKLET_DETAIL, data)
   },
+  
 };

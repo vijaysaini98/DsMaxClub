@@ -57,7 +57,7 @@ const CityDropDown: React.FC<CityDropDownProps> = ({
         />
         <FlatList
           data={data}
-          keyExtractor={(item) => item.value}
+          keyExtractor={(item) => item.id}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           renderItem={({ item,index }: ListRenderItemInfo<CityOption>) => (

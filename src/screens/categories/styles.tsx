@@ -11,22 +11,23 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
 
   },
-  row: {
+  row:(isTure:boolean)=>( {
     marginBottom: 20,
-    // width: "100%"
-    justifyContent:'flex-start'
-  },
+    justifyContent:isTure ? 'flex-start':'center'
+  }),
   cateCardStyle: (borderColor: boolean) => ({
-    maxheight: 130,
+    height: 130,
     borderWidth: 1,
     borderColor: borderColor,
     borderRadius: 12,
     alignItems: 'center',
+    justifyContent:"center",
     marginBottom: 16,
     paddingHorizontal: 2,
-    width: 110,
+    width: 105,
     marginRight: 15,
-    paddingVertical: 2
+    paddingVertical: 2,
+    gap:5
   }),
   cateLogoImage: {
     width: 75,

@@ -4,6 +4,7 @@ import { AppText, BOLD, BUTTON_BG, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI
 import { colors } from '@theme/colors';
 import { nearByIcon, restro2, starIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
+import FastImage from 'react-native-fast-image';
 
 export interface CardItem {
   id?: string | number;
@@ -12,30 +13,42 @@ export interface CardItem {
 }
 
 export interface CardProps {
-  data: CardItem[];
-  title: string;
+  data?: CardItem[];
+  title?: string;
   handleCardOnPress: (item: CardItem) => void;
-  imageBaseUrl: string
+  imageBaseUrl?: string,
+
 }
 
-const Card: React.FC<CardProps> = ({ handleCardOnPress, item, index, cardContainerStyle, imageStyle, imageBaseUrl }) => {
+const Card: React.FC<CardProps> = ({
+  handleCardOnPress,
+  item,
+  index,
+  cardContainerStyle,
+  imageStyle,
+  imageUrl,
+  name,
+  price,
+  address
+}) => {
   return (
     <TouchableOpacityView
-  onPress={() => handleCardOnPress(item)}
-  key={item.id ?? index}
-  style={[styles.cardInner, cardContainerStyle]}
->
-        <Image
-          source={item.booklet ? { uri: imageBaseUrl + item.booklet } : restro2}
-          style={[styles.bannerImage, imageStyle]}
-          resizeMode='cover'
-        />
-        {/* <View style={styles.tagContainer}>
+      onPress={() => handleCardOnPress(item)}
+      key={item.id ?? index}
+      style={[styles.cardInner, cardContainerStyle]}
+    >
+      <FastImage
+        source={{ uri: imageUrl }}
+        // source={item.booklet ? { uri: imageBaseUrl + item.booklet } : restro2}
+        style={[styles.bannerImage, imageStyle]}
+        resizeMode='cover'
+      />
+      {/* <View style={styles.tagContainer}>
           <AppText type={TWELVE} weight={SEMI_BOLD}>Guest Favourite</AppText>
         </View> */}
-        {/* details container */}
-        <View style={styles.detailContainer}>
-          {/* <View style={styles.ratingContainer}>
+      {/* details container */}
+      <View style={styles.detailContainer}>
+        {/* <View style={styles.ratingContainer}>
                   <View style={styles.ratingContainer2}>
                     <View style={styles.ratingViewBox}>
                       <AppText type={FOURTEEN} color={WHITE} weight={BOLD}>4.3</AppText>
@@ -56,25 +69,25 @@ const Card: React.FC<CardProps> = ({ handleCardOnPress, item, index, cardContain
                     ))}
                   </View>
                 </View> */}
-          <View style={[styles.priceContainer]}>
-            <AppText type={EIGHTEEN} weight={MEDIUM}  >
-              {item?.name}
-            </AppText>
-            <AppText type={FOURTEEN} weight={BOLD} color={BUTTON_BG}>
-              {`Rs. ${item?.price}`}
-            </AppText>
-          </View>
-          <View style={styles.locationContainer}>
-            <Image
-              source={nearByIcon}
-              style={styles.locationIconStyle}
-              resizeMode='contain'
-            />
-            <AppText type={TWELVE} weight={MEDIUM} style={styles.locationText}>
-              {item?.city || item?.state ? item?.city?.name + item?.state?.name : "---"}
-            </AppText>
-          </View>
+        <View style={[styles.priceContainer]}>
+          <AppText type={EIGHTEEN} weight={MEDIUM}  >
+            {name}
+          </AppText>
+          <AppText type={FOURTEEN} weight={BOLD} color={BUTTON_BG}>
+            {`Rs. ${price}`}
+          </AppText>
         </View>
+        <View style={styles.locationContainer}>
+          <FastImage
+            source={nearByIcon}
+            style={styles.locationIconStyle}
+            resizeMode='contain'
+          />
+          <AppText type={TWELVE} weight={MEDIUM} style={styles.locationText}>
+            {address}
+          </AppText>
+        </View>
+      </View>
     </TouchableOpacityView>
   );
 };
@@ -82,16 +95,16 @@ const Card: React.FC<CardProps> = ({ handleCardOnPress, item, index, cardContain
 export default Card;
 
 const styles = StyleSheet.create({
- 
+
   bannerImage: {
     height: 210,
     width: 300,
   },
   cardInner: {
-  borderRadius: 10,
-  backgroundColor: colors.white,
-  overflow: 'hidden',
-},
+    borderRadius: 10,
+    backgroundColor: colors.white,
+    overflow: 'hidden',
+  },
   tagContainer: {
     backgroundColor: colors.white,
     paddingHorizontal: 8,
