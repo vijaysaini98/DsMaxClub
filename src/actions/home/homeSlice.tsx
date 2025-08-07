@@ -7,9 +7,9 @@ export const initialState = {
     bannerList: {},
     bookletList: [],
     bookletDetailAllDeals: {},
-    bookletDetailAbout:{},
-    bookletDetailGallery:{},
-    bookletDetailT_C:{},
+    bookletDetailAbout: {},
+    bookletDetailGallery: {},
+    bookletDetailT_C: {},
 };
 
 export const homeSlice = createSlice({
@@ -18,6 +18,9 @@ export const homeSlice = createSlice({
     reducers: {
         setLoading: (state, { payload }) => {
             state.isLoading = payload;
+        },
+        setBtnLoading: (state, { payload }) => {
+            state.isBtnLoading = payload;
         },
         setCategoriListData: (state, { payload }) => {
             state.categoryListData = payload;
@@ -37,7 +40,7 @@ export const homeSlice = createSlice({
         setBookletDetailAbout: (state, { payload }) => {
             state.bookletDetailAbout = payload;
         },
-setBookletDetailGallery: (state, { payload }) => {
+        setBookletDetailGallery: (state, { payload }) => {
             state.bookletDetailGallery = payload;
         },
         setBookletDetailT_C: (state, { payload }) => {
@@ -48,14 +51,15 @@ setBookletDetailGallery: (state, { payload }) => {
         },
     },
 });
-export const { 
-    setLoading, 
-    setCategoriListData, 
-    setCategoriBookletData, 
-    resetHome, 
-    setBannerData, 
-    setBookletList, 
-    setBookletDetailAllDeals ,
+export const {
+    setLoading,
+    setBtnLoading,
+    setCategoriListData,
+    setCategoriBookletData,
+    resetHome,
+    setBannerData,
+    setBookletList,
+    setBookletDetailAllDeals,
     setBookletDetailT_C,
     setBookletDetailGallery,
     setBookletDetailAbout

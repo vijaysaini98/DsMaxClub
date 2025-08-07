@@ -1,34 +1,35 @@
 import { rightArrowIcon } from "@helper/imagesAssets";
 import { colors } from "@theme/colors";
 import { Platform, StyleSheet } from "react-native";
+import { s, vs } from "react-native-size-matters/extend";
 
 const styles = StyleSheet.create({
   containerStyle: {
-    paddingBottom: 20 
+    paddingBottom: vs(70)
   },
   seachContainer: {
     paddingHorizontal: 16,
     marginTop: 8
   },
   trendingContainer: {
-    paddingLeft: 16, gap: 12,
-    // backgroundColor:'green',
-
+    gap: 12,
     marginBottom: 10,
     overflow: 'hidden',
     paddingVertical: 5
   },
   titleStyle: {
-    width: "80%"
+    width: "80%",
+    marginLeft:16
   },
   listStyle: {
     gap: 10,
-    paddingRight: 16,
+    paddingHorizontal: 16,
     backgroundColor: colors.white,
     paddingVertical: 5
   },
   categoryBookletContainer: {
     borderRadius: 10,
+    width:s(280),
     backgroundColor: colors.white,
     // iOS shadow
     shadowColor: colors.shadowColor,

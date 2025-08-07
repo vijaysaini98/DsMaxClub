@@ -1,8 +1,8 @@
 import React from "react";
-import { Image, StyleSheet, TouchableOpacity, View, ImageSourcePropType, TextProps, TextStyle, ViewStyle } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View, ImageSourcePropType, TextStyle, ViewStyle } from "react-native";
 import { backIcon } from "@helper/imagesAssets";// Ensure correct import
 import NavigationService from "@navigations/NavigationService";
-import { AppText, TWENTY_EIGHT, TWENTY_TWO } from "./AppText";
+import { AppText, TWENTY_TWO } from "./AppText";
 
 interface ToolBarProps {
   handleLeftIconPress?: () => void;
@@ -12,7 +12,8 @@ interface ToolBarProps {
   textType?: string
   titleStyle?: TextStyle,
   mainContainerStyle: ViewStyle,
-  leftIconTintColor?: string
+  leftIconTintColor?: string,
+  textBack?: boolean
 }
 
 const ToolBar: React.FC<ToolBarProps> = ({
@@ -23,7 +24,8 @@ const ToolBar: React.FC<ToolBarProps> = ({
   textType,
   titleStyle,
   mainContainerStyle,
-  leftIconTintColor
+  leftIconTintColor,
+  textBack
 }) => {
   return (
     <View style={[styles.mainContainer, mainContainerStyle]}>
@@ -37,7 +39,10 @@ const ToolBar: React.FC<ToolBarProps> = ({
         </TouchableOpacity>
       )}
       {title && (
-        <AppText type={textType ? textType : TWENTY_TWO} style={[styles.titleStyle, titleStyle]}>
+        <AppText
+          onPress={textBack ? () => NavigationService.goBack() : () => { }}
+          numberOfLines={1}
+          type={textType ? textType : TWENTY_TWO} style={[styles.titleStyle, titleStyle]}>
           {title}
         </AppText>
       )}
@@ -51,6 +56,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flexDirection: "row",
     justifyContent: "flex-start",
+    alignItems:'center',
     paddingTop: 20,
     width: "100%",
   },
@@ -62,5 +68,12 @@ const styles = StyleSheet.create({
     width: 12,
     height: 24,
   },
-  titleStyle: { marginLeft: 10 }
+  titleStyle: {
+     marginLeft: 10 ,
+     width:"90%",
+  //   textShadowColor: 'rgba(0, 0, 0, 0.75)',
+  // textShadowOffset: {width: -1, height: 1},
+  // textShadowRadius: 10
+
+    }
 });

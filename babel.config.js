@@ -1,7 +1,18 @@
 module.exports = {
   presets: ['module:@react-native/babel-preset'],
   plugins: [
-     'react-native-reanimated/plugin',
+    'react-native-reanimated/plugin',
+    [
+      'dotenv-import',
+      {
+        moduleName: '@env',
+        path: '.env',
+        blacklist: null,
+        whitelist: null,
+        safe: false,
+        allowUndefined: false,
+      },
+    ],
     [
       'module-resolver',
       {
@@ -16,7 +27,7 @@ module.exports = {
           '@navigations': './src/navigations',
           '@theme': './src/theme',
           '@helper': './src/helper',
-          '@actions':'./src/actions',
+          '@actions': './src/actions',
         },
       },
     ],

@@ -1,16 +1,12 @@
-import React, {forwardRef} from 'react';
+import React from 'react';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {View, Image, StyleSheet, TouchableOpacity, useWindowDimensions, ScrollView} from 'react-native';
+import {StyleSheet, useWindowDimensions, ScrollView} from 'react-native';
 import { AppText, BOLD, EIGHTEEN, FOURTEEN, SEMI_BOLD, THIRD, TWENTY_EIGHT } from '@components/AppText';
 import { colors } from '@theme/colors';
 import { commonStyles } from '@theme/commonStyles';
 import RenderHtml from 'react-native-render-html';
 
-
-
 const ViewDetailsBottomSheet = ({data,ref}, ) => {
-  
-  console.log("data",data?.description);
 const { width } = useWindowDimensions();
 
   
@@ -50,19 +46,17 @@ const { width } = useWindowDimensions();
         <AppText color={THIRD} type={FOURTEEN}  style={{marginTop:20}}>{`No of Coupons:  ${data?.no_of_coupons}`}</AppText>
         <AppText color={THIRD} type={FOURTEEN}  style={{marginTop:20}}>{`Maximum Redeem:  ${data?.maximum_redeem}`}</AppText>
         <AppText color={THIRD} type={FOURTEEN} style={{marginTop:20,marginBottom:5}}>{"Description: "} </AppText>
-        <AppText color={THIRD} type={FOURTEEN}>{data?.description}</AppText>
-         {/* <RenderHtml
+        {/* <AppText color={THIRD} type={FOURTEEN}>{data?.description}</AppText> */}
+         <RenderHtml
       contentWidth={width}
 source={{html:data?.description}}
  tagsStyles={{
-    h2: { fontSize: 24, fontWeight: 'bold', color: 'green' },
-    p: { marginBottom: 8, color: 'red' },
+    h2: { fontSize: 24, fontWeight: 'bold', },
+    p: { marginBottom: 8, },
     a: { color: 'blue' ,textDecorationLine:'underline'},
   }}
-    /> */}
+    />
     </ScrollView>
-        {/* <AppText type={FOURTEEN} style={{color:colors.buttonText,marginTop:30}}>Valid till 31 July 2025*</AppText> */}
-       {/* </View> */}
     </RBSheet>
   );
 };

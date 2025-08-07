@@ -1,44 +1,78 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { useMemo, useRef } from 'react'
-import { cardDummyData } from '@helper/dumyData'
-import CommonCard from '@components/CommonCard'
-import ViewDetailsBottomSheet from '@screens/home/ui/viewDetailsBottomSheet'
-import RedeemSheet from './redeemSheet'
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native'
+import React, { useCallback, useState } from 'react'
+import { AppText, FOURTEEN, MEDIUM, WHITE } from '@components/AppText'
+import { MY_CARD_COUPON_LIST_SCREEN, REQUEST_COUPON_LIST_SCREEN } from '@navigations/routes'
+import { Loader, SpinnerSecond } from '@components/Spinner'
+import { ms, s, vs } from 'react-native-size-matters/extend'
+import { colors } from '@theme/colors'
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
+import Card from '@screens/home/ui/card'
+import NavigationService from '@navigations/NavigationService'
+import ListEmptyComponent from '@components/ListEmptyComponent'
+import { defaultBookletImage } from '@helper/imagesAssets'
+import { getMyCardBookletList } from '@actions/myCard/myCardAction'
 
-const MyCardList = ({ data }) => {
+const MyCardList = ({ data, value }) => {
+    const dispatch = useAppDispatch()
+    const { isLoading } = useAppSelector((state) => state.myCard)
 
-    const viewDetailSheet = useRef()
-    const redeemSheetRef = useRef()
+    const [refreshing, setRefreshing] = useState(false)
 
-    const renderItem = useMemo(
-        () =>
-            ({ item }: { item: CardItem }) => (
-                <CommonCard
-                    key={item.id}
-                    data={item}
-                    status={"Active"}
-                    showRedeemBtn
-                    onViewPress={() => viewDetailSheet?.current?.open()}
-                    onRedeemPress={() => redeemSheetRef?.current?.open()}
-                    heading={item?.heading}
-                    description={item?.description}
-                //  price={}
-                //  actualPrice
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        dispatch(getMyCardBookletList(value)).finally(() => setRefreshing(false));
+    }, [dispatch, value]);
+
+    const renderItem = ({ item, index }: any) => {
+
+        return (
+            <View style={styles.shadowContainer}>
+                <Card item={item} index={index}
+                    cardContainerStyle={{ width: "100%" }}
+                    imageStyle={styles.imageStyle}
+                    imageUrl={item?.booklet ? { uri: item?.baseurl + item?.booklet } : defaultBookletImage}
+                    name={item?.client_name}
+                    price={item.price}
+                    address={item?.client_address ? item?.client_address : "---"}
+                    handleCardOnPress={() => {
+                        NavigationService.navigate(MY_CARD_COUPON_LIST_SCREEN,
+                            {
+                                title: item?.client_name,
+                                booklet_id: item?.uuid, tab_status: item?.tab_status
+                            })
+                    }}
+                    status={item?.tab_status}
                 />
-            ),
-        []
-    );
+                {/* <View style={styles.statusContainer}>
+                    <AppText type={FOURTEEN} weight={MEDIUM} color={WHITE}>{"Pending"}</AppText>
+                </View> */}
+            </View>
+        )
+    }
+
     return (
-        <View style={{ flex: 1 }}>
-            <FlatList
-                data={cardDummyData}
-                renderItem={renderItem}
-                keyExtractor={item => item.id.toString()}
-                contentContainerStyle={styles.containerStyle}
-                showsVerticalScrollIndicator={false}
-            />
-            <ViewDetailsBottomSheet ref={viewDetailSheet} />
-            <RedeemSheet ref={redeemSheetRef} />
+        <View style={styles.mainContainer}>
+            {
+                (isLoading && !refreshing) ?
+                    <Loader /> :
+                    <FlatList
+                        data={data}
+                        renderItem={renderItem}
+                        contentContainerStyle={styles.listContainerStyle}
+                        showsVerticalScrollIndicator={false}
+                        ListEmptyComponent={() => (<ListEmptyComponent title={"No Card Available"} />)}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                                colors={[colors.buttonBg]}
+                                tintColor={colors.buttonBg}
+                            />
+                        }
+
+                    />
+            }
         </View>
     )
 }
@@ -46,9 +80,49 @@ const MyCardList = ({ data }) => {
 export default MyCardList
 
 const styles = StyleSheet.create({
+    mainContainer: {
+        flex: 1
+    },
     containerStyle: {
         gap: 15,
         paddingBottom: 50,
         marginTop: 15,
     },
+    rejectText: {
+        textAlign: 'center',
+        marginTop: 10
+    },
+
+    listContainerStyle: {
+        gap: ms(26),
+        paddingBottom: vs(150),
+        marginTop: vs(22),
+        marginHorizontal: 16,
+    },
+    shadowContainer: {
+        borderRadius: ms(15),
+        backgroundColor: colors.white,
+        // iOS shadow
+        shadowColor: 'rgba(0, 0, 0, 0.3)',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.18,
+        shadowRadius: 8,
+        // Android shadow
+        elevation: 2,
+        // marginBottom: 15,
+    },
+    imageStyle: {
+        width: "100%",
+        borderTopLeftRadius: ms(10),
+        borderTopRightRadius: ms(10)
+    },
+    statusContainer: {
+        position: 'absolute',
+        top: 10, right: 10,
+        alignItems: 'center',
+        backgroundColor: colors.buttonBg,
+        paddingVertical: vs(10),
+        paddingHorizontal: s(16),
+        borderRadius: ms(12)
+    }
 })

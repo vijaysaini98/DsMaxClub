@@ -1,68 +1,52 @@
-import React, {forwardRef} from 'react';
+import React from 'react';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {View, Image, StyleSheet, TouchableOpacity, useWindowDimensions, ScrollView} from 'react-native';
-import { AppText, BOLD, EIGHTEEN, FOURTEEN, SEMI_BOLD, THIRD, TWENTY_EIGHT } from '@components/AppText';
+import { StyleSheet, ScrollView } from 'react-native';
+import { AppText, BOLD, EIGHTEEN, FOURTEEN, ITALIC, SEMI_BOLD, THIRD, TWENTY, TWENTY_EIGHT, TWENTY_TWO } from '@components/AppText';
 import { colors } from '@theme/colors';
 import { commonStyles } from '@theme/commonStyles';
-import RenderHtml from 'react-native-render-html';
+import { RenderHTML } from 'react-native-render-html';
+import { ms, vs } from 'react-native-size-matters/extend';
+import { width } from '@utils/index';
+import moment from 'moment';
 
-
-
-const ViewDetailsBottomSheet = ({data,ref}, ) => {
-  
-  console.log("data",data?.description);
-const { width } = useWindowDimensions();
-
-  
+const ViewDetailsBottomSheet = ({ data, ref },) => {
   return (
     <RBSheet
       ref={ref}
       useNativeDriver={false}
-      height={650}
+      height={vs(357)}
       closeOnDragDown={true}
       closeOnPressMask={true}
       draggable={true}
-      customStyles={
-        {
-          container: {
-        borderRadius:32
-          },
-           wrapper: {
-      backgroundColor: colors.fifth,
-    },
-     draggableIcon: {
-                backgroundColor: colors.forth,
-                height: 4,
-                width: '40%',
-                alignSelf: 'center',
-                marginTop: 20,
-                borderRadius: 10
-            }
-        }
-      }>
+      customStyles={styles.sheetStyle}>
 
-      {/* <View style={commonStyles.marginHorizontal}> */}
- <ScrollView 
- showsVerticalScrollIndicator={false}
- style={[commonStyles.marginHorizontal,{marginTop:20}]}>
-        <AppText type={TWENTY_EIGHT} weight={BOLD} style={ styles.viewTextStyle}>View Details</AppText>
-        <AppText color={THIRD} type={EIGHTEEN} weight={SEMI_BOLD} style={{marginTop:20}}>{data?.heading}</AppText>
-        <AppText color={THIRD} type={FOURTEEN}  style={{marginTop:20}}>{`No of Coupons:  ${data?.no_of_coupons}`}</AppText>
-        <AppText color={THIRD} type={FOURTEEN}  style={{marginTop:20}}>{`Maximum Redeem:  ${data?.maximum_redeem}`}</AppText>
-        <AppText color={THIRD} type={FOURTEEN} style={{marginTop:20,marginBottom:5}}>{"Description: "} </AppText>
-        <AppText color={THIRD} type={FOURTEEN}>{data?.description}</AppText>
-         {/* <RenderHtml
-      contentWidth={width}
-source={{html:data?.description}}
- tagsStyles={{
-    h2: { fontSize: 24, fontWeight: 'bold', color: 'green' },
-    p: { marginBottom: 8, color: 'red' },
-    a: { color: 'blue' ,textDecorationLine:'underline'},
-  }}
-    /> */}
-    </ScrollView>
-        {/* <AppText type={FOURTEEN} style={{color:colors.buttonText,marginTop:30}}>Valid till 31 July 2025*</AppText> */}
-       {/* </View> */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={[commonStyles.marginHorizontal, styles.containerStyle]}>
+        <AppText type={TWENTY_EIGHT} weight={BOLD} style={styles.viewTextStyle}>View Details</AppText>
+        <AppText color={THIRD} type={EIGHTEEN} weight={SEMI_BOLD} style={{ marginVertical: vs(20) }}>{"Things To Remember :-"}</AppText>
+
+        <RenderHTML
+          contentWidth={width}
+          source={{ html: data?.description }}
+          tagsStyles={{
+            h1: { fontSize: TWENTY_TWO, fontWeight: 'bold', color: colors.black },
+            h2: { fontSize: TWENTY, fontWeight: 'bold', color: colors.black },
+            h3: { fontSize: EIGHTEEN, fontWeight: 'bold', color: colors.black },
+            // p: { , color: 'red' },
+            i: { fontFamily: ITALIC },
+            a: { color: 'blue', textDecorationLine: 'underline' },
+            b: { fontWeight: 'bold' }
+          }}
+        />
+         <AppText
+          type={FOURTEEN}
+          style={{marginTop:vs(10)}}
+          >{`Reedem Coupon: ${data?.used_coupons}`}</AppText>
+        <AppText
+          type={FOURTEEN}
+          style={styles.validityTextStyle}>{`Valid till: ${moment(data?.valid_till).format('DD MMM YYYY')}`}</AppText>
+      </ScrollView>
     </RBSheet>
   );
 };
@@ -71,12 +55,35 @@ export default ViewDetailsBottomSheet;
 
 
 const styles = StyleSheet.create
-({
-viewTextStyle:{
-    alignSelf:'center',
-    paddingTop:20
-},
-blankView:{
-backgroundColor:colors.forth,height:4,width:'40%',alignSelf:'center',marginTop:20,borderRadius:10
-}
-})
+  ({
+    viewTextStyle: {
+      alignSelf: 'center',
+    },
+    containerStyle: {
+      // marginTop: 20
+    },
+    validityTextStyle: {
+      marginTop: vs(10),
+      color: colors.activeTab
+    },
+    sheetStyle:
+    {
+      container: {
+        // borderT: ms(32)
+        borderTopLeftRadius:ms(32),
+         borderTopRightRadius:ms(32)
+      },
+      wrapper: {
+        backgroundColor: colors.fifth,
+      },
+      draggableIcon: {
+        backgroundColor: colors.forth,
+        height: vs(4),
+        // width: '40%',
+        alignSelf: 'center',
+        marginTop: vs(20),
+        borderRadius: ms(10)
+      }
+    }
+
+  })

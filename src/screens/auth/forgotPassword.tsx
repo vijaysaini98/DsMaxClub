@@ -22,8 +22,6 @@ const {isLoading} = useAppSelector((state)=>state?.auth)
     })
 
     const handleSendOpt = () => {
-        // Logic to send OTP or reset password
-        // console.log("Send OTP to:", state.email);
         if (state.email === '') {
             setState({ ...state, emailErrorText: "Email is required" })
             return;
@@ -39,6 +37,9 @@ const {isLoading} = useAppSelector((state)=>state?.auth)
     }
 
     const handleSucess = () =>{
+           NavigationService.navigate(VERIFICATION_SCREEN, {
+          email: state?.email,
+        });
          setState({ ...state, emailErrorText: "" })
     }
 

@@ -15,6 +15,7 @@ import { LOGIN_SCREEN } from '@navigations/routes';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { resetPassword } from '@actions/auth/authAction';
 import { passwordRegex } from '@utils/index';
+import { ms, s, vs } from 'react-native-size-matters/extend';
 
 const ResetPassword = ({ route }) => {
     const { email } = route?.params ?? ''
@@ -31,16 +32,18 @@ const ResetPassword = ({ route }) => {
     })
 
     const handleSaveBtn = () => {
-        if(passwordRegex.test(state?.newPassword) === false){
-setState({ ...state, newPasswordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
-        }
+
         if (state.newPassword === '') {
             setState({ ...state, newPasswordError: "New Password is required" });
             return;
         } else if (state.confirmPassword === '') {
             setState({ ...state, confirmPasswordError: "Confirm Password is required" });
             return;
-        } else if (state.newPassword !== state.confirmPassword) {
+        } else if (passwordRegex.test(state?.newPassword) === false) {
+            setState({ ...state, newPasswordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
+            return;
+        }
+        else if (state.newPassword !== state.confirmPassword) {
             setState({ ...state, confirmPasswordError: "Passwords do not match" });
             return;
         } else {
@@ -111,23 +114,23 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         backgroundColor: colors.white,
-        paddingTop: 40,
-        paddingHorizontal: 16,
+        paddingTop: vs(40),
+        paddingHorizontal: s(16),
     },
     heading: {
-        marginVertical: 70,
-        gap: 26
+        marginVertical: vs(70),
+        gap: s(26)
     },
     inputContainer: {
-        gap: 16,
-        marginTop: 10,
-        marginBottom: 60,
+        gap: s(16),
+        marginTop: vs(10),
+        marginBottom: vs(60),
     },
     saveBtn: {
         backgroundColor: colors.buttonBg,
-        paddingVertical: 19,
+        paddingVertical: vs(19),
         alignItems: 'center',
-        borderRadius: 50,
-        marginBottom: 48,
+        borderRadius: ms(50),
+        marginBottom: vs(48),
     },
 });

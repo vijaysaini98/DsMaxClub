@@ -1,10 +1,11 @@
 import React from 'react';
 import { Image, ScrollView, StyleSheet, View, ImageSourcePropType } from 'react-native';
-import { AppText, BOLD, BUTTON_BG, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, TWELVE, TWENTY_TWO, WHITE } from '@components/AppText';
+import { AppText, BOLD, BUTTON_BG, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, TWELVE, TWENTY_TWO, WHITE } from '@components/AppText';
 import { colors } from '@theme/colors';
-import { nearByIcon, restro2, starIcon } from '@helper/imagesAssets';
+import { defaultBookletImage, nearByIcon, restro2, starIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import FastImage from 'react-native-fast-image';
+import { ms, s, vs } from 'react-native-size-matters/extend';
 
 export interface CardItem {
   id?: string | number;
@@ -17,6 +18,7 @@ export interface CardProps {
   title?: string;
   handleCardOnPress: (item: CardItem) => void;
   imageBaseUrl?: string,
+  status?: string
 
 }
 
@@ -29,7 +31,8 @@ const Card: React.FC<CardProps> = ({
   imageUrl,
   name,
   price,
-  address
+  address,
+  status
 }) => {
   return (
     <TouchableOpacityView
@@ -38,7 +41,7 @@ const Card: React.FC<CardProps> = ({
       style={[styles.cardInner, cardContainerStyle]}
     >
       <FastImage
-        source={{ uri: imageUrl }}
+        source={imageUrl}
         // source={item.booklet ? { uri: imageBaseUrl + item.booklet } : restro2}
         style={[styles.bannerImage, imageStyle]}
         resizeMode='cover'
@@ -70,10 +73,12 @@ const Card: React.FC<CardProps> = ({
                   </View>
                 </View> */}
         <View style={[styles.priceContainer]}>
-          <AppText type={EIGHTEEN} weight={MEDIUM}  >
+          <AppText type={FOURTEEN} weight={MEDIUM}
+            style={{ width: "70%" }}
+          >
             {name}
           </AppText>
-          <AppText type={FOURTEEN} weight={BOLD} color={BUTTON_BG}>
+          <AppText type={TWELVE} weight={BOLD} color={BUTTON_BG}>
             {`Rs. ${price}`}
           </AppText>
         </View>
@@ -83,11 +88,16 @@ const Card: React.FC<CardProps> = ({
             style={styles.locationIconStyle}
             resizeMode='contain'
           />
-          <AppText type={TWELVE} weight={MEDIUM} style={styles.locationText}>
+          <AppText
+            numberOfLines={2}
+            type={TWELVE} weight={MEDIUM} style={styles.locationText}>
             {address}
           </AppText>
         </View>
       </View>
+      {status && (<View style={styles.statusContainer}>
+        <AppText type={FOURTEEN} weight={MEDIUM} color={BUTTON_TEXT} style={{ textTransform: 'capitalize' }}>{status}</AppText>
+      </View>)}
     </TouchableOpacityView>
   );
 };
@@ -97,13 +107,14 @@ export default Card;
 const styles = StyleSheet.create({
 
   bannerImage: {
-    height: 210,
-    width: 300,
+    height: vs(210),
+    width: s(280),
   },
   cardInner: {
-    borderRadius: 10,
+    borderRadius: ms(10),
     backgroundColor: colors.white,
     overflow: 'hidden',
+    width: s(280)
   },
   tagContainer: {
     backgroundColor: colors.white,
@@ -115,9 +126,10 @@ const styles = StyleSheet.create({
     left: 12
   },
   detailContainer: {
-    paddingHorizontal: 12,
+    marginHorizontal: 12,
     paddingVertical: 10,
     backgroundColor: colors.white
+    // backgroundColor:"yellow"
   },
   ratingContainer: {
     flexDirection: 'row',
@@ -145,21 +157,34 @@ const styles = StyleSheet.create({
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 10
+    justifyContent: 'space-evenly',
+    marginTop: 5,
+    gap: 10
   },
   locationContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
     gap: 5,
-    marginTop: 5
+    marginTop: 5,
   },
   locationIconStyle: {
+    marginTop: vs(2),
     width: 15,
     height: 15,
     tintColor: colors.disTextColor
   },
   locationText: {
-    color: colors.disTextColor
+    color: colors.disTextColor,
+    marginRight: 5
+  },
+  statusContainer: {
+    position: 'absolute',
+    top: vs(10),
+    right: s(10),
+    alignItems: 'center',
+    backgroundColor: "rgba(255,255,255,0.5)",
+    paddingVertical: vs(5),
+    paddingHorizontal: s(8),
+    borderRadius: ms(12)
   }
 });

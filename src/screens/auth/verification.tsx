@@ -20,10 +20,10 @@ import {
     useBlurOnFulfill,
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-import NavigationService from '@navigations/NavigationService';
-import { RESET_PASSWORD_SCREEN } from '@navigations/routes'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { sendOtp, verifyOtp } from '@actions/auth/authAction'
+import NavigationService from '@navigations/NavigationService'
+import { RESET_PASSWORD_SCREEN } from '@navigations/routes'
 
 const Verification = ({ route }) => {
     let { email } = route?.params ?? ''
@@ -83,6 +83,9 @@ const Verification = ({ route }) => {
     }
 
     const handleSucess = () => {
+         NavigationService.navigate(RESET_PASSWORD_SCREEN, {
+          email:email,
+        });
         setCountdown(60)
         setShowResend(false)
         setValue('')
@@ -164,7 +167,7 @@ const Verification = ({ route }) => {
     )
 }
 
-export default Verification
+export default Verification;
 
 const styles = StyleSheet.create({
     mainContainer: {

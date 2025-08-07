@@ -3,11 +3,13 @@ import { Text, StyleSheet, TextStyle, TextProps } from "react-native";
 import {
   fontFamily,
   fontFamilyBold,
-//   fontFamilyLight,
+  fontFamilyItalic,
+  //   fontFamilyLight,
   fontFamilyMedium,
   fontFamilySemiBold,
 } from "@theme/fonts";
 import { colors } from "@theme/colors";
+import { ms } from 'react-native-size-matters/extend'
 
 export const THIRTEEN = "THIRTEEN";
 export const FIFTEEN = "FIFTEEN";
@@ -36,6 +38,7 @@ export const LIGHT = "LIGHT";
 export const SEMI_BOLD = "semibold";
 export const MEDIUM = "MEDIUM";
 export const BOLD = "BOLD";
+export const ITALIC = "ITALIC";
 
 export const WHITE = "WHITE";
 export const BLACK = "BLACK";
@@ -70,76 +73,76 @@ const AppText = ({
 
     switch (type) {
       case FORTY:
-        style["fontSize"] = 40;
+        style["fontSize"] = ms(40);
         break;
       case THIRTY_FOUR:
-        style["fontSize"] = 34;
+        style["fontSize"] = ms(34);
         break;
       case THIRTY_EIGHT:
-        style["fontSize"] = 38;
+        style["fontSize"] = ms(38);
         break;
       case THIRTY:
-        style["fontSize"] = 30;
+        style["fontSize"] = ms(30);
         break;
-         case TWENTY_EIGHT:
-        style["fontSize"] = 28;
+      case TWENTY_EIGHT:
+        style["fontSize"] = ms(28);
         break;
       case TWENTY_SIX:
-        style["fontSize"] = 26;
+        style["fontSize"] = ms(26);
         break;
       case TWENTY_FOUR:
-        style["fontSize"] = 24;
+        style["fontSize"] = ms(24);
         break;
       case TWENTY_TWO:
-        style["fontSize"] = 22;
+        style["fontSize"] = ms(22);
         break;
       case TWENTY:
-        style["fontSize"] = 20;
+        style["fontSize"] = ms(20);
         break;
       case NINETEEN:
-        style["fontSize"] = 19;
+        style["fontSize"] = ms(19);
         break;
       case EIGHTEEN:
-        style["fontSize"] = 18;
+        style["fontSize"] = ms(18);
         break;
       case SEVENTEEN:
-        style["fontSize"] = 17;
+        style["fontSize"] = ms(17);
         break;
       case SIXTEEN:
-        style["fontSize"] = 16;
+        style["fontSize"] = ms(16);
         break;
       case FIFTEEN:
-        style["fontSize"] = 15;
+        style["fontSize"] = ms(15);
         break;
       case FOURTEEN:
-        style["fontSize"] = 14;
+        style["fontSize"] = ms(14);
         break;
       case THIRTEEN:
-        style["fontSize"] = 13;
+        style["fontSize"] = ms(13);
         break;
       case ELEVEN:
-        style["fontSize"] = 11;
+        style["fontSize"] = ms(11);
         break;
       case TEN:
-        style["fontSize"] = 10;
+        style["fontSize"] = ms(10);
         break;
       case NINE:
-        style["fontSize"] = 9;
+        style["fontSize"] = ms(9);
         break;
       case EIGHT:
-        style["fontSize"] = 8;
+        style["fontSize"] = ms(8);
         break;
       default:
-        style["fontSize"] = 12;
+        style["fontSize"] = ms(12);
     }
 
     switch (weight) {
       case NORMAL:
         style["fontFamily"] = fontFamily;
         break;
-      case LIGHT:
-        style["fontFamily"] = fontFamilyLight;
-        break;
+      // case LIGHT:
+      //   style["fontFamily"] = fontFamilyLight;
+      //   break;
       case MEDIUM:
         style["fontFamily"] = fontFamilyMedium;
         break;
@@ -149,6 +152,10 @@ const AppText = ({
       case BOLD:
         style["fontFamily"] = fontFamilyBold;
         break;
+      case ITALIC:
+        style["fontFamily"] = fontFamilyItalic;
+        break;
+
       default:
         style["fontFamily"] = fontFamily;
     }
@@ -166,19 +173,19 @@ const AppText = ({
       case PLACEHOLDER:
         style["color"] = colors.placeholder;
         break;
-         case BUTTON_TEXT:
+      case BUTTON_TEXT:
         style["color"] = colors.buttonText;
         break;
-         case ERROR_TEXT:
+      case ERROR_TEXT:
         style["color"] = colors.red;
         break;
-         case FIRST:
+      case FIRST:
         style["color"] = colors.first;
         break;
-         case SECOND:
+      case SECOND:
         style["color"] = colors.second;
         break;
-         case THIRD:
+      case THIRD:
         style["color"] = colors.third;
         break;
       default:

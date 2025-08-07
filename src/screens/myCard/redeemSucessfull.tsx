@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, View } from 'react-native'
 import React from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import { commonStyles } from '@theme/commonStyles'
@@ -8,11 +8,16 @@ import { colors } from '@theme/colors'
 import QRCode from 'react-native-qrcode-svg';
 import { giftIcon } from '@helper/imagesAssets'
 import Svg, { Line } from 'react-native-svg'
+import { ms, s, vs } from 'react-native-size-matters/extend'
+import { useAppSelector } from '@redux/hooks'
 
 const UserRedeemSucessfull = () => {
+
+  const { couponData } = useAppSelector((state) => state?.myCard)
+
   return (
     <AppSafeAreaView style={[commonStyles.mainContainer, styles.mainContainer]}>
-      <ToolBar isLeftIcon title="Redeem" />
+      <ToolBar isLeftIcon title="QR Code" />
       <View style={styles.container}>
         <Image
           source={giftIcon} // ✅ make sure this matches your asset path
@@ -25,7 +30,7 @@ const UserRedeemSucessfull = () => {
           weight={BOLD}
           style={styles.successText}
         >
-          Redemption Successful!
+          Code Genrate Successful!
         </AppText>
 
         <AppText type={FOURTEEN} color={colors.forth} style={styles.subText}>
@@ -34,31 +39,14 @@ const UserRedeemSucessfull = () => {
 
         <View style={styles.qrContainer}>
           <QRCode
-            value="Eplanet Soft" // you can use a dynamic voucher string
-            size={260}
+            value={JSON.stringify(couponData)} // you can use a dynamic voucher string
+            size={s(250)}
             color={colors.black}
           />
-          <Svg style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-          }} width={300} height={300}>
-            {/* Top Left */}
-            <Line x1="0" y1="0" x2="30" y2="0" stroke={colors.black} strokeWidth={7} />
-            <Line x1="0" y1="0" x2="0" y2="30" stroke={colors.black} strokeWidth={7} />
-
-            {/* Top Right */}
-            <Line x1="300" y1="0" x2="270" y2="0" stroke={colors.black} strokeWidth={7} />
-            <Line x1="300" y1="0" x2="300" y2="30" stroke={colors.black} strokeWidth={7} />
-
-            {/* Bottom Left */}
-            <Line x1="0" y1="300" x2="0" y2="270" stroke={colors.black} strokeWidth={7} />
-            <Line x1="0" y1="300" x2="30" y2="300" stroke={colors.black} strokeWidth={7} />
-
-            {/* Bottom Right */}
-            <Line x1="300" y1="300" x2="300" y2="270" stroke={colors.black} strokeWidth={7} />
-            <Line x1="300" y1="300" x2="270" y2="300" stroke={colors.black} strokeWidth={7} />
-          </Svg>
+          <View style={styles.overlayCornerTL} />
+          <View style={styles.overlayCornerTR} />
+          <View style={styles.overlayCornerBL} />
+          <View style={styles.overlayCornerBR} />
         </View>
       </View>
     </AppSafeAreaView>
@@ -68,35 +56,77 @@ const UserRedeemSucessfull = () => {
 export default UserRedeemSucessfull
 const styles = StyleSheet.create({
   mainContainer: {
-    paddingHorizontal: 16
+    paddingHorizontal: s(16)
   },
   container: {
     flex: 1,
-    marginTop: 70
+    marginTop: vs(70)
   },
   giftIcon: {
-    width: 100,
-    height: 113,
+    width: s(100),
+    height: s(113),
     alignSelf: 'center',
-    // marginTop: 40,
     tintColor: colors.buttonBg, // optional styling
   },
   successText: {
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: vs(20),
   },
   subText: {
     textAlign: 'center',
-    marginTop: 8,
-    marginBottom: 32,
+    marginTop: vs(8),
+    marginBottom: vs(32),
   },
   qrContainer: {
-    width: 300,
-    height: 300,
+    width: s(300),
+    height: s(300),
     alignSelf: 'center',
-    padding: 18,
-    // borderWidth: 2,
-    // borderColor: colors.black,
-    borderRadius: 16,
+    padding: ms(18),
+    borderRadius: ms(16),
   },
+  svgStyle: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  overlayCornerTL: {
+    position: 'absolute',
+    top: -2,
+    left: -2,
+    width: s(20),
+    height: vs(20),
+    borderTopWidth: s(3),
+    borderLeftWidth: s(3),
+    borderColor: 'black',
+  },
+  overlayCornerTR: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    width: s(20),
+    height: vs(20),
+    borderTopWidth: s(3),
+    borderRightWidth: s(3),
+    borderColor: 'black',
+  },
+  overlayCornerBL: {
+    position: 'absolute',
+    bottom: -2,
+    left: -2,
+    width: s(20),
+    height: vs(20),
+    borderBottomWidth: s(3),
+    borderLeftWidth: s(3),
+    borderColor: 'black',
+  },
+  overlayCornerBR: {
+    position: 'absolute',
+    bottom: -2,
+    right: -2,
+    width: s(20),
+    height: vs(20),
+    borderBottomWidth: s(3),
+    borderRightWidth: s(3),
+    borderColor: 'black',
+  }
 });

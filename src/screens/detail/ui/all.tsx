@@ -1,34 +1,47 @@
 import React, { useMemo, useCallback, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
-import { cardDummyData } from '@helper/dumyData';
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import CommonCard from '@components/CommonCard';
 import { colors } from '@theme/colors';
 import { shareToAny } from '@utils/index';
-import ViewDetailsBottomSheet from '@screens/home/ui/viewDetailsBottomSheet';
-import { useAppSelector } from '@redux/hooks';
+import { useAppSelector, useAppDispatch } from '@redux/hooks';
 import { Loader } from '@components/Spinner';
 import { AppText } from '@components/AppText';
+import ViewDetailsBottomSheet from './viewDetailsBottomSheet';
+import { getBookletDetail, getBookletList } from '@actions/home/homeAction';
+import { ms, s, vs } from 'react-native-size-matters/extend';
 
 interface CardItem {
     id: string | number;
     // Add other properties as needed
 }
 
-const All: React.FC = () => {
-    const { bookletDetailAllDeals, isLoading } = useAppSelector((state) => state?.home)
+const All: React.FC = ({ id }) => {
+    const dispatch = useAppDispatch();
+    const { bookletDetailAllDeals, isLoading } = useAppSelector((state) => state?.home);
 
-    const [couponDetail, setCouponDetail] = useState();
-    const viewDetailSheet = useRef<null>(null)
+    const [couponDetail, setCouponDetail] = useState<any>();
+    const [refreshing, setRefreshing] = useState(false);
+    const viewDetailSheet = useRef<any>(null);
 
-    const onViewPress = useCallback((item) => {
-        setCouponDetail(item)
+    const onViewPress = useCallback((item: CardItem) => {
+        setCouponDetail(item);
         setTimeout(() => {
-            viewDetailSheet?.current?.open()
-        }, 200)
+            viewDetailSheet?.current?.open();
+        }, 200);
     }, []);
-    const handleShareOnPress = useCallback((item: any) => {
+
+    const handleShareOnPress = useCallback((item: CardItem) => {
         shareToAny('hello');
     }, []);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        let data = {
+            booklet_id: id,
+            tabname: "All Deals"
+        }
+        dispatch(getBookletDetail(data)).finally(() => setRefreshing(false));
+    }, [dispatch]);
 
     const renderItem = useMemo(
         () =>
@@ -37,11 +50,11 @@ const All: React.FC = () => {
                     data={item}
                     heading={item?.heading}
                     description={item?.short_desc}
-                    rightIcon
-                    onViewPress={() => onViewPress(itemm)}
-                    onRedeemPress={() => console.log('Redeem Pressed:', item.id)}
+                    // rightIcon
+                    onViewPress={() => onViewPress(item)}
+                    // onRedeemPress={() => console.log('Redeem Pressed:', item.id)}
                     btnStyle={styles.viewBtnStyle}
-                    handleRightIcon={handleShareOnPress}
+                    // handleRightIcon={handleShareOnPress}
                 />
             ),
         [onViewPress, handleShareOnPress]
@@ -51,27 +64,32 @@ const All: React.FC = () => {
         <View style={{ flex: 1 }}>
             {isLoading ? (
                 <Loader />
-            ) :
-                (
-                    <FlatList
-                        data={bookletDetailAllDeals?.coupons}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id.toString()}
-                        contentContainerStyle={styles.containerStyle}
-                        showsVerticalScrollIndicator={false}
-                        ListEmptyComponent={() => (
-                            <View style={{
-                                justifyContent: 'center', alignItems: 'center'
-                            }}>
-                                <AppText>{"No Coupons Available"}</AppText>
-                            </View>
-                        )}
-                    />
-                )
-            }
+            ) : (
+                <FlatList
+                    data={bookletDetailAllDeals?.coupons}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id.toString()}
+                    contentContainerStyle={styles.containerStyle}
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            colors={[colors.buttonBg]}
+                            tintColor={colors.buttonBg}
+                        />
+                    }
+                    ListEmptyComponent={() => (
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <AppText>{"No Coupons Available"}</AppText>
+                        </View>
+                    )}
+                />
+            )}
             <ViewDetailsBottomSheet
                 data={couponDetail}
-                ref={viewDetailSheet} />
+                ref={viewDetailSheet}
+            />
         </View>
     );
 };
@@ -80,13 +98,13 @@ export default All;
 
 const styles = StyleSheet.create({
     containerStyle: {
-        gap: 15,
-        paddingBottom: 50,
-        marginTop: 15,
+        gap: s(15),
+        paddingBottom: vs(100),
+        marginTop: vs(15),
     },
     viewBtnStyle: {
         borderWidth: 1,
-        borderRadius: 100,
+        borderRadius: ms(100),
         borderColor: colors.placeholder2,
         backgroundColor: colors.white,
     },

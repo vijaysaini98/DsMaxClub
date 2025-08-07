@@ -1,35 +1,67 @@
 import { dealIcon, historyIcon, proflieIcon, scanIcon } from "@helper/imagesAssets";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import NearBy from "@screens/nearBy";
 import Profile from "@screens/profile/index";
-import { colors } from "@theme/colors";
-import { StyleSheet } from "react-native";
-import { TabIcon } from "./BottomNavigation";
 import Deal from "@screens/deals";
 import Scan from "@screens/scan";
 import History from "@screens/history";
+import { colors } from "@theme/colors";
+import { Image, Platform, StyleSheet, View } from "react-native";
+import { ms, s, vs } from "react-native-size-matters/extend";
+import { AppText, MEDIUM, TWELVE } from "@components/AppText";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Tab = createBottomTabNavigator();
 
+const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
+    return (
+        <View style={[styles.container, isHighlight && styles.hightLightContainer]}>
+            {/* TOP INDICATOR */}
+            {(focused && !isHighlight) && <View style={styles.indicator} />}
+
+            {/* ICON */}
+            <Image
+                source={icon}
+                style={[isHighlight ? { height: vs(30), width: s(30), tintColor: colors.white } :
+                    styles.icon(focused),
+                ]}
+                resizeMode="contain"
+            />
+
+            {/* <SvgIcon name="home" size={30} color={colors.transparent} /> */}
+
+            {/* TEXT */}
+            {!isHighlight && <AppText
+                weight={MEDIUM}
+                color={focused ? colors.buttonBg : colors.black}
+                type={TWELVE}
+                style={styles.tabTitleStyle}
+            >
+                {title}
+            </AppText>}
+        </View>
+    );
+};
 
 
 export default function BottomNavigationVendor() {
+    const insets = useSafeAreaInsets();
     return (
         <Tab.Navigator
-            initialRouteName="Deal"
+            initialRouteName="Home"
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarHideOnKeyboard: true,
+                tabBarHideOnKeyboard: false,
+                tabBarAllowFontScaling: false,
                 tabBarStyle: styles.tabBarStyle,
             }}
         >
             <Tab.Screen
-                name="Deal"
+                name="Home"
                 component={Deal}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <TabIcon focused={focused} icon={dealIcon} title="DEAL" />
+                        <TabIcon focused={focused} icon={dealIcon} title="Home" />
                     ),
                 }}
             />
@@ -38,11 +70,11 @@ export default function BottomNavigationVendor() {
                 component={Scan}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <TabIcon focused={focused} icon={scanIcon} title="SCAN" />
+                        <TabIcon focused={focused} icon={scanIcon} title="SCAN" isHighlight={true} />
                     ),
                 }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name="History"
                 component={History}
                 options={{
@@ -50,7 +82,7 @@ export default function BottomNavigationVendor() {
                         <TabIcon focused={focused} icon={historyIcon} title="HISTORY" />
                     ),
                 }}
-            />
+            /> */}
             <Tab.Screen
                 name="Profile"
                 component={Profile}
@@ -63,34 +95,50 @@ export default function BottomNavigationVendor() {
         </Tab.Navigator>
     );
 }
-
 const styles = StyleSheet.create({
     tabBarStyle: {
         backgroundColor: colors.tabBg,
-        height: 100,
-        paddingTop: 10,
+        height: Platform.OS !== 'ios' ? vs(60) : vs(80),
         borderTopWidth: 0,
-        
+        width: "100%",
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 5
     },
     container: {
         alignItems: 'center',
-        justifyContent: 'center',
-        height: 60,
-        width: 100,
-        gap: 10,
-        paddingTop: 20,
+        alignSelf: 'center',
+        // height: Platform.OS == 'ios' ? vs(80) : vs(50),
+        paddingVertical: vs(10),
+        width: s(100),
+        gap: ms(4),
+        backgroundColor: colors.tabBg,
+
     },
-    icon: {
-        width: 24,
-        height: 24,
-    },
+    icon: (focused: boolean) => ({
+        width: s(24),
+        height: vs(24),
+        tintColor: focused ? colors.buttonBg : colors.black
+    }),
     indicator: {
         position: 'absolute',
-        top: 0,
-        height: 4,
-        width: 22,
-        borderBottomLeftRadius: 4,
-        borderBottomRightRadius: 4,
+        height: vs(4),
+        width: s(22),
+        borderBottomLeftRadius: ms(4),
+        borderBottomRightRadius: ms(4),
         backgroundColor: colors.buttonBg,
     },
+    tabTitleStyle: {
+        marginTop: 4
+    },
+    hightLightContainer: {
+        height: s(60),
+        width: s(60),
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.buttonBg,
+        borderRadius: ms(20),
+        elevation: 2,
+        marginTop: 7
+    }
 });

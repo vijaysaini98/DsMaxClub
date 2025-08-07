@@ -1,54 +1,62 @@
-import { AppText, BUTTON_TEXT, MEDIUM } from "@components/AppText";
-import { helpLineIcon, homeIcon, nearByIcon, proflieIcon } from "@helper/imagesAssets";
+import { AppText, MEDIUM, TWELVE } from "@components/AppText";
+import { helpLineIcon, homeIcon, myCardIcon, nearByIcon, proflieIcon } from "@helper/imagesAssets";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Help_Line from "@screens/helpLine";
 import Home from "@screens/home";
 import NearBy from "@screens/nearBy";
 import Profile from "@screens/profile";
 import { colors } from "@theme/colors";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Platform, View } from "react-native";
+import bottomNavigationStyles from "./bottomNavigationStyles";
+import MyCard from "@screens/myCard";
+import { ms, s, vs } from "react-native-size-matters/extend";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
-export const TabIcon = ({ focused, icon, title }: any) => {
+export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
     return (
-        <View style={styles.container}>
+        <View style={[bottomNavigationStyles.container, isHighlight && bottomNavigationStyles.hightLightContainer]}>
             {/* TOP INDICATOR */}
-            {focused && <View style={styles.indicator} />}
+            {(focused && !isHighlight) && <View style={bottomNavigationStyles.indicator} />}
 
             {/* ICON */}
             <Image
                 source={icon}
-                style={[
-                    styles.icon,
-                    { tintColor: focused ? colors.buttonBg : colors.black },
+                style={[isHighlight ? { height: vs(30), width: s(30), tintColor: colors.white } :
+                    bottomNavigationStyles.icon(focused),
                 ]}
                 resizeMode="contain"
             />
 
+            {/* <SvgIcon name="home" size={30} color={colors.transparent} /> */}
+
             {/* TEXT */}
-            <AppText
+            {!isHighlight && <AppText
                 weight={MEDIUM}
                 color={focused ? colors.buttonBg : colors.black}
-                style={{ fontSize: 12, marginTop: 4 }}
+                type={TWELVE}
+                style={bottomNavigationStyles.tabTitleStyle}
             >
                 {title}
-            </AppText>
+            </AppText>}
         </View>
     );
 };
 
 
 export default function BottomNavigation() {
+      const insets = useSafeAreaInsets();
+      const bottomPadding = Platform.OS === "android" || insets.bottom > 0 ? insets.bottom : 10;
     return (
         <Tab.Navigator
             initialRouteName="Home"
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarHideOnKeyboard: true,
-                 tabBarAllowFontScaling: false,
-                tabBarStyle: styles.tabBarStyle,
+                tabBarHideOnKeyboard: false,
+                tabBarAllowFontScaling: false,
+                tabBarStyle: bottomNavigationStyles.tabBarStyle,
             }}
         >
             <Tab.Screen
@@ -69,12 +77,19 @@ export default function BottomNavigation() {
                     ),
                 }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name="NearBy"
                 component={NearBy}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <TabIcon focused={focused} icon={nearByIcon} title="NEARRBY" />
+                    ),
+                }}
+            /> */}
+            <Tab.Screen name={"MyCard"} component={MyCard}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <TabIcon focused={focused} icon={myCardIcon} title="MY CARD" />
                     ),
                 }}
             />
@@ -90,33 +105,3 @@ export default function BottomNavigation() {
         </Tab.Navigator>
     );
 }
-
-const styles = StyleSheet.create({
-    tabBarStyle: {
-        backgroundColor: colors.tabBg,
-        height: 80,
-        borderTopWidth: 0,
-    },
-    container: {
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        height: 80,
-        width: 100,
-        gap: 4,
-        paddingBottom: 10,
-        backgroundColor: colors.tabBg
-    },
-    icon: {
-        width: 24,
-        height: 24,
-    },
-    indicator: {
-        position: 'absolute',
-        top: 0,
-        height: 4,
-        width: 22,
-        borderBottomLeftRadius: 4,
-        borderBottomRightRadius: 4,
-        backgroundColor: colors.buttonBg,
-    },
-});

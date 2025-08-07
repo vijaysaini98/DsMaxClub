@@ -1,5 +1,6 @@
 import { StyleSheet, Dimensions, Platform } from 'react-native';
 import { colors } from './colors';
+import { ms, s, vs } from 'react-native-size-matters/extend';
 
 export const Screen = {
   width: Dimensions.get('window').width,
@@ -8,44 +9,45 @@ export const Screen = {
 
 export const initialLayout = { width: Screen.width };
 
-export const universalPaddingHorizontal = 10;
-export const universalPaddingHorizontalHigh = 20;
-export const universalPaddingHorizontalMedium = 15;
-export const universalPaddingVertical = 10;
-export const universalPaddingTop = 40;
+export const universalPaddingHorizontal = s(10);
+export const universalPaddingHorizontalHigh = s(20);
+export const universalPaddingHorizontalMedium = s(15);
+export const universalPaddingVertical = vs(10);
+export const universalPaddingTop = vs(40);
 
-export const buttonHeight = 55;
-export const smallButtonHeight = 35;
-export const midButtonHeight = 60;
-export const averageButtonHeight = 50; // Fixed typo
-export const inputHeight = 55;
-export const borderWidth = 2;
+export const buttonHeight = vs(55);
+export const smallButtonHeight = vs(35);
+export const midButtonHeight = vs(60);
+export const averageButtonHeight = vs(50); // Fixed typo
+export const inputHeight = vs(55);
+export const borderWidth = ms(2);
 
 export const commonStyles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: colors.white,
-    paddingTop: Platform.OS=="android"? 30:  40,
+    paddingTop: Platform.OS == 'ios' ? vs(40) : 0,
   },
   center: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
   },
-  imageBackgroundSize: { // Renamed for camelCase
+  imageBackgroundSize: {
+    // Renamed for camelCase
     height: '100%',
     width: '100%',
     backgroundColor: colors.white,
   },
-    screenSize: {
+  screenSize: {
     flex: 1,
   },
   flexRow: {
     flexDirection: 'row',
   },
   tabIcon: {
-    width: 22,
-    height: 22,
+    width: s(22),
+    height: vs(22),
   },
   centerText: {
     textAlign: 'center',
@@ -80,17 +82,17 @@ export const commonStyles = StyleSheet.create({
     paddingHorizontal: universalPaddingHorizontal,
   },
   tabFocused: {
-    backgroundColor: colors.tabBag,
-    borderRadius: 30,
-    width: 150,
+    backgroundColor: colors.tabBg,
+    borderRadius: ms(30),
+    width: s(150),
     height: smallButtonHeight,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  marginHorizontal:{
-  marginHorizontal:20
+  marginHorizontal: {
+    marginHorizontal: s(16),
   },
-  flexDirectionRow:{
-flexDirection:'row'
-  }
+  flexDirectionRow: {
+    flexDirection: 'row',
+  },
 });

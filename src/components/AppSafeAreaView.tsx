@@ -135,7 +135,7 @@ const AppSafeAreaView = ({
       )}
     </SafeAreaView>
   ) : (
-    <View style={[commonStyles.screenSize, style]}>
+    <SafeAreaView style={[commonStyles.screenSize, style]}>
       <StatusBar
         translucent
         backgroundColor={colors.white}
@@ -159,7 +159,7 @@ const AppSafeAreaView = ({
       ) : (
         children
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

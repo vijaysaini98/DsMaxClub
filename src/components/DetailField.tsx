@@ -1,29 +1,27 @@
-import {StyleSheet, View} from 'react-native';
-import {commonStyles} from '../theme/commonStyles';
-import {AppText, SEMI_BOLD, SIXTEEN} from './AppText';
-import {DetailFieldProps} from '../types/common';
+import { StyleSheet, View } from 'react-native';
+import { AppText, FOURTEEN, SEMI_BOLD } from './AppText';
+import { DetailFieldProps } from '../types/common';
 import React from 'react';
 const DetailField = ({
   title,
   containerStyle,
   value,
-  titleStyle,
-  valueStyle,
 }: DetailFieldProps) => {
   return (
     <View
       style={[
-        commonStyles.flexDirectionRow,
         containerStyle,
-        {flex: 1, marginVertical: 2, flexWrap: 'wrap',justifyContent:'space-between'},
+        styles.containerStyle,
       ]}>
-      <AppText type={SIXTEEN} >
+      <AppText type={FOURTEEN} >
         {title}
       </AppText>
       <AppText
-        type={SIXTEEN}
+        type={FOURTEEN}
         weight={SEMI_BOLD}
-        numberOfLines={2}>
+        numberOfLines={2}
+        style={styles.rightTextStyle}
+      >
         {value}
       </AppText>
     </View>
@@ -33,6 +31,18 @@ const DetailField = ({
 export default DetailField;
 
 const styles = StyleSheet.create({
-//   titleStyle: {flex: 0.6},
-//   valueStyle: {flex: 1},
+  //   titleStyle: {flex: 0.6},
+  //   valueStyle: {flex: 1},
+  rightTextStyle: {
+    width: "60%",
+    textAlign: 'right'
+  },
+  containerStyle: {
+    marginVertical: 10,
+    // paddingHorizontal:s(16),
+    flexDirection: 'row',
+    // flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  }
+
 });

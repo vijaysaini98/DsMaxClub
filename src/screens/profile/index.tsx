@@ -5,11 +5,13 @@ import Header from '@components/Header'
 import TouchableOpacityView from '@components/TouchableOpacityView'
 import { forwardIcon, logOutIcon, myCardIcon, myRequestIcon, privacyIcon, proflieIcon, shareIcon, termsCondIcon, userIcon } from '@helper/imagesAssets'
 import { AppText, SIXTEEN } from '@components/AppText'
-import { useAppDispatch } from '@redux/hooks'
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { logout } from '../../actions/auth/authAction'
 import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
 import { commonStyles } from '@theme/commonStyles'
+import { ms, s, vs } from 'react-native-size-matters/extend'
+import { AppSafeAreaView } from '@components/AppSafeAreaView'
 
 const MoreTabButton = ({ title, leftIcon, handleOnPress }) => {
   return (
@@ -44,6 +46,7 @@ const Profile = () => {
   // const handleLogout = () =>{
   //   dispatch(logout())
   // }
+  const { userData } = useAppSelector((state) => state.auth)
 
   const handleLogout = () =>
     Alert.alert("Are you sure you want to Logout", "", [
@@ -55,9 +58,11 @@ const Profile = () => {
       { text: "OK", onPress: () => dispatch(logout()) },
     ]);
 
+
+
   return (
-    <View style={commonStyles.mainContainer}>
-      <Header />
+    <AppSafeAreaView style={commonStyles.mainContainer}>
+      <Header currentCity={userData?.user_type !== "2"} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         // style={}
@@ -68,16 +73,17 @@ const Profile = () => {
           title={"Edit Profile"}
           handleOnPress={() => { NavigationService.navigate(routes.EDIT_PROFILE_SCREEN) }}
         />
-        <MoreTabButton
-          leftIcon={myRequestIcon}
-          title={"My Request"}
-          handleOnPress={() => { }}
-        />
-        <MoreTabButton
+        {userData?.user_type == "2" &&
+          <MoreTabButton
+            leftIcon={myRequestIcon}
+            title={"My Request"}
+            handleOnPress={() => { NavigationService.navigate(routes.MY_REQUEST_SCREEN) }}
+          />}
+        {/* <MoreTabButton
           leftIcon={myCardIcon}
           title={"My Card"}
           handleOnPress={() => { NavigationService.navigate(routes.MY_CARD_SCREEN) }}
-        />
+        /> */}
         <MoreTabButton
           leftIcon={shareIcon}
           title={"Share App"}
@@ -86,12 +92,12 @@ const Profile = () => {
         <MoreTabButton
           leftIcon={termsCondIcon}
           title={"Terms & Conditions"}
-          handleOnPress={() => { }}
+          handleOnPress={() => { NavigationService.navigate(routes.TERMS_CONDITION_SCREEN) }}
         />
         <MoreTabButton
           leftIcon={privacyIcon}
           title={"Privacy Policy"}
-          handleOnPress={() => { }}
+          handleOnPress={() => { NavigationService.navigate(routes.PRIVACY_POLICY_SCREEN) }}
         />
         <MoreTabButton
           leftIcon={logOutIcon}
@@ -99,7 +105,7 @@ const Profile = () => {
           handleOnPress={() => handleLogout()}
         />
       </ScrollView>
-    </View>
+    </AppSafeAreaView>
   )
 }
 
@@ -107,34 +113,34 @@ export default Profile
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 50
+    paddingHorizontal: s(16),
+    paddingTop: vs(14),
+    paddingBottom: vs(50)
   },
   tabBtnContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: "space-between",
     borderWidth: 1,
-    paddingHorizontal: 25,
-    paddingVertical: 23,
-    borderRadius: 100,
+    paddingHorizontal: vs(25),
+    paddingVertical: vs(23),
+    borderRadius: ms(100),
     borderColor: colors.borderColor3,
-    marginTop: 20
+    marginTop: vs(20)
   },
   tabBtnInnerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 24
+    gap: ms(24)
   },
   leftIconStyle: {
-    width: 20,
-    height: 20,
+    width: s(20),
+    height: s(20),
     tintColor: colors.buttonBg
   },
   rightIconStyle: {
-    width: 14,
-    height: 11
+    width: s(14),
+    height: s(11)
   }
 
 })

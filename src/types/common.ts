@@ -1,4 +1,24 @@
-import { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import {
+  ImageSourcePropType,
+  StyleProp,
+  TextInputProps,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
+
+export interface InputProps extends TextInputProps {
+  secureTextEntry?: boolean;
+  handleLeftIconPress?: () => void;
+  inputStyle?: StyleProp<any>;
+  inputContainerStyle?: StyleProp<ViewStyle>;
+  placeholder?: string;
+  placeholderTextColor?: string;
+  value?: string;
+  onChangeText?: (text: string) => void;
+  leftIcon?: ImageSourcePropType;
+  errorText?: string;
+  editable: boolean;
+}
 
 export interface CardProps {
   key?: string;
@@ -17,12 +37,28 @@ export interface CardProps {
   description?: string;
   price?: string | number;
   actualPrice?: string | number;
+  buttonTitle?: string;
+  buttonTitle2: string;
+  couponCount?: number | string;
+  htmlContent?: any;
+  viewBtnDisabled?:boolean,
+  redeemButtonStyle?:any,
+  redeemDisabled?:boolean,
+  viewBtnLoader?:boolean,
+  statusBg?:string,
+  statusTextColor?:string
 }
 
 export interface DetailFieldProps {
   title: string;
   containerStyle: StyleProp<TextStyle>;
   value: any;
-  titleStyle: StyleProp<TextStyle>;
-  valueStyle: StyleProp<TextStyle>;
+}
+
+export interface ImageViewModalProps {
+  isModalVisible: boolean;
+  setModalVisible: (visible: boolean) => void;
+  setActiveIndex: (index: number) => void;
+  activeIndex: number;
+  data: string[];
 }

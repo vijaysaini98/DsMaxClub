@@ -1,0 +1,97 @@
+import { FlatList, StyleSheet, View } from 'react-native'
+import React, { } from 'react'
+import { AppText, BUTTON_TEXT, FOURTEEN, MEDIUM, WHITE } from '@components/AppText'
+import { REQUEST_COUPON_LIST_SCREEN } from '@navigations/routes'
+import { SpinnerSecond } from '@components/Spinner'
+import { ms, s, vs } from 'react-native-size-matters/extend'
+import { colors } from '@theme/colors'
+import { useAppSelector } from '@redux/hooks'
+import Card from '@screens/home/ui/card'
+import NavigationService from '@navigations/NavigationService'
+import { IMGE_URL } from '@services/config'
+import { defaultBookletImage } from '@helper/imagesAssets'
+
+const MyRequestList = ({ data }: { data: any }) => {
+
+    const { isLoading } = useAppSelector((state) => state.myRequest)
+
+    const renderItem = ({ item, index }: any) => {
+        return (
+            <View style={styles.shadowContainer}>
+                <Card item={item} index={index}
+                    cardContainerStyle={{ width: "100%" }}
+                    imageStyle={styles.imageStyle}
+                    imageUrl={item?.booklet? {uri:IMGE_URL + item?.booklet}:defaultBookletImage}
+                    name={item?.client_name}
+                    price={item.price}
+                    address={item?.client_address ? item?.client_address : "---"}
+                    handleCardOnPress={() => {
+                        NavigationService.navigate(REQUEST_COUPON_LIST_SCREEN, { booklet_id: item?.uuid })
+                    }}
+                    status={item?.status}
+                />
+            </View>
+        )
+    }
+
+    return (
+        <View style={styles.mainContainer}>
+            {
+                isLoading ?
+                    <SpinnerSecond /> :
+                    <FlatList
+                        data={data}
+                        renderItem={renderItem}
+                        contentContainerStyle={styles.listContainerStyle}
+                        showsVerticalScrollIndicator={false}
+                        ListEmptyComponent={() => (
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}>
+                                <AppText>{"No Request Availble"}</AppText>
+                            </View>
+                        )}
+                    />
+            }
+        </View>
+    )
+}
+
+export default MyRequestList
+
+const styles = StyleSheet.create({
+    mainContainer: {
+        flex: 1
+    },
+    containerStyle: {
+        gap: s(15),
+        paddingBottom: vs(50),
+        marginTop: vs(15),
+    },
+    rejectText: {
+        textAlign: 'center',
+        marginTop: vs(10)
+    },
+
+    listContainerStyle: {
+        gap: ms(26),
+        paddingBottom: vs(150),
+        marginTop: vs(22),
+        // marginHorizontal: 16,
+    },
+    shadowContainer: {
+        borderRadius: ms(15),
+        backgroundColor: colors.white,
+        // iOS shadow
+        shadowColor: 'rgba(0, 0, 0, 0.3)',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.18,
+        shadowRadius: 8,
+        // Android shadow
+        elevation: 2,
+        // marginBottom: 15,
+    },
+    imageStyle: {
+        width: "100%",
+        borderTopLeftRadius: ms(10),
+        borderTopRightRadius: ms(10)
+    },
+})

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useRef, useState } from 'react';
 import {
     View,
     StyleSheet,
     TouchableOpacity,
+    Platform,
+    Text,
 } from 'react-native';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
-import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, MEDIUM, SIXTEEN, TWENTY_EIGHT, WHITE } from '@components/AppText';
+import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, SEMI_BOLD, SIXTEEN, THIRTEEN, TWENTY_EIGHT, TWENTY_FOUR, WHITE } from '@components/AppText';
 import { colors } from '@theme/colors';
 import { authBg, emailIcon, eyeCloseIcon, eyeOpenIcon, phoneIcon, userIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
@@ -16,11 +18,15 @@ import ToolBar from '@components/ToolBar';
 import { emailRegex, passwordRegex, phoneRegex } from '@utils/index';
 import KeyBoardAware from '@components/KeyBoardAware';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
-import { singUp } from '../../actions/auth/authAction';
+import { customerVerifySendOtp, sendOtp, singUp, verifyOtp } from '../../actions/auth/authAction';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
+import { ms, s, vs } from 'react-native-size-matters/extend';
 
 const SingUp = () => {
     const dispatch = useAppDispatch()
-    const{isLoading}= useAppSelector((state)=>state?.auth)
+    const { isLoading } = useAppSelector((state) => state?.auth)
+    const sheetRef = useRef(null);
 
     const [state, setState] = useState({
         name: '',
@@ -35,6 +41,7 @@ const SingUp = () => {
     })
 
     const handleSignUpBtn = () => {
+        // sheetRef.current?.open()
         // Logic to handle sign up
         if (state.name === '') {
             setState({ ...state, nameError: "Name is required" })
@@ -52,27 +59,45 @@ const SingUp = () => {
         }
         else if (state.password === '') {
             setState({ ...state, passwordError: "Password is required" })
-        } 
-         if(passwordRegex.test(state?.password) === false){
-        setState({ ...state, passwordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
-                }
+        }
+        else if (passwordRegex.test(state?.password) === false) {
+            setState({ ...state, passwordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
+        }
         else {
-            // setState({ ...state, nameError: "", phoneError: "", emailError: "", passwordError: "" })
-            // // NavigationService.navigate(routes.LOGIN_SCREEN);
-            const formData = new FormData();
+            let data = {
+                email: state.email,
+                mobile: state?.phone
+            }
 
-            formData.append('name', state?.name)
-            formData.append('mobile', state?.phone)
-            formData.append('email', state?.email);
-            formData.append("password", state?.password);
-
-            dispatch(singUp(formData,handleSuccess))
+            // sheetRef.current?.open();
+            setState({ ...state, nameError: "", phoneError: "", emailError: "", passwordError: "" })
+            dispatch(customerVerifySendOtp(data, handleOtpSendSuccess))
         }
     }
 
-    const handleSuccess = () =>{
+    const handleOtpSendSuccess = () => {
+        sheetRef.current?.open()
+    }
+
+    const handleSuccess = () => {
         setState({ ...state, nameError: "", phoneError: "", emailError: "", passwordError: "" })
     }
+
+    const handleVerify = (code: string) => {
+        sheetRef.current?.close();
+        setState({ ...state, nameError: "", phoneError: "", emailError: "", passwordError: "" })
+
+        let data = {
+
+            name: state?.name,
+            email: state?.email,
+            otp: code,
+            mobile: state?.phone,
+            password: state?.password
+
+        }
+        dispatch(singUp(data, handleSuccess))
+    };
 
     return (
         <AppSafeAreaView
@@ -120,7 +145,8 @@ const SingUp = () => {
                         onChangeText={(text: string) => setState({ ...state, password: text.trim() })}
                         leftIcon={state.isPasswordVisible ? eyeCloseIcon : eyeOpenIcon}
                         handleLeftIconPress={() => setState({ ...state, isPasswordVisible: !state.isPasswordVisible })}
-                        keyboardType='email-address'
+                        // keyboardType='email-address'
+                        // keyboardType='default'
                         errorText={state.passwordError}
                         onFocus={() => setState({ ...state, passwordError: "" })}
                     />
@@ -129,26 +155,121 @@ const SingUp = () => {
 
                 {/* SignUp Button */}
                 <TouchableOpacityView
-                loader={isLoading}
+                    loader={isLoading}
                     onPress={handleSignUpBtn}
+                    // onPress={()=>sheetRef.current?.open()}
                     style={styles.createAccountBtn}>
                     <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>CREATE ACCOUNT</AppText>
                 </TouchableOpacityView>
                 <View style={styles.bottomRow}>
-                <AppText type={SIXTEEN} >Already Have an Account? </AppText>
-                <TouchableOpacityView
-                    onPress={() => NavigationService.reset(routes.LOGIN_SCREEN)}
-                >
-                    <AppText type={SIXTEEN} color={BUTTON_TEXT} weight={BOLD} >Login</AppText>
-                </TouchableOpacityView>
-            </View>
+                    <AppText type={SIXTEEN} >Already Have an Account? </AppText>
+                    <TouchableOpacityView
+                        onPress={() => NavigationService.reset(routes.LOGIN_SCREEN)}
+                    >
+                        <AppText type={SIXTEEN} color={BUTTON_TEXT} weight={BOLD} >Login</AppText>
+                    </TouchableOpacityView>
+                </View>
             </KeyBoardAware>
-            
+            <CodeVerificationBottomSheet ref={sheetRef} onVerify={handleVerify} />
         </AppSafeAreaView>
     );
 };
 
 export default SingUp;
+
+const CodeVerificationBottomSheet = forwardRef(({ onVerify }: { onVerify?: (code: string) => void }, ref) => {
+    const [code, setCode] = useState('');
+    const blurOnFulfill = useBlurOnFulfill({ value: code, cellCount: 6 });
+    const [props, getCellOnLayoutHandler] = useClearByFocusCell({ value: code, setValue: setCode });
+
+    const handleVerify = () => {
+        if (onVerify) onVerify(code);
+    };
+
+    const renderCell = ({ index, symbol, isFocused }) => {
+        const isFilled = Boolean(symbol);
+        const borderColor = isFilled
+            ? colors.black
+            : isFocused
+                ? colors.placeholder
+                : colors.borderColor;
+        return (
+            <View
+                key={index}
+                style={styles.cellStyle(borderColor)}
+                onLayout={getCellOnLayoutHandler(index)}
+            >
+                <Text
+                    style={styles.cellTextStyle(isFilled)}>
+                    {symbol || (isFocused ? <Cursor /> : null)}
+                </Text>
+            </View>
+        )
+    }
+
+    return (
+        <RBSheet
+            ref={ref}
+            closeOnDragDown
+            closeOnPressMask
+            onClose={() => setCode('')}
+            height={vs(380)}
+            customStyles={{
+                container: {
+                    borderTopLeftRadius: ms(20),
+                    borderTopRightRadius: ms(20),
+                    padding: ms(20),
+                },
+                draggableIcon: {
+                    backgroundColor: '#aaa',
+                },
+            }}
+        >
+            <View style={{ justifyContent: 'center' }}>
+                <AppText style={{
+                    // marginBottom: 40,
+                    textAlign: 'center'
+                }}
+                    weight={SEMI_BOLD}
+                    type={EIGHTEEN}
+                >Enter Verification Code</AppText>
+                <AppText
+                    type={THIRTEEN}
+                    weight={MEDIUM}
+                    style={{ textAlign: 'center', marginTop: 20 }}>Verification code send on your Email Account</AppText>
+
+                <CodeField
+                    ref={blurOnFulfill}
+                    {...props}
+                    value={code}
+                    onChangeText={setCode}
+                    cellCount={6}
+                    rootStyle={{
+                        marginVertical: vs(40),
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                    }}
+                    keyboardType="number-pad"
+                    textContentType="oneTimeCode"
+                    renderCell={renderCell}
+                />
+
+                <TouchableOpacityView
+                    style={[{
+                        backgroundColor: colors.buttonBg,
+                        paddingVertical: 12,
+                        borderRadius: 10,
+                        alignItems: 'center',
+                    }, { opacity: code.length === 6 ? 1 : 0.5 }]}
+                    onPress={handleVerify}
+                    disabled={code.length !== 6}
+                >
+                    <AppText type={TWENTY_FOUR} color={WHITE} weight={MEDIUM}>Verify</AppText>
+                </TouchableOpacityView>
+            </View>
+        </RBSheet>
+    );
+});
 
 const styles = StyleSheet.create({
     mainContainer: {
@@ -186,4 +307,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
     },
+    cellStyle:(borderColor:string)=>({
+                    width: s(50),
+                    height: vs(75),
+                    borderRadius: ms(20),
+                    // marginLeft: 10,
+                    padding: Platform.OS === 'ios' ? ms(15) : ms(10),
+                    borderWidth: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderColor: borderColor,
+                }),
+                cellTextStyle:(isFilled :boolean)=>({
+                        fontSize: ms(24),
+                        textAlign: 'center',
+                        color: isFilled ? colors.black : colors.borderColor,
+                        fontWeight: isFilled ? 'bold' : 'normal',
+
+                    }),
+
 });

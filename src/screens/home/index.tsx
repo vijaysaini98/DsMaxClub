@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from '@theme/colors';
 import Header from '@components/Header';
 // import { banerData, categoryList, trendingData } from '@helper/dumyData';
@@ -15,19 +15,22 @@ import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { getBannerList, getCategoryBooklet, getCategoryList } from '@actions/home/homeAction';
 import { commonStyles } from '@theme/commonStyles';
 import TouchableOpacityView from '@components/TouchableOpacityView';
-import { rightArrowIcon } from '@helper/imagesAssets';
+import { defaultBookletImage, rightArrowIcon } from '@helper/imagesAssets';
 import { userProfile } from '@actions/auth/authAction';
 import { banerData } from '@helper/dumyData';
+import { useIsFocused } from '@react-navigation/native';
+import { setCategoriListData } from '@actions/home/homeSlice';
 
 
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch()
+  // const isFocused = use()
 
   const { userData } = useAppSelector((state) => state?.auth)
   const { categoryListData, categoryBookletData, isLoading, bannerList } = useAppSelector((state) => state?.home)
-  
-  const [show,setShow] = useState(false)
+
+  const [show, setShow] = useState(false)
 
   const [refreshing, setRefreshing] = useState(false)
 
@@ -39,27 +42,49 @@ const Home: React.FC = () => {
   };
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [userData?.current_city_name]);
 
-useEffect(() => {
+  useEffect(() => {
     if (!isLoading) {
       const timer = setTimeout(() => setShow(true), 700);
       return () => clearTimeout(timer);
     }
   }, [isLoading]);
 
+  useEffect(() => {
+    if (!userData?.city) {
+      const alertTimeout = setTimeout(() => {
+        Alert.alert(
+          "Add City",
+          "Please add City from Profile => Edit Profile",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Add",
+              onPress: () => NavigationService.navigate(routes.EDIT_PROFILE_SCREEN),
+            },
+          ],
+          { cancelable: true }
+        );
+      }, 3000);
+
+      return () => clearTimeout(alertTimeout);
+    }
+  }, [userData]);
+
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchData();
     setRefreshing(false);
   };
-  
+
 
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
       <Header
         userName={userData?.name}
+        // reloadScreen={()=>fetchData()}
       />
       {!show && !refreshing ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -79,15 +104,18 @@ useEffect(() => {
                 tintColor={colors.buttonBg} // iOS spinner color
               />
             }  >
-            {bannerList?.banner?.length > 0 &&(
-              <BanerComponent
-                data={bannerList?.banner}
-              // data={banerData}
-              />
-            )}
+            {/* {bannerList?.banner?.length > 0 &&( */}
+            <BanerComponent
+              data={bannerList?.banner}
+            // data={banerData}
+            />
+            {/* )} */}
             <CategoriesComponent
               data={categoryListData}
-              handleSeeAll={() => NavigationService.navigate(routes?.CATEGORIES_SCCREEN)}
+              handleSeeAll={() => {
+                dispatch(setCategoriListData())  
+                NavigationService.navigate(routes?.CATEGORIES_SCCREEN)
+              }}
             />
             {categoryBookletData?.category?.map((item, index) => {
               if (!item?.booklets || item?.booklets.length === 0) return null;
@@ -107,24 +135,25 @@ useEffect(() => {
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.listStyle}
                   >
-                    {item.booklets.map((booklet: any, i: number) => (
+                    {item.booklets.map((booklet: any, i: number) => {
+                      return(
                       <View key={booklet.id || i} style={styles.categoryBookletContainer}>
                         <Card
+                          index={i}
                           item={booklet}
                           imageBaseUrl={categoryBookletData?.baseurl}
-                          index={i}
                           handleCardOnPress={() => {
                             // Add navigation or logic here
-                            NavigationService.navigate(routes.DETAILS_SCREEN,{data:booklet})
+                            NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet })
                           }}
-                          imageUrl={categoryBookletData?.baseurl + booklet?.booklet}
+                          imageUrl={booklet?.booklet ? { uri: categoryBookletData?.baseurl + booklet?.booklet } : defaultBookletImage}
                           name={booklet?.name}
                           price={booklet.price}
-                          address={(booklet?.city || booklet?.state) ? booklet?.city?.name + booklet?.state?.name : "---"}
+                          address={(booklet?.client?.address) ? booklet?.client?.address : "---"}
                         />
 
                       </View>
-                    ))}
+                    )})}
                     <View
                       style={
                         styles.seeAllContainer2
@@ -132,6 +161,8 @@ useEffect(() => {
                     >
                       <TouchableOpacityView
                         style={styles.seeAllBtn2Style}
+                        onPress={() => NavigationService.navigate(routes.CATEGORIES_LIST_SCCREEN, { title: item?.name, id: item?.uuid })
+                        }
                       >
                         <Image
                           source={rightArrowIcon}

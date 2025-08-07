@@ -1,8 +1,8 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import { commonStyles } from '@theme/commonStyles'
-import { AppText, BOLD, TWENTY_EIGHT } from '@components/AppText'
+import { AppText, BOLD, TWENTY_EIGHT, WHITE } from '@components/AppText'
 import Header from '@components/Header'
 import ToolBar from '@components/ToolBar'
 import { cardDummyData, historyViewDealsDummyData, scanViewDealsDummyData } from '@helper/dumyData'
@@ -12,86 +12,78 @@ import TouchableOpacityView from '@components/TouchableOpacityView'
 import { colors } from '@theme/colors'
 import NavigationService from '@navigations/NavigationService'
 import { REDEEM_SUCCESSFULL_SCREEN } from '@navigations/routes'
-import ViewDealsBottomSheet from '@screens/scan/viewDealsBottomSheet'
+// import ViewDealsBottomSheet from '@screens/scan/viewDealsBottomSheet'
+import { s, vs } from 'react-native-size-matters/extend'
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
+import { getVendorHistoryList } from '@actions/history/historyAction'
+import ViewDealsBottomSheet from './viewDealsBottomSheet'
 
 const History = () => {
-  const redeemSheetRef = useRef(null);
-const ViewDealsRef = useRef();
-  const onRedeemPress = () => {
-    redeemSheetRef.current?.open();
-  };
+  const dispatch = useAppDispatch();
+  const {vendorHistoryList} = useAppSelector((state)=>state?.history)
 
-  const onViewPress = ()=>{
-    ViewDealsRef.current?.open();
+  const ViewDealsRef = useRef();
+
+  const [viewData,setViewData] = useState();
+
+useEffect(()=>{
+dispatch(getVendorHistoryList())
+},[])
+
+  // const onRedeemPress = () => {
+  //   redeemSheetRef.current?.open();
+  // };
+
+  const onViewPress = (data)=>{
+    setViewData(data)
+
+    setTimeout(()=>{
+      ViewDealsRef.current?.open();
+    },200)
   }
 
-  const handleCancel = () => {
-    redeemSheetRef.current?.close();
-  };
+  // const handleCancel = () => {
+  //   redeemSheetRef.current?.close();
+  // };
 
-  const handleContinue = () => {
-    redeemSheetRef.current?.close();
-    // console.log('Confirmed Redemption');
-    NavigationService.navigate(REDEEM_SUCCESSFULL_SCREEN)
-  };
+  // const handleContinue = () => {
+  //   redeemSheetRef.current?.close();
+  //   // console.log('Confirmed Redemption');
+  //   NavigationService.navigate(REDEEM_SUCCESSFULL_SCREEN)
+  // };
+  
 
   const renderItem = ({ item }) => {
     return (
       <CommonCard
-        key={item.id}
-        data={item}
-        showRedeemBtn
-        onRedeemPress={onRedeemPress}
-        onViewPress={onViewPress}
-      />
+                        key={item.id}
+                        data={item}
+                        onViewPress={() => onViewPress(item)}
+                        heading={item?.heading}
+                        htmlContent={item?.description}
+                        // couponCount={item?.no_of_coupons}
+                        showRedeemBtn
+                        redeemButtonStyle={{backgroundColor:colors.disabledBtn}}
+                        redeemDisabled={true}
+                    />
     );
   };
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
-      <ToolBar isLeftIcon title="Deals" mainContainerStyle={{ paddingHorizontal: 20 }} />
-
+      {/* <ToolBar isLeftIcon title="Deals" mainContainerStyle={{ paddingHorizontal: 20 }} /> */}
+ <Header currentCity />
       <FlatList
-        data={cardDummyData}
+        data={vendorHistoryList}
         renderItem={renderItem}
         keyExtractor={(_, index) => index.toString()}
-        contentContainerStyle={{ paddingVertical: 40, gap: 10 }}
+        contentContainerStyle={{ paddingVertical: vs(20), gap: s(10) }}
         showsVerticalScrollIndicator={false}
       />
-
-      <RBSheet
-        ref={redeemSheetRef}
-        closeOnDragDown
-        closeOnPressMask
-        customStyles={{
-          container: {
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            padding: 20,
-          },
-        }}
-      >
-        <View style={styles.sheetContent}>
-          <AppText type={TWENTY_EIGHT} weight={BOLD} style={styles.redeemText}>
-            Are you sure want to Redeem it?
-          </AppText>
-
-          <View style={styles.buttonRow}>
-            <TouchableOpacityView onPress={handleCancel} style={styles.cancelBtn}>
-              <AppText weight={BOLD} style={{ color: colors.buttonText }}>
-                CANCEL
-              </AppText>
-            </TouchableOpacityView>
-
-            <TouchableOpacityView onPress={handleContinue} style={styles.continueBtn}>
-              <AppText weight={BOLD} style={{ color: colors.white }}>
-                CONTINUE
-              </AppText>
-            </TouchableOpacityView>
-          </View>
-        </View>
-      </RBSheet>
-      <ViewDealsBottomSheet ref={ViewDealsRef} heading={'Deal View'} subHeading={'Two Breakfast Buffet Valid for 2 People One Time'} data={scanViewDealsDummyData} height={380}/>
+      <ViewDealsBottomSheet
+       ref={ViewDealsRef} heading={'Deal View'} 
+       subHeading={viewData?.heading}
+        data={viewData} height={vs(400)}/>
     </AppSafeAreaView>
   );
 };

@@ -1,17 +1,23 @@
 import { colors } from "@theme/colors";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
+import { ms, s, vs } from "react-native-size-matters/extend";
 
 const styles = StyleSheet.create({
     mainContainer: {
-        backgroundColor: colors.white
+        flex: 1,
+        backgroundColor: colors.white,
     },
     coverImageStyle: {
         width: "100%",
-        height: 240,
+        height: vs(300),
     },
     toolBarStyle: {
-        marginTop: 40,
-        marginLeft: 16,
+        marginTop: vs(50),
+        marginLeft: s(16),
+        backgroundColor: colors.semiTransprent,
+        width: "30%",
+        height: vs(40),
+        paddingTop: 0,
     },
     ratingContainer: {
         flexDirection: 'row',
@@ -20,32 +26,37 @@ const styles = StyleSheet.create({
     },
     ratingContainer2: {
         flexDirection: 'row',
-        gap: 6,
+        gap: s(6),
         alignItems: 'center',
     },
     ratingViewBox: {
         backgroundColor: colors.placeholder,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 15,
+        paddingHorizontal: s(10),
+        paddingVertical: vs(4),
+        borderRadius: ms(15),
     },
     ratingIconContainer: {
-        // width:'100%',
+        width: '100%',
         flexDirection: 'row',
-        // justifyContent:'flex-end',
+        justifyContent: 'flex-end',
         // alignItems:'flex-end',
         // backgroundColor:'red',
         // alignSelf:"flex-end",
-        gap: 12,
+        gap: s(12),
     },
     iconsStyle: {
-        width: 20,
-        height: 20
+        width: s(20),
+        height: s(20)
     },
     secondContainer: {
-        paddingHorizontal: 16,
-        paddingTop: 12,
-        flex: 1
+        paddingHorizontal: s(16),
+        paddingTop: vs(12),
+        flex: 1,
+        borderTopLeftRadius: ms(20),
+        borderTopRightRadius: ms(20),
+        overflow: 'hidden',
+        top: vs(-20),
+        backgroundColor: colors.white,
     },
     thridContainer: {
         flex: 1,
@@ -53,23 +64,36 @@ const styles = StyleSheet.create({
     },
     buyBtnStyle: {
         backgroundColor: colors.buttonBg,
-        paddingVertical: 15,
+        paddingVertical: vs(15),
         width: '100%',
         alignItems: 'center',
-        borderRadius: 100
+        borderRadius: ms(100)
     },
     bottomBtnContainer: {
-        justifyContent: 'center',
-        height: 80,
+        // justifyContent: 'center',
+        // height: vs(80),
+        // borderTopWidth: 1,
+        // borderTopColor: colors.borderColor,
+        // paddingHorizontal: s(16),
+        // backgroundColor:'green',
+        // bottom:0
+        position: 'absolute',
+
+        bottom: 0,
+        left: 0,
+        right: 0,
+        paddingHorizontal: s(16),
+        paddingVertical: 10,
         borderTopWidth: 1,
         borderTopColor: colors.borderColor,
-        paddingHorizontal: 16,
+        //   paddingBottom: Platform.OS === 'ios' ? vs(10) : vs(10), 
+        backgroundColor: colors.white,
     },
     titleTextStyle: {
-        marginTop: 15
+        marginTop: vs(15)
     },
     disTextStyle: {
-        marginVertical: 10
+        marginVertical: vs(10)
     },
 });
 

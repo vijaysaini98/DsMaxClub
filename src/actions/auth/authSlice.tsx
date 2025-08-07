@@ -3,7 +3,9 @@ export const initialState = {
   isLoading: false,
   isBtnLoading: false,
   userData: undefined,
-  cityList: []
+  cityList: [],
+  termsCondition:{},
+  privacyPolicy:{}
 };
 
 export const authSlice = createSlice({
@@ -22,10 +24,16 @@ export const authSlice = createSlice({
     setCityList: (state, { payload }) => {
       state.cityList = payload;
     },
+    setTermCondition:(state,{payload})=>{
+      state.termsCondition = payload;
+    },
+    setPrivacyPolicy:(state,{payload})=>{
+      state.privacyPolicy = payload;
+    },
     resetAuth: (state, { payload }) => {
-      state = initialState;
+      return initialState;
     },
   },
 });
-export const { setLoading, setBtnLoading, setUserData, setCityList, resetAuth }: any = authSlice.actions;
+export const { setLoading, setBtnLoading, setUserData, setCityList,setTermCondition,setPrivacyPolicy, resetAuth }: any = authSlice.actions;
 export const authReducer = authSlice.reducer;

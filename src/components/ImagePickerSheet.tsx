@@ -10,9 +10,10 @@ import { colors } from '@theme/colors';
 interface ImagePickersheetProps {
     refRBSheet: React.RefObject<RBSheet>;
     setImageUri: (uri: string) => void;
+    onSucess:(uri:string)=>void;
 }
 
-const ImagePickersheet: React.FC<ImagePickersheetProps> = ({ refRBSheet, setImageUri }) => {
+const ImagePickersheet: React.FC<ImagePickersheetProps> = ({ refRBSheet, setImageUri,onSuccess }) => {
     const requestCameraPermission = async () => {
         if (Platform.OS === 'android') {
             const granted = await PermissionsAndroid.request(
@@ -35,6 +36,7 @@ const ImagePickersheet: React.FC<ImagePickersheetProps> = ({ refRBSheet, setImag
                     type: response.assets?.[0]?.type,
                 };
                 setImageUri(_data);
+                onSuccess(_data)
             }
             refRBSheet.current?.close();
         });
@@ -50,6 +52,7 @@ const ImagePickersheet: React.FC<ImagePickersheetProps> = ({ refRBSheet, setImag
                     type: response.assets?.[0]?.type,
                 };
                 setImageUri(_data);
+                onSuccess(_data)
             }
             refRBSheet.current?.close();
         });

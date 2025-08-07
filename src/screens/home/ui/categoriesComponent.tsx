@@ -7,6 +7,7 @@ import { getCategoryDetails, height, width } from '@utils/index'
 import NavigationService from '@navigations/NavigationService'
 import { CATEGORIES_LIST_SCCREEN } from '@navigations/routes'
 import { SvgXml } from 'react-native-svg'
+import { ms, s, vs } from 'react-native-size-matters/extend'
 
 export const SvgImageFromUri = ({ uri ,height,width}: { uri: string,height?:string,width?:string }) => {
   const [svgXml, setSvgXml] = useState<string | null>(null)
@@ -52,7 +53,7 @@ const CategoriesComponent = ({ data, handleSeeAll }) => {
               style={styles.cateCardStyle(item?.border_color)}
             >
               {item?.icon?.includes('.svg') ? (
-                <View style={{height:60,width:60}}>
+                <View style={styles.svgIconContainer}>
                 <SvgImageFromUri uri={data?.baseurl + item?.icon} />
                 </View>
               ) : (
@@ -76,13 +77,13 @@ export default CategoriesComponent
 
 const styles = StyleSheet.create({
   categoriesMainContainer: {
-    paddingVertical: 18
+    paddingVertical: vs(18)
   },
   categoriesHeaderContainer: {
     flexDirection: "row",
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal:s(16),
   },
   cateTitle: {
     width: "80%"
@@ -93,29 +94,34 @@ const styles = StyleSheet.create({
   },
   categoriesContainer: {
     flexDirection: 'row',
-    paddingTop: 16,
-    paddingLeft: 16,
-    gap: 16,
-    paddingRight: 16
+    paddingTop: vs(16),
+    // paddingLeft: 16,
+    gap: vs(16),
+    paddingHorizontal:vs(16)
+    // paddingRight: 16
   },
   cateCardStyle: (borderColor: boolean) => ({
-    height: 120,
-    borderWidth: 1,
+    height: vs(120),
+    borderWidth: s(1),
     borderColor: borderColor,
-    borderRadius: 12,
+    borderRadius: ms(12),
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: vs(16),
     // paddingHorizontal: 10,
-    width: 110
+    width: s(110)
   }),
   cateLogoImage: {
-    width: 60,
-    height: 60,
-    marginVertical: 10,
+    width: s(60),
+    height: vs(60),
+    marginVertical: vs(10),
     // borderRadius:30
   },
   cateText: {
     textAlign: 'center',
   },
+  svgIconContainer:{
+    height:vs(60),
+    width:s(60)
+  }
 })

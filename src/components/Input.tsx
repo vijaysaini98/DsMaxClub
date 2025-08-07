@@ -1,23 +1,10 @@
 import React from "react";
-import { Image, TextInput, View, TextInputProps, ViewStyle, ImageSourcePropType, StyleProp, StyleSheet } from "react-native";
+import { Image, TextInput, View, StyleSheet } from "react-native";
 import TouchableOpacityView from "./TouchableOpacityView";
 import { fontFamily } from "@theme/fonts";
 import { colors } from "@theme/colors";
 import { AppText, ERROR_TEXT } from "./AppText";
-
-interface InputProps extends TextInputProps {
-  secureTextEntry?: boolean;
-  handleLeftIconPress?: () => void;
-  inputStyle?: StyleProp<any>;
-  inputContainerStyle?: StyleProp<ViewStyle>;
-  placeholder?: string;
-  placeholderTextColor?: string;
-  value?: string;
-  onChangeText?: (text: string) => void;
-  leftIcon?: ImageSourcePropType;
-  errorText?: string,
-  editable:boolean
-}
+import { InputProps } from "src/types/common";
 
 const Input: React.FC<InputProps> = ({
   secureTextEntry,

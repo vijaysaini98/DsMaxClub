@@ -5,7 +5,7 @@ import {
     Dimensions,
     FlatList,
     Animated,
-  ImageBackground,
+    ImageBackground,
 } from 'react-native';
 import { getStartBg1, getStartBg2, getStartBg3, getStartBg4 } from '../../helper/imagesAssets';
 import { colors } from '@theme/colors';
@@ -14,6 +14,7 @@ import NavigationService from '@navigations/NavigationService';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import * as routes from '@navigations/routes';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
+import { vs } from 'react-native-size-matters/extend';
 
 const { width, height } = Dimensions.get('window');
 
@@ -119,13 +120,14 @@ export { OnboardingScreen };
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor:colors.white
+        backgroundColor: colors.white,
+        // paddingBottom: 10
     },
     image: {
         width,
         height,
         justifyContent: 'flex-end',
-        paddingBottom: 200,
+        paddingBottom: vs(200),
         alignItems: 'center',
     },
     textWrapper: {

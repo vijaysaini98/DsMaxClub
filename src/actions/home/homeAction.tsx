@@ -1,9 +1,7 @@
 import { API } from '@services/appClient';
 import { AppDispatch } from '@redux/store';
 import Toast from "react-native-simple-toast";
-import { setBannerData, setBookletDetailAbout, setBookletDetailAllDeals, setBookletDetailGallery, setBookletDetailT_C, setBookletList, setCategoriBookletData, setCategoriListData, setLoading } from './homeSlice';
-import { CATEGORIES_LIST_SCCREEN } from '@navigations/routes';
-import NavigationService from '@navigations/NavigationService';
+import { setBannerData, setBookletDetailAbout, setBookletDetailAllDeals, setBookletDetailGallery, setBookletDetailT_C, setBookletList, setBtnLoading, setCategoriBookletData, setCategoriListData, setLoading } from './homeSlice';
 
 export const getCategoryList =
   (limit?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
@@ -60,7 +58,6 @@ export const getBannerList =
       }
     } catch (e: any) {
       console.log("bannerApi Error", e);
-
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false))
@@ -112,5 +109,25 @@ export const getBookletDetail =
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false))
+    }
+  };
+
+  export const bookletRequest =
+  (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setBtnLoading(true));
+      const response = await API.homeApi.booklet_request(data);
+      if (response?.status == 200) {
+       Toast.show(response?.message, Toast.LONG);
+        return;
+      } else {
+        throw new Error('No response data received from backend.');
+      }
+    } catch (e: any) {
+      console.log("e", e);
+
+      Toast.show(e?.response?.data?.message, Toast.LONG);
+    } finally {
+      dispatch(setBtnLoading(false))
     }
   };

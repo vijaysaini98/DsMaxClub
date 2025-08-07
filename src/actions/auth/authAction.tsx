@@ -1,5 +1,5 @@
 import { API } from '@services/appClient';
-import { resetAuth, setCityList, setLoading, setUserData } from './authSlice';
+import { resetAuth, setCityList, setLoading, setPrivacyPolicy, setTermCondition, setUserData } from './authSlice';
 import {
   removeAccessToken,
   setAccessToken,
@@ -52,8 +52,20 @@ export const singUp =
       dispatch(setLoading(true));
       const response = await API.authApi.singUp(data);
       if (response?.status == 200) {
+          setAccessToken(response?.data?.remember_token);
+        setItem(USER_ID, response?.data?.uuid);
+        setItem(USER_TYPE, response?.data?.user_type);
+
+        dispatch(userProfile({ userid: response?.data?.uuid }));
+        dispatch(getCityList());
+        if (response?.data?.user_type == 2) {
+          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+        } else {
+          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
+        }
         Toast.show(response?.message, Toast.LONG);
-        NavigationService.reset(routes?.LOGIN_SCREEN);
+        // NavigationService.reset(routes?.LOGIN_SCREEN);
+
         onSucess && onSucess();
         return;
       } else {
@@ -99,9 +111,27 @@ export const sendOtp =
       const response = await API.authApi.send_otp(data);
 
       if (response?.status == 200) {
-        NavigationService.navigate(routes?.VERIFICATION_SCREEN, {
-          email: data?.email,
-        });
+        Toast.show(response?.message, Toast.LONG);
+        onSucess && onSucess();
+        return;
+      } else {
+        throw new Error('No response data received from backend.');
+      }
+    } catch (e: any) {
+      Toast.show(e?.response?.data?.message, Toast.LONG);
+      console.log('e', e);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  export const customerVerifySendOtp =
+  (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await API.authApi.customer_send_otp_verify(data);
+
+      if (response?.status == 200) {
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess();
         return;
@@ -123,9 +153,6 @@ export const verifyOtp =
       const response = await API.authApi.verify_otp(data);
 
       if (response?.status == 200) {
-        NavigationService.navigate(routes?.RESET_PASSWORD_SCREEN, {
-          email: data?.email,
-        });
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess();
         return;
@@ -180,13 +207,16 @@ export const userProfile =
   };
 
 export const updateUserProfile =
-  (data?: any, userId?: string, onSucess?: any) =>
+  (data?: any, userId?: string, onSucess?: any,from?:string) =>
   async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
       const response = await API.userApi.update_user_profile(data);
       if (response?.status == 200) {
-        Toast.show(response?.message, Toast.LONG);
+        if(from !=="header"){
+ Toast.show(response?.message, Toast.LONG);
+        }
+       
         dispatch(userProfile(userId));
         onSucess && onSucess();
         return;
@@ -194,6 +224,8 @@ export const updateUserProfile =
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
+      console.log("e",e);
+      
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false));
@@ -239,3 +271,27 @@ export const getCityList =
       dispatch(setLoading(false));
     }
   };
+
+  export const getPrivacy_TermCondition =
+  (data?: any,from?:string) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await API.authApi.pageApi(data);
+      if (response?.status == 200) {
+       if(data == "privacy-policy"){
+        dispatch(setPrivacyPolicy(response?.data))
+       }else{
+          dispatch(setTermCondition(response?.data))
+       }
+        return;
+      } else {
+        throw new Error('No response data received from backend.');
+      }
+    } catch (e: any) {
+      Toast.show(e?.response?.data?.message, Toast.LONG);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+

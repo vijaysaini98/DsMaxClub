@@ -5,6 +5,8 @@ import { colors } from '@theme/colors'
 import { width } from '@utils/index'
 import { IMGE_URL } from '@services/config'
 import FastImage from 'react-native-fast-image'
+import { defaultBanner } from '@helper/imagesAssets'
+import { ms, s, vs } from 'react-native-size-matters/extend'
 
 const BanerComponent = ({ data }: { data: any }) => {
   return (
@@ -12,11 +14,15 @@ const BanerComponent = ({ data }: { data: any }) => {
       <Swiper
         autoplay
         loop
+        loadMinimal
+        autoplayTimeout={5}
         dotColor={colors.inActiveDot}
         activeDotColor={colors.placeholder}
-        paginationStyle={{ bottom: -24 }}
+        paginationStyle={{ bottom: vs(-24) }}
       >
-        {data?.map((item: string, index: number) => {
+        {
+        data?.length > 0 ?
+        data?.map((item: string, index: number) => {
           return (
             <View key={index} style={styles.slider}>
               <View style={styles.imageWrapper}>
@@ -31,7 +37,18 @@ const BanerComponent = ({ data }: { data: any }) => {
               </View>
             </View>
           );
-        })}
+        })
+      :
+      (
+              <View style={styles.imageWrapper}>
+                <FastImage
+                  source={defaultBanner}
+                  style={styles.imageStyle}
+                  resizeMode={FastImage.resizeMode.cover}
+                />
+              </View>
+      )
+      }
       </Swiper>
     </View>
   );
@@ -42,7 +59,7 @@ export default BanerComponent
 
 const styles = StyleSheet.create({
   container: {
-    height: 230,
+    height: vs(230),
     marginHorizontal: 16,
     borderRadius: 26,
     // overflow: 'hidden',
@@ -64,8 +81,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   imageStyle: {
-    width: width - 32,
-    height: 230,
-    borderRadius: 26,
+    width: s(width),
+    height: vs(250),
+    borderRadius: ms(26),
   },
 });

@@ -16,6 +16,7 @@ import { SpinnerSecond } from '@components/Spinner';
 import { IMGE_URL } from '@services/config';
 import Toast from "react-native-simple-toast";
 import CityDropDown, { CityOption } from '@components/cityDropDown';
+import { ms, s, vs } from 'react-native-size-matters/extend';
 
 interface ProfileState {
     name: string;
@@ -43,12 +44,8 @@ const EditProfile: React.FC = () => {
         city: userData?.city_name,
         cityId: userData?.city,
     });
-console.log("userData",userData);
 
     const [imageUri, setImageUri] = useState<string | ImageSourcePropType | null>(userData?.profile_image);
-
-// const disableSaveBtn = state?.city == userData?.city || state?.name == userData || state?.phone
-
 
     const openBottomSheet = () => {
         setSearchCityText('');
@@ -71,37 +68,32 @@ console.log("userData",userData);
         bottomSheetRef.current?.close();
     };
 
-    const handleChangeProfileImage = () => {
-         if (!imageUri?.uri) {
-    console.warn('No image selected');
-    return;
-  }
+    const handleChangeProfileImage = (image) => {
+        if (!image?.uri) {
+            console.warn('No image selected');
+            return;
+        }
         let formData = new FormData()
-         formData.append("profile_image", imageUri);
+        formData.append("profile_image", image);
 
         dispatch(updateUserProfileImage(formData, { userid: userData?.uuid }))
     }
 
     const handleSaveBtn = () => {
-        // console.log("ansdlkcnkl",
-        //     state?.cityId ,"==>", userData?.city , state?.name ,"==>", userData?.name , state?.phone ,"==>", userData?.mobile
-        // );
-        
-        // console.log("bajcsjjajkbsdc",state?.cityId === userData?.city && state?.name === userData?.name && state?.phone === userData?.mobile);
-        
-        if(state?.cityId === userData?.city && state?.name === userData?.name && state?.phone === userData?.mobile ){
-             Toast.show("There is no change", Toast.LONG);
+        if (state?.cityId === userData?.city && state?.name === userData?.name && state?.phone === userData?.mobile) {
+            Toast.show("There is no change", Toast.LONG);
         }
-        else{
-//  // Save logic here
-        let data = {
-            name: state?.name,
-            mobile: state?.phone,
-            city: state?.cityId,
+        else {
+            //  // Save logic here
+            let data = {
+                name: state?.name,
+                mobile: state?.phone,
+                city: state?.cityId,
+                current_city: userData?.current_city ? userData?.current_city : state?.cityId
+            }
+            dispatch(updateUserProfile(data, { userid: userData?.uuid }))
         }
-        dispatch(updateUserProfile(data, { userid: userData?.uuid }))
-        }
-       
+
     };
 
     return (
@@ -128,11 +120,11 @@ console.log("userData",userData);
                             <Image source={cameraIcon} style={styles.cameraIcon} resizeMode='contain' />
                         </TouchableOpacityView>
                     </View>
-                    <TouchableOpacityView
+                    {/* <TouchableOpacityView
                         onPress={() => handleChangeProfileImage()}
                         style={styles.changeProfileBtn}>
                         <AppText color={BUTTON_TEXT}>Change Profile</AppText>
-                    </TouchableOpacityView>
+                    </TouchableOpacityView> */}
                 </View>
                 <View style={styles.inputSection}>
                     <Input
@@ -174,7 +166,7 @@ console.log("userData",userData);
                     onPress={handleSaveBtn}
                     style={styles.saveBtn}
                     loader={isBtnLoading}
-                    // disabled={disableSaveBtn}
+                // disabled={disableSaveBtn}
                 >
                     <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>SAVE</AppText>
                 </TouchableOpacityView>
@@ -190,6 +182,7 @@ console.log("userData",userData);
             <ImagePickersheet
                 refRBSheet={imagePickerRef}
                 setImageUri={setImageUri}
+                onSuccess={handleChangeProfileImage}
             />
         </AppSafeAreaView>
     );
@@ -199,95 +192,95 @@ export default EditProfile;
 
 const styles = StyleSheet.create({
     safeArea: {
-        paddingHorizontal: 16,
+        paddingHorizontal: s(16),
     },
     keyboardAware: {
         flex: 1,
     },
     profileImageSection: {
         alignItems: 'center',
-        marginTop: 40,
+        marginTop: vs(40),
     },
     profileImageWrapper: {
         position: 'relative',
-        marginBottom: 12,
+        marginBottom: vs(12),
         backgroundColor: colors.white,
-        borderRadius: 100,
+        borderRadius: ms(100),
         borderWidth: 0.5,
         borderColor: colors.borderColor,
         alignItems: 'center',
         justifyContent: 'center',
     },
     profileImage: {
-        width: 154,
-        height: 154,
-        borderRadius: 100,
+        width: ms(154),
+        height: ms(154),
+        borderRadius: ms(100),
     },
     initialsCircle: {
-        width: 128,
-        height: 128,
-        borderRadius: 64,
+        width: ms(128),
+        height: ms(128),
+        borderRadius: ms(64),
         backgroundColor: colors.borderColor,
         justifyContent: 'center',
         alignItems: 'center',
     },
     cameraBtn: {
         position: 'absolute',
-        bottom: -15,
+        bottom: vs(-15),
         alignSelf: 'center',
         backgroundColor: "rgba(248, 249, 253, 1)",
-        borderRadius: 20,
-        width: 40,
-        height: 40,
+        borderRadius: ms(20),
+        width: ms(40),
+        height: ms(40),
         alignItems: 'center',
         justifyContent: 'center',
     },
     cameraIcon: {
-        width: 20,
-        height: 20,
+        width: s(20),
+        height: vs(20),
     },
     changeProfileBtn: {
         borderWidth: 1,
         borderColor: colors.buttonText,
-        paddingHorizontal: 15,
-        paddingVertical: 8,
-        borderRadius: 20,
-        marginTop: 16,
+        paddingHorizontal: s(15),
+        paddingVertical: vs(8),
+        borderRadius: ms(20),
+        marginTop: vs(16),
     },
     inputSection: {
-        gap: 30,
-        marginTop: 40,
+        gap: s(30),
+        marginTop: vs(40),
     },
     citySelector: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 19,
+        paddingHorizontal: s(20),
+        paddingVertical: vs(19),
         borderWidth: 1,
-        borderRadius: 100,
+        borderRadius: ms(100),
         justifyContent: 'space-between',
         borderColor: colors.borderColor,
     },
     citySelectorLeft: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 23,
+        gap: s(23),
     },
     cityIcon: {
-        width: 20,
-        height: 20,
+        width: ms(20),
+        height: ms(20),
         tintColor: colors.borderColor,
     },
     downArrowIcon: {
-        width: 10,
-        height: 20,
+        width: s(10),
+        height: vs(20),
     },
     saveBtn: {
         backgroundColor: colors.buttonBg,
-        paddingVertical: 19,
+        paddingVertical: vs(19),
         alignItems: 'center',
-        borderRadius: 50,
-        marginBottom: 48,
-        marginTop: 40,
+        borderRadius: ms(50),
+        marginBottom: vs(48),
+        marginTop: vs(40),
     },
 });

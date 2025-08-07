@@ -4,7 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import { AppText, BOLD, EIGHTEEN, FOURTEEN, SEMI_BOLD, SIXTEEN, THIRD, TWENTY_EIGHT, WHITE } from '@components/AppText';
 import { colors } from '@theme/colors';// ✅ make sure this constant is correct
 import NavigationService from '@navigations/NavigationService';
-import { REDEEM_SUCCESSFULL_SCREEN } from '@navigations/routes';
+import { REDEEM_SUCCESSFULL_SCREEN, REDEEM_SUCCESSFULL_SCREEN_USER } from '@navigations/routes';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 
 const RedeemSheet = forwardRef((props, ref) => {
@@ -18,7 +18,7 @@ const RedeemSheet = forwardRef((props, ref) => {
 
   const onPress = () => {
     ref?.current?.close();
-    NavigationService.navigate(REDEEM_SUCCESSFULL_SCREEN);
+    NavigationService.navigate(REDEEM_SUCCESSFULL_SCREEN_USER);
   };
 
   return (

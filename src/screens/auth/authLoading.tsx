@@ -24,20 +24,15 @@ const AuthLoading = () => {
 
   const bootstrapAsync = async () => {
     try {
-      // const customerToken = await AsyncStorage.getItem(USER_TOKEN_KEY);
-      // const loginType = await AsyncStorage.getItem(LOGIN_TYPE);
       const customerToken = await getItem(Access_Token);
       const userId = await getItem(USER_ID);
       const userType: any = await getItem(USER_TYPE);
-      console.log(userType, 'userType');
-      console.log(customerToken, 'customerToken-');
-
 
       if (customerToken) {
         dispatch(userProfile({ userid: userId }));
         dispatch(getBannerList({ screen: '1' }))
         dispatch(getCityList());
-        if (userType !== 2) {
+        if (userType == 2) {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
         } else {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
@@ -52,25 +47,20 @@ const AuthLoading = () => {
 
   return (
     <AppSafeAreaView
-      style={{
-        alignItems: 'center',
-        flex: 1,
-        backgroundColor: colors.white,
-        justifyContent: 'center',
-      }}
+      style={styles.mainContainer}
     >
-      {/* <View style={}> */}
       <ActivityIndicator size={'large'} color={colors.buttonBg} />
-      {/* </View> */}
     </AppSafeAreaView>
   );
 };
 
 export default AuthLoading;
 
-// const styles = StyleSheet.create({
-//   topContainer: {
-//     alignItems: "center",
-//     flexGrow: 1,
-//     backgroundColor: "white",
-//   },
+const styles = StyleSheet.create({
+  mainContainer: {
+    alignItems: 'center',
+    flex: 1,
+    backgroundColor: colors.white,
+    justifyContent: 'center',
+  }
+})
