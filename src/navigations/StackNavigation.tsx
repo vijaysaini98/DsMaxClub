@@ -44,6 +44,7 @@ const MyAuthLoadingStack = () => (
       name={routes.NAVIGATION_AUTH_LOADING_SCREEN}
       component={AuthLoading}
     />
+     <Stack.Screen name={routes.ONBOARDING} component={OnboardingScreen} />
     <Stack.Screen
       name={routes.NAVIGATION_AUTH_STACK}
       component={AuthStack}
@@ -71,7 +72,6 @@ const MyAuthLoadingStack = () => (
 
 const AuthStack = () => (
   <Stack.Navigator screenOptions={options}>
-    <Stack.Screen name={routes.ONBOARDING} component={OnboardingScreen} />
     <Stack.Screen name={routes.LOGIN_SCREEN} component={Login} />
     <Stack.Screen name={routes.FORGOT_PASSWORD_SCREEN} component={ForgotPassword} />
     <Stack.Screen name={routes.VERIFICATION_SCREEN} component={Verification} />

@@ -49,6 +49,7 @@ const MyCardCouponList = ({ data, route }) => {
     const renderItem = useMemo(
         () =>
             ({ item }: { item: CardItem }) => {
+                
                 return (
                     <CommonCard
                         key={item.id}
@@ -57,7 +58,7 @@ const MyCardCouponList = ({ data, route }) => {
                         heading={item?.heading}
                         htmlContent={item?.description}
                         btnTextColor={WHITE}
-                        couponCount={item?.no_of_coupons}
+                        couponCount={item?.total_coupons}
                         viewBtnDisabled={tab_status == "expire"}
                         status={tab_status}
                     />

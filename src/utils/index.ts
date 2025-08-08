@@ -136,3 +136,16 @@ export const vendorViewdetails = (value: any) => {
   ];
   return data;
 };
+
+
+export const extractLatLngFromUrl = (url: string): { lat: string; lng: string } | null => {
+  const regex = /@([-.\d]+),([-.\d]+)/;
+  const match = url.match(regex);
+  if (match && match.length >= 3) {
+    return {
+      lat: match[1],
+      lng: match[2],
+    };
+  }
+  return null;
+};

@@ -47,7 +47,7 @@ const ViewDetailsBottomSheet = ({ data, ref },) => {
                 <AppText type={TWENTY_EIGHT} weight={BOLD} style={styles.viewTextStyle}>View Details</AppText>
                 <AppText color={THIRD} type={EIGHTEEN} weight={SEMI_BOLD} style={{ marginTop: 20 }}>{data?.heading}</AppText>
                 <AppText color={THIRD} type={FOURTEEN} style={{ marginTop: 20 }}>{`No of Coupons:  ${data?.no_of_coupons}`}</AppText>
-                <AppText color={THIRD} type={FOURTEEN} style={{ marginTop: 20 }}>{`Maximum Redeem:  ${data?.maximum_redeem}`}</AppText>
+                {/* <AppText color={THIRD} type={FOURTEEN} style={{ marginTop: 20 }}>{`Maximum Redeem:  ${data?.maximum_redeem}`}</AppText> */}
                 <AppText color={THIRD} type={FOURTEEN} style={{ marginTop: 20, marginBottom: 5 }}>{"Description: "} </AppText>
 
                 <RenderHtml

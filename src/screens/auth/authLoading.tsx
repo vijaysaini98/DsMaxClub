@@ -38,7 +38,7 @@ const AuthLoading = () => {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
         }
       } else {
-        NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
+        NavigationService.reset(routes?.ONBOARDING);
       }
     } catch (e) {
       console.log(e);

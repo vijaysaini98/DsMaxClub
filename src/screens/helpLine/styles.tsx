@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     marginHorizontal: 16,
     marginTop: vs(48),
-    paddingBottom: 100,
+    paddingBottom: vs(150),
   },
   row: {
     flexDirection: 'row',

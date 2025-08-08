@@ -52,7 +52,7 @@ export const singUp =
       dispatch(setLoading(true));
       const response = await API.authApi.singUp(data);
       if (response?.status == 200) {
-          setAccessToken(response?.data?.remember_token);
+        setAccessToken(response?.data?.remember_token);
         setItem(USER_ID, response?.data?.uuid);
         setItem(USER_TYPE, response?.data?.user_type);
 
@@ -89,16 +89,20 @@ export const logout =
         dispatch(resetAuth());
         // dispatch()
         NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
+        // Toast.show("log Out", Toast.LONG);
         Toast.show(response?.message, Toast.LONG);
+
         return;
       } else {
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      console.log('e', e);
+      console.log('logout error ', e);
       removeAccessToken();
       NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
-      Toast.show(e?.response?.data?.message, Toast.LONG);
+      // Toast.show("log Out", Toast.LONG);
+      Toast.show("Success", Toast.LONG);
+
     } finally {
       dispatch(setLoading(false));
     }
@@ -125,7 +129,7 @@ export const sendOtp =
     }
   };
 
-  export const customerVerifySendOtp =
+export const customerVerifySendOtp =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
@@ -200,58 +204,60 @@ export const userProfile =
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      Toast.show(e?.response?.data?.message, Toast.LONG);
+      console.log("user proofile Error", e);
+
+      // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false));
     }
   };
 
 export const updateUserProfile =
-  (data?: any, userId?: string, onSucess?: any,from?:string) =>
-  async (dispatch: AppDispatch) => {
-    try {
-      dispatch(setLoading(true));
-      const response = await API.userApi.update_user_profile(data);
-      if (response?.status == 200) {
-        if(from !=="header"){
- Toast.show(response?.message, Toast.LONG);
+  (data?: any, userId?: string, onSucess?: any, from?: string) =>
+    async (dispatch: AppDispatch) => {
+      try {
+        dispatch(setLoading(true));
+        const response = await API.userApi.update_user_profile(data);
+        if (response?.status == 200) {
+          if (from !== "header") {
+            Toast.show(response?.message, Toast.LONG);
+          }
+
+          dispatch(userProfile(userId));
+          onSucess && onSucess();
+          return;
+        } else {
+          throw new Error('No response data received from backend.');
         }
-       
-        dispatch(userProfile(userId));
-        onSucess && onSucess();
-        return;
-      } else {
-        throw new Error('No response data received from backend.');
+      } catch (e: any) {
+        console.log("e", e?.response?.data);
+
+        Toast.show(e?.response?.data?.message, Toast.LONG);
+      } finally {
+        dispatch(setLoading(false));
       }
-    } catch (e: any) {
-      console.log("e",e);
-      
-      Toast.show(e?.response?.data?.message, Toast.LONG);
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
+    };
 
 export const updateUserProfileImage =
   (data?: any, userId?: string, onSucess?: any) =>
-  async (dispatch: AppDispatch) => {
-    try {
-      dispatch(setLoading(true));
-      const response = await API.userApi.user_profile_image(data);
-      if (response?.status == 200) {
-        dispatch(userProfile(userId));
-        Toast.show(response?.message, Toast.LONG);
-        onSucess && onSucess();
-        return;
-      } else {
-        throw new Error('No response data received from backend.');
+    async (dispatch: AppDispatch) => {
+      try {
+        dispatch(setLoading(true));
+        const response = await API.userApi.user_profile_image(data);
+        if (response?.status == 200) {
+          dispatch(userProfile(userId));
+          Toast.show(response?.message, Toast.LONG);
+          onSucess && onSucess();
+          return;
+        } else {
+          throw new Error('No response data received from backend.');
+        }
+      } catch (e: any) {
+        Toast.show(e?.response?.data?.message, Toast.LONG);
+      } finally {
+        dispatch(setLoading(false));
       }
-    } catch (e: any) {
-      Toast.show(e?.response?.data?.message, Toast.LONG);
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
+    };
 
 export const getCityList =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
@@ -266,29 +272,31 @@ export const getCityList =
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      Toast.show(e?.response?.data?.message, Toast.LONG);
+      console.log("city List Error", e?.response?.data);
+      // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false));
     }
   };
 
-  export const getPrivacy_TermCondition =
-  (data?: any,from?:string) => async (dispatch: AppDispatch) => {
+export const getPrivacy_TermCondition =
+  (data?: any, from?: string) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.pageApi(data);
       if (response?.status == 200) {
-       if(data == "privacy-policy"){
-        dispatch(setPrivacyPolicy(response?.data))
-       }else{
+        if (data == "privacy-policy") {
+          dispatch(setPrivacyPolicy(response?.data))
+        } else {
           dispatch(setTermCondition(response?.data))
-       }
+        }
         return;
       } else {
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      Toast.show(e?.response?.data?.message, Toast.LONG);
+      console.log("privacy policy error", e?.response?.data)
+      // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false));
     }

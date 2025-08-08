@@ -40,7 +40,11 @@ const CouponList = ({ data, route }) => {
             unique_entry: item?.unique_entry
         }
 
-        dispatch(couponCodeGenrate(data))
+        dispatch(couponCodeGenrate(data,handleSucess))
+    }
+
+    const handleSucess = () =>{
+        dispatch(getCoupon({ coupon_id }))
     }
 
     const renderItem = useMemo(
