@@ -13,11 +13,17 @@ export const getMyCardBookletList =
             if (response?.status == 200) {
                 if (data?.tabname == "all") {
                     dispatch(setMyCardAllBookletList(response?.data))
+                    dispatch(setMyCardActiveBookletList())
+                    dispatch(setMyCardExpiredBookletList())
                 } else if (data?.tabname == "active") {
                     dispatch(setMyCardActiveBookletList(response?.data))
+                    dispatch(setMyCardAllBookletList())
+                    dispatch(setMyCardExpiredBookletList())
                 }
-                else if (data?.tabname == "expired") {
+                else if (data?.tabname == "expire") {
                     dispatch(setMyCardExpiredBookletList(response?.data))
+                    dispatch(setMyCardActiveBookletList())
+                    dispatch(setMyCardAllBookletList())
                 }
                 return;
             } else {
@@ -80,6 +86,7 @@ export const couponCodeGenrate =
             if (response?.status == 200) {
                 dispatch(setCouponCodeData(response?.data))
                 NavigationService.navigate(REDEEM_SUCCESSFULL_SCREEN_USER)
+                onSucess && onSucess()
                 return;
             } else {
                 throw new Error('No response data received from backend.');

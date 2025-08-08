@@ -42,7 +42,7 @@ const OnboardingScreen = () => {
         if (currentIndex < slides.length - 1) {
             flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
         } else {
-            NavigationService.replace(routes.LOGIN_SCREEN);
+            NavigationService.replace(routes.NAVIGATION_AUTH_STACK);
         }
     };
 
@@ -100,7 +100,7 @@ const OnboardingScreen = () => {
                     </View>)}
 
                 {currentIndex < slides.length - 1 ? (
-                    <TouchableOpacityView containerStyle={styles.skipButtons} onPress={() => NavigationService.replace(routes.LOGIN_SCREEN)}>
+                    <TouchableOpacityView containerStyle={styles.skipButtons} onPress={() => NavigationService.replace(routes.NAVIGATION_AUTH_STACK)}>
                         <AppText type={EIGHTEEN}  >Skip</AppText>
                     </TouchableOpacityView>
                 ) : null}

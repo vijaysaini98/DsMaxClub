@@ -62,3 +62,10 @@ export interface ImageViewModalProps {
   activeIndex: number;
   data: string[];
 }
+
+
+ export type OpenMapArgs = {
+  lat: string | number;
+  lng: string | number;
+  label: string;
+};

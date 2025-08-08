@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
         width: "30%",
         height: vs(40),
         paddingTop: 0,
+        borderRadius:5
     },
     ratingContainer: {
         flexDirection: 'row',
@@ -62,13 +63,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.white
     },
-    buyBtnStyle: {
-        backgroundColor: colors.buttonBg,
+    buyBtnStyle: (disable:boolean)=>({
+        backgroundColor: disable ? colors.disabledBtn :colors.buttonBg,
         paddingVertical: vs(15),
         width: '100%',
         alignItems: 'center',
         borderRadius: ms(100)
-    },
+    }),
     bottomBtnContainer: {
         // justifyContent: 'center',
         // height: vs(80),

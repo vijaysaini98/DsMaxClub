@@ -1,4 +1,4 @@
-import { Image, ImageBackground, Linking, StatusBar, View } from 'react-native'
+import { Image, ImageBackground, Linking, Platform, StatusBar, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import ToolBar from '@components/ToolBar'
@@ -12,18 +12,21 @@ import About from './ui/about'
 import Gallery from './ui/gallery'
 import Terms_Condition from './ui/terms_condition'
 import styles from './styles'
-import { shareToAny } from '@utils/index'
+import { extractLatLngFromUrl, shareToAny } from '@utils/index'
 import { RenderTabBar } from '@components/RenderTabBar'
 import { IMGE_URL } from '@services/config'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { bookletRequest, getBookletDetail } from '@actions/home/homeAction'
 import FastImage from 'react-native-fast-image'
 import { s, vs } from 'react-native-size-matters/extend'
+import { OpenMapArgs } from 'src/types/common';
+import Toast from "react-native-simple-toast";
+
 
 const Details = ({ route }) => {
   const { data } = route?.params ?? ""
   const [index, setIndex] = React.useState(0);
-  const { isBtnLoading } = useAppSelector((state) => state.home)
+  const { isBtnLoading, bookletDetailAllDeals } = useAppSelector((state) => state.home)
 
   const dispatch = useAppDispatch()
 
@@ -80,22 +83,48 @@ const Details = ({ route }) => {
     let apidata = {
       booklet_id: data.uuid
     }
-    dispatch(bookletRequest(apidata))
+    dispatch(bookletRequest(apidata, handleSucess))
   }
 
-  const openInGoogleMaps = (url:string) => {
-  // const url = 'https://www.google.com/maps?gs_lcrp=EgZjaHJvbWUqDQgBEC4YrwEYxwEYgAQyCggAEAAY4wIYgAQyDQgBEC4YrwEYxwEYgAQyCQgCEAAYChiABDIJCAMQABgKGIAEMgkIBBAAGAoYgAQyCQgFEAAYChiABDIHCAYQABiABDIGCAcQRRg90gEINDEyOGowajmoAgawAgHxBWOcMG8Ry70i&um=1&ie=UTF-8&fb=1&gl=in&sa=X&geocode=KQEAAEDstG05MRfbTeztsDWz&daddr=A-15,+Ajmer+Rd,+Vidyut+Nagar+B,+Vidhyut+Nagar,+Jaipur,+Rajasthan+302021';
-  
-  Linking.canOpenURL(url)
-    .then((supported) => {
-      if (supported) {
-        Linking.openURL(url);
-      } else {
-        console.log("Can't open URL: " + url);
-      }
-    })
-    .catch((err) => console.error('An error occurred', err));
-};
+  const handleSucess = () => {
+    dispatch(getBookletDetail({
+      booklet_id: data?.uuid,
+      tabname: "All Deals"
+    }))
+  }
+
+
+  const openMap = ({ lat, lng, label }: OpenMapArgs) => {
+    const scheme = Platform.select({
+      ios: `maps://?q=${label}&ll=${lat},${lng}`,
+      android: `geo:${lat},${lng}?q=${lat},${lng}(${label})`,
+    });
+
+    if (scheme) {
+      Linking.openURL(scheme).catch(err =>
+        console.error('Error opening map: ', err),
+      );
+    }
+  };
+
+  const handleRedirection = (data: any) => {
+
+    console.log("data?.client?.location_url", data?.client?.location_url);
+
+    const coords = extractLatLngFromUrl(data?.client?.location_url);
+    if (coords) {
+      openMap({
+        lat: coords.lat,
+        lng: coords.lng,
+        label: data?.client?.name || "Location",
+      });
+    } else {
+      console.warn("Could not extract coordinates from URL");
+
+      Toast.show("Can't find this location", Toast.LONG);
+    }
+
+  }
 
   return (
     <View style={styles.mainContainer}>
@@ -173,22 +202,22 @@ const Details = ({ route }) => {
           <AppText type={SIXTEEN} color={PLACEHOLDER} style={styles.disTextStyle}>
             {data?.client?.short_desc ? data?.client?.short_desc : data?.client_short_desc}
           </AppText>}
-          
-           {data?.client?.location_url &&(
-            <TouchableOpacityView
-            onPress={()=> openInGoogleMaps(data?.client?.location_url)}
-            style={{flexDirection:'row',gap:5,alignItems:'center'}}
-            >
-              <Image
+        {data?.client?.location_url && (
+          <TouchableOpacityView
+            // onPress={()=> openInGoogleMaps(data?.client?.location_url)}
+            onPress={() => handleRedirection(data)}
+            style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}
+          >
+            <Image
               source={locationIcon}
-              style={{height:vs(15),width:s(15)}}
+              style={{ height: vs(15), width: s(15) }}
               tintColor={colors.borderColor}
               resizeMode='contain'
-              />
-              <AppText type={THIRTEEN} color={BUTTON_TEXT}style={{textDecorationLine:'underline',textDecorationColor:colors.buttonText,letterSpacing:0.8}} >{"Check Location"}</AppText>
-            </TouchableOpacityView>
-          )}
-          
+            />
+            <AppText type={THIRTEEN} color={BUTTON_TEXT} style={{ textDecorationLine: 'underline', textDecorationColor: colors.buttonText, letterSpacing: 0.8 }} >{"Check Location"}</AppText>
+          </TouchableOpacityView>
+        )}
+
         <View style={styles.thridContainer}>
           <TabView
             navigationState={{ index, routes }}
@@ -204,10 +233,11 @@ const Details = ({ route }) => {
       <View style={styles.bottomBtnContainer}>
         <TouchableOpacityView
           onPress={handleOnPress}
-          style={styles.buyBtnStyle}
+          style={styles.buyBtnStyle(bookletDetailAllDeals?.request_status == "Pending")}
           loader={isBtnLoading}
+          disabled={bookletDetailAllDeals?.request_status == "Pending"}
         >
-          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>{"REQUEST"}</AppText>
+          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>{bookletDetailAllDeals?.request_status == "Pending" ? "REQUEST SENDED SUCESSFULLY" : "REQUEST"}</AppText>
         </TouchableOpacityView>
       </View>
     </View>

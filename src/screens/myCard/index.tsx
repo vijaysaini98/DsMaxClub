@@ -91,7 +91,7 @@ const MyCard = () => {
              tabname: "active"
            }
            :  {
-               tabname: "expired"
+               tabname: "expire"
              }
  
      dispatch(getMyCardBookletList(value));

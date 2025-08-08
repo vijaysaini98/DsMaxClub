@@ -11,14 +11,26 @@ export const getMyRequestList =
             if (response?.status == 200) {
                 if (data?.tabname == "all") {
                     dispatch(setMyRequestAllList(response?.data))
+                    dispatch(setMyRequestPendingList())
+                    dispatch(setMyRequestApproveList())
+                    dispatch(setMyRequestRejectList())
                 } else if (data?.tabname == "pending") {
                     dispatch(setMyRequestPendingList(response?.data))
+                    dispatch(setMyRequestAllList())
+                    dispatch(setMyRequestApproveList())
+                    dispatch(setMyRequestRejectList())
                 }
                 else if (data?.tabname == "approve") {
                     dispatch(setMyRequestApproveList(response?.data))
+                    dispatch(setMyRequestAllList())
+                    dispatch(setMyRequestPendingList())
+                    dispatch(setMyRequestRejectList())
                 }
                 else if (data?.tabname == "reject") {
                     dispatch(setMyRequestRejectList(response?.data))
+                    dispatch(setMyRequestAllList())
+                    dispatch(setMyRequestPendingList())
+                    dispatch(setMyRequestApproveList())
                 }
                 return;
             } else {
@@ -39,7 +51,7 @@ export const getMyRequestCouponList =
             dispatch(setLoading(true));
             const response = await API.myRequestApi.myRequest_Coupon_List(data);
             if (response?.status == 200) {
-               dispatch(setMyRequestCouponList(response?.data))
+                dispatch(setMyRequestCouponList(response?.data))
                 return;
             } else {
                 throw new Error('No response data received from backend.');

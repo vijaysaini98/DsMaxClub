@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   }),
   cateCardStyle: (borderColor: boolean) => ({
     minHeight: 130,
-    borderWidth: 1,
+    borderWidth: s(0.5),
     borderColor: borderColor,
     borderRadius: ms(12),
     alignItems: 'center',
