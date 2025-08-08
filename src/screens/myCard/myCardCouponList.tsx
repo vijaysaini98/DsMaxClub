@@ -77,7 +77,7 @@ const MyCardCouponList = ({ data, route }) => {
                 contentContainerStyle={styles.containerStyle}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={() => (
-                    <ListEmptyComponent title={"No Coupons Availble"} />
+                    <ListEmptyComponent title={"No Coupons Available"} />
                 )}
                 refreshControl={
                     <RefreshControl

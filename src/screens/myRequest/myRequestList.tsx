@@ -46,7 +46,7 @@ const MyRequestList = ({ data }: { data: any }) => {
                         showsVerticalScrollIndicator={false}
                         ListEmptyComponent={() => (
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}>
-                                <AppText>{"No Request Availble"}</AppText>
+                                <AppText>{"No Request Available"}</AppText>
                             </View>
                         )}
                     />

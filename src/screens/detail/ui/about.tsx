@@ -4,6 +4,7 @@ import { useAppSelector } from '@redux/hooks';
 import { WebView } from "react-native-webview";
 import { Loader } from '@components/Spinner';
 import { commonStyles } from '@theme/commonStyles';
+import ListEmptyComponent from '@components/ListEmptyComponent';
 
 const About = () => {
   const webRef = useRef();
@@ -28,7 +29,8 @@ const About = () => {
       {isLoading ? (
         <Loader />
       ) : (
-        <WebView
+        bookletDetailAbout?.url ? 
+         ( <WebView
           ref={webRef}
           source={{ uri: bookletDetailAbout?.url }}
           // onScroll={_onScroll}
@@ -36,7 +38,9 @@ const About = () => {
           onLoad={() => <Loader />}
         // onShouldStartLoadWithRequest={(event)=>handleUrlNavigation(event)}
         // originWhitelist={['*']}
-        />
+        />) :(
+          <ListEmptyComponent title={"Booklet About Not Available"}/>
+        )
       )}
 
     </View>

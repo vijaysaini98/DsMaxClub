@@ -95,7 +95,7 @@ const CouponList = ({ data, route }) => {
                             />
                         }
                         ListEmptyComponent={() => (
-                            <ListEmptyComponent title={"No Coupons Availble"} />
+                            <ListEmptyComponent title={"No Coupons Available"} />
                         )}
                     />
                 )}

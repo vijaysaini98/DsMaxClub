@@ -57,7 +57,7 @@ export const getBannerList =
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      console.log("bannerApi Error",  e?.response?.data);
+      console.log("bannerApi Error", e?.response?.data);
       // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false))
@@ -76,7 +76,7 @@ export const getBookletList =
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      console.log("e",  e?.response?.data);
+      console.log("e", e?.response?.data);
 
       // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
@@ -104,8 +104,11 @@ export const getBookletDetail =
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      console.log("bookletDetail",  e?.response?.data);
-
+      console.log("bookletDetail", e?.response?.data);
+      dispatch(setBookletDetailAllDeals())
+      dispatch(setBookletDetailAbout())
+      dispatch(setBookletDetailGallery())
+      dispatch(setBookletDetailT_C())
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false))
@@ -125,7 +128,7 @@ export const bookletRequest =
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      console.log("bookletRequest error=>>",  e?.response?.data);
+      console.log("bookletRequest error=>>", e?.response?.data);
 
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {

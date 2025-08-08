@@ -5,7 +5,7 @@ import { AppText } from './AppText'
 const ListEmptyComponent = ({ title }) => {
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}>
-            <AppText>{title ? title : "No Request Availble"}</AppText>
+            <AppText>{title ? title : "No Request Available"}</AppText>
         </View>
     )
 }

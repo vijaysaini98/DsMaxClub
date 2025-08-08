@@ -87,7 +87,7 @@ const CategoriesList = ({ route }) => {
                         showsVerticalScrollIndicator={false}
                         ListEmptyComponent={() => (
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}>
-                                <AppText>{"No Booklet Availble"}</AppText>
+                                <AppText>{"No Booklet Available"}</AppText>
                             </View>
                         )}
                     />
