@@ -69,6 +69,8 @@ export const getBookletList =
     try {
       dispatch(setLoading(true));
       const response = await API.homeApi.booklet_list(data);
+      console.log("response",response);
+      
       if (response?.status == 200) {
         dispatch(setBookletList(response?.data))
         return;

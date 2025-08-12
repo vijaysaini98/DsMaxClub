@@ -25,6 +25,7 @@ shadowColor:'rgba(0, 0, 0, 0.3)',
 activeTab:"rgba(122, 35, 28, 1)",
 sixth:'rgba(122, 35, 28, 0.15)',
 semiTransprent:'rgba(255,255,255,0.1)',
-disabledBtn:'rgba(122, 35, 28, 0.15)'
+disabledBtn:'rgba(122, 35, 28, 0.15)',
+modalbg:'rgba(0, 0, 0, 0.6)'
 
 };

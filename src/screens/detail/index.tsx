@@ -237,7 +237,7 @@ const Details = ({ route }) => {
           loader={isBtnLoading}
           disabled={bookletDetailAllDeals?.request_status == "Pending"}
         >
-          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>{bookletDetailAllDeals?.request_status == "Pending" ? "REQUEST SENDED SUCESSFULLY" : "REQUEST"}</AppText>
+          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>{bookletDetailAllDeals?.request_status == "Pending" ? "REQUEST SENT SUCESSFULLY" : "REQUEST"}</AppText>
         </TouchableOpacityView>
       </View>
     </View>
@@ -246,9 +246,6 @@ const Details = ({ route }) => {
 };
 
 export default Details;
-
-
-
 
 // import React, { useEffect } from 'react'
 // import { Image, ImageBackground, Linking, StatusBar, View, StyleSheet } from 'react-native'

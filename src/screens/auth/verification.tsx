@@ -37,6 +37,7 @@ const Verification = ({ route }) => {
         value,
         setValue,
     });
+    const [isResendLoading, setIsResendLoading] = useState(false)
     const ref = useBlurOnFulfill({ value, cellCount: 6 });
 
 
@@ -76,15 +77,24 @@ const Verification = ({ route }) => {
     };
 
     const handleResetBtn = () => {
+        setIsResendLoading(true)
         let data = {
             email: email
         }
-        dispatch(sendOtp(data, handleSucess))
+        dispatch(sendOtp(data, handleResetSuccess))
+            .then(() => { setIsResendLoading(false) })
+            .catch((error) => setIsResendLoading(false))
+    }
+
+    const handleResetSuccess = () => {
+        setCountdown(60)
+        setShowResend(false)
+        setValue('')
     }
 
     const handleSucess = () => {
-         NavigationService.navigate(RESET_PASSWORD_SCREEN, {
-          email:email,
+        NavigationService.navigate(RESET_PASSWORD_SCREEN, {
+            email: email,
         });
         setCountdown(60)
         setShowResend(false)
@@ -151,17 +161,41 @@ const Verification = ({ route }) => {
             <View style={styles.bottomContainer}>
                 <AppText type={SIXTEEN}>Haven’t received the OTP code?</AppText>
 
+                {/* {showResend ? (
+                    <TouchableOpacityView onPress={handleResetBtn}>
+                        <AppText type={SIXTEEN} color={BUTTON_TEXT} weight={BOLD}>
+                            Resend OTP
+                        </AppText>
+                    </TouchableOpacityView>
+                ) : {
+                    isResendLoading ? (
+                        <AppText type={SIXTEEN} color={colors.borderColor}>
+                            Resending...
+                        </AppText>
+                    ) : 
+                    (
+                    <AppText type={SIXTEEN} color={colors.borderColor}>
+                        Resend in {countdown}s
+                    </AppText>
+                )}} */}
                 {showResend ? (
                     <TouchableOpacityView onPress={handleResetBtn}>
                         <AppText type={SIXTEEN} color={BUTTON_TEXT} weight={BOLD}>
                             Resend OTP
                         </AppText>
                     </TouchableOpacityView>
-                ) : (
-                    <AppText type={SIXTEEN} color={colors.borderColor}>
-                        Resend in {countdown}s
-                    </AppText>
-                )}
+                ) :
+                    isResendLoading ? (
+                        <AppText type={SIXTEEN} color={colors.borderColor}>
+                            Resending...
+                        </AppText>
+                    ) :
+                        (
+                            <AppText type={SIXTEEN} color={colors.borderColor}>
+                                Resend in {countdown}s
+                            </AppText>
+                        )
+                }
             </View>
         </AppSafeAreaView>
     )

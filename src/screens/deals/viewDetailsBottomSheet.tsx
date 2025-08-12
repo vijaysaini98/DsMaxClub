@@ -1,28 +1,146 @@
-import React from 'react';
+// import React from 'react';
+// import RBSheet from 'react-native-raw-bottom-sheet';
+// import { StyleSheet, ScrollView } from 'react-native';
+// import { AppText, BOLD, EIGHTEEN, FOURTEEN, ITALIC, SEMI_BOLD, THIRD, TWENTY, TWENTY_EIGHT, TWENTY_TWO } from '@components/AppText';
+// import { colors } from '@theme/colors';
+// import { commonStyles } from '@theme/commonStyles';
+// import { RenderHTML } from 'react-native-render-html';
+// import { ms, vs } from 'react-native-size-matters/extend';
+// import { width } from '@utils/index';
+// import moment from 'moment';
+
+// const ViewDetailsBottomSheet = ({ data, ref },) => {
+//   console.log("data",data);
+  
+//   return (
+//     <RBSheet
+//       ref={ref}
+//       useNativeDriver={false}
+//       height={vs(357)}
+//       closeOnDragDown={true}
+//       closeOnPressMask={true}
+//       draggable={true}
+//       customStyles={styles.sheetStyle}>
+
+//       <ScrollView
+//         showsVerticalScrollIndicator={false}
+//         style={[commonStyles.marginHorizontal, styles.containerStyle]}>
+//         <AppText type={TWENTY_EIGHT} weight={BOLD} style={styles.viewTextStyle}>View Details</AppText>
+//         <AppText color={THIRD} type={EIGHTEEN} weight={SEMI_BOLD} style={{ marginVertical: vs(20) }}>{"Things To Remember :-"}</AppText>
+
+//         <RenderHTML
+//           contentWidth={width}
+//           source={{ html: data?.description }}
+//           tagsStyles={{
+//             h1: { fontSize: TWENTY_TWO, fontWeight: 'bold', color: colors.black },
+//             h2: { fontSize: TWENTY, fontWeight: 'bold', color: colors.black },
+//             h3: { fontSize: EIGHTEEN, fontWeight: 'bold', color: colors.black },
+//             // p: { , color: 'red' },
+//             i: { fontFamily: ITALIC },
+//             a: { color: 'blue', textDecorationLine: 'underline' },
+//             b: { fontWeight: 'bold' }
+//           }}
+//         />
+
+//         {data?.short_desc &&
+//           (<AppText   
+//             // type={FOURTEEN}
+//           style={{marginTop:vs(10)}}>{data?.short_desc}</AppText>)
+//         }
+//          <AppText
+//           type={FOURTEEN}
+//           style={{marginTop:vs(10)}}
+//           >{`Reedem Coupon: ${data?.used_coupons}`}</AppText>
+//         <AppText
+//           type={FOURTEEN}
+//           style={styles.validityTextStyle}>{`Valid till: ${moment(data?.valid_till).format('DD MMM YYYY')}`}</AppText>
+//       </ScrollView>
+//     </RBSheet>
+//   );
+// };
+
+// export default ViewDetailsBottomSheet;
+
+
+// const styles = StyleSheet.create
+//   ({
+//     viewTextStyle: {
+//       alignSelf: 'center',
+//     },
+//     containerStyle: {
+//       // marginTop: 20
+//     },
+//     validityTextStyle: {
+//       marginTop: vs(10),
+//       color: colors.activeTab
+//     },
+//     sheetStyle:
+//     {
+//       container: {
+//         // borderT: ms(32)
+//         borderTopLeftRadius:ms(32),
+//          borderTopRightRadius:ms(32)
+//       },
+//       wrapper: {
+//         backgroundColor: colors.fifth,
+//       },
+//       draggableIcon: {
+//         backgroundColor: colors.forth,
+//         height: vs(4),
+//         // width: '40%',
+//         alignSelf: 'center',
+//         marginTop: vs(20),
+//         borderRadius: ms(10)
+//       }
+//     }
+
+//   })
+
+
+
+import React, { useRef, useState } from 'react';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { StyleSheet, ScrollView } from 'react-native';
-import { AppText, BOLD, EIGHTEEN, FOURTEEN, ITALIC, SEMI_BOLD, THIRD, TWENTY, TWENTY_EIGHT, TWENTY_TWO } from '@components/AppText';
+import { StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { AppText, BOLD, EIGHTEEN, FOURTEEN, ITALIC, SEMI_BOLD, THIRD, TWENTY, TWENTY_TWO, TWENTY_EIGHT } from '@components/AppText';
 import { colors } from '@theme/colors';
 import { commonStyles } from '@theme/commonStyles';
-import { RenderHTML } from 'react-native-render-html';
+import RenderHTML from 'react-native-render-html';
 import { ms, vs } from 'react-native-size-matters/extend';
 import { width } from '@utils/index';
 import moment from 'moment';
 
-const ViewDetailsBottomSheet = ({ data, ref },) => {
+const screenHeight = Dimensions.get('window').height;
+
+const ViewDetailsBottomSheet = ({ data, ref }) => {
+  const sheetRef = ref || useRef(null);
+  const [sheetHeight, setSheetHeight] = useState(vs(357));
+
+  const handleScroll = (event) => {
+    const yOffset = event.nativeEvent.contentOffset.y;
+    if (yOffset < -20) { // pulling down past top
+      if (sheetHeight < screenHeight * 0.9) {
+        setSheetHeight(screenHeight * 0.9);
+        sheetRef.current.updateHeight(screenHeight * 0.9);
+      }
+    }
+  };
+
   return (
     <RBSheet
-      ref={ref}
+      ref={sheetRef}
       useNativeDriver={false}
-      height={vs(357)}
+      height={sheetHeight}
       closeOnDragDown={true}
       closeOnPressMask={true}
       draggable={true}
-      customStyles={styles.sheetStyle}>
-
+      customStyles={styles.sheetStyle}
+    >
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={[commonStyles.marginHorizontal, styles.containerStyle]}>
+        style={[commonStyles.marginHorizontal, styles.containerStyle]}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
         <AppText type={TWENTY_EIGHT} weight={BOLD} style={styles.viewTextStyle}>View Details</AppText>
         <AppText color={THIRD} type={EIGHTEEN} weight={SEMI_BOLD} style={{ marginVertical: vs(20) }}>{"Things To Remember :-"}</AppText>
 
@@ -33,19 +151,21 @@ const ViewDetailsBottomSheet = ({ data, ref },) => {
             h1: { fontSize: TWENTY_TWO, fontWeight: 'bold', color: colors.black },
             h2: { fontSize: TWENTY, fontWeight: 'bold', color: colors.black },
             h3: { fontSize: EIGHTEEN, fontWeight: 'bold', color: colors.black },
-            // p: { , color: 'red' },
             i: { fontFamily: ITALIC },
             a: { color: 'blue', textDecorationLine: 'underline' },
             b: { fontWeight: 'bold' }
           }}
         />
-         <AppText
-          type={FOURTEEN}
-          style={{marginTop:vs(10)}}
-          >{`Reedem Coupon: ${data?.used_coupons}`}</AppText>
-        <AppText
-          type={FOURTEEN}
-          style={styles.validityTextStyle}>{`Valid till: ${moment(data?.valid_till).format('DD MMM YYYY')}`}</AppText>
+
+        {data?.short_desc && (
+          <AppText style={{ marginTop: vs(10) }}>{data?.short_desc}</AppText>
+        )}
+        <AppText type={FOURTEEN} style={{ marginTop: vs(10) }}>
+          {`Reedem Coupon: ${data?.used_coupons}`}
+        </AppText>
+        <AppText type={FOURTEEN} style={styles.validityTextStyle}>
+          {`Valid till: ${moment(data?.valid_till).format('DD MMM YYYY')}`}
+        </AppText>
       </ScrollView>
     </RBSheet>
   );
@@ -53,37 +173,30 @@ const ViewDetailsBottomSheet = ({ data, ref },) => {
 
 export default ViewDetailsBottomSheet;
 
-
-const styles = StyleSheet.create
-  ({
-    viewTextStyle: {
+const styles = StyleSheet.create({
+  viewTextStyle: {
+    alignSelf: 'center',
+  },
+  containerStyle: {},
+  validityTextStyle: {
+    marginTop: vs(10),
+    color: colors.activeTab,
+  },
+  sheetStyle: {
+    container: {
+      borderTopLeftRadius: ms(32),
+      borderTopRightRadius: ms(32),
+    },
+    wrapper: {
+      backgroundColor: colors.fifth,
+    },
+    draggableIcon: {
+      backgroundColor: colors.forth,
+      height: vs(4),
       alignSelf: 'center',
+      marginTop: vs(20),
+      borderRadius: ms(10),
     },
-    containerStyle: {
-      // marginTop: 20
-    },
-    validityTextStyle: {
-      marginTop: vs(10),
-      color: colors.activeTab
-    },
-    sheetStyle:
-    {
-      container: {
-        // borderT: ms(32)
-        borderTopLeftRadius:ms(32),
-         borderTopRightRadius:ms(32)
-      },
-      wrapper: {
-        backgroundColor: colors.fifth,
-      },
-      draggableIcon: {
-        backgroundColor: colors.forth,
-        height: vs(4),
-        // width: '40%',
-        alignSelf: 'center',
-        marginTop: vs(20),
-        borderRadius: ms(10)
-      }
-    }
+  },
+});
 
-  })

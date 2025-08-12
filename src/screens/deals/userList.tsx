@@ -43,19 +43,19 @@ const UserList = ({ route }) => {
         }, 200);
     }, []);
 
-    const transformedUserList = useMemo(
-        () =>
-            (userListData || []).map(section => ({
-                title: section.date,
-                data: section.users ?? [],
-            })),
-        [userListData]
-    );
+    const handleUserCardClick = useCallback((item) => {
+        NavigationService.navigate(VENDOR_COUPON_LIST, 
+            { title: item?.name, user_id: item?.useruuid, booklet_id: item?.booklet_uuid }
+        )
+    }, []);
 
     const renderItem = useCallback(
         ({ item }) => {
+            console.log("item", item);
+
             return (
-                <TouchableOpacityView style={styles.userCardStyle} onPress={() => NavigationService.navigate(VENDOR_COUPON_LIST, { title: item?.name, user_id: item?.useruuid })}>
+                <TouchableOpacityView style={styles.userCardStyle} onPress={() => handleUserCardClick(item)
+                }>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <AppText type={EIGHTEEN} weight={MEDIUM}>{item?.username}</AppText>
                         <AppText type={TWELVE} style={{ color: colors.borderColor }}>

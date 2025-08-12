@@ -104,7 +104,8 @@ export const API = {
     verify_otp: (data: any) => apiClient.post(config.VERIFY_OTP, data),
     reset_password: (data: any) => apiClient.post(config.REST_PASSWORD, data),
     pageApi: (data?: any) => apiClient.get(`${config.PAGE_API}/${data}`),
-    customer_send_otp_verify:(data: any) => apiClient.post(config.CUSTOMER_SEND_OTP_VERIFY, data)
+    customer_send_otp_verify:(data: any) => apiClient.post(config.CUSTOMER_SEND_OTP_VERIFY, data),
+    delete_account: (data: any) => apiClient.post(config.DELETE_ACCOUNT, data),
 
     // refresh_token: (data: any) => apiClient.post(config.REFRESH_TOKEN, data),
   },

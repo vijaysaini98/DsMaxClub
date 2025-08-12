@@ -8,7 +8,8 @@ const LOG_OUT: string = `${BASE_URL}customer-logout`;
 const SEND_OTP: string = `${BASE_URL}send-otp-to-email`;
 const VERIFY_OTP: string = `${BASE_URL}verify-otp`;
 const REST_PASSWORD: string = `${BASE_URL}reset-password`;
-const CUSTOMER_SEND_OTP_VERIFY:string=`${BASE_URL}send-customer-email-otp`
+const CUSTOMER_SEND_OTP_VERIFY:string=`${BASE_URL}send-customer-email-otp`;
+const DELETE_ACCOUNT: string = `${BASE_URL}delete-customer-account`;
 
 
 // userApi
@@ -50,6 +51,7 @@ const config = {
   REST_PASSWORD,
   CITY_LIST,
   CUSTOMER_SEND_OTP_VERIFY,
+  DELETE_ACCOUNT,
 
   USER_PROFILE,
   UPDATE_USER_PROFILE,

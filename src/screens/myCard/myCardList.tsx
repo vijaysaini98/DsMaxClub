@@ -11,6 +11,7 @@ import NavigationService from '@navigations/NavigationService'
 import ListEmptyComponent from '@components/ListEmptyComponent'
 import { defaultBookletImage } from '@helper/imagesAssets'
 import { getMyCardBookletList } from '@actions/myCard/myCardAction'
+import Toast from 'react-native-simple-toast';
 
 const MyCardList = ({ data, value }) => {
     const dispatch = useAppDispatch()
@@ -36,11 +37,16 @@ const MyCardList = ({ data, value }) => {
                     price={item.price}
                     address={item?.client_address ? item?.client_address : "---"}
                     handleCardOnPress={() => {
-                        NavigationService.navigate(MY_CARD_COUPON_LIST_SCREEN,
-                            {
-                                title: item?.client_name,
-                                booklet_id: item?.uuid, tab_status: item?.tab_status
-                            })
+                        if (item?.tab_status === 'expired') {
+                            Toast.show("Booklet has been Expired", Toast.LONG);
+                        }
+                        else {
+                            NavigationService.navigate(MY_CARD_COUPON_LIST_SCREEN,
+                                {
+                                    title: item?.client_name,
+                                    booklet_id: item?.uuid, tab_status: item?.tab_status
+                                })
+                        }
                     }}
                     status={item?.tab_status}
                 />

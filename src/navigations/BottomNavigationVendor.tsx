@@ -1,9 +1,8 @@
-import { dealIcon, historyIcon, proflieIcon, scanIcon } from "@helper/imagesAssets";
+import { dealIcon, proflieIcon, scanIcon } from "@helper/imagesAssets";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Profile from "@screens/profile/index";
 import Deal from "@screens/deals";
 import Scan from "@screens/scan";
-import History from "@screens/history";
 import { colors } from "@theme/colors";
 import { Image, Platform, StyleSheet, View } from "react-native";
 import { ms, s, vs } from "react-native-size-matters/extend";
@@ -98,7 +97,7 @@ export default function BottomNavigationVendor() {
 const styles = StyleSheet.create({
     tabBarStyle: {
         backgroundColor: colors.tabBg,
-        height: Platform.OS !== 'ios' ? vs(60) : vs(80),
+        height: Platform.OS !== 'ios' ? vs(70) : vs(70),
         borderTopWidth: 0,
         width: "100%",
         alignItems: 'center',
@@ -108,11 +107,11 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         alignSelf: 'center',
-        // height: Platform.OS == 'ios' ? vs(80) : vs(50),
+        height: vs(50),
         paddingVertical: vs(10),
         width: s(100),
         gap: ms(4),
-        backgroundColor: colors.tabBg,
+        backgroundColor: colors.transparent,
 
     },
     icon: (focused: boolean) => ({
@@ -127,18 +126,28 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: ms(4),
         borderBottomRightRadius: ms(4),
         backgroundColor: colors.buttonBg,
+        top:vs(3)
     },
     tabTitleStyle: {
         marginTop: 4
     },
     hightLightContainer: {
+        // top:vs(5),
+        // position:'absolute',
+        // bottom:0,
+        padding:5,
         height: s(60),
         width: s(60),
+        alignSelf:'center',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: colors.buttonBg,
         borderRadius: ms(20),
         elevation: 2,
-        marginTop: 7
+        // borderLeftWidth:5,
+        // borderBottomWidth:5,
+        // borderRightWidth:5,
+        // borderColor:colors.white
+        // marginTop: 7
     }
 });

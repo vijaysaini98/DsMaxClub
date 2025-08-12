@@ -91,6 +91,7 @@ export const logout =
         NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
         // Toast.show("log Out", Toast.LONG);
         Toast.show(response?.message, Toast.LONG);
+        onSucess && onSucess();
 
         return;
       } else {
@@ -98,6 +99,7 @@ export const logout =
       }
     } catch (e: any) {
       console.log('logout error ', e);
+      onSucess && onSucess();
       removeAccessToken();
       NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
       // Toast.show("log Out", Toast.LONG);
@@ -108,10 +110,35 @@ export const logout =
     }
   };
 
-export const sendOtp =
+export const deleteAccount =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
+      const response = await API.authApi.delete_account(data);
+
+      if (response?.status == 200) {
+        removeAccessToken();
+        NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
+        dispatch(resetAuth());
+        Toast.show(response?.message, Toast.LONG);
+        onSucess && onSucess();
+
+        return;
+      } else {
+        throw new Error('No response data received from backend.');
+      }
+    } catch (e: any) {
+      Toast.show(e?.response?.data?.message, Toast.LONG);
+      onSucess && onSucess();
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+export const sendOtp =
+  (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      // dispatch(setLoading(true));
       const response = await API.authApi.send_otp(data);
 
       if (response?.status == 200) {
@@ -125,7 +152,7 @@ export const sendOtp =
       Toast.show(e?.response?.data?.message, Toast.LONG);
       console.log('e', e);
     } finally {
-      dispatch(setLoading(false));
+      // dispatch(setLoading(false));
     }
   };
 

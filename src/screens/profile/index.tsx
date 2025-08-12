@@ -3,15 +3,17 @@ import React from 'react'
 import { colors } from '@theme/colors'
 import Header from '@components/Header'
 import TouchableOpacityView from '@components/TouchableOpacityView'
-import { forwardIcon, logOutIcon, myCardIcon, myRequestIcon, privacyIcon, proflieIcon, shareIcon, termsCondIcon, userIcon } from '@helper/imagesAssets'
+import { deleteAccountIcon, forwardIcon, logOutIcon, myCardIcon, myRequestIcon, privacyIcon, proflieIcon, shareIcon, termsCondIcon, userIcon } from '@helper/imagesAssets'
 import { AppText, SIXTEEN } from '@components/AppText'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
-import { logout } from '../../actions/auth/authAction'
+import { deleteAccount, logout } from '../../actions/auth/authAction'
 import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
 import { commonStyles } from '@theme/commonStyles'
 import { ms, s, vs } from 'react-native-size-matters/extend'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
+import DeleteAccountModal from '@components/DeleteAccountModal'
+import LogOutModal from '@components/LogoutModal'
 
 const MoreTabButton = ({ title, leftIcon, handleOnPress }) => {
   return (
@@ -47,16 +49,34 @@ const Profile = () => {
   //   dispatch(logout())
   // }
   const { userData } = useAppSelector((state) => state.auth)
+  const [deleteAccountModalVisible, setDeleteAccountModalVisible] = React.useState(false);
+  const [logoutVisible, setLogoutVisible] = React.useState(false);
 
-  const handleLogout = () =>
-    Alert.alert("Are you sure you want to Logout", "", [
-      {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
-      },
-      { text: "OK", onPress: () => dispatch(logout()) },
-    ]);
+  const handleLogout = () => {
+    //   Alert.alert("Are you sure you want to Logout", "", [
+    //     {
+    //       text: "Cancel",
+    //       onPress: () => console.log("Cancel Pressed"),
+    //       style: "cancel",
+    //     },
+    //     { text: "OK", onPress: () => dispatch(logout()) },
+    //   ]
+    // )
+    dispatch(logout(undefined, setLogoutVisible(false)))
+  }
+
+  const handleDeleteAccount = () => {
+    // Alert.alert("Are you sure you want to delete your account", "", [
+    //   {
+    //     text: "Cancel",
+    //     onPress: () => console.log("Cancel Pressed"),
+    //     style: "cancel",
+    //   },
+    //   { text: "OK", onPress: () => dispatch(deleteAccount())},
+    // ]);
+
+    dispatch(deleteAccount(undefined, setDeleteAccountModalVisible(false)))
+  }
 
 
 
@@ -102,9 +122,24 @@ const Profile = () => {
         <MoreTabButton
           leftIcon={logOutIcon}
           title={"Logout"}
-          handleOnPress={() => handleLogout()}
+          handleOnPress={() => setLogoutVisible(true)}
+        />
+        <MoreTabButton
+          leftIcon={deleteAccountIcon}
+          title={"Delete Account"}
+          handleOnPress={() => setDeleteAccountModalVisible(true)}
         />
       </ScrollView>
+      <LogOutModal
+        visible={logoutVisible}
+        onClose={() => setLogoutVisible(false)}
+        onConfirm={() => handleLogout()}
+      />
+      <DeleteAccountModal
+        visible={deleteAccountModalVisible}
+        onClose={() => setDeleteAccountModalVisible(false)}
+        onConfirm={() => handleDeleteAccount()}
+      />
     </AppSafeAreaView>
   )
 }

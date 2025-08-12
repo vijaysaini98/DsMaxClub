@@ -12,15 +12,15 @@ import SplashScreen from 'react-native-splash-screen';
 
 
 const App = () => {
-  useEffect(() => {
-    setTimeout(
-      () => {
-        SplashScreen.hide();
-      },
-      Platform.OS === 'ios' ? 2000 : 0,
-    );
+  // useEffect(() => {
+  //   setTimeout(
+  //     () => {
+  //       SplashScreen.hide();
+  //     },
+  //     Platform.OS === 'ios' ? 2000 : 0,
+  //   );
 
-  }, []);
+  // }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

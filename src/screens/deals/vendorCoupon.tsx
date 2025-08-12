@@ -17,7 +17,7 @@ import NavigationService from '@navigations/NavigationService';
 import { s, vs } from 'react-native-size-matters/extend';
 
 const VerndorCouponList = ({ route }) => {
-    const { title, user_id } = route?.params ?? ""
+    const { title, user_id,booklet_id } = route?.params ?? ""
     const dispatch = useAppDispatch()
     const { dealCouponList, isLoading } = useAppSelector((state) => state?.deal)
 
@@ -34,18 +34,18 @@ const VerndorCouponList = ({ route }) => {
     // },[])
 
     useEffect(() => {
-        dispatch(getDealCouponList({ user_id }))
+        dispatch(getDealCouponList({ user_id,booklet_id }))
     }, [])
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        dispatch(getDealCouponList({ user_id })).finally(() => setRefreshing(false));
+        dispatch(getDealCouponList({ user_id,booklet_id})).finally(() => setRefreshing(false));
     }, [dispatch]);
 
     const handleViewOnPress = (data) => {
         setViewData(data)
         setTimeout(() => {
-            ViewDetailsSheet.current.open();
+            ViewDetailsSheet?.current?.open();
         }, 200)
     }
 
@@ -56,7 +56,7 @@ const VerndorCouponList = ({ route }) => {
                 data={item}
                 onViewPress={() => handleViewOnPress(item)}
                 heading={item?.heading}
-                htmlContent={item?.description}
+                htmlContent={item?.short_desc}
                 btnTextColor={WHITE}
                 couponCount={item?.no_of_coupons}
 
