@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, Image, Modal, StyleSheet, View } from "react-native";
+import { FlatList, Image, Modal, StatusBar, StyleSheet, View } from "react-native";
 import FastImage from "react-native-fast-image";
 import { ms, s, vs } from "react-native-size-matters/extend";
 import { AppText, FOURTEEN, WHITE } from "@components/AppText";
@@ -23,6 +23,8 @@ const ImageViewModal: React.FC<ImageViewModalProps> = ({
       transparent
       onRequestClose={() => setModalVisible(false)}
     >
+
+       <StatusBar backgroundColor={colors.black} />
       <View style={styles.container}>
         <FlatList
           data={data}

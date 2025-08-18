@@ -10,6 +10,8 @@ export const getMyCardBookletList =
         try {
             dispatch(setLoading(true));
             const response = await API.myCardApi.myCard_List(data);
+            console.log("response", response?.data);
+
             if (response?.status == 200) {
                 if (data?.tabname == "all") {
                     dispatch(setMyCardAllBookletList(response?.data))
@@ -67,12 +69,12 @@ export const getCoupon =
                 dispatch(setCouponList(response?.data))
                 return;
             } else {
-                throw new Error('No response data received from backend.');
+                dispatch(setCouponList([]))
             }
         } catch (e: any) {
             console.log("e", e);
 
-            Toast.show(e?.response?.data?.message, Toast.LONG);
+            // Toast.show(e?.response?.data?.message, Toast.LONG);
         } finally {
             dispatch(setLoading(false))
         }

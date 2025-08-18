@@ -50,12 +50,12 @@ const CommonCard = ({
               {
                 backgroundColor:
                 statusBg? statusBg :
-                  status === 'active' ? colors.lightGreen : colors.disabledBtn,
+                  status === 'Active' ? colors.lightGreen : colors.disabledBtn,
               },
             ]}>
             <AppText 
             type={TWELVE} 
-            color={statusTextColor? statusTextColor: status === 'active' ? WHITE : BUTTON_TEXT} 
+            color={statusTextColor? statusTextColor: status === 'Active' ? WHITE : BUTTON_TEXT} 
             weight={SEMI_BOLD}
             style={{ textTransform: 'capitalize' }}>{status}</AppText>
           </View>

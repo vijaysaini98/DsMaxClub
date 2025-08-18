@@ -1,19 +1,27 @@
-import { FlatList, StyleSheet, View } from 'react-native'
-import React, { } from 'react'
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native'
+import React, { useCallback, useState } from 'react'
 import { AppText, BUTTON_TEXT, FOURTEEN, MEDIUM, WHITE } from '@components/AppText'
 import { REQUEST_COUPON_LIST_SCREEN } from '@navigations/routes'
 import { SpinnerSecond } from '@components/Spinner'
 import { ms, s, vs } from 'react-native-size-matters/extend'
 import { colors } from '@theme/colors'
-import { useAppSelector } from '@redux/hooks'
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import Card from '@screens/home/ui/card'
 import NavigationService from '@navigations/NavigationService'
 import { IMGE_URL } from '@services/config'
 import { defaultBookletImage } from '@helper/imagesAssets'
+import moment from 'moment'
+import { getMyRequestList } from '@actions/myRequest/myRequestAction'
 
-const MyRequestList = ({ data }: { data: any }) => {
-
+const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
+    const dispatch = useAppDispatch()
     const { isLoading } = useAppSelector((state) => state.myRequest)
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        dispatch(getMyRequestList({ tabname: tabname })).finally(() => setRefreshing(false));
+    }, [dispatch]);
 
     const renderItem = ({ item, index }: any) => {
         return (
@@ -21,14 +29,15 @@ const MyRequestList = ({ data }: { data: any }) => {
                 <Card item={item} index={index}
                     cardContainerStyle={{ width: "100%" }}
                     imageStyle={styles.imageStyle}
-                    imageUrl={item?.booklet? {uri:IMGE_URL + item?.booklet}:defaultBookletImage}
-                    name={item?.client_name}
+                    imageUrl={item?.booklet ? { uri: IMGE_URL + item?.booklet } : defaultBookletImage}
+                    name={item?.name}
                     price={item.price}
                     address={item?.client_address ? item?.client_address : "---"}
                     handleCardOnPress={() => {
-                        NavigationService.navigate(REQUEST_COUPON_LIST_SCREEN, { booklet_id: item?.uuid })
+                        // NavigationService.navigate(REQUEST_COUPON_LIST_SCREEN, { booklet_id: item?.uuid })
                     }}
                     status={item?.status}
+                    date={moment(item?.created_at, "YYYY-MM-DD hh:mm").format("D MMM YYYY hh:mm")}
                 />
             </View>
         )
@@ -37,13 +46,21 @@ const MyRequestList = ({ data }: { data: any }) => {
     return (
         <View style={styles.mainContainer}>
             {
-                isLoading ?
+                isLoading && !refreshing ?
                     <SpinnerSecond /> :
                     <FlatList
                         data={data}
                         renderItem={renderItem}
                         contentContainerStyle={styles.listContainerStyle}
                         showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                                colors={[colors.buttonBg]}
+                                tintColor={colors.buttonBg}
+                            />
+                        }
                         ListEmptyComponent={() => (
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}>
                                 <AppText>{"No Request Available"}</AppText>

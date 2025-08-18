@@ -70,32 +70,76 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: ms(100)
     }),
-    bottomBtnContainer: {
-        // justifyContent: 'center',
-        // height: vs(80),
-        // borderTopWidth: 1,
-        // borderTopColor: colors.borderColor,
-        // paddingHorizontal: s(16),
-        // backgroundColor:'green',
-        // bottom:0
-        position: 'absolute',
+    // bottomBtnContainer: {
+    //     // justifyContent: 'center',
+    //     // height: vs(80),
+    //     // borderTopWidth: 1,
+    //     // borderTopColor: colors.borderColor,
+    //     // paddingHorizontal: s(16),
+    //     // backgroundColor:'green',
+    //     // bottom:0
+    //     position: 'absolute',
 
-        bottom: 0,
-        left: 0,
-        right: 0,
-        paddingHorizontal: s(16),
-        paddingVertical: 10,
-        borderTopWidth: 1,
-        borderTopColor: colors.borderColor,
-        //   paddingBottom: Platform.OS === 'ios' ? vs(10) : vs(10), 
-        backgroundColor: colors.white,
-    },
+    //     bottom: 0,
+    //     left: 0,
+    //     right: 0,
+    //     paddingHorizontal: s(16),
+    //     paddingVertical: 10,
+    //     borderTopWidth: 1,
+    //     borderTopColor: colors.borderColor,
+    //     //   paddingBottom: Platform.OS === 'ios' ? vs(10) : vs(10), 
+    //     backgroundColor: colors.white,
+    // },
     titleTextStyle: {
         marginTop: vs(15)
     },
     disTextStyle: {
         marginVertical: vs(10)
     },
+     headerRow: {
+    flexDirection: 'row',
+    justifyContent: "space-evenly",
+    gap: 10,
+    alignItems: 'center',
+  },
+  titleText: {
+    width: '90%',
+  },
+  shareBtn: {
+    marginTop: 5,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    gap: 5,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  locationIcon: {
+    height: vs(15),
+    width: s(15),
+  },
+  locationText: {
+    textDecorationLine: 'underline',
+    textDecorationColor: colors.buttonText,
+    letterSpacing: 0.8,
+  },
+  bottomBtnContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.white,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+//   buyBtnStyle: {
+//     backgroundColor: colors.buttonBg,
+//     borderRadius: 8,
+//     paddingVertical: 12,
+//     alignItems: 'center',
+//   },
 });
 
 export default styles;

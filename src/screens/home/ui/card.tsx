@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, ScrollView, StyleSheet, View, ImageSourcePropType } from 'react-native';
-import { AppText, BOLD, BUTTON_BG, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, TWELVE, TWENTY_TWO, WHITE } from '@components/AppText';
+import { AppText, BOLD, BUTTON_BG, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, THIRTEEN, TWELVE, TWENTY_TWO, WHITE } from '@components/AppText';
 import { colors } from '@theme/colors';
 import { defaultBookletImage, nearByIcon, restro2, starIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
@@ -18,7 +18,8 @@ export interface CardProps {
   title?: string;
   handleCardOnPress: (item: CardItem) => void;
   imageBaseUrl?: string,
-  status?: string
+  status?: string,
+  date?:string
 
 }
 
@@ -32,7 +33,8 @@ const Card: React.FC<CardProps> = ({
   name,
   price,
   address,
-  status
+  status,
+  date
 }) => {
   return (
     <TouchableOpacityView
@@ -82,6 +84,7 @@ const Card: React.FC<CardProps> = ({
             {`Rs. ${price}`}
           </AppText>
         </View>
+        
         <View style={styles.locationContainer}>
           <FastImage
             source={nearByIcon}
@@ -94,7 +97,13 @@ const Card: React.FC<CardProps> = ({
             {address}
           </AppText>
         </View>
+         {date && <AppText type={TWELVE} 
+        weight={MEDIUM}
+        style={{marginLeft:s(15),marginVertical:vs(5),color:colors.disTextColor,textDecorationLine: 'underline'}}>
+          {date}
+        </AppText>}
       </View>
+     
       {status && (<View style={styles.statusContainer}>
         <AppText type={FOURTEEN} weight={MEDIUM} color={BUTTON_TEXT} style={{ textTransform: 'capitalize' }}>{status}</AppText>
       </View>)}

@@ -12,19 +12,19 @@ import ToolBar from '@components/ToolBar';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { getDealCouponList } from '@actions/deals/dealAction';
 import { Loader } from '@components/Spinner';
-import { WHITE } from '@components/AppText';
+import { AppText, BUTTON_BG, FOURTEEN, MEDIUM, SEMI_BOLD, WHITE } from '@components/AppText';
 import NavigationService from '@navigations/NavigationService';
 import { s, vs } from 'react-native-size-matters/extend';
 
 const VerndorCouponList = ({ route }) => {
-    const { title, user_id,booklet_id } = route?.params ?? ""
+    const { title, user_id, booklet_id, user_booklet_uuid,unique_code } = route?.params ?? ""
     const dispatch = useAppDispatch()
     const { dealCouponList, isLoading } = useAppSelector((state) => state?.deal)
 
     const [refreshing, setRefreshing] = useState(false);
     const [viewData, setViewData] = useState({})
     const ViewDetailsSheet = useRef();
-    
+
     const onViewPress = () => {
         ViewDetailsSheet.current.open();
     };
@@ -34,12 +34,12 @@ const VerndorCouponList = ({ route }) => {
     // },[])
 
     useEffect(() => {
-        dispatch(getDealCouponList({ user_id,booklet_id }))
+        dispatch(getDealCouponList({ user_id, user_booklet_uuid }))
     }, [])
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        dispatch(getDealCouponList({ user_id,booklet_id})).finally(() => setRefreshing(false));
+        dispatch(getDealCouponList({ user_id, user_booklet_uuid })).finally(() => setRefreshing(false));
     }, [dispatch]);
 
     const handleViewOnPress = (data) => {
@@ -57,9 +57,12 @@ const VerndorCouponList = ({ route }) => {
                 onViewPress={() => handleViewOnPress(item)}
                 heading={item?.heading}
                 htmlContent={item?.short_desc}
+                buttonTitle={"VIEW DETAIL"}
                 btnTextColor={WHITE}
-                couponCount={item?.no_of_coupons}
-
+                couponCount={item?.total_coupons}
+                status={item?.coupon_type_id == 1 ? 'Free' : ""}
+                statusBg={item?.coupon_type_id == 1 && colors.lightGreen}
+                statusTextColor={item?.coupon_type_id == 1 && WHITE}
             />
         );
     };
@@ -67,15 +70,19 @@ const VerndorCouponList = ({ route }) => {
         <AppSafeAreaView style={commonStyles.mainContainer}>
             <ToolBar
                 mainContainerStyle={styles.toolBarContainer}
-                isLeftIcon 
-                // title={title?.charAt(0)?.toUpperCase() + title?.slice(1).toLowerCase()} 
+                isLeftIcon
                 title='Coupons'
-                />
+            />
             {isLoading && !refreshing ? <Loader /> :
 
                 <FlatList
                     data={dealCouponList}
                     renderItem={renderItem}
+                    ListHeaderComponent={()=>(
+                        <View style={{paddingHorizontal:s(16),}}>
+                            <AppText type={FOURTEEN} weight={MEDIUM} color={BUTTON_BG}>{`${title} (${unique_code})`}</AppText>
+                        </View>
+                    )}
                     keyExtractor={(_, index) => index.toString()}
                     refreshControl={
                         <RefreshControl

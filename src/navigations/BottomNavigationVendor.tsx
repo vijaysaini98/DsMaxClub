@@ -20,9 +20,7 @@ const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
             {/* ICON */}
             <Image
                 source={icon}
-                style={[isHighlight ? { height: vs(30), width: s(30), tintColor: colors.white } :
-                    styles.icon(focused),
-                ]}
+                style={[isHighlight ? styles.hightLightIcon : styles.icon(focused)]}
                 resizeMode="contain"
             />
 
@@ -111,14 +109,18 @@ const styles = StyleSheet.create({
         paddingVertical: vs(10),
         width: s(100),
         gap: ms(4),
-        backgroundColor: colors.transparent,
-
+        backgroundColor: colors.transparent
     },
     icon: (focused: boolean) => ({
         width: s(24),
         height: vs(24),
         tintColor: focused ? colors.buttonBg : colors.black
     }),
+    hightLightIcon: {
+        height: vs(30),
+        width: s(30),
+        tintColor: colors.white
+    },
     indicator: {
         position: 'absolute',
         height: vs(4),
@@ -126,28 +128,20 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: ms(4),
         borderBottomRightRadius: ms(4),
         backgroundColor: colors.buttonBg,
-        top:vs(3)
     },
     tabTitleStyle: {
         marginTop: 4
     },
     hightLightContainer: {
-        // top:vs(5),
-        // position:'absolute',
-        // bottom:0,
-        padding:5,
+        top: vs(5),
+        padding: 5,
         height: s(60),
         width: s(60),
-        alignSelf:'center',
+        alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: colors.buttonBg,
         borderRadius: ms(20),
         elevation: 2,
-        // borderLeftWidth:5,
-        // borderBottomWidth:5,
-        // borderRightWidth:5,
-        // borderColor:colors.white
-        // marginTop: 7
     }
 });

@@ -16,7 +16,7 @@ import { Loader } from '@components/Spinner'
 
 const CouponList = ({ data, route }) => {
     const dispatch = useAppDispatch()
-    const { coupon_id, title } = route?.params ?? ""
+    const { coupon_id, title ,user_booklet_id} = route?.params ?? ""
     const { couponList, isBtnLoading, isLoading } = useAppSelector((state) => state?.myCard)
 
     const viewDetailSheet = useRef()
@@ -25,13 +25,13 @@ const CouponList = ({ data, route }) => {
     const [refreshing, setRefreshing] = useState(false)
 
     useEffect(() => {
-        dispatch(getCoupon({ coupon_id }))
+        dispatch(getCoupon({ coupon_id,user_booklet_id }))
     }, [])
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        dispatch(getCoupon({ coupon_id })).finally(() => setRefreshing(false));
-    }, [dispatch, coupon_id]);
+        dispatch(getCoupon({ coupon_id,user_booklet_id })).finally(() => setRefreshing(false));
+    }, [dispatch, coupon_id,user_booklet_id]);
 
     const handleOnPress = (item) => {
         let data = {
@@ -44,27 +44,27 @@ const CouponList = ({ data, route }) => {
     }
 
     const handleSucess = () =>{
-        dispatch(getCoupon({ coupon_id }))
+        dispatch(getCoupon({ coupon_id ,user_booklet_id}))
     }
 
     const renderItem = useMemo(
         () =>
             ({ item, index }: { item: CardItem, index: number }) => {
-                console.log("item", item);
+console.log("itemmy card copouns", item);
 
                 return (
                     <CommonCard
                         key={index}
                         data={item}
-                        heading={item?.user_booklet?.heading}
-                        description={item?.user_booklet?.short_desc}
+                        heading={item?.heading}
+                        description={item?.short_desc}
                         btnTextColor={WHITE}
                         buttonTitle={item?.used_status}
                         onViewPress={() => handleOnPress(item)}
                         viewBtnDisabled={item?.used_status == "Used"}
-                        status={item?.user_booklet?.coupon_type_id == 1 ? 'Free' : ""}
-                        statusBg={item?.user_booklet?.coupon_type_id == 1 && colors.lightGreen}
-                        statusTextColor={item?.user_booklet?.coupon_type_id == 1 && WHITE}
+                        status={item?.coupon_type_id == 1 ? 'Free' : ""}
+                        statusBg={item?.coupon_type_id == 1 && colors.lightGreen}
+                        statusTextColor={item?.coupon_type_id == 1 && WHITE}
                     // viewBtnLoader={isBtnLoading && item?.id}
                     />
                 )

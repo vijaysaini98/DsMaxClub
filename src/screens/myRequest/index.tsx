@@ -37,11 +37,33 @@ const RenderTabBar = (props) => {
           {route.title}
         </AppText>
       )}
-      indicatorStyle={styles.tabIndocatorStyle}
+      // indicatorStyle={styles.tabIndocatorStyle}
+      // activeColor={colors.placeholder}
+      // inactiveColor={colors.disTextColor}
+      // style={styles.tabContainerStyle}
+      // tabStyle={styles.tabStyle}
+      // pressColor={colors.transparent}
+       indicatorStyle={{
+        backgroundColor: colors.buttonBg,
+        height: 1,
+        width: 100,
+        borderRadius: 20,
+        bottom:-1
+      }}
       activeColor={colors.placeholder}
       inactiveColor={colors.disTextColor}
-      style={styles.tabContainerStyle}
-      tabStyle={styles.tabStyle}
+      style={{
+        backgroundColor: 'transparent',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0.5,
+        borderBottomColor: colors.disTextColor,
+        height: 40,
+      }}
+      tabStyle={{
+        height: 40,
+        width: 90,
+      }}
       pressColor={colors.transparent}
     />
   );
@@ -52,10 +74,10 @@ const MyRequest = () => {
   const {myRequestApproveList,myRequestAllList,myRequestPendingList,myRequestRejectList} = useAppSelector((state)=>state?.myRequest)
     const [index, setIndex] = useState(0)
     const renderScene = SceneMap({
-        all: () => <MyRequestList data = {myRequestAllList}/>,
-        pending: () => <MyRequestList data = {myRequestPendingList}/>,
-        approve: () => <MyRequestList data = {myRequestApproveList}/>,
-        reject: () => <MyRequestList data = {myRequestRejectList}/>,
+        all: () => <MyRequestList data = {myRequestAllList} tabname={"all"}/>,
+        pending: () => <MyRequestList data = {myRequestPendingList} tabname={"pending"}/>,
+        approve: () => <MyRequestList data = {myRequestApproveList} tabname={"approve"} />,
+        reject: () => <MyRequestList data = {myRequestRejectList} tabname={"reject"}/>,
     });
 
      useEffect(() => {
@@ -104,7 +126,7 @@ mainContainer:{
 },
 containerStyle:{ 
   flex: 1, 
-  paddingTop: vs(40) 
+  paddingTop: vs(25) 
 },
 tabContainerStyle:{
         backgroundColor: 'transparent',
@@ -120,7 +142,7 @@ tabContainerStyle:{
       },
       tabIndocatorStyle:{
         backgroundColor: colors.buttonBg,
-        height: 1,
+        height: 2,
         width: s(100),
         borderRadius: ms(20),
       },

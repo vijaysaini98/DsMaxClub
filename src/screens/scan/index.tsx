@@ -45,6 +45,8 @@ const Scan = () => {
           user_id: scanData?.coupons?.user_uuid,
           generated_code: scanData?.coupons?.generated_code,
         };
+        console.log("payload", payload);
+        
         dispatch(scanCouponCode(payload, handleSuccess,setCameraIsLoading(false)));
         // NavigationService.navigate(REDEEM_SUCCESSFULL_SCREEN);
       } catch (err) {

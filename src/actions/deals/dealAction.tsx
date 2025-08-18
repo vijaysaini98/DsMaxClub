@@ -57,7 +57,6 @@ export const getDealCouponList =
             }
         } catch (e: any) {
             console.log("e", e);
-
             Toast.show(e?.response?.data?.message, Toast.LONG);
         } finally {
             dispatch(setLoading(false))

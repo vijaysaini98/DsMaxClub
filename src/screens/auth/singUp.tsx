@@ -5,6 +5,7 @@ import {
     TouchableOpacity,
     Platform,
     Text,
+    Keyboard,
 } from 'react-native';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, SEMI_BOLD, SIXTEEN, THIRTEEN, TWENTY_EIGHT, TWENTY_FOUR, WHITE } from '@components/AppText';
@@ -42,6 +43,7 @@ const SingUp = () => {
 
     const handleSignUpBtn = () => {
         // sheetRef.current?.open()
+        Keyboard.dismiss()
         // Logic to handle sign up
         if (state.name === '') {
             setState({ ...state, nameError: "Name is required" })

@@ -26,6 +26,7 @@ const MyCardList = ({ data, value }) => {
     }, [dispatch, value]);
 
     const renderItem = ({ item, index }: any) => {
+console.log("myCard item",item);
 
         return (
             <View style={styles.shadowContainer}>
@@ -33,7 +34,7 @@ const MyCardList = ({ data, value }) => {
                     cardContainerStyle={{ width: "100%" }}
                     imageStyle={styles.imageStyle}
                     imageUrl={item?.booklet ? { uri: item?.baseurl + item?.booklet } : defaultBookletImage}
-                    name={item?.client_name}
+                    name={`${item?.name} (${item?.booklet_uniquecode})`}
                     price={item.price}
                     address={item?.client_address ? item?.client_address : "---"}
                     handleCardOnPress={() => {
@@ -43,8 +44,11 @@ const MyCardList = ({ data, value }) => {
                         else {
                             NavigationService.navigate(MY_CARD_COUPON_LIST_SCREEN,
                                 {
-                                    title: item?.client_name,
-                                    booklet_id: item?.uuid, tab_status: item?.tab_status
+                                    title: item?.name,
+                                    // booklet_id: item?.uuid, 
+                                    user_booklet_uuid: item?.user_booklet_uuid,
+                                    tab_status: item?.tab_status,
+                                    booklet_uniquecode:item?.booklet_uniquecode
                                 })
                         }
                     }}

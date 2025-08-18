@@ -9,15 +9,26 @@ import QRCode from 'react-native-qrcode-svg';
 import { giftIcon } from '@helper/imagesAssets'
 import Svg, { Line } from 'react-native-svg'
 import { ms, s, vs } from 'react-native-size-matters/extend'
-import { useAppSelector } from '@redux/hooks'
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
+import NavigationService from '@navigations/NavigationService'
+import { getCoupon } from '@actions/myCard/myCardAction'
 
-const UserRedeemSucessfull = () => {
+const UserRedeemSucessfull = ({route}) => {
+  const dispatch = useAppDispatch()
+const { coupon_id ,user_booklet_id} = route?.params ?? ""
 
   const { couponData } = useAppSelector((state) => state?.myCard)
 
+const handleBackPress = () => {
+  dispatch(getCoupon({ coupon_id,user_booklet_id }))
+  NavigationService.goBack();
+}
+
   return (
     <AppSafeAreaView style={[commonStyles.mainContainer, styles.mainContainer]}>
-      <ToolBar isLeftIcon title="QR Code" />
+      <ToolBar 
+      handleLeftIconPress={()=> handleBackPress()}
+      isLeftIcon title="QR Code" />
       <View style={styles.container}>
         <Image
           source={giftIcon} // ✅ make sure this matches your asset path

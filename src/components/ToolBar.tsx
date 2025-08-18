@@ -3,6 +3,7 @@ import { Image, StyleSheet, TouchableOpacity, View, ImageSourcePropType, TextSty
 import { backIcon } from "@helper/imagesAssets";// Ensure correct import
 import NavigationService from "@navigations/NavigationService";
 import { AppText, TWENTY_TWO } from "./AppText";
+import { s } from "react-native-size-matters/extend";
 
 interface ToolBarProps {
   handleLeftIconPress?: () => void;
@@ -60,6 +61,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
     paddingTop: 20,
     width: "100%",
+    paddingRight:s(10)
   },
   backArrow: {
     width: 30,
@@ -72,6 +74,7 @@ const styles = StyleSheet.create({
   titleStyle: {
      marginLeft: 10 ,
      width:"90%",
+     flexShrink: 1,
   //   textShadowColor: 'rgba(0, 0, 0, 0.75)',
   // textShadowOffset: {width: -1, height: 1},
   // textShadowRadius: 10

@@ -5,7 +5,7 @@ import { colors } from '@theme/colors';
 import { shareToAny } from '@utils/index';
 import { useAppSelector, useAppDispatch } from '@redux/hooks';
 import { Loader } from '@components/Spinner';
-import { AppText } from '@components/AppText';
+import { AppText, WHITE } from '@components/AppText';
 import ViewDetailsBottomSheet from './viewDetailsBottomSheet';
 import { getBookletDetail, getBookletList } from '@actions/home/homeAction';
 import { ms, s, vs } from 'react-native-size-matters/extend';
@@ -55,6 +55,9 @@ const All: React.FC = ({ id }) => {
                     // onRedeemPress={() => console.log('Redeem Pressed:', item.id)}
                     btnStyle={styles.viewBtnStyle}
                     // handleRightIcon={handleShareOnPress}
+                    status={item?.coupon_type_id == 1 ? 'Free' : ""}
+                    statusBg={item?.coupon_type_id == 1 && colors.lightGreen}
+                    statusTextColor={item?.coupon_type_id == 1 && WHITE}
                 />
             ),
         [onViewPress, handleShareOnPress]

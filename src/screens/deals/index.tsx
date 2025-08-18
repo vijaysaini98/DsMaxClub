@@ -14,6 +14,7 @@ import { VENDOR_USER_LIST } from '@navigations/routes';
 import { Loader } from '@components/Spinner';
 import { userProfile } from '@actions/auth/authAction';
 import { defaultBookletImage } from '@helper/imagesAssets';
+import { setVendorUserList } from '@actions/deals/dealSlice';
 
 const Deal = () => {
 
@@ -55,6 +56,7 @@ const Deal = () => {
           price={item.price}
           address={item?.client_address ? item?.client_address : item?.city_name ? item?.city_name : "---"}
           handleCardOnPress={() => {
+            dispatch(setVendorUserList([]))
             NavigationService.navigate(VENDOR_USER_LIST, { title: item?.name, booklet_id: item?.uuid })
           }}
         />
@@ -78,12 +80,10 @@ const Deal = () => {
               tintColor={colors.buttonBg}
             />
           }
-          contentContainerStyle={{ paddingHorizontal: s(16), gap: s(10) }}
+          contentContainerStyle={{ paddingHorizontal: s(16), gap: s(10), paddingBottom: vs(20) }}
           showsVerticalScrollIndicator={false}
         />
       }
-
-
       <ViewDetailsBottomSheet ref={ViewDetailsSheet} />
     </AppSafeAreaView>
   );

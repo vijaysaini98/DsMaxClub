@@ -21,6 +21,7 @@ import FastImage from 'react-native-fast-image'
 import { s, vs } from 'react-native-size-matters/extend'
 import { OpenMapArgs } from 'src/types/common';
 import Toast from "react-native-simple-toast";
+import moment from 'moment'
 
 
 const Details = ({ route }) => {
@@ -109,8 +110,6 @@ const Details = ({ route }) => {
 
   const handleRedirection = (data: any) => {
 
-    console.log("data?.client?.location_url", data?.client?.location_url);
-
     const coords = extractLatLngFromUrl(data?.client?.location_url);
     if (coords) {
       openMap({
@@ -125,6 +124,7 @@ const Details = ({ route }) => {
     }
 
   }
+  console.log("bookletDetailAllDeals?.request_status", bookletDetailAllDeals?.request_status);
 
   return (
     <View style={styles.mainContainer}>
@@ -202,6 +202,11 @@ const Details = ({ route }) => {
           <AppText type={SIXTEEN} color={PLACEHOLDER} style={styles.disTextStyle}>
             {data?.client?.short_desc ? data?.client?.short_desc : data?.client_short_desc}
           </AppText>}
+
+        <AppText type={THIRTEEN} color={PLACEHOLDER} style={styles.disTextStyle}>
+          {`Start Date: ${data?.start_date ? moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY") : "N/A"} - End Date: ${data?.end_date ? moment(data.end_date, "YYYY-MM-DD").format("D MMM YYYY") : "N/A"}`}
+        </AppText>
+
         {data?.client?.location_url && (
           <TouchableOpacityView
             // onPress={()=> openInGoogleMaps(data?.client?.location_url)}
@@ -217,6 +222,7 @@ const Details = ({ route }) => {
             <AppText type={THIRTEEN} color={BUTTON_TEXT} style={{ textDecorationLine: 'underline', textDecorationColor: colors.buttonText, letterSpacing: 0.8 }} >{"Check Location"}</AppText>
           </TouchableOpacityView>
         )}
+
 
         <View style={styles.thridContainer}>
           <TabView
@@ -237,7 +243,7 @@ const Details = ({ route }) => {
           loader={isBtnLoading}
           disabled={bookletDetailAllDeals?.request_status == "Pending"}
         >
-          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>{bookletDetailAllDeals?.request_status == "Pending" ? "REQUEST SENT SUCESSFULLY" : "REQUEST"}</AppText>
+          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>{bookletDetailAllDeals?.request_status == "Pending" ? "REQUEST IN PENDING" : "REQUEST"}</AppText>
         </TouchableOpacityView>
       </View>
     </View>

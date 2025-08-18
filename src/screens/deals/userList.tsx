@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { SectionList, StyleSheet, View, Image, RefreshControl, FlatList } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FlatList, Image, RefreshControl, StyleSheet, View } from 'react-native';
 import { colors } from '@theme/colors';
 import ToolBar from '@components/ToolBar';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
@@ -7,16 +7,16 @@ import { commonStyles } from '@theme/commonStyles';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { getVendorUserList } from '@actions/deals/dealAction';
 import { Loader } from '@components/Spinner';
-import { AppText, EIGHTEEN, FOURTEEN, NORMAL, SEMI_BOLD, TWELVE, WHITE, MEDIUM, PLACEHOLDER } from '@components/AppText';
-import { emailIcon, locationIcon, phoneIcon } from '@helper/imagesAssets';
+import { AppText, EIGHTEEN, FOURTEEN, NORMAL, TWELVE, MEDIUM } from '@components/AppText';
+import { emailIcon, phoneIcon, searchIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import ViewDetailsBottomSheet from './viewDetailsBottomSheet';
 import { ms, s, vs } from 'react-native-size-matters/extend';
-import { userListData } from '@helper/dumyData';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import moment from 'moment';
 import NavigationService from '@navigations/NavigationService';
 import { VENDOR_COUPON_LIST } from '@navigations/routes';
+import Input from '@components/Input';
 
 const UserList = ({ route }) => {
     const { title, booklet_id } = route?.params ?? {};
@@ -25,7 +25,10 @@ const UserList = ({ route }) => {
 
     const [refreshing, setRefreshing] = useState(false);
     const [viewData, setViewData] = useState({});
+    const [searchText, setSearchText] = useState("");
     const viewDetailsSheet = useRef<any>(null);
+    const debounceRef = useRef<NodeJS.Timeout | null>(null)
+    
 
     useEffect(() => {
         dispatch(getVendorUserList({ booklet_id }));
@@ -36,46 +39,64 @@ const UserList = ({ route }) => {
         dispatch(getVendorUserList({ booklet_id })).finally(() => setRefreshing(false));
     }, [dispatch, booklet_id]);
 
-    const handleViewOnPress = useCallback((data) => {
-        setViewData(data);
-        setTimeout(() => {
-            viewDetailsSheet.current?.open();
-        }, 200);
-    }, []);
+    const onChangeHandler = (value: string) => {
+            setSearchText(value)
+            clearTimeout(debounceRef.current);
+            if (value) {
+                debounceRef.current = setTimeout(() => {
+                    dispatch(getVendorUserList({ booklet_id, search: value  }))
+                }, 500);
+            } else {
+                dispatch(getVendorUserList({ booklet_id }))
+            }
+        };
 
     const handleUserCardClick = useCallback((item) => {
         NavigationService.navigate(VENDOR_COUPON_LIST, 
-            { title: item?.name, user_id: item?.useruuid, booklet_id: item?.booklet_uuid }
-        )
+            { title: item?.username,unique_code:item?.unique_code, user_id: item?.useruuid, booklet_id: item?.booklet_uuid,user_booklet_uuid:item?.uuid }
+        );
     }, []);
 
     const renderItem = useCallback(
         ({ item }) => {
-            console.log("item", item);
-
-            return (
-                <TouchableOpacityView style={styles.userCardStyle} onPress={() => handleUserCardClick(item)
-                }>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <AppText type={EIGHTEEN} weight={MEDIUM}>{item?.username}</AppText>
-                        <AppText type={TWELVE} style={{ color: colors.borderColor }}>
-                            {
-                                moment(item?.requestdate, "DD-MM-YYYY").format("D MMM YYYY")
-                            }
-                        </AppText>
-                    </View>
-                    {item?.usermobile && (<View style={styles.userCardRowContainer}>
+            
+            return(
+            <TouchableOpacityView style={styles.userCardStyle} onPress={() => handleUserCardClick(item)}>
+                <View style={styles.userCardHeader}>
+                    <AppText
+                        type={EIGHTEEN}
+                        weight={MEDIUM}
+                        style={styles.userNameText}
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                    >
+                        {`${item?.username} (${item?.unique_code})`}
+                    </AppText>
+                    <AppText
+                        type={TWELVE}
+                        style={styles.requestDateText}
+                        numberOfLines={1}
+                    >
+                        {item?.requestdate
+                            ? moment(item?.requestdate, "YYYY-MM-DD hh:mm").format("D MMM YYYY hh:mm")
+                            : ""}
+                    </AppText>
+                </View>
+                {item?.usermobile && (
+                    <View style={styles.userCardRowContainer}>
                         <Image source={phoneIcon} style={styles.iconStyle} resizeMode='contain' />
                         <AppText type={FOURTEEN} weight={NORMAL}>{item?.usermobile}</AppText>
-                    </View>)}
-                    {item?.useremail && (<View style={styles.userCardRowContainer}>
+                    </View>
+                )}
+                {item?.useremail && (
+                    <View style={styles.userCardRowContainer}>
                         <Image source={emailIcon} style={styles.iconStyle} resizeMode='contain' />
                         <AppText type={FOURTEEN} weight={NORMAL}>{item?.useremail}</AppText>
-                    </View>)}
-                </TouchableOpacityView>
-            )
-        },
-        [handleViewOnPress]
+                    </View>
+                )}
+            </TouchableOpacityView>
+        )},
+        [handleUserCardClick]
     );
 
     return (
@@ -83,8 +104,19 @@ const UserList = ({ route }) => {
             <ToolBar
                 mainContainerStyle={styles.toolBarContainer}
                 isLeftIcon
-                title='User List'
+                title='User'
             />
+            <View style={styles.containerStyle}>
+                <Input
+                    leftIcon={searchIcon}
+                    placeholder='Search...'
+                    placeholderTextColor={colors.placeholder}
+                    value={searchText}
+                    // onChangeText={(text) => setSeachText(text)}
+                    onChangeText={(text) => onChangeHandler(text)}
+                    inputContainerStyle={styles.searchContainer}
+                />
+            </View>
             {isLoading && !refreshing ? (
                 <Loader />
             ) : (
@@ -116,11 +148,6 @@ const UserList = ({ route }) => {
 export default UserList;
 
 const styles = StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-        backgroundColor: colors.white,
-        paddingTop: vs(40),
-    },
     toolBarContainer: {
         marginHorizontal: s(16),
     },
@@ -128,26 +155,34 @@ const styles = StyleSheet.create({
         paddingVertical: vs(20),
         gap: s(10),
     },
-    listTitleContainer: {
-        backgroundColor: colors.buttonBg,
-        paddingHorizontal: s(12),
-        paddingVertical: vs(4),
-        alignSelf: 'flex-start',
-        borderRadius: ms(20),
-        marginTop: vs(10),
-        marginBottom: vs(5),
-        marginLeft: s(16),
-    },
     userCardStyle: {
         marginHorizontal: s(16),
-        padding: s(16),
-        // borderWidth: 1,
+        paddingVertical: s(16),
+        paddingLeft: s(16),
+        paddingRight: s(5),
         borderColor: colors.second,
         borderRadius: ms(10),
         gap: 9,
-
+        overflow: 'hidden',
         borderWidth: 3,
-        borderStyle: "dotted"
+        borderStyle: "dotted",
+        backgroundColor: colors.white,
+    },
+    userCardHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: 'transparent',
+        width: '100%',
+    },
+    userNameText: {
+        flex: 1,
+        marginRight: 8,
+        flexShrink: 1,
+    },
+    requestDateText: {
+        color: colors.borderColor,
+        flexShrink: 0,
     },
     userCardRowContainer: {
         flexDirection: 'row',
@@ -158,4 +193,12 @@ const styles = StyleSheet.create({
         height: vs(15),
         width: s(15),
     },
-});
+    containerStyle: {
+        marginTop: vs(10),
+        marginHorizontal: s(16),
+    },
+    searchContainer: {
+        marginBottom: vs(10)
+
+    },
+    });

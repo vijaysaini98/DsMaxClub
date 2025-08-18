@@ -3,6 +3,7 @@ import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { colors } from "@theme/colors"; // your theme colors
 import { AppText, BOLD, EIGHTEEN, FOURTEEN, MEDIUM, SEMI_BOLD, WHITE } from "./AppText";
 import TouchableOpacityView from "./TouchableOpacityView";
+import { ms, s, vs } from "react-native-size-matters/extend";
 
 export default function DeleteAccountModal({ visible, onClose, onConfirm }: any) {
     return (
@@ -52,47 +53,39 @@ const styles = StyleSheet.create({
         backgroundColor: colors.modalbg,
         justifyContent: "center",
         alignItems: "center",
-        paddingHorizontal: 20,
+        paddingHorizontal: s(20),
     },
     modalContent: {
         backgroundColor: colors.white,
-        borderRadius: 16,
-        padding: 20,
+        borderRadius: ms(16),
+        padding: s(20),
         width: "100%",
-        maxWidth: 350,
+        maxWidth: s(350),
         elevation: 5,
     },
     title: {
-        color: colors.black,
-        marginBottom: 10,
+        // color: colors.black,
+        marginBottom: vs(10),
     },
     message: {
-        marginBottom: 20,
-        lineHeight: 20,
+        marginBottom: vs(20),
+        lineHeight: vs(20),
     },
     buttonRow: {
         flexDirection: "row",
         justifyContent: "flex-end",
-        gap: 12,
+        gap: s(12),
     },
     cancelButton: {
-        paddingVertical: 10,
-        paddingHorizontal: 18,
-        borderRadius: 8,
-        backgroundColor: colors.borderColor,
-    },
-    cancelText: {
-        color: colors.black,
-        fontWeight: "600",
+        paddingVertical: vs(10),
+        paddingHorizontal: s(18),
+        borderRadius: ms(8),
+        backgroundColor: colors.disabledBtn,
     },
     deleteButton: {
-        paddingVertical: 10,
-        paddingHorizontal: 18,
-        borderRadius: 8,
+        paddingVertical: vs(10),
+        paddingHorizontal: s(18),
+        borderRadius: ms(8),
         backgroundColor: colors.buttonBg,
-    },
-    deleteText: {
-        color: colors.white,
-        fontWeight: "600",
     },
 });

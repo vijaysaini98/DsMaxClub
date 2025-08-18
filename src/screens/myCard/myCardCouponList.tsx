@@ -14,11 +14,12 @@ import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { getMyCardCouponList } from '@actions/myCard/myCardAction'
 import ListEmptyComponent from '@components/ListEmptyComponent'
 import { colors } from '@theme/colors'
+import { vs } from 'react-native-size-matters/extend'
 
 const MyCardCouponList = ({ data, route }) => {
     const dispatch = useAppDispatch()
     const { myCardCouponList } = useAppSelector((state) => state?.myCard)
-    const { title, booklet_id, tab_status } = route?.params ?? ""
+    const { title, user_booklet_uuid, tab_status,booklet_uniquecode } = route?.params ?? ""
 
     const viewDetailSheet = useRef()
     const redeemSheetRef = useRef()
@@ -27,17 +28,17 @@ const MyCardCouponList = ({ data, route }) => {
     const [refreshing, setRefreshing] = useState(false)
 
     useEffect(() => {
-        dispatch(getMyCardCouponList({ booklet_id }))
+        dispatch(getMyCardCouponList({ user_booklet_uuid }))
     }, [])
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        dispatch(getMyCardCouponList({ booklet_id })).finally(() => setRefreshing(false));
-    }, [dispatch, booklet_id]);
+        dispatch(getMyCardCouponList({ user_booklet_uuid })).finally(() => setRefreshing(false));
+    }, [dispatch, user_booklet_uuid]);
 
     const handleViewBtn = (data) => {
         if (tab_status == "active") {
-            NavigationService.navigate(COUPON_LIST_SCREEN, { coupon_id: data?.coupon_uuid, title: data?.heading })
+            NavigationService.navigate(COUPON_LIST_SCREEN, { coupon_id: data?.coupon_uuid, title: data?.heading, user_booklet_id: data?.user_bookletid })
         } else {
             setViewData(data)
             setTimeout(() => {
@@ -49,7 +50,8 @@ const MyCardCouponList = ({ data, route }) => {
     const renderItem = useMemo(
         () =>
             ({ item }: { item: CardItem }) => {
-                
+                console.log("itemmy card copouns", item);
+
                 return (
                     <CommonCard
                         key={item.id}
@@ -60,7 +62,7 @@ const MyCardCouponList = ({ data, route }) => {
                         btnTextColor={WHITE}
                         couponCount={item?.total_coupons}
                         viewBtnDisabled={tab_status == "expire"}
-                        status={tab_status}
+                        status={item?.tab_status}
                     />
                 )
             },
@@ -69,7 +71,7 @@ const MyCardCouponList = ({ data, route }) => {
 
     return (
         <AppSafeAreaView style={[commonStyles.mainContainer, { paddingHorizontal: 16 }]}>
-            <ToolBar isLeftIcon title={title} />
+            <ToolBar isLeftIcon title={`${title} (${booklet_uniquecode})`} />
             <FlatList
                 data={myCardCouponList}
                 renderItem={renderItem}
@@ -98,7 +100,7 @@ export default MyCardCouponList
 const styles = StyleSheet.create({
     containerStyle: {
         gap: 15,
-        paddingBottom: 50,
-        marginTop: 40,
+        paddingBottom: vs(50),
+        marginTop: vs(40),
     },
 })
