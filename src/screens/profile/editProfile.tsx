@@ -68,16 +68,36 @@ const EditProfile: React.FC = () => {
         bottomSheetRef.current?.close();
     };
 
-    const handleChangeProfileImage = (image) => {
-        if (!image?.uri) {
-            console.warn('No image selected');
-            return;
-        }
-        let formData = new FormData()
-        formData.append("profile_image", image);
+    // const handleChangeProfileImage = (image) => {
+    //     if (!image?.uri) {
+    //         console.warn('No image selected');
+    //         return;
+    //     }
+    //     let formData = new FormData()
+    //     formData.append("profile_image", image);
 
-        dispatch(updateUserProfileImage(formData, { userid: userData?.uuid }))
-    }
+    //     dispatch(updateUserProfileImage(formData, { userid: userData?.uuid }))
+    // }
+
+    const handleChangeProfileImage = (image) => {
+  if (!image?.uri) {
+    console.warn('No image selected');
+    return;
+  }
+
+  let file = {
+    uri: image.uri,
+    type: image.type || 'image/jpeg',
+    name: image.fileName || `profile_${Date.now()}.jpg`,
+  };
+
+  let formData = new FormData();
+  formData.append("profile_image", file);
+
+  console.log("🚀 ~ handleChangeProfileImage ~ formData:", file);
+
+  dispatch(updateUserProfileImage(formData, { userid: userData?.uuid }));
+};
 
     const handleSaveBtn = () => {
         if (state?.cityId === userData?.city && state?.name === userData?.name && state?.phone === userData?.mobile) {
@@ -91,6 +111,7 @@ const EditProfile: React.FC = () => {
                 city: state?.cityId,
                 current_city: userData?.current_city ? userData?.current_city : state?.cityId
             }
+             console.log('🚀 ~ handleSaveBtn ~ data:', data);
             dispatch(updateUserProfile(data, { userid: userData?.uuid }))
         }
 

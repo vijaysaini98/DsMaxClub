@@ -204,7 +204,7 @@ const Details = ({ route }) => {
           </AppText>}
 
         <AppText type={THIRTEEN} color={PLACEHOLDER} style={styles.disTextStyle}>
-          {`Start Date: ${data?.start_date ? moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY") : "N/A"} - End Date: ${data?.end_date ? moment(data.end_date, "YYYY-MM-DD").format("D MMM YYYY") : "N/A"}`}
+          {`Date:  ${data?.start_date ? moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY") : "N/A"} - ${data?.end_date ? moment(data.end_date, "YYYY-MM-DD").format("D MMM YYYY") : "N/A"}`}
         </AppText>
 
         {data?.client?.location_url && (
