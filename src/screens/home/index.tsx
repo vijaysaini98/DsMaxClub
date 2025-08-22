@@ -143,7 +143,10 @@ const Home: React.FC = () => {
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.listStyle}
                   >
-                    {item.booklets.map((booklet: any, i: number) => (
+                    {item.booklets.map((booklet: any, i: number) =>{
+                      console.log("booklet", booklet);
+                      
+                      return (
                       <View key={booklet.id || i} style={styles.categoryBookletContainer}>
                         <Card
                           index={i}
@@ -153,12 +156,12 @@ const Home: React.FC = () => {
                             NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet });
                           }}
                           imageUrl={booklet?.booklet ? { uri: categoryBookletData?.baseurl + booklet?.booklet } : defaultBookletImage}
-                          name={booklet?.name}
+                          name={booklet?.client?.name}
                           price={booklet.price}
                           address={booklet?.client?.address || '---'}
                         />
                       </View>
-                    ))}
+                    )})}
 
                     <View style={styles.seeAllContainer2}>
                       <TouchableOpacityView

@@ -99,7 +99,7 @@ const Card: React.FC<CardProps> = ({
         </View>
          {date && <AppText type={TWELVE} 
         weight={MEDIUM}
-        style={{marginLeft:s(15),marginVertical:vs(5),color:colors.disTextColor,textDecorationLine: 'underline'}}>
+        style={{marginLeft:s(15),marginVertical:vs(5),color:colors.disTextColor}}>
           {date}
         </AppText>}
       </View>

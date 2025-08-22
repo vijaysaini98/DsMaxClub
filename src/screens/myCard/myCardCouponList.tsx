@@ -15,11 +15,12 @@ import { getMyCardCouponList } from '@actions/myCard/myCardAction'
 import ListEmptyComponent from '@components/ListEmptyComponent'
 import { colors } from '@theme/colors'
 import { vs } from 'react-native-size-matters/extend'
+import { Loader } from '@components/Spinner'
 
 const MyCardCouponList = ({ data, route }) => {
     const dispatch = useAppDispatch()
-    const { myCardCouponList } = useAppSelector((state) => state?.myCard)
-    const { title, user_booklet_uuid, tab_status,booklet_uniquecode } = route?.params ?? ""
+    const { myCardCouponList, isLoading } = useAppSelector((state) => state?.myCard)
+    const { title, user_booklet_uuid, tab_status, booklet_uniquecode } = route?.params ?? ""
 
     const viewDetailSheet = useRef()
     const redeemSheetRef = useRef()
@@ -72,24 +73,25 @@ const MyCardCouponList = ({ data, route }) => {
     return (
         <AppSafeAreaView style={[commonStyles.mainContainer, { paddingHorizontal: 16 }]}>
             <ToolBar isLeftIcon title={`${title} (${booklet_uniquecode})`} />
-            <FlatList
-                data={myCardCouponList}
-                renderItem={renderItem}
-                keyExtractor={item => item.id.toString()}
-                contentContainerStyle={styles.containerStyle}
-                showsVerticalScrollIndicator={false}
-                ListEmptyComponent={() => (
-                    <ListEmptyComponent title={"No Coupons Available"} />
-                )}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        colors={[colors.buttonBg]}
-                        tintColor={colors.buttonBg}
-                    />
-                }
-            />
+            {isLoading && !refreshing ? <Loader /> :
+                <FlatList
+                    data={myCardCouponList}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id.toString()}
+                    contentContainerStyle={styles.containerStyle}
+                    showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={() => (
+                        <ListEmptyComponent title={"No Coupons Available"} />
+                    )}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            colors={[colors.buttonBg]}
+                            tintColor={colors.buttonBg}
+                        />
+                    }
+                />}
             <ViewDetailsBottomSheet ref={viewDetailSheet} data={viewData} />
         </AppSafeAreaView>
     )
