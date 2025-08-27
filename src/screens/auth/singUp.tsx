@@ -62,8 +62,11 @@ const SingUp = () => {
         else if (state.password === '') {
             setState({ ...state, passwordError: "Password is required" })
         }
-        else if (passwordRegex.test(state?.password) === false) {
-            setState({ ...state, passwordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
+        // else if (passwordRegex.test(state?.password) === false) {
+        //     setState({ ...state, passwordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
+        // }
+        else if (state.password.length < 4) {
+            setState({ ...state, passwordError: "Password is at least 4 character " })
         }
         else {
             let data = {

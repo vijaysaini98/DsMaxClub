@@ -12,6 +12,7 @@ import { IMGE_URL } from '@services/config'
 import { defaultBookletImage } from '@helper/imagesAssets'
 import moment from 'moment'
 import { getMyRequestList } from '@actions/myRequest/myRequestAction'
+import ListEmptyComponent from '@components/ListEmptyComponent'
 
 const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
     const dispatch = useAppDispatch()
@@ -62,9 +63,7 @@ const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
                             />
                         }
                         ListEmptyComponent={() => (
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}>
-                                <AppText>{"No Request Available"}</AppText>
-                            </View>
+                            <ListEmptyComponent title={"No Request Available"} />
                         )}
                     />
             }

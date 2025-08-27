@@ -138,7 +138,7 @@ export const deleteAccount =
 export const sendOtp =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
     try {
-      // dispatch(setLoading(true));
+      dispatch(setLoading(true));
       const response = await API.authApi.send_otp(data);
 
       if (response?.status == 200) {
@@ -152,7 +152,7 @@ export const sendOtp =
       Toast.show(e?.response?.data?.message, Toast.LONG);
       console.log('e', e);
     } finally {
-      // dispatch(setLoading(false));
+      dispatch(setLoading(false));
     }
   };
 

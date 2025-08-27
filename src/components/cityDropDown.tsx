@@ -60,14 +60,14 @@ const CityDropDown: React.FC<CityDropDownProps> = ({
           keyExtractor={(item) => item.id}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          renderItem={({ item,index }: ListRenderItemInfo<CityOption>) => (
+          renderItem={({ item, index }: ListRenderItemInfo<CityOption>) => (
             <TouchableOpacityView
-            key={index}
+              key={index}
               onPress={() => handleSelectOption(item)}
               style={styles.option}
             >
               <AppText
-               type={THIRTEEN}>{item.name}</AppText>
+                type={THIRTEEN}>{item.name}</AppText>
             </TouchableOpacityView>
           )}
           ListEmptyComponent={() => (
@@ -94,6 +94,6 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     alignItems: 'center',
-    paddingVertical:20,
+    paddingVertical: 20,
   },
 })

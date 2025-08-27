@@ -11,7 +11,7 @@ import TouchableOpacityView from '@components/TouchableOpacityView';
 import Input from '@components/Input';
 import NavigationService from '@navigations/NavigationService';
 import ToolBar from '@components/ToolBar';
-import { LOGIN_SCREEN } from '@navigations/routes';
+import { FORGOT_PASSWORD_SCREEN, LOGIN_SCREEN } from '@navigations/routes';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { resetPassword } from '@actions/auth/authAction';
 import { passwordRegex } from '@utils/index';
@@ -39,9 +39,13 @@ const ResetPassword = ({ route }) => {
         } else if (state.confirmPassword === '') {
             setState({ ...state, confirmPasswordError: "Confirm Password is required" });
             return;
-        } else if (passwordRegex.test(state?.newPassword) === false) {
-            setState({ ...state, newPasswordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
-            return;
+        } 
+        // else if (passwordRegex.test(state?.newPassword) === false) {
+        //     setState({ ...state, newPasswordError: "Password must be 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character." });
+        //     return;
+        // }
+         else if (state.newPassword.length < 4) {
+            setState({ ...state, newPasswordError: "Password is at least 4 character " })
         }
         else if (state.newPassword !== state.confirmPassword) {
             setState({ ...state, confirmPasswordError: "Passwords do not match" });
@@ -67,6 +71,7 @@ const ResetPassword = ({ route }) => {
             style={styles.mainContainer}>
             <ToolBar
                 isLeftIcon={true}
+                handleLeftIconPress={() => NavigationService.reset(LOGIN_SCREEN)}
             />
             <View style={styles.heading}>
                 <AppText type={TWENTY_EIGHT} weight={BOLD}>Reset Password</AppText>

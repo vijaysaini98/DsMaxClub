@@ -9,6 +9,7 @@ import { AppText, WHITE } from '@components/AppText';
 import ViewDetailsBottomSheet from './viewDetailsBottomSheet';
 import { getBookletDetail, getBookletList } from '@actions/home/homeAction';
 import { ms, s, vs } from 'react-native-size-matters/extend';
+import ListEmptyComponent from '@components/ListEmptyComponent';
 
 interface CardItem {
     id: string | number;
@@ -83,9 +84,10 @@ const All: React.FC = ({ id }) => {
                         />
                     }
                     ListEmptyComponent={() => (
-                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <AppText>{"No Coupons Available"}</AppText>
-                        </View>
+                        // <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        //     <AppText>{"No Coupons Available"}</AppText>
+                        // </View>
+                        <ListEmptyComponent title={"No Coupons Available"}/>
                     )}
                 />
             )}

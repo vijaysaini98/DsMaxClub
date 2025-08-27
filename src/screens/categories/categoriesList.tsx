@@ -13,6 +13,7 @@ import { AppText } from '@components/AppText'
 import NavigationService from '@navigations/NavigationService'
 import { DETAILS_SCREEN } from '@navigations/routes'
 import { ms, s, vs } from 'react-native-size-matters/extend'
+import ListEmptyComponent from '@components/ListEmptyComponent'
 
 const CategoriesList = ({ route }) => {
     const dispatch = useAppDispatch()
@@ -86,9 +87,7 @@ const CategoriesList = ({ route }) => {
                         contentContainerStyle={styles.listContainerStyle}
                         showsVerticalScrollIndicator={false}
                         ListEmptyComponent={() => (
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: "center" }}>
-                                <AppText>{"No Booklet Available"}</AppText>
-                            </View>
+                            <ListEmptyComponent title={"No Booklet Available"}/>
                         )}
                     />
             }
