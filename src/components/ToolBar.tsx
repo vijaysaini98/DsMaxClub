@@ -14,7 +14,8 @@ interface ToolBarProps {
   titleStyle?: TextStyle,
   mainContainerStyle: ViewStyle,
   leftIconTintColor?: string,
-  textBack?: boolean
+  textBack?: boolean,
+  backArrowBtnStyle?:ViewStyle
 }
 
 const ToolBar: React.FC<ToolBarProps> = ({
@@ -26,13 +27,14 @@ const ToolBar: React.FC<ToolBarProps> = ({
   titleStyle,
   mainContainerStyle,
   leftIconTintColor,
-  textBack
+  textBack,
+  backArrowBtnStyle
 }) => {
   return (
     <View style={[styles.mainContainer, mainContainerStyle]}>
       {isLeftIcon && (
         <TouchableOpacity
-          style={styles.backArrow}
+          style={[styles.backArrow,backArrowBtnStyle]}
            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           onPress={handleLeftIconPress ? handleLeftIconPress : () => NavigationService.goBack()}
         >

@@ -1,8 +1,8 @@
 import { Image, ImageBackground, Linking, Platform, StatusBar, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import ToolBar from '@components/ToolBar'
-import { banerImages, defaultBookletImage, locationIcon, shareIcon } from '@helper/imagesAssets'
+import { banerImages, defaultBookletImage, downArrowIcon, locationIcon, shareIcon } from '@helper/imagesAssets'
 import { AppText, BOLD, BUTTON_TEXT, PLACEHOLDER, SIXTEEN, THIRTEEN, TWENTY_TWO, WHITE } from '@components/AppText'
 import { colors } from '@theme/colors'
 import { TabView, SceneMap } from 'react-native-tab-view'
@@ -22,12 +22,17 @@ import { s, vs } from 'react-native-size-matters/extend'
 import { OpenMapArgs } from 'src/types/common';
 import Toast from "react-native-simple-toast";
 import moment from 'moment'
+import BottomSheet, { BottomSheetModal } from '@gorhom/bottom-sheet'
+import MultiLoctionSheet from './ui/multiLoctionSheet'
+import MultiLocationSheet from './ui/multiLoctionSheet'
 
 
 const Details = ({ route }) => {
   const { data } = route?.params ?? ""
   const [index, setIndex] = React.useState(0);
+   const sheetRef = useRef<BottomSheetModal>(null);
   const { isBtnLoading, bookletDetailAllDeals } = useAppSelector((state) => state.home)
+  console.log("data", data);
 
   const dispatch = useAppDispatch()
 
@@ -108,9 +113,12 @@ const Details = ({ route }) => {
     }
   };
 
-  const handleRedirection = (data: any) => {
+  const handleRedirection = (location_url: any) => {
+console.log("location_url", location_url);
 
-    const coords = extractLatLngFromUrl(data?.client?.location_url);
+    const coords = extractLatLngFromUrl(location_url);
+    console.log("coords", coords);
+    
     if (coords) {
       openMap({
         lat: coords.lat,
@@ -124,7 +132,7 @@ const Details = ({ route }) => {
     }
 
   }
-  console.log("bookletDetailAllDeals?.request_status", bookletDetailAllDeals?.request_status);
+
 
   return (
     <View style={styles.mainContainer}>
@@ -137,8 +145,9 @@ const Details = ({ route }) => {
         resizeMode="cover">
         <ToolBar
           isLeftIcon
-          title={"Detail"}
+          // title={"Detail"}
           mainContainerStyle={styles.toolBarStyle}
+          backArrowBtnStyle={{alignItems:'center'}}
           leftIconTintColor={colors.black}
           textBack={true}
         />
@@ -207,7 +216,7 @@ const Details = ({ route }) => {
           {`Date:  ${data?.start_date ? moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY") : "N/A"} - ${data?.end_date ? moment(data.end_date, "YYYY-MM-DD").format("D MMM YYYY") : "N/A"}`}
         </AppText>
 
-        {data?.client?.location_url && (
+        {/* {data?.client?.location_url && (
           <TouchableOpacityView
             // onPress={()=> openInGoogleMaps(data?.client?.location_url)}
             onPress={() => handleRedirection(data)}
@@ -221,8 +230,39 @@ const Details = ({ route }) => {
             />
             <AppText type={THIRTEEN} color={BUTTON_TEXT} style={{ textDecorationLine: 'underline', textDecorationColor: colors.buttonText, letterSpacing: 0.8 }} >{"Check Location"}</AppText>
           </TouchableOpacityView>
-        )}
+        )} */}
+        {data?.locations.length > 0 && (
+          <View
+            // onPress={()=> openInGoogleMaps(data?.client?.location_url)}
 
+            style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}
+          >
+            <TouchableOpacityView
+              onPress={() => handleRedirection(data?.locations[0]?.location_url)}
+              style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}
+            >
+              <Image
+                source={locationIcon}
+                style={{ height: vs(15), width: s(15) }}
+                tintColor={colors.borderColor}
+                resizeMode='contain'
+              />
+              <AppText
+
+                type={THIRTEEN} color={BUTTON_TEXT} style={{ textDecorationLine: 'underline', textDecorationColor: colors.buttonText, letterSpacing: 0.8 }} >{data?.locations[0]?.location}</AppText>
+            </TouchableOpacityView>
+            <TouchableOpacityView
+           onPress={() => sheetRef.current?.present()}
+            >
+            <Image
+              source={ downArrowIcon}
+              style={{ height: vs(15), width: s(15), marginTop: 3 }}
+              resizeMode='contain'
+            />
+            </TouchableOpacityView>
+          </View>
+        )
+        }
 
         <View style={styles.thridContainer}>
           <TabView
@@ -246,6 +286,11 @@ const Details = ({ route }) => {
           <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>{bookletDetailAllDeals?.request_status == "Pending" ? "REQUEST IN PENDING" : "REQUEST"}</AppText>
         </TouchableOpacityView>
       </View>
+       <MultiLocationSheet 
+       sheetRef={sheetRef} 
+       data={data?.locations}
+       title={data?.client?.name ? data?.client?.name : data?.client_name}
+       />
     </View>
 
   );

@@ -13,12 +13,12 @@ const styles = StyleSheet.create({
     },
     toolBarStyle: {
         marginTop: vs(50),
-        marginLeft: s(16),
-        backgroundColor: colors.semiTransprent,
-        width: "30%",
+        marginLeft: s(10),
+        backgroundColor: colors.white,
+        width:s(40),
         height: vs(40),
         paddingTop: 0,
-        borderRadius:5
+        borderRadius:ms(30)
     },
     ratingContainer: {
         flexDirection: 'row',

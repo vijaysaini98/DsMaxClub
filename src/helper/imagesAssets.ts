@@ -21,6 +21,7 @@ export const checkReedemIcon = require('@assets/images/checkRedeemIcon.png');
 export const dealIcon = require('@assets/images/dealIcon.png');
 export const scanIcon = require('@assets/images/scanIcon.png');
 export const historyIcon = require('@assets/images/historyIcon.png');
+export const directionIcon=require('@assets/images/directionsIcon.png')
 
 //profile Icon
 export const forwardIcon = require('@assets/images/forwardIcon.png');
