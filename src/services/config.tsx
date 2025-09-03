@@ -33,6 +33,8 @@ const MY_CARD_COUPON_LIST: string = `${BASE_URL}mycard-coupon-list`;
 const MY_CARD_COUPON: string = `${BASE_URL}mycard-coupons`;
 const COUPON_CODE_GENRATE: string = `${BASE_URL}coupon-code-generate`;
 
+const COMBO_BOOKLET_DEALS:string=`${BASE_URL}combo-booklet`;
+
 const VENDOR_BOOKLET_LIST: string = `${BASE_URL}vendor-booklet-deals`;
 const VENDOR_COUPON_LIST: string = `${BASE_URL}vendor-coupon-list`;
 const SCAN_COUPON_CODE: string = `${BASE_URL}vendor-coupon-scan`;
@@ -65,6 +67,7 @@ const config = {
   BOOKLET_LIST,
   BOOKLET_DETAIL,
   BOOKLET_REQUEST,
+  COMBO_BOOKLET_DEALS,
 
   MY_REQUEST_LIST,
   MY_REQUEST_COUPON_LIST,

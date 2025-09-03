@@ -116,7 +116,8 @@ export default Card;
 const styles = StyleSheet.create({
 
   bannerImage: {
-    height: vs(210),
+    // height: vs(210),
+    height:vs(150),
     width: s(280),
   },
   cardInner: {

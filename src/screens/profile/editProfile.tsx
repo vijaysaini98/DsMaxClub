@@ -119,7 +119,7 @@ const EditProfile: React.FC = () => {
 
     return (
         <AppSafeAreaView style={[commonStyles.mainContainer, styles.safeArea]}>
-            <ToolBar isLeftIcon title="Edit Profile" />
+            <ToolBar isLeftIcon title="My Profile" />
             {isLoading && <SpinnerSecond />}
             <KeyBoardAware style={styles.keyboardAware}>
                 <View style={styles.profileImageSection}>

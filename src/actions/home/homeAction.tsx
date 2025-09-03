@@ -1,7 +1,7 @@
 import { API } from '@services/appClient';
 import { AppDispatch } from '@redux/store';
 import Toast from "react-native-simple-toast";
-import { setBannerData, setBookletDetailAbout, setBookletDetailAllDeals, setBookletDetailGallery, setBookletDetailT_C, setBookletList, setBtnLoading, setCategoriBookletData, setCategoriListData, setLoading } from './homeSlice';
+import { setBannerData, setBookletDetailAbout, setBookletDetailAllDeals, setBookletDetailGallery, setBookletDetailT_C, setBookletList, setBtnLoading, setCategoriBookletData, setCategoriListData, setComboBookletDeals, setLoading } from './homeSlice';
 
 export const getCategoryList =
   (limit?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
@@ -135,5 +135,25 @@ export const bookletRequest =
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setBtnLoading(false))
+    }
+  };
+
+  export const getComboBookletDeals =
+  (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await API.homeApi.combo_booklet_deals(data);
+      if (response?.status == 200) {
+       dispatch(setComboBookletDeals(response?.data))
+        return;
+      } else {
+        throw new Error('No response data received from backend.');
+      }
+    } catch (e: any) {
+      console.log("bookletRequest error=>>", e?.response?.data);
+
+      Toast.show(e?.response?.data?.message, Toast.LONG);
+    } finally {
+     dispatch(setLoading(true));
     }
   };

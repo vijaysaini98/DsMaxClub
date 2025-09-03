@@ -78,9 +78,7 @@ console.log("itemmy card copouns", item);
                 <Loader />
             )
                 :
-                (
-
-                    <FlatList
+                (<FlatList
                         data={couponList}
                         renderItem={renderItem}
                         keyExtractor={item => item.id.toString()}

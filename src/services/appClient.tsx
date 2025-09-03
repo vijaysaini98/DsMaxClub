@@ -127,7 +127,8 @@ export const API = {
     banner_api: (data: any) => apiClient.post(config.BANNER_API, data),
     booklet_list: (data: any) => apiClient.get(`${config.BOOKLET_LIST}/${data?.id}?search=${data?.search ?? ""}`,),
     booklet_detail: (data: any) => apiClient.post(config.BOOKLET_DETAIL, data),
-    booklet_request: (data: any) => apiClient.post(config.BOOKLET_REQUEST, data)
+    booklet_request: (data: any) => apiClient.post(config.BOOKLET_REQUEST, data),
+    combo_booklet_deals:(data: any) => apiClient.post(config.COMBO_BOOKLET_DEALS, data)
   },
   myRequestApi: {
     myRequest_List: (data: any) => apiClient.post(config.MY_REQUEST_LIST, data),

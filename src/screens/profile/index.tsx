@@ -90,7 +90,7 @@ const Profile = () => {
       >
         <MoreTabButton
           leftIcon={proflieIcon}
-          title={"Edit Profile"}
+          title={"My Profile"}
           handleOnPress={() => { NavigationService.navigate(routes.EDIT_PROFILE_SCREEN) }}
         />
         {userData?.user_type == "2" &&

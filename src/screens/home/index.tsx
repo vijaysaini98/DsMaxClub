@@ -5,6 +5,7 @@ import {
   Image,
   RefreshControl,
   ScrollView,
+  StatusBar,
   View,
 } from 'react-native';
 import { colors } from '@theme/colors';
@@ -26,6 +27,7 @@ import {
   getBannerList,
   getCategoryBooklet,
   getCategoryList,
+  getComboBookletDeals,
 } from '@actions/home/homeAction';
 import { commonStyles } from '@theme/commonStyles';
 import TouchableOpacityView from '@components/TouchableOpacityView';
@@ -38,8 +40,9 @@ import { Loader } from '@components/Spinner';
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const { userData } = useAppSelector((state) => state?.auth);
-  const { categoryListData, categoryBookletData, isLoading, bannerList } =
+  const { categoryListData, categoryBookletData, isLoading, bannerList, comboBookletDeals } =
     useAppSelector((state) => state?.home);
+  console.log("comboBookletDeals", comboBookletDeals);
 
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -47,6 +50,7 @@ const Home: React.FC = () => {
   const fetchData = async () => {
     await dispatch(userProfile());
     await dispatch(getCategoryList());
+    await dispatch(getComboBookletDeals());
     await dispatch(getCategoryBooklet());
     await dispatch(getBannerList({ screen_name: '1' }));
   };
@@ -90,9 +94,10 @@ const Home: React.FC = () => {
   };
 
   return (
-    <AppSafeAreaView style={commonStyles.mainContainer}>
-      <Header userName={userData?.name} />
-
+    // <AppSafeAreaView style={commonStyles.mainContainer}>
+    <View style={{backgroundColor:colors.white}}>
+      
+<StatusBar backgroundColor={colors.transparent} />
       {!show && !refreshing ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size={'large'} color={colors.buttonBg} />
@@ -110,8 +115,8 @@ const Home: React.FC = () => {
             />
           }
         >
+          <Header userName={userData?.name} />
           <BanerComponent data={bannerList?.banner} />
-
           <CategoriesComponent
             data={categoryListData}
             handleSeeAll={() => {
@@ -119,6 +124,62 @@ const Home: React.FC = () => {
               NavigationService.navigate(routes?.CATEGORIES_SCCREEN);
             }}
           />
+          {comboBookletDeals?.category?.length > 0 && (
+            <View>
+              <View style={styles.trendingContainer}>
+                <AppText
+                  type={TWENTY_TWO}
+                  weight={SEMI_BOLD}
+                  style={styles.titleStyle}
+                >
+                  {"Combo Deals"}
+                </AppText>
+              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.listStyle}
+              >
+                {comboBookletDeals?.category?.map((booklet, i) => (
+                  <View key={booklet?.id || i} style={styles.categoryBookletContainer}>
+                    <Card
+                      index={i}
+                      item={booklet}
+                      imageBaseUrl={comboBookletDeals?.baseurl}
+                      handleCardOnPress={() => {
+                        NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet });
+                      }}
+                      imageUrl={
+                        booklet?.booklet
+                          ? { uri: comboBookletDeals?.baseurl + booklet?.booklet }
+                          : defaultBookletImage
+                      }
+                      name={booklet?.name}
+                      price={booklet?.price}
+                      address={booklet?.client?.address || "---"}
+                    />
+                  </View>
+                ))}
+                <View style={styles.seeAllContainer2}>
+                  <TouchableOpacityView
+                    style={styles.seeAllBtn2Style}
+                    onPress={() =>
+                      NavigationService.navigate(routes.CATEGORIES_LIST_SCCREEN, {
+                        title: item?.name,
+                        id: item?.uuid,
+                      })
+                    }
+                  >
+                    <Image
+                      source={rightArrowIcon}
+                      style={styles.rightArrowIconStyle}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacityView>
+                </View>
+              </ScrollView>
+            </View>
+          )}
 
           {isLoading ? (
             <Loader />
@@ -127,7 +188,6 @@ const Home: React.FC = () => {
           ) : (
             categoryBookletData?.category?.map((item, index) => {
               if (!item?.booklets || item?.booklets.length === 0) return null;
-
               return (
                 <View key={item.id || index} style={styles.trendingContainer}>
                   <AppText
@@ -143,25 +203,24 @@ const Home: React.FC = () => {
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.listStyle}
                   >
-                    {item.booklets.map((booklet: any, i: number) =>{
-                      console.log("booklet", booklet);
-                      
+                    {item.booklets.map((booklet: any, i: number) => {
                       return (
-                      <View key={booklet.id || i} style={styles.categoryBookletContainer}>
-                        <Card
-                          index={i}
-                          item={booklet}
-                          imageBaseUrl={categoryBookletData?.baseurl}
-                          handleCardOnPress={() => {
-                            NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet });
-                          }}
-                          imageUrl={booklet?.booklet ? { uri: categoryBookletData?.baseurl + booklet?.booklet } : defaultBookletImage}
-                          name={booklet?.client?.name}
-                          price={booklet.price}
-                          address={booklet?.client?.address || '---'}
-                        />
-                      </View>
-                    )})}
+                        <View key={booklet.id || i} style={styles.categoryBookletContainer}>
+                          <Card
+                            index={i}
+                            item={booklet}
+                            imageBaseUrl={categoryBookletData?.baseurl}
+                            handleCardOnPress={() => {
+                              NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet });
+                            }}
+                            imageUrl={booklet?.booklet ? { uri: categoryBookletData?.baseurl + booklet?.booklet } : defaultBookletImage}
+                            name={booklet?.client?.name}
+                            price={booklet.price}
+                            address={booklet?.client?.address || '---'}
+                          />
+                        </View>
+                      )
+                    })}
 
                     <View style={styles.seeAllContainer2}>
                       <TouchableOpacityView
@@ -187,7 +246,8 @@ const Home: React.FC = () => {
           )}
         </ScrollView>
       )}
-    </AppSafeAreaView>
+    {/* </AppSafeAreaView> */}
+    </View>
   );
 };
 

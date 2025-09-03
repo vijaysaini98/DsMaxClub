@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
-    marginTop:20,
-    marginBottom:30
+    // marginTop:vs(10),
+    marginBottom:vs(30)
 
   },
   slider: {
