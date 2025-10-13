@@ -15,7 +15,8 @@ interface ToolBarProps {
   mainContainerStyle: ViewStyle,
   leftIconTintColor?: string,
   textBack?: boolean,
-  backArrowBtnStyle?:ViewStyle
+  backArrowBtnStyle?: ViewStyle,
+  textWeight: string
 }
 
 const ToolBar: React.FC<ToolBarProps> = ({
@@ -28,14 +29,15 @@ const ToolBar: React.FC<ToolBarProps> = ({
   mainContainerStyle,
   leftIconTintColor,
   textBack,
-  backArrowBtnStyle
+  backArrowBtnStyle,
+  textWeight
 }) => {
   return (
     <View style={[styles.mainContainer, mainContainerStyle]}>
       {isLeftIcon && (
         <TouchableOpacity
-          style={[styles.backArrow,backArrowBtnStyle]}
-           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          style={[styles.backArrow, backArrowBtnStyle]}
+          hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
           onPress={handleLeftIconPress ? handleLeftIconPress : () => NavigationService.goBack()}
         >
           <Image source={leftIcon || backIcon} style={styles.icon}
@@ -46,7 +48,9 @@ const ToolBar: React.FC<ToolBarProps> = ({
         <AppText
           onPress={textBack ? () => NavigationService.goBack() : () => { }}
           numberOfLines={1}
-          type={textType ? textType : TWENTY_TWO} style={[styles.titleStyle, titleStyle]}>
+          type={textType ? textType : TWENTY_TWO}
+          weight={textWeight ?? textWeight}
+          style={[styles.titleStyle, titleStyle]}>
           {title}
         </AppText>
       )}
@@ -60,10 +64,10 @@ const styles = StyleSheet.create({
   mainContainer: {
     flexDirection: "row",
     justifyContent: "flex-start",
-    alignItems:'center',
+    alignItems: 'center',
     paddingTop: 20,
     width: "100%",
-    paddingRight:s(10)
+    paddingRight: s(10)
   },
   backArrow: {
     width: 30,
@@ -74,12 +78,12 @@ const styles = StyleSheet.create({
     height: 24,
   },
   titleStyle: {
-     marginLeft: 10 ,
-     width:"90%",
-     flexShrink: 1,
-  //   textShadowColor: 'rgba(0, 0, 0, 0.75)',
-  // textShadowOffset: {width: -1, height: 1},
-  // textShadowRadius: 10
+    marginLeft: 10,
+    width: "90%",
+    flexShrink: 1,
+    //   textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    // textShadowOffset: {width: -1, height: 1},
+    // textShadowRadius: 10
 
-    }
+  }
 });

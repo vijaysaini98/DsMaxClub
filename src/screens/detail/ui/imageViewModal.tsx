@@ -24,7 +24,12 @@ const ImageViewModal: React.FC<ImageViewModalProps> = ({
       onRequestClose={() => setModalVisible(false)}
     >
 
-       <StatusBar backgroundColor={colors.black} />
+       {/* <StatusBar backgroundColor={colors.black} /> */}
+         <StatusBar
+        backgroundColor={colors.black}
+        translucent
+        barStyle="dark-content"
+      />
       <View style={styles.container}>
         <FlatList
           data={data}
@@ -71,6 +76,7 @@ export default ImageViewModal;
 
 const styles = StyleSheet.create({
   container: {
+    // flex:1,
     backgroundColor: colors.black,
     justifyContent: 'center',
     alignItems: 'center',

@@ -9,7 +9,7 @@ import { colors } from '@theme/colors';
 
 interface ImagePickersheetProps {
     refRBSheet: React.RefObject<RBSheet>;
-    setImageUri: (uri: string) => void;
+    setImageUri?: (uri: string) => void;
     onSucess:(uri:string)=>void;
 }
 
@@ -35,7 +35,7 @@ const ImagePickersheet: React.FC<ImagePickersheetProps> = ({ refRBSheet, setImag
                     name: response.assets?.[0]?.fileName,
                     type: response.assets?.[0]?.type,
                 };
-                setImageUri(_data);
+              setImageUri && setImageUri(_data);
                 onSuccess(_data)
             }
             refRBSheet.current?.close();
@@ -51,7 +51,7 @@ const ImagePickersheet: React.FC<ImagePickersheetProps> = ({ refRBSheet, setImag
                     name: response.assets?.[0]?.fileName,
                     type: response.assets?.[0]?.type,
                 };
-                setImageUri(_data);
+               setImageUri && setImageUri(_data);
                 onSuccess(_data)
             }
             refRBSheet.current?.close();

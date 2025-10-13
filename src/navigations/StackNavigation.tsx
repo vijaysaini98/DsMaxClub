@@ -24,6 +24,10 @@ import CouponList from "@screens/myCard/couponList";
 import VerndorCouponList from "@screens/deals/vendorCoupon";
 import UserList from "@screens/deals/userList";
 import { Platform } from "react-native";
+import BottomNavigationExecutive from "./BottomNavigationExecutive";
+import RequestApprove from "@screens/request/ui/requestApprove";
+import HotelBooking from "@screens/hotelTravelBooking.tsx/hotelBooking";
+import TravelBooking from "@screens/hotelTravelBooking.tsx/travelBooking";
 
 const Stack = createStackNavigator();
 
@@ -44,13 +48,14 @@ const MyAuthLoadingStack = () => (
       name={routes.NAVIGATION_AUTH_LOADING_SCREEN}
       component={AuthLoading}
     />
-     <Stack.Screen name={routes.ONBOARDING} component={OnboardingScreen} />
+    <Stack.Screen name={routes.ONBOARDING} component={OnboardingScreen} />
     <Stack.Screen
       name={routes.NAVIGATION_AUTH_STACK}
       component={AuthStack}
     />
     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigation} />
     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR_VENDOR} component={BottomNavigationVendor} />
+    <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR_EXECUTIVE} component={BottomNavigationExecutive} />
     <Stack.Screen name={routes.CATEGORIES_SCCREEN} component={Categories} />
     <Stack.Screen name={routes.CATEGORIES_LIST_SCCREEN} component={CategoriesList} />
     <Stack.Screen name={routes.EDIT_PROFILE_SCREEN} component={EditProfile} />
@@ -66,6 +71,9 @@ const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.TERMS_CONDITION_SCREEN} component={TermCondition} />
     <Stack.Screen name={routes.VENDOR_COUPON_LIST} component={VerndorCouponList} />
     <Stack.Screen name={routes.VENDOR_USER_LIST} component={UserList} />
+    <Stack.Screen name={routes.EXECUTIVE_REQUEST_APPROVE} component={RequestApprove} />
+    <Stack.Screen name={routes.HOTEL_BOOKING} component={HotelBooking} />
+    <Stack.Screen name={routes.TRAVEL_BOOKING} component={TravelBooking} />
 
   </Stack.Navigator>
 );

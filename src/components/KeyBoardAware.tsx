@@ -9,11 +9,14 @@ const KeyBoardAware = (props:KeyboardAwareScrollViewProps) => {
     <KeyboardAwareScrollView
       {...props}
       // scrollIndicatorInsets={false}
-      keyboardShouldPersistTaps="handled"
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      contentContainerStyle={{flexGrow: 1}}
+         keyboardShouldPersistTaps="handled"
+      enableOnAndroid={true}   // 👈 ensures Android scrolls with keyboard
+      enableAutomaticScroll={true} // 👈 auto scroll to focused TextInput
+      // extraScrollHeight={50}
+      // behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      // contentContainerStyle={{flexGrow: 1}}
       style={[
-        commonStyles.main,
+        commonStyles.flex,
         {backgroundColor: props?.isSecond ? colors.transparent : colors.white},
         props.style,
       ]}

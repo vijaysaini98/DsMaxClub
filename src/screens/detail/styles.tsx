@@ -1,102 +1,130 @@
 import { colors } from "@theme/colors";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StatusBar, StyleSheet } from "react-native";
 import { ms, s, vs } from "react-native-size-matters/extend";
 
 const styles = StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-        backgroundColor: colors.white,
-    },
-    coverImageStyle: {
-        width: "100%",
-        height: vs(300),
-    },
-    toolBarStyle: {
-        marginTop: vs(50),
-        marginLeft: s(10),
-        backgroundColor: colors.white,
-        width:s(40),
-        height: vs(40),
-        paddingTop: 0,
-        borderRadius:ms(30)
-    },
-    ratingContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    ratingContainer2: {
-        flexDirection: 'row',
-        gap: s(6),
-        alignItems: 'center',
-    },
-    ratingViewBox: {
-        backgroundColor: colors.placeholder,
-        paddingHorizontal: s(10),
-        paddingVertical: vs(4),
-        borderRadius: ms(15),
-    },
-    ratingIconContainer: {
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        // alignItems:'flex-end',
-        // backgroundColor:'red',
-        // alignSelf:"flex-end",
-        gap: s(12),
-    },
-    iconsStyle: {
-        width: s(20),
-        height: s(20)
-    },
-    secondContainer: {
-        paddingHorizontal: s(16),
-        paddingTop: vs(12),
-        flex: 1,
-        borderTopLeftRadius: ms(20),
-        borderTopRightRadius: ms(20),
-        overflow: 'hidden',
-        top: vs(-20),
-        backgroundColor: colors.white,
-    },
-    thridContainer: {
-        flex: 1,
-        backgroundColor: colors.white
-    },
-    buyBtnStyle: (disable:boolean)=>({
-        backgroundColor: disable ? colors.disabledBtn :colors.buttonBg,
-        paddingVertical: vs(15),
-        width: '100%',
-        alignItems: 'center',
-        borderRadius: ms(100)
-    }),
-    // bottomBtnContainer: {
-    //     // justifyContent: 'center',
-    //     // height: vs(80),
-    //     // borderTopWidth: 1,
-    //     // borderTopColor: colors.borderColor,
-    //     // paddingHorizontal: s(16),
-    //     // backgroundColor:'green',
-    //     // bottom:0
-    //     position: 'absolute',
-
-    //     bottom: 0,
-    //     left: 0,
-    //     right: 0,
-    //     paddingHorizontal: s(16),
-    //     paddingVertical: 10,
-    //     borderTopWidth: 1,
-    //     borderTopColor: colors.borderColor,
-    //     //   paddingBottom: Platform.OS === 'ios' ? vs(10) : vs(10), 
-    //     backgroundColor: colors.white,
-    // },
-    titleTextStyle: {
-        marginTop: vs(15)
-    },
-    disTextStyle: {
-        marginVertical: vs(10)
-    },
-     headerRow: {
+  mainContainer: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+  coverImageStyle: {
+    width: "100%",
+    height: vs(300),
+  },
+  toolBarStyle: {
+    marginTop: vs(50),
+    marginLeft: s(10),
+    backgroundColor: colors.white,
+    width: s(40),
+    height: vs(40),
+    paddingTop: 0,
+    borderRadius: ms(30)
+  },
+  headerContainer: {
+    marginTop: vs(40),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: ms(10),
+    alignItems: 'center',
+  },
+  backBtnStyle: {
+    padding: ms(10),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: ms(25),
+    backgroundColor: colors.white
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  ratingContainer2: {
+    flexDirection: 'row',
+    gap: s(6),
+    alignItems: 'center',
+  },
+  ratingViewBox: {
+    backgroundColor: colors.placeholder,
+    paddingHorizontal: s(10),
+    paddingVertical: vs(4),
+    borderRadius: ms(15),
+  },
+  ratingIconContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: s(12),
+  },
+  iconsStyle: {
+    width: s(20),
+    height: s(20)
+  },
+  secondContainer: {
+    paddingHorizontal: s(16),
+    paddingTop: vs(12),
+    flex: 1,
+    borderTopLeftRadius: ms(20),
+    borderTopRightRadius: ms(20),
+    overflow: 'hidden',
+    top: vs(-20),
+    backgroundColor: colors.white,
+  },
+  secondHeaderContainer: {
+    position: "absolute",
+    top: Platform.OS === "ios" ? 50 : StatusBar.currentHeight, // leave safe area
+    left: 0,
+    right: 0,
+    height: 50,
+    backgroundColor: colors.white, // solid background
+    zIndex: 10,
+    justifyContent: "center",
+    paddingHorizontal: 15,
+    // shadowColor: "#000",
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 2,
+    // elevation: 3,
+  },
+  secondAnimatedContainer: {
+    flexDirection: 'row',
+    gap: s(10),
+  },
+  nameTextStyle: {
+    flex: 1,
+    marginLeft: s(10)
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    width: "100%",
+    justifyContent: "space-between"
+  },
+  locationBtn: {
+    flexDirection: 'row',
+    gap: s(5),
+    width: "85%"
+  },
+  downArrowBtnIcon: {
+    width: '10%', alignItems: "center"
+  },
+  thridContainer: {
+    flex: 1,
+    backgroundColor: colors.white
+  },
+  buyBtnStyle: (disable: boolean) => ({
+    backgroundColor: disable ? colors.disabledBtn : colors.buttonBg,
+    paddingVertical: vs(15),
+    width: '100%',
+    alignItems: 'center',
+    borderRadius: ms(100)
+  }),
+  titleTextStyle: {
+    marginTop: vs(15)
+  },
+  disTextStyle: {
+    marginVertical: vs(10)
+  },
+  headerRow: {
     flexDirection: 'row',
     justifyContent: "space-evenly",
     gap: 10,
@@ -115,8 +143,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   locationIcon: {
-    height: vs(15),
-    width: s(15),
+    height: vs(15), width: s(15), marginTop: 3
   },
   locationText: {
     textDecorationLine: 'underline',
@@ -129,17 +156,38 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: colors.white,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: vs(10),
+    paddingHorizontal: s(20),
     borderTopWidth: 1,
     borderTopColor: '#eee',
   },
-//   buyBtnStyle: {
-//     backgroundColor: colors.buttonBg,
-//     borderRadius: 8,
-//     paddingVertical: 12,
-//     alignItems: 'center',
-//   },
+  backIconStyle: {
+    height: vs(20),
+    width: s(20)
+  },
+  shimmerBtnStyle: {
+    height: vs(50),
+    width: '100%',
+    borderRadius: ms(100),
+  },
+  acceptTermsConditionContainer: {
+    width: '100%',
+    // height:50,
+    marginBottom: vs(10)
+  },
+  acceptTermsConditionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5
+  },
+  acceptView: (acceptContent: boolean) => ({
+    height: vs(20),
+    width: s(20),
+    borderWidth: 0.5,
+    borderRadius: ms(5),
+    borderColor: colors.borderColor,
+    backgroundColor: acceptContent ? colors?.buttonBg : colors.white
+  })
 });
 
 export default styles;

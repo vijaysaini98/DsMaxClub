@@ -6,6 +6,7 @@ import {
     FlatList,
     Animated,
     ImageBackground,
+    StatusBar,
 } from 'react-native';
 import { getStartBg1, getStartBg2, getStartBg3, getStartBg4 } from '../../helper/imagesAssets';
 import { colors } from '@theme/colors';
@@ -15,6 +16,7 @@ import TouchableOpacityView from '@components/TouchableOpacityView';
 import * as routes from '@navigations/routes';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import { vs } from 'react-native-size-matters/extend';
+import { First_Time, setAccessToken, setItem, USER_VISITED } from '@services/storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -42,6 +44,7 @@ const OnboardingScreen = () => {
         if (currentIndex < slides.length - 1) {
             flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
         } else {
+            setItem(USER_VISITED, "userVisited");
             NavigationService.replace(routes.NAVIGATION_AUTH_STACK);
         }
     };
@@ -59,7 +62,12 @@ const OnboardingScreen = () => {
     );
 
     return (
-        <AppSafeAreaView style={styles.container}>
+        <View style={styles.container}>
+            <StatusBar
+                translucent
+                backgroundColor="transparent"
+                barStyle="light-content"  // use white icons on dark images
+            />
             <FlatList
                 data={slides}
                 horizontal
@@ -100,7 +108,9 @@ const OnboardingScreen = () => {
                     </View>)}
 
                 {currentIndex < slides.length - 1 ? (
-                    <TouchableOpacityView containerStyle={styles.skipButtons} onPress={() => NavigationService.replace(routes.NAVIGATION_AUTH_STACK)}>
+                    <TouchableOpacityView containerStyle={styles.skipButtons} onPress={() => {
+                        setItem(USER_VISITED, "userVisited");
+                        NavigationService.replace(routes.NAVIGATION_AUTH_STACK)}}>
                         <AppText type={EIGHTEEN}  >Skip</AppText>
                     </TouchableOpacityView>
                 ) : null}
@@ -111,7 +121,7 @@ const OnboardingScreen = () => {
                     </TouchableOpacityView>
                 ) : null}
             </View>
-        </AppSafeAreaView>
+        </View>
     );
 };
 

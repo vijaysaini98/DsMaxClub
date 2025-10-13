@@ -1,82 +1,3 @@
-// import { ActivityIndicator, FlatList, Image, StyleSheet, View, } from 'react-native'
-// import React, { useEffect } from 'react'
-// import { AppSafeAreaView } from '@components/AppSafeAreaView'
-// import { colors } from '@theme/colors'
-// import ToolBar from '@components/ToolBar'
-// import { categoryList } from '@helper/dumyData'
-// import TouchableOpacityView from '@components/TouchableOpacityView'
-// import { AppText, FOURTEEN, MEDIUM, SIXTEEN } from '@components/AppText'
-// import NavigationService from '@navigations/NavigationService'
-// import { CATEGORIES_LIST_SCCREEN } from '@navigations/routes'
-// import styles from './styles'
-// import { commonStyles } from '@theme/commonStyles'
-// import { useAppDispatch, useAppSelector } from '@redux/hooks'
-// import { getBannerList, getBookletList, getCategoryList } from '@actions/home/homeAction'
-// import { Loader, SpinnerSecond } from '@components/Spinner'
-// import { categaoriesIcon } from '@helper/imagesAssets'
-// import { getCategoryDetails } from '@utils/index'
-// // import SvgUri from 'react-native-svg-uri'
-// import { SvgImageFromUri } from '@screens/home/ui/categoriesComponent'
-// import { useIsFocused } from '@react-navigation/native'
-
-
-// const Categories = () => {
-//   const dispatch = useAppDispatch()
-//   const { categoryListData, isLoading } = useAppSelector((state) => state?.home)
-// const isFocused = useIsFocused() 
-//   useEffect(() => {
-//     dispatch(getCategoryList())
-//   }, [isFocused])
-
-//   const renderItem = ({ item, index }: any) => {
-//     const { icon, borderColor } = getCategoryDetails(item?.name)
-//     return (
-//       <TouchableOpacityView key={index}
-//         style={styles.cateCardStyle(item?.border_color)}
-//         onPress={() =>
-//           NavigationService.navigate(CATEGORIES_LIST_SCCREEN, { title: item?.name, id: item?.uuid })
-//         }
-//       >
-//         {item?.icon?.includes('.svg') ? (
-//           <SvgImageFromUri uri={categoryListData?.baseurl + item?.icon} />
-//         ) :
-//           (<Image
-//             source={item?.icon ? { uri: categoryListData?.baseurl + item?.icon } : categaoriesIcon}
-//             style={styles.cateLogoImage} resizeMode="cover" />)
-//         }
-//         <AppText
-//           numberOfLines={2}
-//           type={FOURTEEN} weight={MEDIUM} style={styles.cateText}>{item?.name}</AppText>
-//       </TouchableOpacityView>
-//     );
-//   };
-
-//   return (
-//     <AppSafeAreaView style={[commonStyles.mainContainer, styles.safeArea]}>
-//       <ToolBar isLeftIcon title="Categories" />
-//       {
-//         isLoading ? (
-//           <Loader />
-//         ) : (
-//           <FlatList
-//             data={categoryListData?.category}
-//             renderItem={renderItem}
-//             keyExtractor={(_, index) => index.toString()}
-//             numColumns={3}
-//             columnWrapperStyle={styles.row(categoryListData?.category?.length > 2)}
-//             contentContainerStyle={styles.gridContainer}
-//             showsVerticalScrollIndicator={false}
-//           />
-//         )
-//       }
-
-//     </AppSafeAreaView>
-//   );
-// };
-
-// export default Categories;
-
-
 import React, { useEffect, useCallback } from 'react';
 import { FlatList, Image } from 'react-native';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
@@ -94,7 +15,7 @@ import { Loader } from '@components/Spinner';
 import { categaoriesIcon } from '@helper/imagesAssets';
 import { getCategoryDetails } from '@utils/index';
 import { SvgImageFromUri } from '@screens/home/ui/categoriesComponent';
-import { useIsFocused } from '@react-navigation/native';
+import CategoriesShimmer from '@components/ShimerLoader/categoriesShimerLoader';
 
 const Categories: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -103,7 +24,7 @@ const Categories: React.FC = () => {
 
   useEffect(() => {
     dispatch(getCategoryList());
-  }, [ dispatch]);
+  }, [dispatch]);
 
   const handleCategoryPress = useCallback((item) => {
     NavigationService.navigate(CATEGORIES_LIST_SCCREEN, { title: item?.name, id: item?.uuid });
@@ -116,7 +37,7 @@ const Categories: React.FC = () => {
       return (
         <TouchableOpacityView
           key={item?.uuid ?? index}
-          style={styles.cateCardStyle(item?.border_color || borderColor)}
+          style={styles.cateCardStyle(colors.borderColor)}
           onPress={() => handleCategoryPress(item)}
         >
           {item?.icon?.includes('.svg') ? (
@@ -146,7 +67,8 @@ const Categories: React.FC = () => {
     <AppSafeAreaView style={[commonStyles.mainContainer, styles.safeArea]}>
       <ToolBar isLeftIcon title="Categories" />
       {isLoading ? (
-        <Loader />
+        // <Loader />
+        <CategoriesShimmer />
       ) : (
         <FlatList
           data={categoryListData?.category}

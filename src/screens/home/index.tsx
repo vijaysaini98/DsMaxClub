@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   Image,
+  Platform,
   RefreshControl,
   ScrollView,
   StatusBar,
@@ -32,20 +33,25 @@ import {
 import { commonStyles } from '@theme/commonStyles';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import { defaultBookletImage, rightArrowIcon } from '@helper/imagesAssets';
-import { userProfile } from '@actions/auth/authAction';
+import { sendOtp, userProfile, verifyOtp } from '@actions/auth/authAction';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import { setCategoriListData } from '@actions/home/homeSlice';
 import { Loader } from '@components/Spinner';
+import AddCityModal from '@components/AddCityModal';
+import HomeShimmerLoader from '@components/ShimerLoader/homeShimerLoader';
+import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomSheet';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const { userData } = useAppSelector((state) => state?.auth);
   const { categoryListData, categoryBookletData, isLoading, bannerList, comboBookletDeals } =
     useAppSelector((state) => state?.home);
-  console.log("comboBookletDeals", comboBookletDeals);
 
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [isAddCityModal, setIsAddCityModal] = useState(false);
+
+  const sheetRef = useRef(null);
 
   const fetchData = async () => {
     await dispatch(userProfile());
@@ -53,6 +59,13 @@ const Home: React.FC = () => {
     await dispatch(getComboBookletDeals());
     await dispatch(getCategoryBooklet());
     await dispatch(getBannerList({ screen_name: '1' }));
+    if (userData && userData?.otp_verified == 0) {
+      setTimeout(() => {
+        sheetRef?.current?.open();
+      }, 300)
+
+      dispatch(sendOtp({ email: userData?.email }))
+    }
   };
 
   useEffect(() => {
@@ -67,21 +80,10 @@ const Home: React.FC = () => {
   }, [isLoading]);
 
   useEffect(() => {
-    if (!userData?.city) {
+    if (userData && userData?.user_type !== 0 && !userData?.city) {
       const alertTimeout = setTimeout(() => {
-        Alert.alert(
-          'Add City',
-          'Please add City from Profile => Edit Profile',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            {
-              text: 'Add',
-              onPress: () => NavigationService.navigate(routes.EDIT_PROFILE_SCREEN),
-            },
-          ],
-          { cancelable: true }
-        );
-      }, 3000);
+        setIsAddCityModal(true);
+      }, 3500);
 
       return () => clearTimeout(alertTimeout);
     }
@@ -93,19 +95,31 @@ const Home: React.FC = () => {
     setRefreshing(false);
   };
 
+  const handleOtpVerify = () => {
+    sheetRef.current?.close()
+  }
+
+  const handleVerify = (code: string) => {
+    let data = {
+      email: userData.email,
+      otp: code
+    }
+    dispatch(verifyOtp(data, handleOtpVerify))
+  };
+
+
   return (
-    // <AppSafeAreaView style={commonStyles.mainContainer}>
-    <View style={{backgroundColor:colors.white}}>
-      
-<StatusBar backgroundColor={colors.transparent} />
+    <AppSafeAreaView style={commonStyles.mainContainer}>
+
       {!show && !refreshing ? (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size={'large'} color={colors.buttonBg} />
-        </View>
+        // <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        //   <ActivityIndicator size={'large'} color={colors.buttonBg} />
+        // </View>
+        <HomeShimmerLoader />
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.containerStyle}
+          contentContainerStyle={[styles.containerStyle, { backgroundColor: colors.white }]}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -116,7 +130,16 @@ const Home: React.FC = () => {
           }
         >
           <Header userName={userData?.name} />
-          <BanerComponent data={bannerList?.banner} />
+          <BanerComponent
+            data={bannerList}
+            onPressBanner={(item, index) => {
+              if (item?.booklet !== null) {
+                NavigationService.navigate(routes.DETAILS_SCREEN, { data: item?.booklet, from: "ComboBooklet" });
+              }
+
+            }}
+          />
+
           <CategoriesComponent
             data={categoryListData}
             handleSeeAll={() => {
@@ -136,47 +159,37 @@ const Home: React.FC = () => {
                 </AppText>
               </View>
               <ScrollView
-                horizontal
+                horizontal={comboBookletDeals?.category?.length > 1}
+                scrollEnabled={comboBookletDeals?.category?.length > 1}
                 showsHorizontalScrollIndicator={false}
+                // scrollEnabled={comboBookletDeals?.category?.length<1}
                 contentContainerStyle={styles.listStyle}
               >
-                {comboBookletDeals?.category?.map((booklet, i) => (
-                  <View key={booklet?.id || i} style={styles.categoryBookletContainer}>
-                    <Card
-                      index={i}
-                      item={booklet}
-                      imageBaseUrl={comboBookletDeals?.baseurl}
-                      handleCardOnPress={() => {
-                        NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet });
-                      }}
-                      imageUrl={
-                        booklet?.booklet
-                          ? { uri: comboBookletDeals?.baseurl + booklet?.booklet }
-                          : defaultBookletImage
-                      }
-                      name={booklet?.name}
-                      price={booklet?.price}
-                      address={booklet?.client?.address || "---"}
-                    />
-                  </View>
-                ))}
-                <View style={styles.seeAllContainer2}>
-                  <TouchableOpacityView
-                    style={styles.seeAllBtn2Style}
-                    onPress={() =>
-                      NavigationService.navigate(routes.CATEGORIES_LIST_SCCREEN, {
-                        title: item?.name,
-                        id: item?.uuid,
-                      })
-                    }
-                  >
-                    <Image
-                      source={rightArrowIcon}
-                      style={styles.rightArrowIconStyle}
-                      resizeMode="contain"
-                    />
-                  </TouchableOpacityView>
-                </View>
+                {comboBookletDeals?.category?.map((booklet, i) => {
+                  return (
+                    <View key={booklet?.id || i} style={comboBookletDeals?.category?.length < 2 ? styles.categoryBookletContainer2 :
+                      styles.categoryBookletContainer}>
+                      <Card
+                        index={i}
+                        item={booklet}
+                        cardContainerStyle={comboBookletDeals?.category?.length < 2 && styles.cardContainerStyle}
+                        imageBaseUrl={comboBookletDeals?.baseurl}
+                        imageStyle={comboBookletDeals?.category?.length < 2 && styles.cardImageStyle}
+                        handleCardOnPress={() => {
+                          NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "ComboBooklet" });
+                        }}
+                        imageUrl={
+                          booklet?.booklet
+                            ? { uri: comboBookletDeals?.baseurl + booklet?.booklet }
+                            : defaultBookletImage
+                        }
+                        name={booklet?.name}
+                        price={booklet?.price}
+                        address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
+                      />
+                    </View>
+                  )
+                })}
               </ScrollView>
             </View>
           )}
@@ -184,7 +197,9 @@ const Home: React.FC = () => {
           {isLoading ? (
             <Loader />
           ) : categoryBookletData?.category?.length === 0 ? (
-            <ListEmptyComponent title={'No Booklet Available'} />
+            <ListEmptyComponent
+              containerStyle={{ marginTop: 20 }}
+              title={'No Booklet Available'} />
           ) : (
             categoryBookletData?.category?.map((item, index) => {
               if (!item?.booklets || item?.booklets.length === 0) return null;
@@ -199,46 +214,58 @@ const Home: React.FC = () => {
                   </AppText>
 
                   <ScrollView
-                    horizontal
+                    // horizontal`
+                    horizontal={item.booklets.length > 1}
+                    scrollEnabled={item.booklets.length > 1}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.listStyle}
+
                   >
                     {item.booklets.map((booklet: any, i: number) => {
                       return (
-                        <View key={booklet.id || i} style={styles.categoryBookletContainer}>
+                        <View key={booklet.id || i}
+                          // style={styles.categoryBookletContainer}
+                          style={item.booklets.length < 2 ? styles.categoryBookletContainer2 :
+                            styles.categoryBookletContainer}
+                        >
                           <Card
                             index={i}
                             item={booklet}
+                            cardContainerStyle={item.booklets.length < 2 && styles.cardContainerStyle}
                             imageBaseUrl={categoryBookletData?.baseurl}
+                            imageStyle={item.booklets.length < 2 && styles.cardImageStyle}
                             handleCardOnPress={() => {
-                              NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet });
+                              NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "Booklet" });
                             }}
                             imageUrl={booklet?.booklet ? { uri: categoryBookletData?.baseurl + booklet?.booklet } : defaultBookletImage}
-                            name={booklet?.client?.name}
+                            name={booklet?.client?.name ? booklet?.client?.name : booklet?.name}
                             price={booklet.price}
-                            address={booklet?.client?.address || '---'}
+                            // address={booklet?.client?.address? booklet?.client?.address : booklet?.address || '---'}
+                            address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
                           />
                         </View>
                       )
                     })}
 
-                    <View style={styles.seeAllContainer2}>
-                      <TouchableOpacityView
-                        style={styles.seeAllBtn2Style}
-                        onPress={() =>
-                          NavigationService.navigate(routes.CATEGORIES_LIST_SCCREEN, {
-                            title: item?.name,
-                            id: item?.uuid,
-                          })
-                        }
-                      >
-                        <Image
-                          source={rightArrowIcon}
-                          style={styles.rightArrowIconStyle}
-                          resizeMode="contain"
-                        />
-                      </TouchableOpacityView>
-                    </View>
+                    {item?.booklets.length > 3 && (
+                      <View style={styles.seeAllContainer2}>
+                        <TouchableOpacityView
+                          style={styles.seeAllBtn2Style}
+                          onPress={() =>
+                            NavigationService.navigate(routes.CATEGORIES_LIST_SCCREEN, {
+                              title: item?.name,
+                              id: item?.uuid,
+                            })
+                          }
+                        >
+                          <Image
+                            source={rightArrowIcon}
+                            style={styles.rightArrowIconStyle}
+                            resizeMode="contain"
+                          />
+                        </TouchableOpacityView>
+                      </View>
+                    )}
                   </ScrollView>
                 </View>
               );
@@ -246,8 +273,16 @@ const Home: React.FC = () => {
           )}
         </ScrollView>
       )}
-    {/* </AppSafeAreaView> */}
-    </View>
+      <AddCityModal
+        visible={isAddCityModal}
+        onClose={() => setIsAddCityModal(false)}
+        onConfirm={() => {
+          NavigationService.navigate(routes.EDIT_PROFILE_SCREEN)
+          setIsAddCityModal(false);
+        }}
+      />
+      <CodeVerificationBottomSheet ref={sheetRef} onVerify={handleVerify} />
+    </AppSafeAreaView>
   );
 };
 

@@ -2,11 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 export const initialState = {
     isLoading: false,
     isBtnLoading: false,
-    myRequestAllList:[],
-    myRequestPendingList:[],
-    myRequestApproveList:[],
-    myRequestRejectList:[],
-couponList:[]
+    myRequestAllList: [],
+    myRequestPendingList: [],
+    myRequestApproveList: [],
+    myRequestRejectList: [],
+    couponList: []
 };
 
 export const myRequestSlice = createSlice({
@@ -19,24 +19,22 @@ export const myRequestSlice = createSlice({
         setBtnLoading: (state, { payload }) => {
             state.isBtnLoading = payload;
         },
-        setMyRequestAllList:(state, { payload }) => {
+        setMyRequestAllList: (state, { payload }) => {
             state.myRequestAllList = payload;
         },
-         setMyRequestPendingList:(state, { payload }) => {
+        setMyRequestPendingList: (state, { payload }) => {
             state.myRequestPendingList = payload;
         },
-          setMyRequestApproveList:(state, { payload }) => {
+        setMyRequestApproveList: (state, { payload }) => {
             state.myRequestApproveList = payload;
         },
-         setMyRequestRejectList:(state, { payload }) => {
+        setMyRequestRejectList: (state, { payload }) => {
             state.myRequestRejectList = payload;
         },
-        setMyRequestCouponList:(state, { payload }) => {
+        setMyRequestCouponList: (state, { payload }) => {
             state.couponList = payload;
         },
-        resetMyRequest: (state, { payload }) => {
-            state = initialState;
-        },
+        resetMyRequest: () => initialState,
     },
 });
 export const {

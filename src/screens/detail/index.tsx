@@ -1,9 +1,7 @@
-import { Image, ImageBackground, Linking, Platform, StatusBar, View } from 'react-native'
-import React, { useEffect, useRef } from 'react'
-import { AppSafeAreaView } from '@components/AppSafeAreaView'
-import ToolBar from '@components/ToolBar'
-import { banerImages, defaultBookletImage, downArrowIcon, locationIcon, shareIcon } from '@helper/imagesAssets'
-import { AppText, BOLD, BUTTON_TEXT, PLACEHOLDER, SIXTEEN, THIRTEEN, TWENTY_TWO, WHITE } from '@components/AppText'
+import { Animated, Image, Keyboard, Linking, StatusBar, View } from 'react-native'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { backIcon, checkIcon, defaultBookletImage, downArrowIcon, locationIcon, shareIcon, unCheckIcon } from '@helper/imagesAssets'
+import { AppText, BOLD, BUTTON_TEXT, MEDIUM, PLACEHOLDER, SIXTEEN, TEN, THIRTEEN, TWELVE, TWENTY_TWO, WHITE } from '@components/AppText'
 import { colors } from '@theme/colors'
 import { TabView, SceneMap } from 'react-native-tab-view'
 import TouchableOpacityView from '@components/TouchableOpacityView'
@@ -12,74 +10,138 @@ import About from './ui/about'
 import Gallery from './ui/gallery'
 import Terms_Condition from './ui/terms_condition'
 import styles from './styles'
-import { extractLatLngFromUrl, shareToAny } from '@utils/index'
+import { extractLatLngFromUrl, openMap, shareToAny, width } from '@utils/index'
 import { RenderTabBar } from '@components/RenderTabBar'
 import { IMGE_URL } from '@services/config'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
-import { bookletRequest, getBookletDetail } from '@actions/home/homeAction'
+import { bookletRequest, executiveBookletRequest, getBookletDetail, getComboBookletDetail } from '@actions/home/homeAction'
 import FastImage from 'react-native-fast-image'
-import { s, vs } from 'react-native-size-matters/extend'
-import { OpenMapArgs } from 'src/types/common';
 import Toast from "react-native-simple-toast";
 import moment from 'moment'
 import BottomSheet, { BottomSheetModal } from '@gorhom/bottom-sheet'
-import MultiLoctionSheet from './ui/multiLoctionSheet'
 import MultiLocationSheet from './ui/multiLoctionSheet'
+import NavigationService from '@navigations/NavigationService'
+import ShimmerPlaceholder from 'react-native-shimmer-placeholder'
+import LinearGradient from 'react-native-linear-gradient'
+import RequestBottomSheet from './ui/requestBottomSheet'
+import ExecutiveRequestBottomSheet from './ui/executiveRequestBottomSheet'
+import HowToRedeem from './ui/howToRedeem'
+import ViewDetailsBottomSheet from './ui/viewDetailsBottomSheet'
+import { s } from 'react-native-size-matters/extend'
+import { commonStyles } from '@theme/commonStyles'
+const initialLayout = { width: width };
 
+// ✅ Make sure route keys match those in renderScene
+const routes = [
+  { key: 'allDeals', title: 'All Deals' },
+  { key: 'about', title: 'About' },
+  { key: 'tc', title: 'Rules of Use' },
+  { key: 'redeemHelp', title: 'How to Use' },
+  { key: 'gallery', title: 'Gallery' },
+];
 
 const Details = ({ route }) => {
-  const { data } = route?.params ?? ""
-  const [index, setIndex] = React.useState(0);
-   const sheetRef = useRef<BottomSheetModal>(null);
-  const { isBtnLoading, bookletDetailAllDeals } = useAppSelector((state) => state.home)
-  console.log("data", data);
-
+  const { data, from } = route?.params ?? ""
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    const value =
-      index === 0
-        ? {
-          booklet_id: data?.uuid,
-          tabname: "All Deals"
-        }
-        : index === 1
-          ? {
-            booklet_id: data?.uuid,
-            tabname: "About"
-          }
-          : index === 2
-            ? {
-              booklet_id: data?.uuid,
-              tabname: "Gallery"
-            }
-            : {
-              booklet_id: data?.uuid,
-              tabname: "Termscondition"
-            }
+  const { isLoading, isBtnLoading, bookletDetailAllDeals } = useAppSelector((state) => state.home)
+  const { userData } = useAppSelector((state) => state?.auth)
 
-    dispatch(getBookletDetail(value));
-  }, [index]);
+  const [index, setIndex] = React.useState(0);
+  const [acceptContent, setAcceptContent] = useState(false)
+  const [couponDetail, setCouponDetail] = useState<any>();
 
-  const renderScene = SceneMap({
-    allDeals: () => <All id={data.uuid} />,
-    about: () => <About />,
-    gallery: () => <Gallery id={data.uuid} />,
-    tc: () => <Terms_Condition />,
+  const sheetRef = useRef<BottomSheetModal>(null);
+
+  const scrollY = useRef(new Animated.Value(0)).current; // ✅
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const executiveBottomSheetRef = useRef<BottomSheet>(null);
+  const viewDetailsBottomSheetRef = useRef<BottomSheet>(null);
+
+  const snapPoints = useMemo(() => ["40%", "50%"], []);
+  const executiveSnapPoints = useMemo(() => ["50%", "80%"], []);
+
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, 200, 400], // scroll range
+    outputRange: [250, 100, 0], // image height collapses
+    extrapolate: 'clamp',
   });
 
-  // ✅ Make sure route keys match those in renderScene
-  const routes = [
-    { key: 'allDeals', title: 'All Deals' },
-    { key: 'about', title: 'About' },
-    { key: 'gallery', title: 'Gallery' },
-    { key: 'tc', title: 'T&C' },
-  ];
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 150, 200], // scroll position in px
+    outputRange: [1, 0.5, 0],  // opacity values
+    extrapolate: "clamp",
+  });
 
 
-  const handleFavouriteBtn = () => {
+  const collapsedHeaderOpacity = scrollY.interpolate({
+    inputRange: [100, 180, 250], // adjust thresholds to your liking
+    outputRange: [0, 0.5, 1], // fade in
+    extrapolate: "clamp",
+  });
 
+  useEffect(() => {
+    if (!data?.uuid) return;
+
+    let value = {
+      booklet_id: data.uuid,
+      tabname: "",
+    };
+
+    switch (index) {
+      case 0:
+        value.tabname = "All Deals";
+        break;
+      case 1:
+        value.tabname = "About";
+        break;
+      case 2:
+        value.tabname = "Termscondition";
+        break;
+      case 4:
+        value.tabname = "Gallery";
+        break;
+      default:
+        value.tabname = "";
+    }
+    if (from === "ComboBooklet") {
+      dispatch(getComboBookletDetail(value));
+    } else {
+      dispatch(getBookletDetail(value));
+    }
+  }, [index, data?.uuid, from, dispatch]);
+
+  const handleViewPress = (item: any) => {
+    setCouponDetail(item);
+    setTimeout(() => {
+      // viewDetailSheet?.current?.open();
+      viewDetailsBottomSheetRef?.current?.expand()
+    }, 200);
   }
+
+  const renderScene = useMemo(
+    () =>
+      SceneMap({
+        allDeals: () => <All id={data.uuid} from={from} scrollY={scrollY} handleViewPress={handleViewPress} />,
+        about: () => <About from={from} scrollY={scrollY} />,
+        tc: () => (
+          <Terms_Condition
+            from={from}
+            scrollY={scrollY}
+          />
+        ),
+        redeemHelp: () => (
+          <HowToRedeem
+            from={from}
+            scrollY={scrollY}
+            index={index}
+          />
+        ),
+        gallery: () => <Gallery id={data.uuid} from={from} scrollY={scrollY} />,
+      }),
+    [data?.uuid, from, scrollY, index] // dependencies
+  );
 
   const handleShareBtn = () => {
     shareToAny('hello');
@@ -89,36 +151,43 @@ const Details = ({ route }) => {
     let apidata = {
       booklet_id: data.uuid
     }
-    dispatch(bookletRequest(apidata, handleSucess))
+    if (!acceptContent) {
+      setIndex(2)
+      Toast.show("Accept the booklet Terms and Condition", Toast.LONG);
+    }
+    else if (userData?.user_type == "1") {
+      executiveBottomSheetRef?.current?.expand()
+    }
+    else {
+      bottomSheetRef.current?.expand()
+      // executiveBottomSheetRef?.current?.expand()
+      // dispatch(bookletRequest(apidata, handleSucess))
+    }
+
   }
 
   const handleSucess = () => {
-    dispatch(getBookletDetail({
+    let value = {
       booklet_id: data?.uuid,
       tabname: "All Deals"
-    }))
+    }
+    if (from == "ComboBooklet") {
+      dispatch(getComboBookletDetail(value));
+    } else {
+      dispatch(getBookletDetail(value));
+    }
+    if (userData?.user_type == '1') {
+      setAcceptContent(!acceptContent)
+      executiveBottomSheetRef?.current?.close()
+    } else {
+      setAcceptContent(!acceptContent)
+      bottomSheetRef.current?.close()
+    }
   }
 
-
-  const openMap = ({ lat, lng, label }: OpenMapArgs) => {
-    const scheme = Platform.select({
-      ios: `maps://?q=${label}&ll=${lat},${lng}`,
-      android: `geo:${lat},${lng}?q=${lat},${lng}(${label})`,
-    });
-
-    if (scheme) {
-      Linking.openURL(scheme).catch(err =>
-        console.error('Error opening map: ', err),
-      );
-    }
-  };
-
-  const handleRedirection = (location_url: any) => {
-console.log("location_url", location_url);
-
+  const handleRedirection = (location_url: string) => {
     const coords = extractLatLngFromUrl(location_url);
-    console.log("coords", coords);
-    
+
     if (coords) {
       openMap({
         lat: coords.lat,
@@ -126,56 +195,63 @@ console.log("location_url", location_url);
         label: data?.client?.name || "Location",
       });
     } else {
-      console.warn("Could not extract coordinates from URL");
-
-      Toast.show("Can't find this location", Toast.LONG);
+      // If lat/lng not found, open the raw URL in Google Maps
+      Linking.openURL(location_url).catch(() => {
+        Toast.show("Can't open this location", Toast.LONG);
+      });
     }
+  };
 
+  const handleSubmit = (_data: any) => {
+    Keyboard?.dismiss()
+    let apidata = {
+      booklet_id: data.uuid,
+      executive_code: _data?.executiveCode,
+      quantity: _data?.bookletQty
+    }
+    dispatch(bookletRequest(apidata, handleSucess))
+  }
+
+  const handleExecutiveSubmit = (_data) => {
+    let apiData = {
+      name: _data?.customerName,
+      email: _data?.customerEmail,
+      // mobile: _data?.customerMobile,
+      quantity: _data?.bookletQty,
+      booklet_id: data.uuid
+    }
+    Keyboard?.dismiss()
+    dispatch(executiveBookletRequest(apiData, handleSucess))
   }
 
 
   return (
     <View style={styles.mainContainer}>
-      <StatusBar backgroundColor={colors.transparent} />
-      <FastImage
-        source={
-          data?.booklet ?
-            { uri: IMGE_URL + data?.booklet } : defaultBookletImage}
-        style={styles.coverImageStyle}
-        resizeMode="cover">
-        <ToolBar
-          isLeftIcon
-          // title={"Detail"}
-          mainContainerStyle={styles.toolBarStyle}
-          backArrowBtnStyle={{alignItems:'center'}}
-          leftIconTintColor={colors.black}
-          textBack={true}
-        />
-      </FastImage>
-      <View style={styles.secondContainer}>
-        {/* <View style={styles.ratingContainer}>
-          <View style={styles.ratingContainer2}>
-            <View style={styles.ratingViewBox}>
-              <AppText type={FOURTEEN} color={WHITE} weight={BOLD}>4.3</AppText>
-            </View>
-            <AppText type={FOURTEEN} weight={BOLD} color={PLACEHOLDER}>
-              Excellent
-              <AppText type={FOURTEEN} weight={MEDIUM}
-                style={{ color: colors.disTextColor }}> (552 Ratings)</AppText>
-            </AppText>
-          </View>
+      <StatusBar backgroundColor={colors.transparent} animated={true} barStyle={"light-content"} />
+      <Animated.View
+        style={{ height: headerHeight, opacity: headerOpacity }}
+      >
+        <FastImage
+          source={
+            data?.booklet ?
+              { uri: IMGE_URL + data?.booklet } : defaultBookletImage}
+          style={styles.coverImageStyle}
+          resizeMode="cover">
 
-          <View style={styles.ratingIconContainer}>
+          <View style={styles.headerContainer}>
             <TouchableOpacityView
-              onPress={handleFavouriteBtn}
+              hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+              style={styles.backBtnStyle}
+              onPress={() => NavigationService.goBack()}
             >
-              <Image
-                source={unlikeIcon}
-                style={styles.iconsStyle}
+              <FastImage
+                source={backIcon}
+                style={styles.backIconStyle}
                 resizeMode='contain'
               />
             </TouchableOpacityView>
             <TouchableOpacityView
+              style={styles.backBtnStyle}
               onPress={handleShareBtn}
             >
               <Image
@@ -186,79 +262,115 @@ console.log("location_url", location_url);
               />
             </TouchableOpacityView>
           </View>
-        </View> */}
-        <View style={{ flexDirection: 'row', justifyContent: "space-evenly", gap: 10 }}>
-          <AppText type={TWENTY_TWO} weight={BOLD} color={PLACEHOLDER}
-            // style={styles.titleTextStyle}
-            numberOfLines={2}
-            style={{ width: '90%' }}
+        </FastImage>
+      </Animated.View>
+
+      <Animated.View
+        style={[
+          styles.secondHeaderContainer,
+          { opacity: collapsedHeaderOpacity },
+        ]}
+      >
+        <View style={commonStyles.rowAlignCenter}>
+          <TouchableOpacityView
+            style={styles.backBtnStyle}
+            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+            onPress={() => NavigationService.goBack()}
           >
-            {data?.client?.name ? data?.client?.name : data?.client_name}
+            <FastImage
+              source={backIcon}
+              style={styles.backIconStyle}
+              resizeMode="contain"
+            />
+          </TouchableOpacityView>
+          <AppText
+            type={SIXTEEN}
+            weight={BOLD}
+            color={PLACEHOLDER}
+            numberOfLines={1}
+            style={styles.nameTextStyle}
+          >
+            {data?.client?.name ? data?.client?.name : data?.name}
           </AppText>
           <TouchableOpacityView
+            style={styles.backBtnStyle}
             onPress={handleShareBtn}
-            style={{ marginTop: 5 }}
           >
             <Image
               source={shareIcon}
               style={styles.iconsStyle}
               tintColor={colors.disTextColor}
-              resizeMode='contain'
+              resizeMode="contain"
             />
           </TouchableOpacityView>
         </View>
+      </Animated.View>
+      <View style={styles.secondContainer}>
+        <Animated.View
+          style={[
+            styles.secondAnimatedContainer,
+            {
+              opacity: collapsedHeaderOpacity.interpolate({
+                inputRange: [0, 0, 0.5],
+                outputRange: [1, 0.5, 0], // fade OUT when sticky header fades IN
+              }),
+            }]}
+        >
+          <AppText
+            type={TWENTY_TWO}
+            weight={BOLD}
+            color={PLACEHOLDER}
+            numberOfLines={2}
+            style={{ width: '90%' }}
+          >
+            {data?.client?.name ? data?.client?.name : data?.name}
+          </AppText>
+        </Animated.View>
         {(data?.client?.short_desc || data?.client_short_desc) &&
           <AppText type={SIXTEEN} color={PLACEHOLDER} style={styles.disTextStyle}>
             {data?.client?.short_desc ? data?.client?.short_desc : data?.client_short_desc}
           </AppText>}
 
         <AppText type={THIRTEEN} color={PLACEHOLDER} style={styles.disTextStyle}>
-          {`Date:  ${data?.start_date ? moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY") : "N/A"} - ${data?.end_date ? moment(data.end_date, "YYYY-MM-DD").format("D MMM YYYY") : "N/A"}`}
+          {`Validity: ${data?.date_type == 1
+            ? `${data?.validity_months || "N/A"} months `
+            : data?.start_date && data?.end_date
+              ? `${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - ${moment(
+                data.end_date,
+                "YYYY-MM-DD"
+              ).format("D MMM YYYY")}`
+              : "N/A"
+            }`}
         </AppText>
 
-        {/* {data?.client?.location_url && (
-          <TouchableOpacityView
-            // onPress={()=> openInGoogleMaps(data?.client?.location_url)}
-            onPress={() => handleRedirection(data)}
-            style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}
-          >
-            <Image
-              source={locationIcon}
-              style={{ height: vs(15), width: s(15) }}
-              tintColor={colors.borderColor}
-              resizeMode='contain'
-            />
-            <AppText type={THIRTEEN} color={BUTTON_TEXT} style={{ textDecorationLine: 'underline', textDecorationColor: colors.buttonText, letterSpacing: 0.8 }} >{"Check Location"}</AppText>
-          </TouchableOpacityView>
-        )} */}
-        {data?.locations.length > 0 && (
+        {data?.location?.length > 0 && (
           <View
-            // onPress={()=> openInGoogleMaps(data?.client?.location_url)}
-
-            style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}
+            style={styles.locationContainer}
           >
             <TouchableOpacityView
-              onPress={() => handleRedirection(data?.locations[0]?.location_url)}
-              style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}
+              onPress={() => handleRedirection(data?.location[0]?.location_url)}
+              style={styles.locationBtn}
             >
               <Image
                 source={locationIcon}
-                style={{ height: vs(15), width: s(15) }}
+                style={styles.locationIcon}
                 tintColor={colors.borderColor}
                 resizeMode='contain'
               />
               <AppText
-
-                type={THIRTEEN} color={BUTTON_TEXT} style={{ textDecorationLine: 'underline', textDecorationColor: colors.buttonText, letterSpacing: 0.8 }} >{data?.locations[0]?.location}</AppText>
+                numberOfLines={2}
+                type={THIRTEEN} color={BUTTON_TEXT}  >
+                {data?.location[0]?.location}</AppText>
             </TouchableOpacityView>
             <TouchableOpacityView
-           onPress={() => sheetRef.current?.present()}
+              onPress={() => sheetRef.current?.present()}
+              style={styles.downArrowBtnIcon}
             >
-            <Image
-              source={ downArrowIcon}
-              style={{ height: vs(15), width: s(15), marginTop: 3 }}
-              resizeMode='contain'
-            />
+              <Image
+                source={downArrowIcon}
+                style={styles.locationIcon}
+                resizeMode='contain'
+              />
             </TouchableOpacityView>
           </View>
         )
@@ -269,28 +381,108 @@ console.log("location_url", location_url);
             navigationState={{ index, routes }}
             renderScene={renderScene}
             renderTabBar={(props) => (
-              <RenderTabBar {...props} scrollEnabled={true} index={index} />
+              <RenderTabBar {...props} scrollEnabled={true} index={index} tabTextType={TEN} />
             )}
             onIndexChange={setIndex}
+            animationEnabled={true}
+            layout={initialLayout}
           />
         </View>
+      </View>
 
-      </View>
       <View style={styles.bottomBtnContainer}>
-        <TouchableOpacityView
-          onPress={handleOnPress}
-          style={styles.buyBtnStyle(bookletDetailAllDeals?.request_status == "Pending")}
-          loader={isBtnLoading}
-          disabled={bookletDetailAllDeals?.request_status == "Pending"}
-        >
-          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>{bookletDetailAllDeals?.request_status == "Pending" ? "REQUEST IN PENDING" : "REQUEST"}</AppText>
-        </TouchableOpacityView>
+        {isLoading ?
+          <View style={{ width: "100%" }}>
+            <ShimmerPlaceholder
+              LinearGradient={LinearGradient}
+              style={styles.shimmerBtnStyle}
+            />
+          </View>
+          :
+          <>
+            {
+              index == 2 && (
+                <View style={styles.acceptTermsConditionContainer}>
+                  <TouchableOpacityView
+                    onPress={() => setAcceptContent(!acceptContent)}
+                    style={styles.acceptTermsConditionBtn}>
+                    {/* <View style={styles.acceptView(acceptContent)} /> */}
+                    {acceptContent ?
+                      <Image
+                        source={checkIcon}
+                        style={{ height: s(24), width: s(24) }}
+                        resizeMode={"contain"}
+                        tintColor={colors.buttonBg}
+                      />
+                      : <Image
+                        source={unCheckIcon}
+                        style={{ height: s(20), width: s(20) }}
+                        resizeMode={"contain"}
+                        tintColor={colors.buttonBg}
+                      />
+                    }
+                    <AppText type={TWELVE} weight={MEDIUM} >{"Accept the Term&Conditions"}</AppText>
+                  </TouchableOpacityView>
+                </View>
+              )
+            }
+
+            <TouchableOpacityView
+              onPress={handleOnPress}
+              style={styles.buyBtnStyle(
+                bookletDetailAllDeals?.request_status === "Pending" ||
+                bookletDetailAllDeals?.request_status === "Out of Stock"
+              )}
+              loader={isBtnLoading}
+              disabled={
+                bookletDetailAllDeals?.request_status === "Pending" ||
+                bookletDetailAllDeals?.request_status === "Out of Stock"
+              }
+            >
+              <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                {bookletDetailAllDeals?.request_status === "Out of Stock"
+                  ? "Out Of Stock"
+                  : bookletDetailAllDeals?.request_status === "Pending"
+                    ? "REQUEST IN PENDING"
+                    : "REQUEST"}
+              </AppText>
+            </TouchableOpacityView>
+          </>
+        }
       </View>
-       <MultiLocationSheet 
-       sheetRef={sheetRef} 
-       data={data?.locations}
-       title={data?.client?.name ? data?.client?.name : data?.client_name}
-       />
+      <MultiLocationSheet
+        sheetRef={sheetRef}
+        data={data?.location}
+        title={data?.name ? data?.name : data?.client_name}
+      />
+      <RequestBottomSheet
+        bottomSheetRef={bottomSheetRef}
+        snapPoints={snapPoints}
+        onSubmit={(_data) => handleSubmit(_data)}
+        onDismiss={() => {
+          Keyboard?.dismiss()
+          bottomSheetRef.current?.close();
+        }}
+      />
+      <ExecutiveRequestBottomSheet
+        bottomSheetRef={executiveBottomSheetRef}
+        snapPoints={executiveSnapPoints}
+        onSubmit={(_data) => handleExecutiveSubmit(_data)}
+        handleDismiss={() => {
+          Keyboard?.dismiss()
+          executiveBottomSheetRef.current?.close();
+        }}
+      />
+      <ViewDetailsBottomSheet
+        bottomSheetRef={viewDetailsBottomSheetRef}
+        snapPoints={executiveSnapPoints}
+        data={couponDetail}
+        // onSubmit={(_data) => handleExecutiveSubmit(_data)}
+        onDismiss={() => {
+          Keyboard?.dismiss()
+          viewDetailsBottomSheetRef.current?.close();
+        }}
+      />
     </View>
 
   );
@@ -298,181 +490,3 @@ console.log("location_url", location_url);
 
 export default Details;
 
-// import React, { useEffect } from 'react'
-// import { Image, ImageBackground, Linking, StatusBar, View, StyleSheet } from 'react-native'
-// import { AppSafeAreaView } from '@components/AppSafeAreaView'
-// import ToolBar from '@components/ToolBar'
-// import { banerImages, defaultBookletImage, locationIcon, shareIcon } from '@helper/imagesAssets'
-// import { AppText, BOLD, BUTTON_TEXT, PLACEHOLDER, SIXTEEN, THIRTEEN, TWENTY_TWO, WHITE } from '@components/AppText'
-// import { colors } from '@theme/colors'
-// import TouchableOpacityView from '@components/TouchableOpacityView'
-// import All from './ui/all'
-// import About from './ui/about'
-// import Gallery from './ui/gallery'
-// import Terms_Condition from './ui/terms_condition'
-// import styles from './styles'
-// import { shareToAny } from '@utils/index'
-// import { IMGE_URL } from '@services/config'
-// import { useAppDispatch, useAppSelector } from '@redux/hooks'
-// import { bookletRequest, getBookletDetail } from '@actions/home/homeAction'
-// import FastImage from 'react-native-fast-image'
-// import { s, vs } from 'react-native-size-matters/extend'
-// import { Tabs } from 'react-native-collapsible-tab-view'
-
-// const HEADER_HEIGHT = 150
-
-// const Details = ({ route }) => {
-//   const { data } = route?.params ?? {}
-//   const [index, setIndex] = React.useState(0)
-//   const { isBtnLoading } = useAppSelector((state) => state.home)
-//   const dispatch = useAppDispatch()
-
-//   const routes = [
-//     { key: 'allDeals', title: 'All Deals' },
-//     { key: 'about', title: 'About' },
-//     { key: 'gallery', title: 'Gallery' },
-//     { key: 'tc', title: 'T&C' },
-//   ]
-
-//   useEffect(() => {
-//     const value =
-//       index === 0 ? { booklet_id: data?.uuid, tabname: 'All Deals' } :
-//       index === 1 ? { booklet_id: data?.uuid, tabname: 'About' } :
-//       index === 2 ? { booklet_id: data?.uuid, tabname: 'Gallery' } :
-//       { booklet_id: data?.uuid, tabname: 'Termscondition' }
-
-//     dispatch(getBookletDetail(value))
-//   }, [index])
-
-//   const handleFavouriteBtn = () => {}
-//   const handleShareBtn = () => shareToAny('hello')
-//   const handleOnPress = () => dispatch(bookletRequest({ booklet_id: data.uuid }))
-
-//   const openInGoogleMaps = (url: string) => {
-//     Linking.canOpenURL(url)
-//       .then((supported) => supported && Linking.openURL(url))
-//       .catch((err) => console.error('An error occurred', err))
-//   }
-
-//   const renderHeader = () => (
-//     <View>
-//       <FastImage
-//         source={data?.booklet ? { uri: IMGE_URL + data?.booklet } : defaultBookletImage}
-//         style={styles.coverImageStyle}
-//         resizeMode="cover"
-//       >
-//         <ToolBar
-//           isLeftIcon
-//           title="Detail"
-//           mainContainerStyle={styles.toolBarStyle}
-//           leftIconTintColor={colors.black}
-//           textBack={true}
-//         />
-//       </FastImage>
-//       <View style={styles.secondContainer}>
-//         <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', gap: 10 }}>
-//           <AppText
-//             type={TWENTY_TWO}
-//             weight={BOLD}
-//             color={PLACEHOLDER}
-//             numberOfLines={2}
-//             style={{ width: '90%' }}
-//           >
-//             {data?.client?.name || data?.client_name}
-//           </AppText>
-//           <TouchableOpacityView onPress={handleShareBtn} style={{ marginTop: 5 }}>
-//             <Image
-//               source={shareIcon}
-//               style={styles.iconsStyle}
-//               tintColor={colors.disTextColor}
-//               resizeMode="contain"
-//             />
-//           </TouchableOpacityView>
-//         </View>
-//         {(data?.client?.short_desc || data?.client_short_desc) && (
-//           <AppText type={SIXTEEN} color={PLACEHOLDER} style={styles.disTextStyle}>
-//             {data?.client?.short_desc || data?.client_short_desc}
-//           </AppText>
-//         )}
-//         {data?.client?.location_url && (
-//           <TouchableOpacityView
-//             onPress={() => openInGoogleMaps(data?.client?.location_url)}
-//             style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}
-//           >
-//             <Image
-//               source={locationIcon}
-//               style={{ height: vs(15), width: s(15) }}
-//               tintColor={colors.borderColor}
-//               resizeMode="contain"
-//             />
-//             <AppText
-//               type={THIRTEEN}
-//               color={BUTTON_TEXT}
-//               style={{ textDecorationLine: 'underline', textDecorationColor: colors.buttonText, letterSpacing: 0.8 }}
-//             >
-//               Check Location
-//             </AppText>
-//           </TouchableOpacityView>
-//         )}
-//       </View>
-//     </View>
-//   )
-
-//   return (
-//     <View style={{ flex: 1 }}>
-//       <StatusBar backgroundColor={colors.transparent} />
-//       <Tabs.Container
-//         renderHeader={renderHeader}
-//         headerHeight={HEADER_HEIGHT}
-//         lazy
-//         allowHeaderOverscroll
-//         containerStyle={{backgroundColor:colors.white}}
-//       >
-//         <Tabs.Tab name="All Deals">
-//           <All id={data.uuid} />
-//         </Tabs.Tab>
-//         <Tabs.Tab name="About">
-//           <About />
-//         </Tabs.Tab>
-//         <Tabs.Tab name="Gallery">
-//           <Gallery id={data.uuid} />
-//         </Tabs.Tab>
-//         <Tabs.Tab name="T&C">
-//           <Terms_Condition />
-//         </Tabs.Tab>
-//       </Tabs.Container>
-
-//       <View style={style.bottomBtnContainer}>
-//         <TouchableOpacityView
-//           onPress={handleOnPress}
-//           style={style.buyBtnStyle}
-//           loader={isBtnLoading}
-//         >
-//           <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>REQUEST</AppText>
-//         </TouchableOpacityView>
-//       </View>
-//     </View>
-//   )
-// }
-
-// const style = StyleSheet.create({
-//   bottomBtnContainer: {
-//     position: 'absolute',
-//     bottom: 0,
-//     left: 0,
-//     right: 0,
-//     backgroundColor: colors.white,
-//     paddingVertical: 10,
-//     paddingHorizontal: 20,
-//     borderTopWidth: 1,
-//     borderTopColor: '#eee'
-//   },
-//   buyBtnStyle: {
-//     backgroundColor: colors.buttonBg,
-//     borderRadius: 8,
-//     paddingVertical: 12,
-//     alignItems: 'center',
-//   }
-// })
-
-// export default Details

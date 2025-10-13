@@ -75,7 +75,7 @@ const ResetPassword = ({ route }) => {
             />
             <View style={styles.heading}>
                 <AppText type={TWENTY_EIGHT} weight={BOLD}>Reset Password</AppText>
-                <AppText type={EIGHTEEN} >
+                <AppText type={EIGHTEEN} style={{textAlign:'center'}} >
                     You Can Now {'\n'}Reset Your Password
                 </AppText>
             </View>
@@ -86,7 +86,7 @@ const ResetPassword = ({ route }) => {
                     value={state?.newPassword}
                     secureTextEntry={!state.isNewPasswordVisible}
                     onChangeText={(text: string) => setState({ ...state, newPassword: text.trim() })}
-                    leftIcon={state.isNewPasswordVisible ? eyeCloseIcon : eyeOpenIcon}
+                    leftIcon={state.isNewPasswordVisible ?  eyeOpenIcon :eyeCloseIcon}
                     handleLeftIconPress={() => setState({ ...state, isNewPasswordVisible: !state.isNewPasswordVisible })}
                     errorText={state.newPasswordError}
                     onFocus={() => setState({ ...state, newPasswordError: "" })}
@@ -96,7 +96,7 @@ const ResetPassword = ({ route }) => {
                     value={state?.confirmPassword}
                     secureTextEntry={!state.isConfrimPasswordVisible}
                     onChangeText={(text: string) => setState({ ...state, confirmPassword: text.trim() })}
-                    leftIcon={state.isConfrimPasswordVisible ? eyeCloseIcon : eyeOpenIcon}
+                    leftIcon={state.isConfrimPasswordVisible ? eyeOpenIcon :eyeCloseIcon}
                     handleLeftIconPress={() => setState({ ...state, isConfrimPasswordVisible: !state.isConfrimPasswordVisible })}
                     errorText={state.confirmPasswordError}
                     onFocus={() => setState({ ...state, confirmPasswordError: "" })}
@@ -124,7 +124,8 @@ const styles = StyleSheet.create({
     },
     heading: {
         marginVertical: vs(70),
-        gap: s(26)
+        gap: s(26),
+        alignItems:'center'
     },
     inputContainer: {
         gap: s(16),

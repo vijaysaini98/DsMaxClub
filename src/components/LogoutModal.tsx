@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         paddingVertical: vs(10),
         paddingHorizontal: s(18),
         borderRadius: ms(8),
-        backgroundColor: colors.disabledBtn,
+        backgroundColor: colors.sixth,
     },
     deleteButton: {
         paddingVertical: vs(10),

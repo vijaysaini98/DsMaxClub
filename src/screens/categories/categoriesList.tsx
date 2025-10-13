@@ -9,11 +9,11 @@ import Card from '@screens/home/ui/card'
 import { getBookletList } from '@actions/home/homeAction'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { SpinnerSecond } from '@components/Spinner'
-import { AppText } from '@components/AppText'
 import NavigationService from '@navigations/NavigationService'
-import { DETAILS_SCREEN } from '@navigations/routes'
+import { COMBO_DETAILS_SCREEN, DETAILS_SCREEN } from '@navigations/routes'
 import { ms, s, vs } from 'react-native-size-matters/extend'
 import ListEmptyComponent from '@components/ListEmptyComponent'
+import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader'
 
 const CategoriesList = ({ route }) => {
     const dispatch = useAppDispatch()
@@ -42,20 +42,23 @@ const CategoriesList = ({ route }) => {
     };
 
     const renderItem = ({ item, index }: any) => {
-
         return (
             <View style={styles.shadowContainer}>
                 <Card item={item} index={index}
-                    cardContainerStyle={{width:"100%"}}
-                    // imageStyle={{ width: s(391) }}
+                    cardContainerStyle={{ width: "100%" }}
                     handleCardOnPress={() => { }}
                     imageStyle={styles.imageStyle}
-                    imageUrl={item?.booklet ? {uri:bookletList?.baseurl + item?.booklet}:defaultBookletImage}
-                    name={item?.client_name}
+                    imageUrl={item?.booklet ? { uri: bookletList?.baseurl + item?.booklet } : defaultBookletImage}
+                    name={item?.name}
                     price={item.price}
-                    address={item?.client_address ? item?.client_address : "---"}
+                    address={item?.location?.length > 0 ? item?.location[0]?.location : "---"}
                     handleCardOnPress={() => {
-                        NavigationService.navigate(DETAILS_SCREEN, { data: item })
+                        if (item?.booklet_type == 2) {
+                            NavigationService.navigate(DETAILS_SCREEN, { data: item, from: "ComboBooklet" })
+                        }
+                        else {
+                            NavigationService.navigate(DETAILS_SCREEN, { data: item, from: "Booklet" })
+                        }
                     }}
                 />
             </View>
@@ -64,9 +67,9 @@ const CategoriesList = ({ route }) => {
 
     return (
         <AppSafeAreaView style={styles.mainContainer}>
-            <ToolBar 
-            mainContainerStyle={{marginHorizontal:16}}
-            isLeftIcon title={title?.charAt(0)?.toUpperCase() + title?.slice(1).toLowerCase()} />
+            <ToolBar
+                mainContainerStyle={{ marginHorizontal: 16 }}
+                isLeftIcon title={title?.charAt(0)?.toUpperCase() + title?.slice(1).toLowerCase()} />
             <View style={styles.containerStyle}>
                 <Input
                     leftIcon={searchIcon}
@@ -80,14 +83,17 @@ const CategoriesList = ({ route }) => {
             </View>
             {
                 isLoading ?
-                    <SpinnerSecond /> :
+                    <View style={{ paddingHorizontal: s(16) }}>
+                        <CategoriesListShimmerLoader />
+                    </View>
+                    :
                     <FlatList
                         data={bookletList?.booklets}
                         renderItem={renderItem}
                         contentContainerStyle={styles.listContainerStyle}
                         showsVerticalScrollIndicator={false}
                         ListEmptyComponent={() => (
-                            <ListEmptyComponent title={"No Booklet Available"}/>
+                            <ListEmptyComponent title={"No Booklet Available"} />
                         )}
                     />
             }
@@ -103,7 +109,7 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         backgroundColor: colors.white,
-        paddingTop:Platform.OS == 'ios' ? vs(40) : 0,
+        paddingTop: Platform.OS == 'ios' ? vs(40) : 0,
 
     },
     containerStyle: {

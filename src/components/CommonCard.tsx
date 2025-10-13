@@ -1,12 +1,13 @@
 import { StyleSheet, Image, View, TextInput, Dimensions } from 'react-native';
-import React from 'react';
+import React, { useRef } from 'react';
 import { colors } from '../theme/colors';
-import { AppText, BLACK, BOLD, BUTTON_TEXT, ELEVEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, TEN, TWELVE, WHITE } from './AppText';
+import { AppText, BLACK, BOLD, BUTTON_TEXT, ELEVEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, TEN, THIRTEEN, TWELVE, WHITE } from './AppText';
 import { CardProps } from 'src/types/common';
 import TouchableOpacityView from './TouchableOpacityView';
-import { shareIcon } from '@helper/imagesAssets';
+import { downArrowIcon, locationIcon, shareIcon } from '@helper/imagesAssets';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import RenderHTML from 'react-native-render-html';
+import MultiLocationSheet from '@screens/detail/ui/multiLoctionSheet';
 
 
 const { width } = Dimensions.get('window');
@@ -17,12 +18,14 @@ const CommonCard = ({
   onRedeemPress,
   rightIcon,
   status,
+  vendorName,
   btnStyle,
   btnTextColor,
   handleRightIcon,
   heading, description,
   price,
   actualPrice,
+  location,
   buttonTitle,
   buttonTitle2,
   couponCount,
@@ -36,10 +39,12 @@ const CommonCard = ({
 }: CardProps) => {
   if (!data) return null;
 
+  const sheetRef = useRef<any>(null);
+
   return (
     <View style={styles.card}>
       <View style={styles.topRow}>
-        <AppText type={SIXTEEN} weight={SEMI_BOLD} style={{width:status ? "80%":"100%"}}>
+        <AppText type={SIXTEEN} weight={SEMI_BOLD} style={{ width: status ? "80%" : "100%" }}>
           {heading}
         </AppText>
 
@@ -49,15 +54,15 @@ const CommonCard = ({
               styles.statusBadge,
               {
                 backgroundColor:
-                statusBg? statusBg :
-                  status === 'Active' ? colors.lightGreen : colors.disabledBtn,
+                  statusBg ? statusBg :
+                    status === 'Active' ? colors.lightGreen : colors.disabledBtn,
               },
             ]}>
-            <AppText 
-            type={TWELVE} 
-            color={statusTextColor? statusTextColor: status === 'Active' ? WHITE : BUTTON_TEXT} 
-            weight={SEMI_BOLD}
-            style={{ textTransform: 'capitalize' }}>{status}</AppText>
+            <AppText
+              type={TWELVE}
+              color={statusTextColor ? statusTextColor : status === 'Active' ? WHITE : BUTTON_TEXT}
+              weight={SEMI_BOLD}
+              style={{ textTransform: 'capitalize' }}>{status}</AppText>
           </View>
         )}
         {
@@ -75,6 +80,9 @@ const CommonCard = ({
           )
         }
       </View>
+      {vendorName &&
+        <AppText weight={MEDIUM}>{vendorName}</AppText>
+      }
 
       <View style={styles.rowContainer}>
         {/* <View > */}
@@ -130,13 +138,52 @@ const CommonCard = ({
 
         </View>)}
 
+      {
+        (location && location?.length > 0) && (
+          <View
+            // onPress={()=> openInGoogleMaps(data?.client?.location_url)}
+
+            style={{ flexDirection: 'row', gap: 2, alignItems: 'center' }}
+          >
+            {/* <TouchableOpacityView
+              // onPress={() => handleRedirection(data?.locations[0]?.location_url)}
+              style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}
+            > */}
+            <Image
+              source={locationIcon}
+              style={{ height: vs(15), width: s(15) }}
+              tintColor={colors.borderColor}
+              resizeMode='contain'
+            />
+            <AppText
+
+              type={TWELVE} color={BUTTON_TEXT}
+              numberOfLines={2}
+              style={{
+                letterSpacing: 0.8,
+                width: "90%"
+              }} >{location[0]?.location}</AppText>
+            {/* </TouchableOpacityView> */}
+            <TouchableOpacityView
+              onPress={() => sheetRef.current?.present()}
+            >
+              <Image
+                source={downArrowIcon}
+                style={{ height: vs(15), width: s(15), marginTop: 3 }}
+                resizeMode='contain'
+              />
+            </TouchableOpacityView>
+          </View>
+        )
+      }
+
       <View style={styles.buttonRow}>
         <TouchableOpacityView
           style={[showRedeemBtn ? styles.viewButton2 : styles.viewButton1(viewBtnDisabled), btnStyle]}
           onPress={onViewPress}
           disabled={viewBtnDisabled}
           loader={viewBtnLoader}
-          >
+        >
           <AppText
             type={SIXTEEN}
             weight={BOLD}
@@ -148,16 +195,21 @@ const CommonCard = ({
 
         {showRedeemBtn && (
           <TouchableOpacityView
-            style={[styles.redeemButton,redeemButtonStyle]}
+            style={[styles.redeemButton, redeemButtonStyle]}
             onPress={onRedeemPress}
             disabled={redeemDisabled}
-            >
+          >
             <AppText type={SIXTEEN} weight={BOLD} style={styles.redeemText}>
               {buttonTitle2 ? buttonTitle2 : "REDEEM"}
             </AppText>
           </TouchableOpacityView>
         )}
       </View>
+      <MultiLocationSheet
+        sheetRef={sheetRef}
+        data={location}
+        title={data?.vendor?.name ? data?.vendor?.name : data?.client_name}
+      />
     </View>
   );
 };
@@ -183,6 +235,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10,
     paddingVertical: 4,
+    position:'absolute',
+    right:-5,
+    top:-10
   },
   statusText: {
     // color: colors.white,
@@ -210,9 +265,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: ms(10)
   },
-  viewButton1:(disabledBtn:boolean)=>( {
+  viewButton1: (disabledBtn: boolean) => ({
     marginTop: vs(20),
-    backgroundColor:disabledBtn ? colors.disabledBtn :  colors.buttonText,
+    backgroundColor: disabledBtn ? colors.disabledBtn : colors.buttonText,
     borderRadius: ms(20),
     paddingVertical: vs(10),
     flex: 1,
@@ -252,14 +307,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   couponCountContainer: {
-    borderWidth: ms(1),
+    borderWidth: 0.5,
     borderStyle: 'dashed',
     borderRadius: ms(6),
     backgroundColor: colors.tabBg,
-    borderColor: colors.tabBag,
     maxWidth: s(120),
     padding: ms(10),
-    marginTop: vs(10)
+    marginVertical: vs(10)
   }
 });
 

@@ -18,9 +18,7 @@ export const historySlice = createSlice({
        setVendorHistory:(state, { payload }) => {
             state.vendorHistoryList = payload;
         },
-        resetHistory: (state, { payload }) => {
-            state = initialState;
-        },
+        resetHistory: () => initialState, 
     },
 });
 export const {

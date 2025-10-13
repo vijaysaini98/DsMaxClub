@@ -11,10 +11,11 @@ import { getVendorDealBookletList } from '@actions/deals/dealAction';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import NavigationService from '@navigations/NavigationService';
 import { VENDOR_USER_LIST } from '@navigations/routes';
-import { Loader } from '@components/Spinner';
 import { userProfile } from '@actions/auth/authAction';
 import { defaultBookletImage } from '@helper/imagesAssets';
 import { setVendorUserList } from '@actions/deals/dealSlice';
+import ListEmptyComponent from '@components/ListEmptyComponent';
+import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
 
 const Deal = () => {
 
@@ -54,7 +55,7 @@ const Deal = () => {
           imageUrl={item?.booklet ? { uri: vendorDealBookletList?.baseurl + item?.booklet } : defaultBookletImage}
           name={item?.name}
           price={item.price}
-          address={item?.client_address ? item?.client_address : item?.city_name ? item?.city_name : "---"}
+           address={ item?.location.length>0 ? item?.location[0]?.location : "---"}
           handleCardOnPress={() => {
             dispatch(setVendorUserList([]))
             NavigationService.navigate(VENDOR_USER_LIST, { title: item?.name, booklet_id: item?.uuid })
@@ -66,7 +67,12 @@ const Deal = () => {
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
       <Header currentCity />
-      {isLoading && !refreshing ? <Loader /> :
+      {isLoading && !refreshing ?
+      //  <Loader /> 
+      <View style={{paddingHorizontal:s(16)}}>
+      <CategoriesListShimmerLoader/>
+      </View>
+       :
         <FlatList
           data={vendorDealBookletList?.booklets}
           renderItem={renderItem}
@@ -82,6 +88,9 @@ const Deal = () => {
           }
           contentContainerStyle={{ paddingHorizontal: s(16), gap: s(10), paddingBottom: vs(20) }}
           showsVerticalScrollIndicator={false}
+            ListEmptyComponent={() => (
+                            <ListEmptyComponent title={"No Request Available"} />
+                        )}
         />
       }
       <ViewDetailsBottomSheet ref={ViewDetailsSheet} />

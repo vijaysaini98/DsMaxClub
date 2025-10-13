@@ -19,6 +19,7 @@ export interface CardProps {
   handleCardOnPress: (item: CardItem) => void;
   imageBaseUrl?: string,
   status?: string,
+  cardDisabled?:boolean | undefined,
   date?:string
 
 }
@@ -34,6 +35,7 @@ const Card: React.FC<CardProps> = ({
   price,
   address,
   status,
+  cardDisabled,
   date
 }) => {
   return (
@@ -41,6 +43,7 @@ const Card: React.FC<CardProps> = ({
       onPress={() => handleCardOnPress(item)}
       key={item.id ?? index}
       style={[styles.cardInner, cardContainerStyle]}
+      disabled={cardDisabled}
     >
       <FastImage
         source={imageUrl}
@@ -52,7 +55,7 @@ const Card: React.FC<CardProps> = ({
           <AppText type={TWELVE} weight={SEMI_BOLD}>Guest Favourite</AppText>
         </View> */}
       {/* details container */}
-      <View style={styles.detailContainer}>
+      <View style={[styles.detailContainer,]}>
         {/* <View style={styles.ratingContainer}>
                   <View style={styles.ratingContainer2}>
                     <View style={styles.ratingViewBox}>
@@ -105,7 +108,7 @@ const Card: React.FC<CardProps> = ({
       </View>
      
       {status && (<View style={styles.statusContainer}>
-        <AppText type={FOURTEEN} weight={MEDIUM} color={BUTTON_TEXT} style={{ textTransform: 'capitalize' }}>{status}</AppText>
+        <AppText type={FOURTEEN} weight={MEDIUM} color={WHITE} style={{ textTransform: 'capitalize' }}>{status}</AppText>
       </View>)}
     </TouchableOpacityView>
   );
@@ -136,10 +139,10 @@ const styles = StyleSheet.create({
     left: 12
   },
   detailContainer: {
-    marginHorizontal: 12,
+    paddingHorizontal: 12,
     paddingVertical: 10,
-    backgroundColor: colors.white
-    // backgroundColor:"yellow"
+    backgroundColor: colors.white,
+    width:'100%'
   },
   ratingContainer: {
     flexDirection: 'row',
@@ -185,14 +188,15 @@ const styles = StyleSheet.create({
   },
   locationText: {
     color: colors.disTextColor,
-    marginRight: 5
+    marginRight: 5,
+    // width:"90%"
   },
   statusContainer: {
     position: 'absolute',
     top: vs(10),
     right: s(10),
     alignItems: 'center',
-    backgroundColor: "rgba(255,255,255,0.5)",
+    backgroundColor:colors.buttonBg,
     paddingVertical: vs(5),
     paddingHorizontal: s(8),
     borderRadius: ms(12)

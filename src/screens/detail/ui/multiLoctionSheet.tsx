@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { BackHandler, Image, StyleSheet, View } from 'react-native';
+import { BackHandler, Image, Linking, Platform, StyleSheet, View } from 'react-native';
 import {
     BottomSheetBackdrop,
     BottomSheetFlatList,
@@ -19,8 +19,9 @@ import { extractLatLngFromUrl, openMap } from '@utils/index';
 import Toast from 'react-native-simple-toast';
 import { directionIcon, locationIcon } from '@helper/imagesAssets';
 import FastImage from 'react-native-fast-image';
+import { OpenMapArgs } from 'src/types/common';
 
-const MultiLocationSheet = ({ sheetRef, onChange, title, data }) => {
+const MultiLocationSheet = ({ sheetRef, onChange, title, data,header }) => {
     const snapPoints = useMemo(() => ['40%', '70%'], []);
 
     // Handle Android back button
@@ -32,13 +33,13 @@ const MultiLocationSheet = ({ sheetRef, onChange, title, data }) => {
         return false;
     }, [sheetRef]);
 
-    useEffect(() => {
-        const backHandler = BackHandler.addEventListener(
-            'hardwareBackPress',
-            handleBackButtonClick,
-        );
-        return () => backHandler.remove();
-    }, [handleBackButtonClick]);
+    // useEffect(() => {
+    //     const backHandler = BackHandler.addEventListener(
+    //         'hardwareBackPress',
+    //         handleBackButtonClick,
+    //     );
+    //     return () => backHandler.remove();
+    // }, [handleBackButtonClick]);
 
     // Backdrop renderer
     const renderBackdrop = useCallback(
@@ -58,30 +59,41 @@ const MultiLocationSheet = ({ sheetRef, onChange, title, data }) => {
         }
     }, [onChange]);
 
-    const handleRedirection = useCallback((location_url) => {
+    const handleRedirection = useCallback((location_url: any) => {
         const coords = extractLatLngFromUrl(location_url);
-        if (coords) {
-            openMap({
-                lat: coords.lat,
-                lng: coords.lng,
-                label: title || 'Location',
-            });
-        } else {
-            Toast.show("Can't find this location", Toast.LONG);
-        }
+
+  if (coords) {
+    openMap({
+      lat: coords.lat,
+      lng: coords.lng,
+      label: data?.client?.name || "Location",
+    });
+  } else {
+    // If lat/lng not found, open the raw URL in Google Maps
+    Linking.openURL(location_url).catch(() => {
+      Toast.show("Can't open this location", Toast.LONG);
+    });
+  }
     }, [title]);
 
-    const renderHeader = () => (
-        <View style={styles.header}>
-            <AppText type={SIXTEEN} weight={SEMI_BOLD}>
-                {title}
-            </AppText>
-        </View>
-    )
+ const renderHeader = () => {
+  if (header || title) {
+    return (
+      <View style={styles.header}>
+        <AppText type={SIXTEEN} weight={SEMI_BOLD}>
+          {header ? `${header} (${title})` : title}
+        </AppText>
+      </View>
+    );
+  }
+
+  return null;
+};
 
     const renderLocationItem = useCallback(
         ({ item }) => (
-            <View
+            <TouchableOpacityView
+            onPress={() => handleRedirection(item?.location_url)}
                 style={styles.itemContainer}
             >
                 <Image
@@ -109,7 +121,7 @@ const MultiLocationSheet = ({ sheetRef, onChange, title, data }) => {
                         resizeMode={FastImage.resizeMode.contain}
                     />
                 </TouchableOpacityView>
-            </View>
+            </TouchableOpacityView>
         ),
         [handleRedirection]
     );
@@ -150,13 +162,11 @@ const styles = StyleSheet.create({
     },
     sheetContent: {
         flex: 1,
-        marginTop: vs(10),
+        zIndex: 1111
     },
     header: {
         alignItems: 'center',
-        marginBottom: vs(10),
         backgroundColor: colors.white,
-        paddingVertical: vs(8),
     },
     itemContainer: {
         marginVertical: vs(5),

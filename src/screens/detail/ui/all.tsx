@@ -1,34 +1,38 @@
 import React, { useMemo, useCallback, useRef, useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import { Animated, Keyboard, RefreshControl, StyleSheet, View } from 'react-native';
 import CommonCard from '@components/CommonCard';
 import { colors } from '@theme/colors';
 import { shareToAny } from '@utils/index';
 import { useAppSelector, useAppDispatch } from '@redux/hooks';
 import { Loader } from '@components/Spinner';
-import { AppText, WHITE } from '@components/AppText';
+import { WHITE } from '@components/AppText';
 import ViewDetailsBottomSheet from './viewDetailsBottomSheet';
-import { getBookletDetail, getBookletList } from '@actions/home/homeAction';
+import { getBookletDetail, getComboBookletDetail } from '@actions/home/homeAction';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import ListEmptyComponent from '@components/ListEmptyComponent';
+import CouponsShimerLoader from '@components/ShimerLoader/CouponsShimerLoader';
 
 interface CardItem {
     id: string | number;
     // Add other properties as needed
 }
 
-const All: React.FC = ({ id }) => {
+const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
     const dispatch = useAppDispatch();
     const { bookletDetailAllDeals, isLoading } = useAppSelector((state) => state?.home);
 
     const [couponDetail, setCouponDetail] = useState<any>();
     const [refreshing, setRefreshing] = useState(false);
     const viewDetailSheet = useRef<any>(null);
+    const executiveSnapPoints = useMemo(() => ["50%", "80%"], []);
 
     const onViewPress = useCallback((item: CardItem) => {
-        setCouponDetail(item);
-        setTimeout(() => {
-            viewDetailSheet?.current?.open();
-        }, 200);
+        // setCouponDetail(item);
+        // setTimeout(() => {
+        //     // viewDetailSheet?.current?.open();
+        //     viewDetailSheet?.current?.expand()
+        // }, 200);
+        handleViewPress(item)
     }, []);
 
     const handleShareOnPress = useCallback((item: CardItem) => {
@@ -41,35 +45,42 @@ const All: React.FC = ({ id }) => {
             booklet_id: id,
             tabname: "All Deals"
         }
-        dispatch(getBookletDetail(data)).finally(() => setRefreshing(false));
+        if (from == "ComboBooklet") {
+            dispatch(getComboBookletDetail(data)).finally(() => setRefreshing(false));
+        } else {
+            dispatch(getBookletDetail(data)).finally(() => setRefreshing(false));
+        }
+
     }, [dispatch]);
 
     const renderItem = useMemo(
         () =>
-            ({ item }: { item: CardItem }) => (
-                <CommonCard
-                    data={item}
-                    heading={item?.heading}
-                    description={item?.short_desc}
-                    // rightIcon
-                    onViewPress={() => onViewPress(item)}
-                    // onRedeemPress={() => console.log('Redeem Pressed:', item.id)}
-                    btnStyle={styles.viewBtnStyle}
-                    // handleRightIcon={handleShareOnPress}
-                    status={item?.coupon_type_id == 1 ? 'Free' : ""}
-                    statusBg={item?.coupon_type_id == 1 && colors.lightGreen}
-                    statusTextColor={item?.coupon_type_id == 1 && WHITE}
-                />
-            ),
+            ({ item }: { item: CardItem }) => {
+                return (
+                    <CommonCard
+                        data={item}
+                        heading={item?.heading}
+                        description={item?.short_desc}
+                        onViewPress={() => onViewPress(item)}
+                        btnStyle={styles.viewBtnStyle}
+                        status={item?.coupon_type_id == 1 ? 'Free' : ""}
+                        statusBg={item?.coupon_type_id == 1 && colors.lightGreen}
+                        statusTextColor={item?.coupon_type_id == 1 && WHITE}
+                        location={from == "ComboBooklet" ? item?.locations : null}
+                        vendorName={item?.vendor?.name}
+                    />
+                )
+            },
         [onViewPress, handleShareOnPress]
     );
 
     return (
         <View style={{ flex: 1 }}>
             {isLoading ? (
-                <Loader />
+                // <Loader />
+                <CouponsShimerLoader />
             ) : (
-                <FlatList
+                <Animated.FlatList
                     data={bookletDetailAllDeals?.coupons}
                     renderItem={renderItem}
                     keyExtractor={item => item.id.toString()}
@@ -84,17 +95,20 @@ const All: React.FC = ({ id }) => {
                         />
                     }
                     ListEmptyComponent={() => (
-                        // <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        //     <AppText>{"No Coupons Available"}</AppText>
-                        // </View>
-                        <ListEmptyComponent title={"No Coupons Available"}/>
+                        <ListEmptyComponent title={"No Coupons Available"} />
                     )}
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                        { useNativeDriver: false }
+                    )}
+                    scrollEventThrottle={16}
                 />
             )}
-            <ViewDetailsBottomSheet
+            {/* <ViewDetailsBottomSheet
                 data={couponDetail}
                 ref={viewDetailSheet}
-            />
+            /> */}
+          
         </View>
     );
 };

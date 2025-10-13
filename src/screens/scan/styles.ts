@@ -19,22 +19,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // scannerWrapper: {
-  //   width: s(300),
-  //   height: vs(300),
-  //   borderRadius: 8,
-  //   overflow: 'hidden',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: colors.white,
-  //   alignSelf: 'center',
-  //   padding: vs(16),
-  // },
-  // cameraView: {
-  //   width: '100%',
-  //   height: '100%',
-  //   borderRadius: 8,
-  // },
   scannerWrapper: {
     flex: 1,
     width: '100%',
@@ -64,18 +48,6 @@ const styles = StyleSheet.create({
     paddingVertical: vs(10),
     paddingHorizontal: s(10),
     marginTop: vs(5),
-  },
-  scanAgainBtn: {
-    backgroundColor: colors.buttonBg,
-    borderRadius: ms(6),
-    paddingVertical: vs(10),
-    paddingHorizontal: s(10),
-    alignSelf: 'center',
-    marginTop: vs(20),
-  },
-  scanAgainText: {
-    textAlign: 'center',
-    color: colors.white,
   },
   overlayCornerTL: {
     position: 'absolute',
@@ -117,6 +89,57 @@ const styles = StyleSheet.create({
     borderBottomWidth: s(3),
     borderRightWidth: s(3),
     borderColor: colors.black,
+  },
+
+  scanActionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 10,
+    marginVertical: vs(10),
+  },
+  scanAgainBtn: {
+    backgroundColor: colors.buttonBg,
+    paddingVertical: vs(12),
+    paddingHorizontal: s(24),
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scanAgainText: {
+    textAlign: 'center',
+  },
+  permissionText: {
+    textAlign: 'center',
+    marginBottom: vs(10),
+  },
+  permissionBtnText: {
+    textAlign: 'center',
+  },
+  torchContainer: {
+    position: 'absolute',
+    bottom: vs(30),
+  },
+  torchBtn: {
+    backgroundColor: colors.buttonBg,
+    padding: 10,
+    borderRadius: ms(30),
+  },
+  torchIcon: {
+    width: s(30),
+    height: vs(30),
+  },
+  closeBtn: {
+    position: 'absolute',
+    right: s(10),
+    top: vs(50),
+    backgroundColor: colors.buttonBg,
+    padding: ms(10),
+    borderRadius: ms(20),
+  },
+  closeIcon: {
+    width: s(15),
+    height: s(15),
   },
 });
 export default styles;

@@ -1,16 +1,17 @@
 import axios from 'axios';
-import config, { BASE_URL } from './config';
 import {
   getAccessToken,
-  getRefreshToken,
-  setAccessToken,
 } from './storage';
+import { BaseUrlConfig } from '@config/config';
+import config, { BASE_URL } from './config';
 
 // Axios instance
 const apiClient = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BaseUrlConfig?.WEBSITE_URL,
   timeout: 60000,
 });
+
+console.log("API Base URL:", BASE_URL);
 
 // Request Interceptor (adds token + logs)
 apiClient.interceptors.request.use(
@@ -104,7 +105,7 @@ export const API = {
     verify_otp: (data: any) => apiClient.post(config.VERIFY_OTP, data),
     reset_password: (data: any) => apiClient.post(config.REST_PASSWORD, data),
     pageApi: (data?: any) => apiClient.get(`${config.PAGE_API}/${data}`),
-    customer_send_otp_verify:(data: any) => apiClient.post(config.CUSTOMER_SEND_OTP_VERIFY, data),
+    customer_send_otp_verify: (data: any) => apiClient.post(config.CUSTOMER_SEND_OTP_VERIFY, data),
     delete_account: (data: any) => apiClient.post(config.DELETE_ACCOUNT, data),
 
     // refresh_token: (data: any) => apiClient.post(config.REFRESH_TOKEN, data),
@@ -127,8 +128,11 @@ export const API = {
     banner_api: (data: any) => apiClient.post(config.BANNER_API, data),
     booklet_list: (data: any) => apiClient.get(`${config.BOOKLET_LIST}/${data?.id}?search=${data?.search ?? ""}`,),
     booklet_detail: (data: any) => apiClient.post(config.BOOKLET_DETAIL, data),
+    combo_booklet_detail: (data: any) => apiClient.post(config.COMBO_BOOKLET_DETAIL, data),
     booklet_request: (data: any) => apiClient.post(config.BOOKLET_REQUEST, data),
-    combo_booklet_deals:(data: any) => apiClient.post(config.COMBO_BOOKLET_DEALS, data)
+    executive_booklet_request: (data: any) => apiClient.post(config.EXECUTIVE_BOOKLET_REQUEST, data),
+    combo_booklet_deals: (data: any) => apiClient.post(config.COMBO_BOOKLET_DEALS, data),
+    create_leads:(data: any) => apiClient.post(config.CREATE_LEADS, data),
   },
   myRequestApi: {
     myRequest_List: (data: any) => apiClient.post(config.MY_REQUEST_LIST, data),
@@ -144,12 +148,21 @@ export const API = {
 
   dealApi: {
     vendor_Booklet_List: (data: any) => apiClient.get(`${config.VENDOR_BOOKLET_LIST}`, data),
-    vendor_user_list:(data: any) => apiClient.post(config.VENDOR_USER_LIST, data),
-    vendor_coupon_list:(data: any) => apiClient.post(config.VENDOR_COUPON_LIST, data),
-    scan_coupon_code:(data: any) => apiClient.post(config.SCAN_COUPON_CODE, data)
+    vendor_user_list: (data: any) => apiClient.post(config.VENDOR_USER_LIST, data),
+    vendor_coupon_list: (data: any) => apiClient.post(config.VENDOR_COUPON_LIST, data),
+    scan_coupon_code: (data: any) => apiClient.post(config.SCAN_COUPON_CODE, data),
+    enter_bar_coupon_code: (data: any) => apiClient.post(config.COUPON_BAR__CODE, data),
+    vendor_booklet_coupon_list: (data: any) => apiClient.post(config.VENDOR_BOOKLET_COUPON_LIST, data)
   },
-  historyApi:{
-    vendor_history_list:(data: any) => apiClient.post(config.VENDOR_HISTORY_LIST, data)
-  }
+  historyApi: {
+    vendor_history_list: (data: any) => apiClient.post(config.VENDOR_HISTORY_LIST, data)
+  },
+  executiveRequestApi: {
+    executive_Request_List: (data: any) => apiClient.post(config.EXECUTIVE_REQUEST_LIST, data),
+    execuitve_Request_User_Details: (data: any) => apiClient.post(config.EXECUTIVE_REQUEST_USER_DETAIILS, data),
+    executive_Request_Status_Change: (data: any) => apiClient.post(config.EXECUTIVE_REQUEST_STATUS_CHANGE, data),
+    executive_payment_image_upload: (data: any) => apiClient.post(config.EXECUTIVE_PAYMENT_IMAGE_UPLOAD, data),
+  },
+
 
 };

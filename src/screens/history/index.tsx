@@ -1,18 +1,10 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import { commonStyles } from '@theme/commonStyles'
-import { AppText, BOLD, TWENTY_EIGHT, WHITE } from '@components/AppText'
 import Header from '@components/Header'
-import ToolBar from '@components/ToolBar'
-import { cardDummyData, historyViewDealsDummyData, scanViewDealsDummyData } from '@helper/dumyData'
 import CommonCard from '@components/CommonCard'
-import RBSheet from 'react-native-raw-bottom-sheet';
-import TouchableOpacityView from '@components/TouchableOpacityView'
 import { colors } from '@theme/colors'
-import NavigationService from '@navigations/NavigationService'
-import { REDEEM_SUCCESSFULL_SCREEN } from '@navigations/routes'
-// import ViewDealsBottomSheet from '@screens/scan/viewDealsBottomSheet'
 import { s, vs } from 'react-native-size-matters/extend'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { getVendorHistoryList } from '@actions/history/historyAction'
@@ -20,26 +12,26 @@ import ViewDealsBottomSheet from './viewDealsBottomSheet'
 
 const History = () => {
   const dispatch = useAppDispatch();
-  const {vendorHistoryList} = useAppSelector((state)=>state?.history)
+  const { vendorHistoryList } = useAppSelector((state) => state?.history)
 
   const ViewDealsRef = useRef();
 
-  const [viewData,setViewData] = useState();
+  const [viewData, setViewData] = useState();
 
-useEffect(()=>{
-dispatch(getVendorHistoryList())
-},[])
+  useEffect(() => {
+    dispatch(getVendorHistoryList())
+  }, [])
 
   // const onRedeemPress = () => {
   //   redeemSheetRef.current?.open();
   // };
 
-  const onViewPress = (data)=>{
+  const onViewPress = (data) => {
     setViewData(data)
 
-    setTimeout(()=>{
+    setTimeout(() => {
       ViewDealsRef.current?.open();
-    },200)
+    }, 200)
   }
 
   // const handleCancel = () => {
@@ -48,31 +40,30 @@ dispatch(getVendorHistoryList())
 
   // const handleContinue = () => {
   //   redeemSheetRef.current?.close();
-  //   // console.log('Confirmed Redemption');
   //   NavigationService.navigate(REDEEM_SUCCESSFULL_SCREEN)
   // };
-  
+
 
   const renderItem = ({ item }) => {
     return (
       <CommonCard
-                        key={item.id}
-                        data={item}
-                        onViewPress={() => onViewPress(item)}
-                        heading={item?.heading}
-                        htmlContent={item?.description}
-                        // couponCount={item?.no_of_coupons}
-                        showRedeemBtn
-                        redeemButtonStyle={{backgroundColor:colors.disabledBtn}}
-                        redeemDisabled={true}
-                    />
+        key={item.id}
+        data={item}
+        onViewPress={() => onViewPress(item)}
+        heading={item?.heading}
+        htmlContent={item?.description}
+        // couponCount={item?.no_of_coupons}
+        showRedeemBtn
+        redeemButtonStyle={{ backgroundColor: colors.disabledBtn }}
+        redeemDisabled={true}
+      />
     );
   };
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
       {/* <ToolBar isLeftIcon title="Deals" mainContainerStyle={{ paddingHorizontal: 20 }} /> */}
- <Header currentCity />
+      <Header currentCity />
       <FlatList
         data={vendorHistoryList}
         renderItem={renderItem}
@@ -81,9 +72,9 @@ dispatch(getVendorHistoryList())
         showsVerticalScrollIndicator={false}
       />
       <ViewDealsBottomSheet
-       ref={ViewDealsRef} heading={'Deal View'} 
-       subHeading={viewData?.heading}
-        data={viewData} height={vs(400)}/>
+        ref={ViewDealsRef} heading={'Deal View'}
+        subHeading={viewData?.heading}
+        data={viewData} height={vs(400)} />
     </AppSafeAreaView>
   );
 };
@@ -120,42 +111,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 })
-
-
-// const History=()=>{
-// const ViewDealsRef = useRef();
-//   const onViewPress=()=>{
-// ViewDealsRef.current?.open();
-//   }
-
-//   const renderItem = ({ item }) => {
-//     return (
-//       <CommonCard
-//         key={item.id}
-//         data={item}
-//         // onRedeemPress={onRedeemPress}
-//         onViewPress={onViewPress}
-//       />
-//     );
-//   };
-// return(
-//      <AppSafeAreaView style={commonStyles.mainContainer}>
-//       <Header/>
-//       <FlatList
-//   data={cardDummyData}
-//          renderItem={renderItem}
-//         keyExtractor={(_, index) => index.toString()}
-//         contentContainerStyle={{ paddingVertical: 40, gap: 10 }}
-//          showsVerticalScrollIndicator={false}
-//        />
-//        <ViewDealsBottomSheet ref={ViewDealsRef} height={450} heading={'Deal View'} subHeading={'Two Breakfast Buffet Valid for 2 People One Time'} data={historyViewDealsDummyData}/>
-//     </AppSafeAreaView>
-// )
-// }
-
-
-// export default History;
-
-// const styles = StyleSheet.create({
-
-// })

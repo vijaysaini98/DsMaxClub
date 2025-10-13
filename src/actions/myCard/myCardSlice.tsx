@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 export const initialState = {
     isLoading: false,
+    isRefresh:false,
     isBtnLoading: false,
     myCardAllBookletList: [],
     myCardActiveBookletList: [],
@@ -16,6 +17,9 @@ export const myCardSlice = createSlice({
     reducers: {
         setLoading: (state, { payload }) => {
             state.isLoading = payload;
+        },
+        setIsRefresh: (state, { payload }) => {
+            state.isRefresh = payload;
         },
         setBtnLoading: (state, { payload }) => {
             state.isBtnLoading = payload;
@@ -38,13 +42,12 @@ export const myCardSlice = createSlice({
         setCouponCodeData :(state, { payload }) => {
             state.couponData = payload;
         },
-        resetMyCard: (state, { payload }) => {
-            state = initialState;
-        },
+        resetMyCard: () => initialState, 
     },
 });
 export const {
     setLoading,
+    setIsRefresh,
     setBtnLoading,
     setMyCardActiveBookletList,
     setMyCardAllBookletList,

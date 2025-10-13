@@ -1,7 +1,7 @@
 import { API } from '@services/appClient';
 import { AppDispatch } from '@redux/store';
 import Toast from "react-native-simple-toast";
-import { setCouponCode, setDealBookletList, setDealCouponList, setLoading, setVendorUserList } from './dealSlice';
+import { setCouponCode, setDealBookletList, setDealCouponList, setLoading, setVendorBookletCouponist, setVendorUserList } from './dealSlice';
 
 export const getVendorDealBookletList =
     (limit?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
@@ -13,7 +13,8 @@ export const getVendorDealBookletList =
                 dispatch(setDealBookletList(response?.data))
                 return;
             } else {
-                throw new Error('No response data received from backend.');
+                // throw new Error('No response data received from backend.');
+                Toast.show(response?.message, Toast.LONG);
             }
         } catch (e: any) {
             console.log("e", e);
@@ -33,7 +34,8 @@ export const getDealCouponList =
                 dispatch(setDealCouponList(response?.data))
                 return;
             } else {
-                throw new Error('No response data received from backend.');
+                // throw new Error('No response data received from backend.');
+                Toast.show(response?.message, Toast.LONG);
             }
         } catch (e: any) {
             console.log("e", e);
@@ -44,7 +46,7 @@ export const getDealCouponList =
         }
     };
 
-    export const getVendorUserList =
+export const getVendorUserList =
     (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
         try {
             dispatch(setLoading(true));
@@ -53,7 +55,8 @@ export const getDealCouponList =
                 dispatch(setVendorUserList(response?.data))
                 return;
             } else {
-                throw new Error('No response data received from backend.');
+                // throw new Error('No response data received from backend.');
+                Toast.show(response?.message, Toast.LONG);
             }
         } catch (e: any) {
             console.log("e", e);
@@ -65,12 +68,61 @@ export const getDealCouponList =
 
 
 export const scanCouponCode =
-    (data?: any, onSucess?: any,onFailed) => async (dispatch: AppDispatch) => {
+    (data?: any, onSucess?: any, onFailed?: any) => async (dispatch: AppDispatch) => {
         try {
             dispatch(setLoading(true));
             const response = await API.dealApi.scan_coupon_code(data);
             if (response?.status == 200) {
                 dispatch(setCouponCode(response?.data))
+                 Toast.show(response?.message, Toast.LONG);
+                onSucess && onSucess()
+                return;
+            } else {
+                // throw new Error('No response data received from backend.');
+                Toast.show(response?.message, Toast.LONG);
+            }
+        } catch (e: any) {
+            console.log("e", e);
+            onFailed && onFailed()
+            Toast.show(e?.response?.data?.message, Toast.LONG);
+        } finally {
+            dispatch(setLoading(false))
+        }
+    };
+
+export const enterBarCouponCode =
+    (data?: any, onSucess?: any, onFailed?: any) => async (dispatch: AppDispatch) => {
+        try {
+            dispatch(setLoading(true));
+            const response = await API.dealApi.enter_bar_coupon_code(data);
+            console.log("response",response);
+            
+            if (response?.status == 200) {
+                dispatch(setCouponCode(response?.data))
+                
+                Toast.show(response?.message, Toast.LONG);
+                onSucess && onSucess()
+                return;
+            } else {
+                Toast.show(response?.message, Toast.LONG);
+                // throw new Error('No response data received from backend.');
+            }
+        } catch (e: any) {
+            console.log("e", e);
+            onFailed && onFailed()
+            Toast.show(e?.response?.data?.message, Toast.LONG);
+        } finally {
+            dispatch(setLoading(false))
+        }
+    };
+
+export const getVendorBookletCouponList =
+    (data?: any, onSucess?: any, onFailed?: any) => async (dispatch: AppDispatch) => {
+        try {
+            dispatch(setLoading(true));
+            const response = await API.dealApi.vendor_booklet_coupon_list(data);
+            if (response?.status == 200) {
+                dispatch(setVendorBookletCouponist(response?.data))
                 onSucess && onSucess()
                 return;
             } else {
@@ -78,9 +130,9 @@ export const scanCouponCode =
             }
         } catch (e: any) {
             console.log("e", e);
-onFailed && onFailed()
+            onFailed && onFailed()
             Toast.show(e?.response?.data?.message, Toast.LONG);
         } finally {
             dispatch(setLoading(false))
         }
-    };
+    }

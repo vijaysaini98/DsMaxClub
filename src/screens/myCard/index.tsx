@@ -1,20 +1,17 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import { commonStyles } from '@theme/commonStyles'
 import { AppText, EIGHTEEN, MEDIUM, NORMAL } from '@components/AppText'
 import ToolBar from '@components/ToolBar'
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
-// import { RenderTabBar } from '@components/RenderTabBar'
 import MyCardList from './myCardList'
 import { colors } from '@theme/colors'
 import { s, vs } from 'react-native-size-matters/extend'
 import Header from '@components/Header'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { getMyCardBookletList } from '@actions/myCard/myCardAction'
-// import { RenderTabBar } from '@components/RenderTabBar'
-
-
+import { SpinnerSecond } from '@components/Spinner'
 
 // ✅ Make sure route keys match those in renderScene
 const routes = [
@@ -47,7 +44,8 @@ const RenderTabBar = (props) => {
       indicatorStyle={{
         backgroundColor: colors.buttonBg,
         height: vs(2),
-        width: s(130),
+        // width: s(130),
+        paddingHorizontal: s(16),
         borderRadius: 20,
         bottom: -1
       }}
@@ -65,10 +63,10 @@ const RenderTabBar = (props) => {
         height: 40,
         // width: 90,
         width: s(130),
+        paddingHorizontal: s(16),
         alignItems: 'center',
         justifyContent: "center",
       }}
-      // indicatorContainerStyle={{alignItems:'center',width:'100%',justifyContent:'center'}}
       pressColor={colors.transparent}
     />
   );
@@ -78,31 +76,54 @@ const MyCard = () => {
   const dispatch = useAppDispatch()
   const [index, setIndex] = useState(0)
 
-  const {myCardAllBookletList,myCardActiveBookletList,myCardExpiredBookletList}=useAppSelector((state)=>state?.myCard)
+  const {
+    isRefresh,
+    myCardAllBookletList,
+    myCardActiveBookletList,
+    myCardExpiredBookletList,
+    isBtnLoading
+  } = useAppSelector((state) => state?.myCard)
 
- useEffect(() => {
-     const value =
-       index === 0
-         ? {
-           tabname: "all"
-         }
-         : index === 1
-           ? {
-             tabname: "active"
-           }
-           :  {
-               tabname: "expire"
-             }
- 
-     dispatch(getMyCardBookletList(value));
-   }, [index]);
+  useEffect(() => {
+    const value =
+      index === 0
+        ? {
+          tabname: "all"
+        }
+        : index === 1
+          ? {
+            tabname: "active"
+          }
+          : {
+            tabname: "expire"
+          }
 
-  const renderScene = SceneMap({
-    allCards: () => <MyCardList data={myCardAllBookletList} value={{tabName:"all"}} />,
-    active: () => <MyCardList data={myCardActiveBookletList}  value={{tabName:"active"}} />,
-    // used: () => <MyCardList />,
-    expired: () => <MyCardList data={myCardExpiredBookletList} value={{tabName:"expired"}} />,
-  });
+    dispatch(getMyCardBookletList(value));
+  }, [index]);
+
+  const renderScene = useCallback(
+    SceneMap({
+      allCards: () => (
+        <MyCardList
+          value={{
+            tabname: "all"
+          }}
+        />
+      ),
+      active: () => (
+        <MyCardList
+          value={{ tabname: "active" }}
+        />
+      ),
+      expired: () => (
+        <MyCardList
+          value={{ tabname: "expire" }}
+        />
+      ),
+    }),
+    [isRefresh, myCardAllBookletList, myCardActiveBookletList, myCardExpiredBookletList] // ✅ dependencies
+  );
+
 
   return (
     <AppSafeAreaView style={[commonStyles.mainContainer]}>
@@ -110,6 +131,7 @@ const MyCard = () => {
       <Header
       // userName={userData?.name}
       />
+      {isBtnLoading && <SpinnerSecond />}
       <View style={{ flex: 1 }}>
         <TabView
           navigationState={{ index, routes }}

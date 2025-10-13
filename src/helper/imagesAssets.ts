@@ -23,6 +23,8 @@ export const scanIcon = require('@assets/images/scanIcon.png');
 export const historyIcon = require('@assets/images/historyIcon.png');
 export const directionIcon=require('@assets/images/directionsIcon.png')
 
+export const logoImage=require('@assets/images/logoImage.png')
+
 //profile Icon
 export const forwardIcon = require('@assets/images/forwardIcon.png');
 export const logOutIcon = require('@assets/images/logoutIcon.png');
@@ -80,3 +82,13 @@ export const emailIcon2 =require('@assets/images/emailIcon2.png')
 export const closeIcon = require('@assets/images/closeIcon.png');
 
 export const defaultBookletImage= require('@assets/images/bookletDefault.png')
+
+export const torchOfIcon = require('@assets/images/flashlightOff.png')
+export const torchOnIcon = require('@assets/images/flashlightOn.png')
+
+export const unCheckIcon = require('@assets/images/uncheck.png')
+export const checkIcon = require('@assets/images/checkBox.png')
+export const noInternetIcon =require('@assets/images/noInternet.png')
+
+export const travelBookingIcon =require('@assets/images/travelBookingIcon.png')
+export const hotelBookingIcon =require('@assets/images/hotelBookingIcon.png')

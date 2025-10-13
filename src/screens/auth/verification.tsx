@@ -71,8 +71,6 @@ const Verification = ({ route }) => {
     const handleOnChange = (text: string) => {
         setValue(text);
         if (text.length === 6) {
-            // console.log("Verification code entered:", text);
-            // NavigationService.navigate(RESET_PASSWORD_SCREEN)
         }
     };
 
@@ -213,7 +211,8 @@ const styles = StyleSheet.create({
     heading: {
         marginTop: 70,
         marginBottom: 80,
-        gap: 26
+        gap: 26,
+        alignItems:'center'
     },
     inputContainer: {
         gap: 16,

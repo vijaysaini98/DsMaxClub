@@ -1,11 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
+import howToRedeem from '@screens/detail/ui/howToRedeem';
 export const initialState = {
   isLoading: false,
   isBtnLoading: false,
   userData: undefined,
   cityList: [],
   termsCondition:{},
-  privacyPolicy:{}
+  privacyPolicy:{},
+  howToRedeem:{}
 };
 
 export const authSlice = createSlice({
@@ -30,10 +32,12 @@ export const authSlice = createSlice({
     setPrivacyPolicy:(state,{payload})=>{
       state.privacyPolicy = payload;
     },
-    resetAuth: (state, { payload }) => {
-      return initialState;
+     setHowToRedeem:(state,{payload})=>{
+      state.howToRedeem = payload;
     },
+    resetAuth: () => initialState, 
   },
 });
-export const { setLoading, setBtnLoading, setUserData, setCityList,setTermCondition,setPrivacyPolicy, resetAuth }: any = authSlice.actions;
+export const { setLoading, setBtnLoading, setUserData, setCityList,
+  setTermCondition,setPrivacyPolicy,setHowToRedeem, resetAuth }: any = authSlice.actions;
 export const authReducer = authSlice.reducer;

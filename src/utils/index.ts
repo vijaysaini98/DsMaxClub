@@ -11,6 +11,7 @@ import {
 } from '@helper/imagesAssets';
 import moment from 'moment';
 import { Alert, Dimensions, Linking, Platform, Share } from 'react-native';
+import { OpenMapArgs } from 'src/types/common';
 
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const phoneRegex = /^\+?[1-9]\d{1,14}$/;
@@ -71,25 +72,18 @@ export const openEmail = (email: string) => {
     .catch(err => console.error('Email Error', err));
 };
 
-export const openMap = (
-  latitude: number,
-  longitude: number,
-  label = 'Location',
-) => {
-  const url = Platform.select({
-    ios: `maps:0,0?q=${label}@${latitude},${longitude}`,
-    android: `geo:0,0?q=${latitude},${longitude}(${label})`,
+export const openMap = ({ lat, lng, label }: OpenMapArgs) => {
+  const scheme = Platform.select({
+    ios: `maps://?q=${label}&ll=${lat},${lng}`,
+    android: `geo:${lat},${lng}?q=${lat},${lng}(${label})`,
   });
 
-  Linking.canOpenURL(url!)
-    .then(supported => {
-      if (supported) {
-        Linking.openURL(url!);
-      } else {
-        Alert.alert('Error', 'Map application is not available.');
-      }
-    })
-    .catch(err => console.error('Map Error', err));
+  if (scheme) {
+    Linking.openURL(scheme).catch(err => {
+      Alert.alert('Location No found');
+      console.error('Error opening map: ', err);
+    });
+  }
 };
 
 export const shareToAny = (message: string) => {
@@ -137,15 +131,54 @@ export const vendorViewdetails = (value: any) => {
   return data;
 };
 
+// export const extractLatLngFromUrl = (url: string): { lat: string; lng: string } | null => {
+//   const regex = /@([-.\d]+),([-.\d]+)/;
+//   const match = url.match(regex);
+//   if (match && match.length >= 3) {
+//     return {
+//       lat: match[1],
+//       lng: match[2],
+//     };
+//   }
+//   return null;
+// };
 
-export const extractLatLngFromUrl = (url: string): { lat: string; lng: string } | null => {
-  const regex = /@([-.\d]+),([-.\d]+)/;
-  const match = url.match(regex);
-  if (match && match.length >= 3) {
-    return {
-      lat: match[1],
-      lng: match[2],
-    };
+export const extractLatLngFromUrl = (
+  url: string,
+): { lat: string; lng: string } | null => {
+  if (!url) return null;
+
+  try {
+    // 1. Direct match like /@lat,lng
+    let regex = /@([-.\d]+),([-.\d]+)/;
+    let match = url.match(regex);
+    if (match && match.length >= 3) {
+      return { lat: match[1], lng: match[2] };
+    }
+
+    // 2. Query params ?q=lat,lng OR ?daddr=lat,lng
+    const parsedUrl = new URL(url);
+    const q =
+      parsedUrl.searchParams.get('q') || parsedUrl.searchParams.get('daddr');
+
+    if (q) {
+      const coords = q.split(',');
+      if (coords.length >= 2) {
+        return { lat: coords[0], lng: coords[1] };
+      }
+    }
+
+    // 3. Sometimes lat/lng comes inside "ll" param
+    const ll = parsedUrl.searchParams.get('ll');
+    if (ll) {
+      const coords = ll.split(',');
+      if (coords.length >= 2) {
+        return { lat: coords[0], lng: coords[1] };
+      }
+    }
+  } catch (error) {
+    console.warn('extractLatLngFromUrl error:', error);
   }
-  return null;
+
+  return null; // ❌ No coords found
 };

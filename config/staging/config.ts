@@ -1,0 +1,7 @@
+export const BaseUrlConfig = {
+  WEBSITE_URL: `https://dsmax.webplanetsoft.com/api/`,
+  IMAGE_URL:"https://dsmax.webplanetsoft.com/storage/",
+  IOS_CODEPUSH_DEPLOYMENT: `g89guofVvV41ZAmI2MwobMwG2_T669HmyaIyG`,
+  ANDROID_CODEPUSH_DEPLOYMENT: `rJiX4fIlJMsDEAynINN4nxEQS-0qBeF-0VGVb`,
+  ENVIRONMENT: `Staging`,
+};

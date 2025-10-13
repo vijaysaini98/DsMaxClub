@@ -6,7 +6,6 @@ import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import { commonStyles } from '@theme/commonStyles';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { getVendorUserList } from '@actions/deals/dealAction';
-import { Loader } from '@components/Spinner';
 import { AppText, EIGHTEEN, FOURTEEN, NORMAL, TWELVE, MEDIUM } from '@components/AppText';
 import { emailIcon, phoneIcon, searchIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
@@ -17,6 +16,7 @@ import moment from 'moment';
 import NavigationService from '@navigations/NavigationService';
 import { VENDOR_COUPON_LIST } from '@navigations/routes';
 import Input from '@components/Input';
+import UserListShimmer from '@components/ShimerLoader/UserShimerLoader';
 
 const UserList = ({ route }) => {
     const { title, booklet_id } = route?.params ?? {};
@@ -28,7 +28,7 @@ const UserList = ({ route }) => {
     const [searchText, setSearchText] = useState("");
     const viewDetailsSheet = useRef<any>(null);
     const debounceRef = useRef<NodeJS.Timeout | null>(null)
-    
+
 
     useEffect(() => {
         dispatch(getVendorUserList({ booklet_id }));
@@ -40,62 +40,69 @@ const UserList = ({ route }) => {
     }, [dispatch, booklet_id]);
 
     const onChangeHandler = (value: string) => {
-            setSearchText(value)
-            clearTimeout(debounceRef.current);
-            if (value) {
-                debounceRef.current = setTimeout(() => {
-                    dispatch(getVendorUserList({ booklet_id, search: value  }))
-                }, 500);
-            } else {
-                dispatch(getVendorUserList({ booklet_id }))
-            }
-        };
+        setSearchText(value)
+        clearTimeout(debounceRef.current);
+        if (value) {
+            debounceRef.current = setTimeout(() => {
+                dispatch(getVendorUserList({ booklet_id, search: value }))
+            }, 500);
+        } else {
+            dispatch(getVendorUserList({ booklet_id }))
+        }
+    };
 
     const handleUserCardClick = useCallback((item) => {
-        NavigationService.navigate(VENDOR_COUPON_LIST, 
-            { title: item?.username,unique_code:item?.unique_code, user_id: item?.useruuid, booklet_id: item?.booklet_uuid,user_booklet_uuid:item?.uuid }
+        NavigationService.navigate(VENDOR_COUPON_LIST,
+            {
+                title: item?.username,
+                unique_code: item?.unique_code,
+                user_id: item?.useruuid,
+                booklet_id: item?.booklet_uuid,
+                user_booklet_uuid: item?.uuid
+            }
         );
     }, []);
 
     const renderItem = useCallback(
         ({ item }) => {
-            
-            return(
-            <TouchableOpacityView style={styles.userCardStyle} onPress={() => handleUserCardClick(item)}>
-                <View style={styles.userCardHeader}>
-                    <AppText
-                        type={EIGHTEEN}
-                        weight={MEDIUM}
-                        style={styles.userNameText}
-                        numberOfLines={2}
-                        ellipsizeMode="tail"
-                    >
-                        {`${item?.username} (${item?.unique_code})`}
-                    </AppText>
-                    <AppText
-                        type={TWELVE}
-                        style={styles.requestDateText}
-                        numberOfLines={1}
-                    >
-                        {item?.requestdate
-                            ? moment(item?.requestdate, "YYYY-MM-DD hh:mm").format("D MMM YYYY hh:mm")
-                            : ""}
-                    </AppText>
-                </View>
-                {item?.usermobile && (
-                    <View style={styles.userCardRowContainer}>
-                        <Image source={phoneIcon} style={styles.iconStyle} resizeMode='contain' />
-                        <AppText type={FOURTEEN} weight={NORMAL}>{item?.usermobile}</AppText>
+
+            return (
+                <TouchableOpacityView style={styles.userCardStyle} onPress={() => handleUserCardClick(item)}>
+                    <View style={styles.userCardHeader}>
+                        <AppText
+                            type={EIGHTEEN}
+                            weight={MEDIUM}
+                            style={styles.userNameText}
+                            numberOfLines={2}
+                            ellipsizeMode="tail"
+                        >
+                            {`${item?.username} (${item?.unique_code})`}
+                        </AppText>
+                        <AppText
+                            type={TWELVE}
+                            style={styles.requestDateText}
+                            numberOfLines={1}
+                        >
+                            {item?.requestdate
+                                ? moment(item?.requestdate, "YYYY-MM-DD hh:mm").format("D MMM YYYY hh:mm")
+                                : ""}
+                        </AppText>
                     </View>
-                )}
-                {item?.useremail && (
-                    <View style={styles.userCardRowContainer}>
-                        <Image source={emailIcon} style={styles.iconStyle} resizeMode='contain' />
-                        <AppText type={FOURTEEN} weight={NORMAL}>{item?.useremail}</AppText>
-                    </View>
-                )}
-            </TouchableOpacityView>
-        )},
+                    {item?.usermobile && (
+                        <View style={styles.userCardRowContainer}>
+                            <Image source={phoneIcon} style={styles.iconStyle} resizeMode='contain' />
+                            <AppText type={FOURTEEN} weight={NORMAL}>{item?.usermobile}</AppText>
+                        </View>
+                    )}
+                    {item?.useremail && (
+                        <View style={styles.userCardRowContainer}>
+                            <Image source={emailIcon} style={styles.iconStyle} resizeMode='contain' />
+                            <AppText type={FOURTEEN} weight={NORMAL}>{item?.useremail}</AppText>
+                        </View>
+                    )}
+                </TouchableOpacityView>
+            )
+        },
         [handleUserCardClick]
     );
 
@@ -118,7 +125,8 @@ const UserList = ({ route }) => {
                 />
             </View>
             {isLoading && !refreshing ? (
-                <Loader />
+                // <Loader />
+                <UserListShimmer/>
             ) : (
                 <FlatList
                     data={vendorUserList}
@@ -201,4 +209,4 @@ const styles = StyleSheet.create({
         marginBottom: vs(10)
 
     },
-    });
+});

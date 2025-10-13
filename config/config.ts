@@ -1,0 +1,7 @@
+export const BaseUrlConfig = {
+  WEBSITE_URL: 'https://admin.dsmaxclub.com/api/',
+  IMAGE_URL: 'https://admin.dsmaxclub.com/storage/',
+  IOS_CODEPUSH_DEPLOYMENT: `auXjNZSyhVTpU3dyu9duU70HJjdRABNnENqNy`,
+  ANDROID_CODEPUSH_DEPLOYMENT: `Ez3uqlD7jn4LGnfXfWNI0QHJSMmAVnmDKc9cX`,
+  ENVIRONMENT: ``,
+};

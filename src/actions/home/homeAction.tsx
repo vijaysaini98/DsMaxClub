@@ -13,7 +13,7 @@ export const getCategoryList =
         dispatch(setCategoriListData(response?.data))
         return;
       } else {
-        throw new Error('No response data received from backend.');
+        Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
       console.log("category list error", e?.response?.data);
@@ -33,7 +33,7 @@ export const getCategoryBooklet =
         dispatch(setCategoriBookletData(response?.data))
         return;
       } else {
-        throw new Error('No response data received from backend.');
+        Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
       console.log("category booklet Error", e?.response?.data);
@@ -54,7 +54,7 @@ export const getBannerList =
         dispatch(setBannerData(response?.data))
         return;
       } else {
-        throw new Error('No response data received from backend.');
+        Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
       console.log("bannerApi Error", e?.response?.data);
@@ -69,13 +69,11 @@ export const getBookletList =
     try {
       dispatch(setLoading(true));
       const response = await API.homeApi.booklet_list(data);
-      console.log("response",response);
-      
       if (response?.status == 200) {
         dispatch(setBookletList(response?.data))
         return;
       } else {
-        throw new Error('No response data received from backend.');
+        Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
       console.log("e", e?.response?.data);
@@ -91,6 +89,7 @@ export const getBookletDetail =
     try {
       dispatch(setLoading(true));
       const response = await API.homeApi.booklet_detail(data);
+
       if (response?.status == 200) {
         if (data?.tabname == "All Deals") {
           dispatch(setBookletDetailAllDeals(response?.data))
@@ -103,15 +102,45 @@ export const getBookletDetail =
         }
         return;
       } else {
-        throw new Error('No response data received from backend.');
+        Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      console.log("bookletDetail", e?.response?.data);
       dispatch(setBookletDetailAllDeals())
       dispatch(setBookletDetailAbout())
       dispatch(setBookletDetailGallery())
       dispatch(setBookletDetailT_C())
-      Toast.show(e?.response?.data?.message, Toast.LONG);
+      // Toast.show(e?.response?.data?.message, Toast.LONG);
+    } finally {
+      dispatch(setLoading(false))
+    }
+  };
+
+export const getComboBookletDetail =
+  (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await API.homeApi.combo_booklet_detail(data);
+
+      if (response?.status == 200) {
+        if (data?.tabname == "All Deals") {
+          dispatch(setBookletDetailAllDeals(response?.data))
+        } else if (data?.tabname == "About") {
+          dispatch(setBookletDetailAbout(response?.data))
+        } else if (data?.tabname == "Gallery") {
+          dispatch(setBookletDetailGallery(response?.data))
+        } else {
+          dispatch(setBookletDetailT_C(response?.data))
+        }
+        return;
+      } else {
+        Toast.show(response?.message, Toast.LONG);
+      }
+    } catch (e: any) {
+      dispatch(setBookletDetailAllDeals())
+      dispatch(setBookletDetailAbout())
+      dispatch(setBookletDetailGallery())
+      dispatch(setBookletDetailT_C())
+      // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false))
     }
@@ -122,12 +151,39 @@ export const bookletRequest =
     try {
       dispatch(setBtnLoading(true));
       const response = await API.homeApi.booklet_request(data);
+      console.log("response", response);
+
       if (response?.status == 200) {
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess()
         return;
       } else {
-        throw new Error('No response data received from backend.');
+        Toast.show(response?.message, Toast.LONG);
+        //  Toast.show(response?.message, Toast.LONG);
+      }
+    } catch (e: any) {
+      if (e?.response) {
+        Toast.show(e?.response?.data?.message, Toast.LONG);
+      }
+
+    } finally {
+      dispatch(setBtnLoading(false))
+    }
+  };
+
+export const executiveBookletRequest =
+  (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setBtnLoading(true));
+      const response = await API.homeApi.executive_booklet_request(data);
+
+      if (response?.status == 200) {
+        Toast.show(response?.message, Toast.LONG);
+        onSucess && onSucess()
+        return;
+      } else {
+        Toast.show(response?.message, Toast.LONG);
+        return;
       }
     } catch (e: any) {
       console.log("bookletRequest error=>>", e?.response?.data);
@@ -138,22 +194,43 @@ export const bookletRequest =
     }
   };
 
-  export const getComboBookletDeals =
+export const getComboBookletDeals =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
       const response = await API.homeApi.combo_booklet_deals(data);
       if (response?.status == 200) {
-       dispatch(setComboBookletDeals(response?.data))
+        dispatch(setComboBookletDeals(response?.data))
+        onSucess && onSucess()
         return;
       } else {
-        throw new Error('No response data received from backend.');
+        Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
       console.log("bookletRequest error=>>", e?.response?.data);
 
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
-     dispatch(setLoading(true));
+      dispatch(setLoading(false));
     }
   };
+
+export const createLeads = (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+  try {
+    dispatch(setLoading(true));
+    const response = await API.homeApi.create_leads(data);
+    if (response?.status == 200) {
+      onSucess && onSucess()
+      Toast.show(response?.message, Toast.LONG);
+      return;
+    } else {
+      Toast.show(response?.message, Toast.LONG);
+    }
+  } catch (e: any) {
+    console.log("bookletRequest error=>>", e?.response?.data);
+
+    Toast.show(e?.response?.data?.message, Toast.LONG);
+  } finally {
+    dispatch(setLoading(false));
+  }
+};

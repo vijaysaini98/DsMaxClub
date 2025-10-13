@@ -7,7 +7,7 @@ import ToolBar from '@components/ToolBar';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import KeyBoardAware from '@components/KeyBoardAware';
 import Input from '@components/Input';
-import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, FOURTEEN, PLACEHOLDER, SIXTEEN, THIRTY, WHITE } from '@components/AppText';
+import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, FOURTEEN, PLACEHOLDER, SEMI_BOLD, SIXTEEN, THIRTY, WHITE } from '@components/AppText';
 import ImagePickersheet from '@components/ImagePickerSheet';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { updateUserProfile, updateUserProfileImage } from '@actions/auth/authAction';
@@ -80,24 +80,21 @@ const EditProfile: React.FC = () => {
     // }
 
     const handleChangeProfileImage = (image) => {
-  if (!image?.uri) {
-    console.warn('No image selected');
-    return;
-  }
+        if (!image?.uri) {
+            console.warn('No image selected');
+            return;
+        }
 
-  let file = {
-    uri: image.uri,
-    type: image.type || 'image/jpeg',
-    name: image.fileName || `profile_${Date.now()}.jpg`,
-  };
+        let file = {
+            uri: image.uri,
+            type: image.type || 'image/jpeg',
+            name: image.fileName || `profile_${Date.now()}.jpg`,
+        };
 
-  let formData = new FormData();
-  formData.append("profile_image", file);
-
-  console.log("🚀 ~ handleChangeProfileImage ~ formData:", file);
-
-  dispatch(updateUserProfileImage(formData, { userid: userData?.uuid }));
-};
+        let formData = new FormData();
+        formData.append("profile_image", file);
+        dispatch(updateUserProfileImage(formData, { userid: userData?.uuid }));
+    };
 
     const handleSaveBtn = () => {
         if (state?.cityId === userData?.city && state?.name === userData?.name && state?.phone === userData?.mobile) {
@@ -111,7 +108,6 @@ const EditProfile: React.FC = () => {
                 city: state?.cityId,
                 current_city: userData?.current_city ? userData?.current_city : state?.cityId
             }
-             console.log('🚀 ~ handleSaveBtn ~ data:', data);
             dispatch(updateUserProfile(data, { userid: userData?.uuid }))
         }
 
@@ -141,12 +137,9 @@ const EditProfile: React.FC = () => {
                             <Image source={cameraIcon} style={styles.cameraIcon} resizeMode='contain' />
                         </TouchableOpacityView>
                     </View>
-                    {/* <TouchableOpacityView
-                        onPress={() => handleChangeProfileImage()}
-                        style={styles.changeProfileBtn}>
-                        <AppText color={BUTTON_TEXT}>Change Profile</AppText>
-                    </TouchableOpacityView> */}
+                   
                 </View>
+                {userData?.user_type == "1" && <AppText type={FOURTEEN} weight={SEMI_BOLD} style={{ textAlign: 'center' ,marginTop:vs(10)}}>{`RefralCode:- ${userData?.referal_code}`}</AppText>}
                 <View style={styles.inputSection}>
                     <Input
                         placeholder="Full Name"
@@ -170,18 +163,21 @@ const EditProfile: React.FC = () => {
                         maxLength={10}
                         keyboardType="number-pad"
                     />
-                    <TouchableOpacityView
-                        style={styles.citySelector}
-                        onPress={openBottomSheet}
-                    >
-                        <View style={styles.citySelectorLeft}>
-                            <Image source={locationIcon} style={styles.cityIcon} resizeMode='contain' />
-                            <AppText type={state?.city ? SIXTEEN : FOURTEEN} color={PLACEHOLDER}>
-                                {state?.city || 'Select your City'}
-                            </AppText>
-                        </View>
-                        <Image source={downArrowIcon} style={styles.downArrowIcon} resizeMode='contain' />
-                    </TouchableOpacityView>
+
+                    {userData?.user_type == "2" &&
+                        <TouchableOpacityView
+                            style={styles.citySelector}
+                            onPress={openBottomSheet}
+                        >
+                            <View style={styles.citySelectorLeft}>
+                                <Image source={locationIcon} style={styles.cityIcon} resizeMode='contain' />
+                                <AppText type={state?.city ? SIXTEEN : FOURTEEN} color={PLACEHOLDER}>
+                                    {state?.city || 'Select your City'}
+                                </AppText>
+                            </View>
+                            <Image source={downArrowIcon} style={styles.downArrowIcon} resizeMode='contain' />
+                        </TouchableOpacityView>
+                    }
                 </View>
                 <TouchableOpacityView
                     onPress={handleSaveBtn}

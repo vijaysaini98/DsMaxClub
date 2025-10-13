@@ -1,52 +1,46 @@
-import { Linking, StyleSheet, Text, View } from 'react-native'
-import React, { useRef } from 'react'
+import { StyleSheet, View, Animated } from 'react-native'
+import React, {  } from 'react'
 import { useAppSelector } from '@redux/hooks';
 import { WebView } from "react-native-webview";
 import { Loader } from '@components/Spinner';
-import { commonStyles } from '@theme/commonStyles';
 import ListEmptyComponent from '@components/ListEmptyComponent';
+import { vs } from 'react-native-size-matters';
+import About_TermsConditionShimmer from '@components/ShimerLoader/About_TermsConditionShimerLoader';
 
-const About = () => {
-  const webRef = useRef();
-  const { bookletDetailAbout, isLoading } = useAppSelector((state) => state?.home)
-
-  const handleUrlNavigation = (event) => {
-    const url = event?.url;
-
-    // Prevent WebView from loading external links
-    const isExternalLink = !url.includes('yourdomain.com'); // adjust your domain
-
-    if (isExternalLink) {
-      Linking.openURL(url); // Open in device browser
-      return false; // Block WebView from loading it
-    }
-
-    return true; // Allow WebView to load the URL
-  };
+const About = ({ scrollY }: { scrollY: Animated.Value }) => {
+  const { bookletDetailAbout, isLoading } = useAppSelector((state) => state?.home);
 
   return (
-    <View style={commonStyles.screenSize}>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        bookletDetailAbout?.url ? 
-         ( <WebView
-          ref={webRef}
-          source={{ uri: bookletDetailAbout?.url }}
-          // onScroll={_onScroll}
-          showsVerticalScrollIndicator={false}
-          onLoad={() => <Loader />}
-        // onShouldStartLoadWithRequest={(event)=>handleUrlNavigation(event)}
-        // originWhitelist={['*']}
-        />) :(
-          <ListEmptyComponent title={"Booklet About Not Available"}/>
-        )
+    <Animated.ScrollView
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: false }
       )}
-
-    </View>
+      scrollEventThrottle={16}
+      style={{ flex: 1, marginTop: vs(10) }}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ flexGrow: 1 ,paddingBottom:vs(100)}}
+    >
+      {isLoading ? (
+        // <Loader />
+        <About_TermsConditionShimmer/>
+      ) : bookletDetailAbout?.url ? (
+        <View style={{ flex: 1, minHeight: vs(600) }}>
+          <WebView
+            source={{ uri: bookletDetailAbout.url }}
+            // style={{ flex: 1 }}
+            startInLoadingState
+            renderLoading={() => <Loader />}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      ) : (
+        <ListEmptyComponent title="Booklet About Not Available" />
+      )}
+    </Animated.ScrollView>
   )
 }
 
-export default About
+export default React.memo(About);
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

@@ -3,8 +3,9 @@ import { Image, TextInput, View, StyleSheet } from "react-native";
 import TouchableOpacityView from "./TouchableOpacityView";
 import { fontFamily } from "@theme/fonts";
 import { colors } from "@theme/colors";
-import { AppText, ERROR_TEXT } from "./AppText";
+import { AppText, BOLD, ERROR_TEXT, FOURTEEN, MEDIUM, SEMI_BOLD, TWELVE } from "./AppText";
 import { InputProps } from "src/types/common";
+import { ms } from "react-native-size-matters/extend";
 
 const Input: React.FC<InputProps> = ({
   secureTextEntry,
@@ -18,10 +19,16 @@ const Input: React.FC<InputProps> = ({
   leftIcon,
   errorText,
   editable = true,
+  assignRef,
+  label,
+  required,
   ...rest
 }) => {
   return (
-    <View>
+    <View style={{gap:5}}>
+      {label && <AppText type={FOURTEEN} weight={MEDIUM}>{label}
+        {required && <AppText type={TWELVE} color={ERROR_TEXT} weight={BOLD}> *</AppText>}
+        </AppText>}
       <View
         style={[
           styles.inputContainer(errorText),
@@ -45,6 +52,9 @@ const Input: React.FC<InputProps> = ({
           style={[styles.inputStyle(leftIcon), inputStyle]}
           secureTextEntry={secureTextEntry}
           editable={editable}
+          ref={component => {
+            assignRef && assignRef(component);
+          }}
           {...rest}
         />
 
@@ -80,7 +90,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: (isIcon:boolean) => ({
     width: isIcon ? "90%" : "100%",
-    fontSize: 16,
+    fontSize: ms(16),
     fontFamily: fontFamily,
     color:colors.black
   }),

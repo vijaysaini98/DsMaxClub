@@ -1,6 +1,7 @@
 import {
   ImageSourcePropType,
   StyleProp,
+  TextInput,
   TextInputProps,
   TextStyle,
   ViewStyle,
@@ -17,7 +18,10 @@ export interface InputProps extends TextInputProps {
   onChangeText?: (text: string) => void;
   leftIcon?: ImageSourcePropType;
   errorText?: string;
-  editable: boolean;
+  editable?: boolean;
+  assignRef?: (ref: TextInput | null) => void;
+  label?:string;
+  required?:string|boolean
 }
 
 export interface CardProps {
@@ -46,7 +50,9 @@ export interface CardProps {
   redeemDisabled?:boolean,
   viewBtnLoader?:boolean,
   statusBg?:string,
-  statusTextColor?:string
+  statusTextColor?:string,
+  location?:Array<{location:string,location_url:string}> | any;
+  vendorName?:string
 }
 
 export interface DetailFieldProps {

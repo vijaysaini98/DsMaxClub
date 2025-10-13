@@ -13,6 +13,7 @@ import { defaultBookletImage } from '@helper/imagesAssets'
 import moment from 'moment'
 import { getMyRequestList } from '@actions/myRequest/myRequestAction'
 import ListEmptyComponent from '@components/ListEmptyComponent'
+import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader'
 
 const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
     const dispatch = useAppDispatch()
@@ -26,14 +27,16 @@ const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
 
     const renderItem = ({ item, index }: any) => {
         return (
-            <View style={styles.shadowContainer}>
+            <View 
+            key={index}
+            style={styles.shadowContainer}>
                 <Card item={item} index={index}
                     cardContainerStyle={{ width: "100%" }}
                     imageStyle={styles.imageStyle}
                     imageUrl={item?.booklet ? { uri: IMGE_URL + item?.booklet } : defaultBookletImage}
-                    name={item?.name}
+                    name={`${item?.name} (${item?.unique_code})`}
                     price={item.price}
-                    address={item?.client_address ? item?.client_address : "---"}
+                    address={item?.locations ? item?.locations[0]?.location : "---"}
                     handleCardOnPress={() => {
                         // NavigationService.navigate(REQUEST_COUPON_LIST_SCREEN, { booklet_id: item?.uuid })
                     }}
@@ -48,12 +51,15 @@ const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
         <View style={styles.mainContainer}>
             {
                 isLoading && !refreshing ?
-                    <SpinnerSecond /> :
+                    // <SpinnerSecond />
+                    <CategoriesListShimmerLoader/>
+                     :
                     <FlatList
                         data={data}
                         renderItem={renderItem}
                         contentContainerStyle={styles.listContainerStyle}
                         showsVerticalScrollIndicator={false}
+                        keyExtractor={(item, index) => index.toString()}
                         refreshControl={
                             <RefreshControl
                                 refreshing={refreshing}

@@ -12,6 +12,8 @@ import { emailRegex } from '@utils/index'
 import { VERIFICATION_SCREEN } from '@navigations/routes'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { sendOtp } from '@actions/auth/authAction'
+import KeyBoardAware from '@components/KeyBoardAware'
+import { ms, s, vs } from 'react-native-size-matters'
 
 const ForgotPassword = () => {
 const dispatch = useAppDispatch();
@@ -52,10 +54,11 @@ const {isLoading} = useAppSelector((state)=>state?.auth)
             <ToolBar
                 isLeftIcon={true}
             />
+            <KeyBoardAware>
             <View style={styles.heading}>
                 <AppText type={TWENTY_EIGHT} weight={BOLD}>Reset Password</AppText>
-                <AppText type={EIGHTEEN} >
-                    You Will Receive {'\n'} Password Reset Instructions Via Email
+                <AppText type={EIGHTEEN} style={{textAlign:'center'}} >
+                    You Will Receive Password Reset Instructions Via Email
                 </AppText>
             </View>
             <View style={styles.inputContainer}>
@@ -67,6 +70,9 @@ const {isLoading} = useAppSelector((state)=>state?.auth)
                     errorText={state?.emailErrorText}
                     keyboardType='email-address'
                     onFocus={() => setState({ ...state, emailErrorText: "" })}
+                    onSubmitEditing={() => {
+                            handleSendOpt()
+                        }}
                 />
             </View>
             <TouchableOpacityView
@@ -75,6 +81,7 @@ const {isLoading} = useAppSelector((state)=>state?.auth)
                 style={styles.sendOptBtn}>
                 <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>SEND OTP</AppText>
             </TouchableOpacityView>
+            </KeyBoardAware>
         </AppSafeAreaView>
     )
 }
@@ -85,23 +92,24 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         backgroundColor: colors.white,
-        paddingTop: 40,
-        paddingHorizontal: 16,
+        paddingTop: vs(40),
+        paddingHorizontal: s(16),
     },
     heading: {
-        marginTop: 70,
-        marginBottom: 80,
-        gap: 26
+        marginTop: vs(70),
+        marginBottom: vs(80),
+        gap: s(26),
+        alignItems:'center'
     },
     inputContainer: {
-        marginBottom: 80,
+        marginBottom: vs(80),
     },
 
     sendOptBtn: {
         backgroundColor: colors.buttonBg,
-        paddingVertical: 19,
+        paddingVertical: vs(19),
         alignItems: 'center',
-        borderRadius: 50,
-        marginBottom: 48,
+        borderRadius: ms(50),
+        marginBottom: vs(48),
     }
 })

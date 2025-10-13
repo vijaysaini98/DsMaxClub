@@ -62,12 +62,10 @@ const bottomNavigationStyles = StyleSheet.create({
         width: "100%",
         position: "absolute",
         elevation: 10,
-        height:vs(50)
+        height: vs(50)
     },
     container: {
         alignItems: "center",
-        // alignSelf: "center",
-        // height: vs(60),
         paddingTop: vs(10),
         width: s(100),
         gap: ms(4),
@@ -88,7 +86,9 @@ const bottomNavigationStyles = StyleSheet.create({
         backgroundColor: colors.buttonBg,
     },
     tabTitleStyle: {
+        letterSpacing: -0.5,
         marginTop: 4,
+        // width:'100%',textAlign:'center'
     },
     hightLightContainer: {
         height: s(60),

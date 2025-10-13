@@ -37,7 +37,7 @@ const CategoriesComponent = ({ data, handleSeeAll }: { data: any, handleSeeAll: 
           onPress={handleSeeAll}
           style={styles.cateSeeAllBtn}
         >
-          <AppText type={SIXTEEN} color={BUTTON_TEXT}>See All</AppText>
+          <AppText type={SIXTEEN} color={BUTTON_TEXT}>View All</AppText>
         </TouchableOpacityView>
       </View>
       <ScrollView
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     marginVertical: vs(10),
   },
   cateText: {
+    marginTop:vs(10),
     textAlign: 'center',
   },
   svgIconContainer: {

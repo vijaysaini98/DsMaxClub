@@ -95,4 +95,8 @@ export const commonStyles = StyleSheet.create({
   flexDirectionRow: {
     flexDirection: 'row',
   },
+  rowAlignCenter:{
+          flexDirection: "row",
+          alignItems: "center",
+        }
 });

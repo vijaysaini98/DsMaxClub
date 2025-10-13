@@ -1,5 +1,5 @@
 import { API } from '@services/appClient';
-import { resetAuth, setCityList, setLoading, setPrivacyPolicy, setTermCondition, setUserData } from './authSlice';
+import { resetAuth, setCityList, setHowToRedeem, setLoading, setPrivacyPolicy, setTermCondition, setUserData } from './authSlice';
 import {
   removeAccessToken,
   setAccessToken,
@@ -11,28 +11,52 @@ import * as routes from '@navigations/routes';
 import NavigationService from '@navigations/NavigationService';
 import { AppDispatch } from '@redux/store';
 import Toast from 'react-native-simple-toast';
+import { resetDeal } from '@actions/deals/dealSlice';
+import { resetHome } from '@actions/home/homeSlice';
 
 export const login =
-  (data: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+  (data: any, onSucess?: any, callBack?: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.login(data);
 
       if (response?.status == 200) {
-        setAccessToken(response?.data?.user?.remember_token);
-        setItem(USER_ID, response?.data?.user?.uuid);
-        setItem(USER_TYPE, response?.data?.user?.user_type);
+        if (response?.data?.user?.otp_verified !== 0) {
+          setAccessToken(response?.data?.user?.remember_token);
+          setItem(USER_ID, response?.data?.user?.uuid);
+          setItem(USER_TYPE, response?.data?.user?.user_type);
+        }
 
         dispatch(userProfile({ userid: response?.data?.user?.uuid }));
         dispatch(getCityList());
         if (response?.data?.user?.user_type == 2) {
-          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
-        } else {
+
+          if (response?.data?.user?.otp_verified == 0) {
+            let apiData = {
+              email: data.email,
+              // mobile: state?.phone
+            }
+            callBack && callBack()
+            // dispatch(customerVerifySendOtp(apiData))
+            dispatch(sendOtp(apiData))
+            // callBack && callBack()
+          } else {
+            onSucess && onSucess();
+            NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+          }
+
+        }
+        else if (response?.data?.user?.user_type == 1) {
+          onSucess && onSucess();
+          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_EXECUTIVE)
+        }
+        else {
+          onSucess && onSucess();
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
         }
 
         Toast.show(response?.message, Toast.LONG);
-        onSucess && onSucess();
+
         return;
       } else {
         throw new Error('No response data received from backend.');
@@ -87,6 +111,8 @@ export const logout =
       if (response?.status == 200) {
         removeAccessToken();
         dispatch(resetAuth());
+        dispatch(resetHome())
+        dispatch(resetDeal())
         // dispatch()
         NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
         // Toast.show("log Out", Toast.LONG);
@@ -101,9 +127,12 @@ export const logout =
       console.log('logout error ', e);
       onSucess && onSucess();
       removeAccessToken();
+      dispatch(resetAuth());
+      dispatch(resetHome())
+      dispatch(resetDeal())
       NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
       // Toast.show("log Out", Toast.LONG);
-      Toast.show("Success", Toast.LONG);
+      Toast.show("Logout Successfully", Toast.LONG);
 
     } finally {
       dispatch(setLoading(false));
@@ -161,7 +190,8 @@ export const customerVerifySendOtp =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.customer_send_otp_verify(data);
-
+      console.log();
+      
       if (response?.status == 200) {
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess();
@@ -191,6 +221,8 @@ export const verifyOtp =
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
+      console.log("e===>>", e?.response?.data);
+
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false));
@@ -223,6 +255,8 @@ export const userProfile =
     try {
       dispatch(setLoading(true));
       const response = await API.userApi.user_profile(data);
+      console.log("response user profile", response?.data);
+      
       if (response?.status == 200) {
         dispatch(setUserData(response?.data));
         onSucess && onSucess();
@@ -314,7 +348,11 @@ export const getPrivacy_TermCondition =
       if (response?.status == 200) {
         if (data == "privacy-policy") {
           dispatch(setPrivacyPolicy(response?.data))
-        } else {
+        }
+        else if (data == "how-to-redeem") {
+          dispatch(setHowToRedeem(response?.data))
+        }
+        else {
           dispatch(setTermCondition(response?.data))
         }
         return;

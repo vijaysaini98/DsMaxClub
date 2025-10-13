@@ -3,7 +3,7 @@ import React from 'react'
 import { colors } from '@theme/colors'
 import Header from '@components/Header'
 import TouchableOpacityView from '@components/TouchableOpacityView'
-import { deleteAccountIcon, forwardIcon, logOutIcon, myCardIcon, myRequestIcon, privacyIcon, proflieIcon, shareIcon, termsCondIcon, userIcon } from '@helper/imagesAssets'
+import { deleteAccountIcon, forwardIcon, hotelBookingIcon, logOutIcon, myCardIcon, myRequestIcon, privacyIcon, proflieIcon, shareIcon, termsCondIcon, travelBookingIcon, userIcon } from '@helper/imagesAssets'
 import { AppText, SIXTEEN } from '@components/AppText'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { deleteAccount, logout } from '../../actions/auth/authAction'
@@ -15,7 +15,7 @@ import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import DeleteAccountModal from '@components/DeleteAccountModal'
 import LogOutModal from '@components/LogoutModal'
 
-const MoreTabButton = ({ title, leftIcon, handleOnPress }) => {
+export const MoreTabButton = ({ title, leftIcon, handleOnPress }) => {
   return (
 
     <TouchableOpacityView
@@ -39,53 +39,25 @@ const MoreTabButton = ({ title, leftIcon, handleOnPress }) => {
   )
 }
 
-
-
 const Profile = () => {
-
   const dispatch = useAppDispatch();
-
-  // const handleLogout = () =>{
-  //   dispatch(logout())
-  // }
   const { userData } = useAppSelector((state) => state.auth)
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] = React.useState(false);
   const [logoutVisible, setLogoutVisible] = React.useState(false);
 
   const handleLogout = () => {
-    //   Alert.alert("Are you sure you want to Logout", "", [
-    //     {
-    //       text: "Cancel",
-    //       onPress: () => console.log("Cancel Pressed"),
-    //       style: "cancel",
-    //     },
-    //     { text: "OK", onPress: () => dispatch(logout()) },
-    //   ]
-    // )
     dispatch(logout(undefined, setLogoutVisible(false)))
   }
 
   const handleDeleteAccount = () => {
-    // Alert.alert("Are you sure you want to delete your account", "", [
-    //   {
-    //     text: "Cancel",
-    //     onPress: () => console.log("Cancel Pressed"),
-    //     style: "cancel",
-    //   },
-    //   { text: "OK", onPress: () => dispatch(deleteAccount())},
-    // ]);
-
     dispatch(deleteAccount(undefined, setDeleteAccountModalVisible(false)))
   }
-
-
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
       <Header currentCity={userData?.user_type !== "2"} />
       <ScrollView
         showsVerticalScrollIndicator={false}
-        // style={}
         contentContainerStyle={styles.container}
       >
         <MoreTabButton
@@ -99,11 +71,20 @@ const Profile = () => {
             title={"My Request"}
             handleOnPress={() => { NavigationService.navigate(routes.MY_REQUEST_SCREEN) }}
           />}
-        {/* <MoreTabButton
-          leftIcon={myCardIcon}
-          title={"My Card"}
-          handleOnPress={() => { NavigationService.navigate(routes.MY_CARD_SCREEN) }}
-        /> */}
+        {userData?.user_type != "0" &&
+          <>
+            <MoreTabButton
+              leftIcon={hotelBookingIcon}
+              title={"Hotel Booking"}
+              handleOnPress={() => { NavigationService.navigate(routes.HOTEL_BOOKING) }}
+            />
+            <MoreTabButton
+              leftIcon={travelBookingIcon}
+              title={"Travel Booking"}
+              handleOnPress={() => { NavigationService.navigate(routes.TRAVEL_BOOKING) }}
+            />
+          </>
+        }
         <MoreTabButton
           leftIcon={shareIcon}
           title={"Share App"}
@@ -150,7 +131,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: s(16),
     paddingTop: vs(14),
-    paddingBottom: vs(50)
+    paddingBottom: vs(150)
   },
   tabBtnContainer: {
     flexDirection: 'row',
@@ -177,5 +158,4 @@ const styles = StyleSheet.create({
     width: s(14),
     height: s(11)
   }
-
 })

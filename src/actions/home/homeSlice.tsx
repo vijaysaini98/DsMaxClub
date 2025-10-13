@@ -10,7 +10,7 @@ export const initialState = {
     bookletDetailAbout: {},
     bookletDetailGallery: {},
     bookletDetailT_C: {},
-    comboBookletDeals:[],
+    comboBookletDeals: [],
 };
 
 export const homeSlice = createSlice({
@@ -47,12 +47,10 @@ export const homeSlice = createSlice({
         setBookletDetailT_C: (state, { payload }) => {
             state.bookletDetailT_C = payload;
         },
-        setComboBookletDeals:(state, { payload }) => {
+        setComboBookletDeals: (state, { payload }) => {
             state.comboBookletDeals = payload;
         },
-        resetHome: (state, { payload }) => {
-            state = initialState;
-        },
+        resetHome: () => initialState,
     },
 });
 export const {

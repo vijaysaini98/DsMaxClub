@@ -1,7 +1,7 @@
 import { API } from '@services/appClient';
 import { AppDispatch } from '@redux/store';
 import Toast from "react-native-simple-toast";
-import { setLoading, setMyRequestAllList, setMyRequestApproveList, setMyRequestCouponList, setMyRequestList, setMyRequestPendingList, setMyRequestRejectList } from './myRequestSlice';
+import { setLoading, setMyRequestAllList, setMyRequestApproveList, setMyRequestCouponList, setMyRequestPendingList, setMyRequestRejectList } from './myRequestSlice';
 
 export const getMyRequestList =
     (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {

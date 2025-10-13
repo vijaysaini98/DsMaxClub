@@ -1,5 +1,5 @@
 import { TabBar } from "react-native-tab-view";
-import { AppText, FOURTEEN, MEDIUM, NORMAL } from "./AppText";
+import { AppText, FOURTEEN, MEDIUM, NORMAL, TEN } from "./AppText";
 import { colors } from "@theme/colors";
 
 export const RenderTabBar = (props) => {
@@ -11,12 +11,14 @@ export const RenderTabBar = (props) => {
       renderLabel={({ route, focused }) => (
         <AppText
           type={tabTextType ?? FOURTEEN}
+          // type={TEN}
           weight={focused ? MEDIUM : NORMAL}
           style={{
             color: focused ? colors.buttonBg : colors.disTextColor,
             textTransform: 'capitalize',
             paddingVertical: 0,
           }}
+          
         >
           {route.title}
         </AppText>
@@ -24,7 +26,7 @@ export const RenderTabBar = (props) => {
       indicatorStyle={{
         backgroundColor: colors.buttonBg,
         height: 1,
-        width: 90,
+        width: 130,
         borderRadius: 20,
         bottom:-1
       }}
@@ -40,9 +42,10 @@ export const RenderTabBar = (props) => {
       }}
       tabStyle={{
         height: 40,
-        width: 90,
+        width: 130,
       }}
       pressColor={colors.transparent}
+      layout={{ width: props.navigationState.routes.length * 100 }}
     />
   );
 };
