@@ -1,7 +1,7 @@
-import { StyleSheet, Image, View, TextInput, Dimensions } from 'react-native';
+import { StyleSheet, Image, View, Dimensions } from 'react-native';
 import React, { useRef } from 'react';
 import { colors } from '../theme/colors';
-import { AppText, BLACK, BOLD, BUTTON_TEXT, ELEVEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, TEN, THIRTEEN, TWELVE, WHITE } from './AppText';
+import { AppText, BLACK, BOLD, BUTTON_TEXT, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, TEN, THIRD, TWELVE, WHITE } from './AppText';
 import { CardProps } from 'src/types/common';
 import TouchableOpacityView from './TouchableOpacityView';
 import { downArrowIcon, locationIcon, shareIcon } from '@helper/imagesAssets';
@@ -35,7 +35,9 @@ const CommonCard = ({
   redeemDisabled,
   viewBtnLoader,
   statusBg,
-  statusTextColor
+  statusTextColor,
+  usedCoupon,
+  shortDesc
 }: CardProps) => {
   if (!data) return null;
 
@@ -55,7 +57,7 @@ const CommonCard = ({
               {
                 backgroundColor:
                   statusBg ? statusBg :
-                    status === 'Active' ? colors.lightGreen : colors.disabledBtn,
+                    status === 'Active' ? colors.lightGreen : colors.tabBg,
               },
             ]}>
             <AppText
@@ -83,7 +85,11 @@ const CommonCard = ({
       {vendorName &&
         <AppText weight={MEDIUM}>{vendorName}</AppText>
       }
-
+      {
+        shortDesc && (
+          <AppText type={TEN} weight={MEDIUM} color={PLACEHOLDER}>{shortDesc}</AppText>
+        )
+      }
       <View style={styles.rowContainer}>
         {/* <View > */}
         {htmlContent ?
@@ -135,6 +141,16 @@ const CommonCard = ({
             // color={WHITE}
             style={{ color: colors.placeholder2 }}
           >{`No of Coupons: ${couponCount}`}</AppText>
+
+        </View>)}
+
+      {usedCoupon && usedCoupon > 0 && (
+        <View style={styles.usedCouponCountContainer}>
+          <AppText type={TEN}
+            weight={MEDIUM}
+            // color={WHITE}
+            style={{ color: colors.placeholder2 }}
+          >{`No of Used Coupons: ${usedCoupon}`}</AppText>
 
         </View>)}
 
@@ -220,9 +236,8 @@ const styles = StyleSheet.create({
     padding: 16,
     width: width * 0.9,
     alignSelf: 'center',
-
-    borderColor: colors.second,
-    borderWidth: 3,
+    borderColor: colors.black,
+    borderWidth: 2,
     borderStyle: "dotted"
 
   },
@@ -235,9 +250,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10,
     paddingVertical: 4,
-    position:'absolute',
-    right:-5,
-    top:-10
+    position: 'absolute',
+    right: -5,
+    top: -10
   },
   statusText: {
     // color: colors.white,
@@ -313,7 +328,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.tabBg,
     maxWidth: s(120),
     padding: ms(10),
-    marginVertical: vs(10)
+    marginTop: vs(10)
+  },
+  usedCouponCountContainer: {
+    borderWidth: 0.5,
+    borderStyle: 'dashed',
+    borderRadius: ms(6),
+    backgroundColor: colors.mainBg,
+    maxWidth: s(150),
+    padding: ms(10),
+    marginVertical: vs(5)
   }
 });
 

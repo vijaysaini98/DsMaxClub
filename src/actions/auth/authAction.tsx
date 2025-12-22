@@ -1,5 +1,5 @@
-import { API } from '@services/appClient';
-import { resetAuth, setCityList, setHowToRedeem, setLoading, setPrivacyPolicy, setTermCondition, setUserData } from './authSlice';
+import apiClient, { API } from '@services/appClient';
+import { resetAuth, setAppinfo, setCityList, setHowToRedeem, setLoading, setPrivacyPolicy, setTermCondition, setUserData } from './authSlice';
 import {
   removeAccessToken,
   setAccessToken,
@@ -255,8 +255,6 @@ export const userProfile =
     try {
       dispatch(setLoading(true));
       const response = await API.userApi.user_profile(data);
-      console.log("response user profile", response?.data);
-      
       if (response?.status == 200) {
         dispatch(setUserData(response?.data));
         onSucess && onSucess();
@@ -293,7 +291,7 @@ export const updateUserProfile =
       } catch (e: any) {
         console.log("e", e?.response?.data);
 
-        Toast.show(e?.response?.data?.message, Toast.LONG);
+        // Toast.show(e?.response?.data?.message, Toast.LONG);
       } finally {
         dispatch(setLoading(false));
       }
@@ -314,7 +312,8 @@ export const updateUserProfileImage =
           throw new Error('No response data received from backend.');
         }
       } catch (e: any) {
-        Toast.show(e?.response?.data?.message, Toast.LONG);
+        console.log("updateUserProfileImage",e?.response?.data?.message)
+        // Toast.show(e?.response?.data?.message, Toast.LONG);
       } finally {
         dispatch(setLoading(false));
       }
@@ -350,6 +349,7 @@ export const getPrivacy_TermCondition =
           dispatch(setPrivacyPolicy(response?.data))
         }
         else if (data == "how-to-redeem") {
+          
           dispatch(setHowToRedeem(response?.data))
         }
         else {
@@ -367,4 +367,15 @@ export const getPrivacy_TermCondition =
     }
   };
 
+  export const getAppVersion = (data?: any) => async (dispatch: AppDispatch) => {
+  try {
+    const response: any = await API.authApi.getAppVersion();
+    if (response.success) {
+      dispatch(setAppinfo(response?.data))
+    }
+  } catch (e: any) {
+    console.log("App Version Error", e?.response?.data);
+  } finally {
+  }
+};
 

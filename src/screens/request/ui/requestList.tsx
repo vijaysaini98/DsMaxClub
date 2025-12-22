@@ -54,7 +54,6 @@ const RequestList = ({ value }) => {
 
   const renderItem = useCallback(
     ({ item, index }) => {
-      console.log("item",item);
       
       return (
         <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>

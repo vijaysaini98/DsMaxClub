@@ -92,3 +92,6 @@ export const noInternetIcon =require('@assets/images/noInternet.png')
 
 export const travelBookingIcon =require('@assets/images/travelBookingIcon.png')
 export const hotelBookingIcon =require('@assets/images/hotelBookingIcon.png')
+
+export const newUpdate = require('@assets/images/NewUpdate.png')
+export const underMaintenance = require('@assets/images/underMaintenance.png')

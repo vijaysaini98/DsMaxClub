@@ -151,8 +151,6 @@ export const bookletRequest =
     try {
       dispatch(setBtnLoading(true));
       const response = await API.homeApi.booklet_request(data);
-      console.log("response", response);
-
       if (response?.status == 200) {
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess()
@@ -163,6 +161,7 @@ export const bookletRequest =
       }
     } catch (e: any) {
       if (e?.response) {
+        console.log("bookletRequest error",e?.response)
         Toast.show(e?.response?.data?.message, Toast.LONG);
       }
 

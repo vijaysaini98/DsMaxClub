@@ -17,6 +17,7 @@ useEffect(()=>{
     dispatch(getPrivacy_TermCondition("how-to-redeem"));
 },[index])
 
+
   return (
     <Animated.ScrollView
       onScroll={Animated.event(

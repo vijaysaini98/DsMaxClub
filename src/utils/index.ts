@@ -46,31 +46,61 @@ export const getCategoryDetails = (title: string) => {
   }
 };
 
-export const openPhoneDialer = (phoneNumber: string) => {
-  const url = `tel:${phoneNumber}`;
-  Linking.canOpenURL(url)
-    .then(supported => {
-      if (supported) {
-        Linking.openURL(url);
-      } else {
-        Alert.alert('Error', 'Phone dialer is not supported on this device.');
-      }
-    })
-    .catch(err => console.error('Dialer Error', err));
+// export const openPhoneDialer = (phoneNumber: string) => {
+//   // const url = `tel:${phoneNumber}`;
+//    const formattedNumber = phoneNumber.replace(/[^0-9+]/g, '');
+//    const url =`tel:${formattedNumber}`
+//   Linking.canOpenURL(url)
+//     .then(supported => {
+//       if (supported) {
+//         Linking.openURL(url);
+//       } else {
+//         Alert.alert('Error', 'Phone dialer is not supported on this device.');
+//       }
+//     })
+//     .catch(err => console.error('Dialer Error', err));
+// };
+
+
+
+export const openPhoneDialer = async (phoneNumber: string) => {
+  try {
+    const formattedNumber = phoneNumber.replace(/[^0-9+]/g, '');
+    const url = Platform.OS === 'android'
+      ? `tel:${formattedNumber}`
+      : `telprompt:${formattedNumber}`;
+
+    await Linking.openURL(url);
+  } catch (error) {
+    Alert.alert('Error', 'Unable to open phone dialer');
+    console.error('Dialer Error:', error);
+  }
 };
 
-export const openEmail = (email: string) => {
-  const url = `mailto:${email}`;
-  Linking.canOpenURL(url)
-    .then(supported => {
-      if (supported) {
-        Linking.openURL(url);
-      } else {
-        Alert.alert('Error', 'Email client is not available.');
-      }
-    })
-    .catch(err => console.error('Email Error', err));
+
+export const openEmail = async (email: string) => {
+  try {
+    const url = `mailto:${email}`;
+    await Linking.openURL(url);
+  } catch (error) {
+    Alert.alert('Error', 'No email app found on this device');
+    console.error('Email Error:', error);
+  }
 };
+
+// export const openEmail = (email: string) => {
+//   const url = `mailto:${email}`;
+//   Linking.canOpenURL(url)
+//     .then(supported => {
+//       if (supported) {
+//         Linking.openURL(url);
+//       } else {
+//         Alert.alert('Error', 'Email client is not available.');
+//       }
+//     })
+//     .catch(err => console.error('Email Error', err));
+// };
+// 26.840505849413052, 75.68784130442054
 
 export const openMap = ({ lat, lng, label }: OpenMapArgs) => {
   const scheme = Platform.select({
@@ -182,3 +212,16 @@ export const extractLatLngFromUrl = (
 
   return null; // ❌ No coords found
 };
+
+
+export function isNewerVersion(oldVer, newVer) {
+  const oldParts = oldVer?.split('.');
+  const newParts = newVer?.split('.');
+  for (var i = 0; i < newParts?.length; i++) {
+    const a = ~~newParts[i]; // parse int
+    const b = ~~oldParts[i]; // parse int
+    if (a > b) return true;
+    if (a < b) return false;
+  }
+  return false;
+}

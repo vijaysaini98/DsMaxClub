@@ -2,10 +2,9 @@ import React, { useRef, useState } from 'react';
 import {
     View,
     StyleSheet,
-    TouchableOpacity,
 } from 'react-native';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
-import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, MEDIUM, SIXTEEN, TWENTY_EIGHT, WHITE } from '@components/AppText';
+import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, MEDIUM, PLACEHOLDER, SIXTEEN, THIRTEEN, TWENTY_EIGHT, WHITE } from '@components/AppText';
 import { colors } from '@theme/colors';
 import { authBg, emailIcon, eyeCloseIcon, eyeOpenIcon, logoImage } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
@@ -19,6 +18,14 @@ import KeyBoardAware from '@components/KeyBoardAware';
 import FastImage from 'react-native-fast-image';
 import { ms, vs } from 'react-native-size-matters';
 import CodeVerificationBottomSheet from './codeVerificationBottomSheet';
+import { s } from 'react-native-size-matters/extend';
+// import ReactNativeVersionInfo from 'react-native-version-info';
+import DeviceInfo from 'react-native-device-info';
+
+// let version = ReactNativeVersionInfo.appVersion;
+// let buildVersion = ReactNativeVersionInfo.buildVersion;
+let version = DeviceInfo.getVersion();
+let buildVersion = DeviceInfo.getBuildNumber();;
 
 const Login = () => {
     const dispatch = useAppDispatch()
@@ -38,7 +45,6 @@ const Login = () => {
     })
 
     const handleLoginBtn = () => {
-        // Logic to handle login
         if (state.email === '') {
             setState({ ...state, emailError: "Email is required" })
         } else if (state.password === '') {
@@ -53,7 +59,6 @@ const Login = () => {
                 password: state?.password
             }
             dispatch(login(data, handleSucess, () => sheetRef.current?.open()))
-            // NavigationService.navigate(routes.BOTTOM_TAB_NAVIGATOR)
         }
     }
 
@@ -65,7 +70,6 @@ const Login = () => {
         sheetRef.current?.close()
         setState({ ...state, emailError: "", passwordError: "" })
         NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
-
     }
 
     const handleVerify = (code: string) => {
@@ -76,14 +80,16 @@ const Login = () => {
         dispatch(verifyOtp(data, handleOtpVerify))
     };
 
-
     return (
         <AppSafeAreaView
             isSecond
             bgImage={authBg}
             style={styles.mainContainer}>
             <KeyBoardAware style={styles.container}>
-
+                {/* <ToolBar
+title='Login'
+isLeftIcon={true}
+/> */}
                 <View style={styles.heading}>
                     <FastImage
                         source={logoImage}
@@ -91,7 +97,7 @@ const Login = () => {
                         resizeMode='contain'
                     />
                     <AppText type={TWENTY_EIGHT} weight={BOLD}>WELCOME BACK</AppText>
-                    <AppText type={EIGHTEEN} style={{ marginTop: 26,textAlign:'center' }}>
+                    <AppText type={EIGHTEEN} style={{ marginTop: 26, textAlign: 'center' }}>
                         We're happy to see you again. {'\n'}Enter your email and password
                     </AppText>
                 </View>
@@ -137,7 +143,6 @@ const Login = () => {
                 <TouchableOpacityView
                     onPress={() => handleLoginBtn()}
                     loader={isLoading}
-                    // onPress={()=>  NavigationService.navigate(routes.BOTTOM_TAB_NAVIGATOR)}
                     style={styles.loginBtn}>
                     <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>LOG IN</AppText>
                 </TouchableOpacityView>
@@ -151,6 +156,19 @@ const Login = () => {
                     </TouchableOpacityView>
                 </View>
             </KeyBoardAware>
+            <View style={styles.buildVersionContainer}>
+                <AppText
+                    type={THIRTEEN}
+                    weight={MEDIUM}
+                    color={PLACEHOLDER}
+                    // style={{
+                    //     color: colors.buttonBg,
+                    // }}
+                >
+                    {" "}
+                    V-{`${version} (${buildVersion})`}
+                </AppText>
+            </View>
             <CodeVerificationBottomSheet ref={sheetRef} onVerify={handleVerify} />
         </AppSafeAreaView>
     );
@@ -162,39 +180,46 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         backgroundColor: colors.white,
-        paddingTop: 40,
-        paddingHorizontal: 16,
+        paddingTop: vs(40),
+        paddingHorizontal: s(16),
     },
     container: {
         backgroundColor: colors.white
     },
     heading: {
-        // marginTop: 0,
-        marginBottom: 80,
-        alignItems:'center'
-        // gap: 26
+        marginVertical: vs(10),
+        alignItems: 'center'
     },
     inputContainer: {
-        gap: 16,
-        marginBottom: 30,
+        gap: s(16),
+        marginBottom: vs(30),
     },
     forgotWrapper: {
         alignItems: 'flex-end',
     },
     forgotText: {
         color: '#00171F',
-        fontSize: 13,
+        fontSize: ms(13),
         fontWeight: '500',
     },
     loginBtn: {
         backgroundColor: colors.buttonBg,
-        paddingVertical: 19,
+        paddingVertical: vs(19),
         alignItems: 'center',
-        borderRadius: 50,
-        marginBottom: 48,
+        borderRadius: ms(50),
+        marginBottom: vs(10),
     },
     bottomRow: {
         flexDirection: 'row',
         justifyContent: 'center',
     },
+    buildVersionContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: 10,
+    }
 });

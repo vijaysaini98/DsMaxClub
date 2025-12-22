@@ -34,6 +34,7 @@ const TermCondition = () => {
         dispatch(getPrivacy_TermCondition("terms-conditions"))
     }, [])
 
+
     return (
         <AppSafeAreaView style={[commonStyles.mainContainer]}>
             <View style={styles.containerStyle}>
@@ -44,7 +45,7 @@ const TermCondition = () => {
 
                     <WebView
                         ref={webRef}
-                        source={{ uri: termsCondition?.url }}
+                        source={{ uri: termsCondition?.termsconditions }}
                         // onScroll={_onScroll}
                         showsVerticalScrollIndicator={false}
                         style={styles.webView}

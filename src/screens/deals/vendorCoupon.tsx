@@ -17,7 +17,7 @@ import NavigationService from '@navigations/NavigationService';
 import { s, vs } from 'react-native-size-matters/extend';
 
 const VerndorCouponList = ({ route }) => {
-    const { title, user_id, booklet_id, user_booklet_uuid,unique_code } = route?.params ?? ""
+    const { title, user_id, booklet_id, user_booklet_uuid, unique_code } = route?.params ?? ""
     const dispatch = useAppDispatch()
     const { dealCouponList, isLoading } = useAppSelector((state) => state?.deal)
 
@@ -56,13 +56,15 @@ const VerndorCouponList = ({ route }) => {
                 data={item}
                 onViewPress={() => handleViewOnPress(item)}
                 heading={item?.heading}
-                htmlContent={item?.short_desc}
+                // htmlContent={item?.short_desc}
+                htmlContent={item?.description}
                 buttonTitle={"VIEW DETAIL"}
                 btnTextColor={WHITE}
                 couponCount={item?.total_coupons}
                 status={item?.coupon_type_id == 1 ? 'Free' : ""}
                 statusBg={item?.coupon_type_id == 1 && colors.lightGreen}
                 statusTextColor={item?.coupon_type_id == 1 && WHITE}
+                usedCoupon={item?.used_copies}
             />
         );
     };
@@ -78,8 +80,8 @@ const VerndorCouponList = ({ route }) => {
                 <FlatList
                     data={dealCouponList}
                     renderItem={renderItem}
-                    ListHeaderComponent={()=>(
-                        <View style={{paddingHorizontal:s(16),}}>
+                    ListHeaderComponent={() => (
+                        <View style={{ paddingHorizontal: s(16), }}>
                             <AppText type={FOURTEEN} weight={MEDIUM} color={BUTTON_BG}>{`${title} (${unique_code})`}</AppText>
                         </View>
                     )}

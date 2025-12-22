@@ -11,6 +11,7 @@ import { getBannerList } from '@actions/home/homeAction';
 import FastImage from 'react-native-fast-image';
 import { logoImage } from '@helper/imagesAssets';
 import { s, vs } from 'react-native-size-matters/extend';
+import { AppText } from '@components/AppText';
 
 const AuthLoading = () => {
   const dispatch = useAppDispatch();
@@ -39,17 +40,16 @@ const AuthLoading = () => {
         }
         else if (userType == 2) {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
-          // NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_EXECUTIVE)
         } else {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
         }
       } else {
         if (userVisited === "userVisited") {
           NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
-        } else {
+        } 
+        else {
           NavigationService.reset(routes?.ONBOARDING);
         }
-        // NavigationService.reset(routes?.ONBOARDING);
       }
     } catch (e) {
       console.log(e);
@@ -66,7 +66,6 @@ const AuthLoading = () => {
       style={{height:vs(200),width:s(200)}}
       resizeMode={FastImage.resizeMode.contain}
       />
-    
     </AppSafeAreaView>
   );
 };

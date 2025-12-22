@@ -59,7 +59,7 @@ const BanerComponent: React.FC<Props> = ({ data, onPressBanner }) => {
   );
 };
 
-export default BanerComponent;
+export default React.memo(BanerComponent);
 
 const styles = StyleSheet.create({
   container: {

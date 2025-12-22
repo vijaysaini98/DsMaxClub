@@ -25,7 +25,6 @@ import { executiveRequestStatusChange, getExecutiveRequestList, getExecutiveRequ
 import moment from 'moment';
 import FastImage from 'react-native-fast-image';
 import { IMGE_URL } from '@services/config';
-import NavigationService from '@navigations/NavigationService';
 
 const RequestApprove = ({ route }) => {
     const { request_id, status, title, tabName } = route?.params || {};
@@ -192,10 +191,10 @@ const styles = StyleSheet.create({
         marginHorizontal: s(16),
         paddingVertical: s(16),
         paddingHorizontal: s(16),
-        borderColor: colors.second,
+        borderColor: colors.black,
         borderRadius: ms(10),
         gap: 9,
-        borderWidth: 3,
+        borderWidth: 2,
         borderStyle: 'dotted',
         backgroundColor: colors.white,
         marginTop: vs(20),

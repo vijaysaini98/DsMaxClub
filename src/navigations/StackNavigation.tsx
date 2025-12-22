@@ -28,6 +28,7 @@ import BottomNavigationExecutive from "./BottomNavigationExecutive";
 import RequestApprove from "@screens/request/ui/requestApprove";
 import HotelBooking from "@screens/hotelTravelBooking.tsx/hotelBooking";
 import TravelBooking from "@screens/hotelTravelBooking.tsx/travelBooking";
+import OptionsScreen from "@screens/auth/optionsScreen";
 
 const Stack = createStackNavigator();
 
@@ -35,15 +36,14 @@ const options = {
   ...TransitionPresets.SlideFromRightIOS,
   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
   gestureEnabled: Platform.OS == 'ios' ? true : false,
-  gestureDirection: 'horizontal',
+  // gestureDirection: 'horizontal',
   headerShown: false
 };
 
 
-const MyAuthLoadingStack = () => (
-  <Stack.Navigator
-
-    screenOptions={options}>
+export const MyAuthLoadingStack = () => (
+  <Stack.Navigator    
+  screenOptions={options}>
     <Stack.Screen
       name={routes.NAVIGATION_AUTH_LOADING_SCREEN}
       component={AuthLoading}

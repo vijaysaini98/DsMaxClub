@@ -52,7 +52,9 @@ export interface CardProps {
   statusBg?:string,
   statusTextColor?:string,
   location?:Array<{location:string,location_url:string}> | any;
-  vendorName?:string
+  vendorName?:string,
+  usedCoupon?:number | string;
+  shortDesc?:string
 }
 
 export interface DetailFieldProps {

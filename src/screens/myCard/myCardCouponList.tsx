@@ -175,32 +175,33 @@ const MyCardCouponList = ({ route }) => {
   }
 
   const renderItem = ({ item }) => {
-    console.log("description",item?.description);
-    
-    return(
-    <CommonCard
-      key={item.id}
-      data={item}
-      onViewPress={() => handleViewBtn(item)}
-      heading={item?.heading}
-      htmlContent={item?.description}
-      btnTextColor={WHITE}
-      couponCount={item?.total_coupons}
-      viewBtnDisabled={tab_status === 'expire' || tab_status === 'Comming Soon'}
-      status={item?.tab_status}
-      // ✅ Only show loader for the clicked item
-      viewBtnLoader={loadingCouponId === item?.coupon_uuid}
-      location={item?.locations}
-       vendorName={item?.vendor_name}
-    />
-  )}
+    return (
+      <CommonCard
+        key={item.id}
+        data={item}
+        onViewPress={() => handleViewBtn(item)}
+        heading={item?.heading}
+        htmlContent={item?.description}
+        btnTextColor={WHITE}
+        couponCount={item?.total_coupons}
+        viewBtnDisabled={tab_status === 'expire' || tab_status === 'Comming Soon'}
+        status={item?.tab_status}
+        // ✅ Only show loader for the clicked item
+        viewBtnLoader={loadingCouponId === item?.coupon_uuid}
+        location={item?.locations}
+        vendorName={item?.vendor_name}
+        usedCoupon={item?.used_copies}
+        shortDesc={item?.short_description}
+      />
+    )
+  }
 
   return (
     <AppSafeAreaView style={[commonStyles.mainContainer, { paddingHorizontal: 16 }]}>
       <ToolBar isLeftIcon
-      textType={FOURTEEN}
-      textWeight={SEMI_BOLD}
-      title={`${title} (${booklet_uniquecode})`} />
+        textType={FOURTEEN}
+        textWeight={SEMI_BOLD}
+        title={`${title} (${booklet_uniquecode})`} />
       {isLoading && !refreshing ? (
         <Loader />
       ) : (

@@ -107,6 +107,21 @@ const Home: React.FC = () => {
     dispatch(verifyOtp(data, handleOtpVerify))
   };
 
+  const handleBannerPress = (item: any, index: number) => {
+    if (item?.booklet !== null && item?.type == 'combobooklet' || item?.type == 'singlebooklet') {
+      if (item?.type == 'combobooklet') {
+        NavigationService.navigate(routes.DETAILS_SCREEN, { data: item?.booklet, from: "ComboBooklet" });
+      } else {
+        NavigationService.navigate(routes.DETAILS_SCREEN, { data: item?.booklet, from: "Booklet" });
+      }
+    } else if (item?.type == 'Travel Deals') {
+      NavigationService.navigate(routes.TRAVEL_BOOKING);
+    }
+    else if (item?.type == 'Hotels') {
+      NavigationService.navigate(routes.HOTEL_BOOKING);
+    }
+  }
+
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
@@ -132,12 +147,7 @@ const Home: React.FC = () => {
           <Header userName={userData?.name} />
           <BanerComponent
             data={bannerList}
-            onPressBanner={(item, index) => {
-              if (item?.booklet !== null) {
-                NavigationService.navigate(routes.DETAILS_SCREEN, { data: item?.booklet, from: "ComboBooklet" });
-              }
-
-            }}
+            onPressBanner={(item, index) => handleBannerPress(item, index)}
           />
 
           <CategoriesComponent
@@ -231,6 +241,7 @@ const Home: React.FC = () => {
                           <Card
                             index={i}
                             item={booklet}
+                            mobile={booklet?.client?.mobile}
                             cardContainerStyle={item.booklets.length < 2 && styles.cardContainerStyle}
                             imageBaseUrl={categoryBookletData?.baseurl}
                             imageStyle={item.booklets.length < 2 && styles.cardImageStyle}
@@ -240,8 +251,8 @@ const Home: React.FC = () => {
                             imageUrl={booklet?.booklet ? { uri: categoryBookletData?.baseurl + booklet?.booklet } : defaultBookletImage}
                             name={booklet?.client?.name ? booklet?.client?.name : booklet?.name}
                             price={booklet.price}
-                            // address={booklet?.client?.address? booklet?.client?.address : booklet?.address || '---'}
                             address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
+                            // shortDesc={booklet?.client?.short_desc}
                           />
                         </View>
                       )

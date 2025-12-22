@@ -60,12 +60,12 @@ const Header: React.FC<HeaderProps> = ({ userName, city, currentCity,reloadScree
   const onSucess = () => {
     bottomSheetRef.current?.close();
   }
-
+  
   return (
     <>
       <View style={styles.headerContainer}>
         <View style={styles.nameContainer} >
-          <AppText type={SIXTEEN}>Hello!</AppText>
+          <AppText type={SIXTEEN}>{`Hello ${userData?.user_type == 2 ? "User" : userData?.user_type == 1 ? "Executive" : "Vendor"}!`}</AppText>
           <AppText
             numberOfLines={2}
             type={SIXTEEN} weight={BOLD}>

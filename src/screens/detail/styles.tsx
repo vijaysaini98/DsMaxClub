@@ -72,10 +72,11 @@ const styles = StyleSheet.create({
   },
   secondHeaderContainer: {
     position: "absolute",
-    top: Platform.OS === "ios" ? 50 : StatusBar.currentHeight, // leave safe area
+    paddingTop: Platform.OS === "ios" ? 50 : StatusBar.currentHeight,
+    // top: Platform.OS === "ios" ? 50 : StatusBar.currentHeight, // leave safe area
     left: 0,
     right: 0,
-    height: 50,
+    height: 100,
     backgroundColor: colors.white, // solid background
     zIndex: 10,
     justifyContent: "center",

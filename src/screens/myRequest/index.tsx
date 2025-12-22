@@ -28,15 +28,15 @@ const RenderTabBar = (props) => {
     <TabBar
       {...props}
       scrollEnabled
-      renderLabel={({ route, focused }) => (
-        <AppText
-          type={EIGHTEEN}
-          weight={focused ? MEDIUM : NORMAL}
-          style={styles.tabTitleStyle(focused)}
-        >
-          {route.title}
-        </AppText>
-      )}
+      // renderLabel={({ route, focused }) => (
+      //   <AppText
+      //     type={EIGHTEEN}
+      //     weight={focused ? MEDIUM : NORMAL}
+      //     style={styles.tabTitleStyle(focused)}
+      //   >
+      //     {route.title}
+      //   </AppText>
+      // )}
       // indicatorStyle={styles.tabIndocatorStyle}
       // activeColor={colors.placeholder}
       // inactiveColor={colors.disTextColor}

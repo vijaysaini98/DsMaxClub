@@ -95,7 +95,6 @@ export const enterBarCouponCode =
         try {
             dispatch(setLoading(true));
             const response = await API.dealApi.enter_bar_coupon_code(data);
-            console.log("response",response);
             
             if (response?.status == 200) {
                 dispatch(setCouponCode(response?.data))

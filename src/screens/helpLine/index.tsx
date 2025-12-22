@@ -10,6 +10,7 @@ import TouchableOpacityView from '@components/TouchableOpacityView';
 import { AppText, BLACK, BOLD, MEDIUM, PLACEHOLDER, SIXTEEN, TWELVE } from '@components/AppText';
 import styles from './styles';
 import { openEmail, openMap, openPhoneDialer } from '@utils/index';
+import PhoneDialerModal from './contactModal';
 
 interface ContactTabButtonProps {
   icon: any;
@@ -18,6 +19,8 @@ interface ContactTabButtonProps {
   text: string;
   handleOnPress: () => void
 }
+
+
 
 const ContactTabButton: React.FC<ContactTabButtonProps> = ({ handleOnPress, icon, containerStyle, title, text }) => (
   <View style={[styles.contactTab, containerStyle]}>
@@ -38,7 +41,7 @@ const ContactTabButton: React.FC<ContactTabButtonProps> = ({ handleOnPress, icon
 
 const Help_Line = () => {
 
-
+const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] = React.useState(false);
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
@@ -51,32 +54,50 @@ const Help_Line = () => {
           <ContactTabButton
             icon={helpLineIcon}
             title="Call US"
-            text="We’re here to help you +91-9876543210"
-            handleOnPress={() => openPhoneDialer("+91-9876543210")}
+            text="We’re here to help you +91-9785053501 OR +91-9773399121"
+            // handleOnPress={() => openPhoneDialer("+91-9785053501")}
+            handleOnPress={()=> setIsPhoneDialerModalVisible(true)}
           />
           <ContactTabButton
             icon={emailIcon2}
             title="Email us"
-            text="Our team is online abc@gmail.com"
-            handleOnPress={() => openEmail("abc@gmail.com")}
+            text="Our team is online dsmaxclub@gmail.com"
+            handleOnPress={() => openEmail("dsmaxclub@gmail.com")}
           />
         </View>
         <ContactTabButton
           containerStyle={styles.addressTab}
           icon={locationIcon}
           title="Address"
-          text={`302/6, Lane, 6, Valmiki Marg,\nRaja Park, Jaipur, Rajasthan 302004`}
-        //  handleOnPress={()=> openMap("abc@gmail.com")}
+          text={`Divine Lane, Anukriti The Empyrean, Ajmer Road, Jaisinghpura, Jaipur, Bhankrota, Rajasthan 302026`}
+          handleOnPress={() =>
+            openMap({
+              lat: 26.840505849413052,
+              lng: 75.68784130442054,
+              label: "DS Max Club",
+            })
+          }
         />
-        <View style={styles.mapContainer}>
+        <TouchableOpacityView
+          onPress={() =>
+            openMap({
+              lat: 26.840505849413052,
+              lng: 75.68784130442054,
+              label: "DS Max Club",
+            })}
+          style={styles.mapContainer}>
           <FastImage
             source={mapImagge}
             style={styles.mapImage}
             // tintColor={colors.white}
             resizeMode={FastImage.resizeMode.cover}
           />
-        </View>
+        </TouchableOpacityView>
       </ScrollView>
+      <PhoneDialerModal
+        visible={isPhoneDialerModalVisible}
+        onClose={() => {setIsPhoneDialerModalVisible(false)}}
+      />
     </AppSafeAreaView>
   );
 };

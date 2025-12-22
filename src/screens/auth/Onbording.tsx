@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     View,
     StyleSheet,
@@ -10,22 +10,49 @@ import {
 } from 'react-native';
 import { getStartBg1, getStartBg2, getStartBg3, getStartBg4 } from '../../helper/imagesAssets';
 import { colors } from '@theme/colors';
-import { AppText, BLACK, BOLD, EIGHTEEN, NORMAL, TWENTY_EIGHT, WHITE } from '@components/AppText';
+import { AppText, BLACK, BOLD, BUTTON_TEXT, EIGHTEEN, NORMAL, SIXTEEN, TWENTY, TWENTY_EIGHT, TWENTY_FOUR, TWENTY_TWO, WHITE } from '@components/AppText';
 import NavigationService from '@navigations/NavigationService';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import * as routes from '@navigations/routes';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
-import { vs } from 'react-native-size-matters/extend';
+import { ms, vs } from 'react-native-size-matters/extend';
 import { First_Time, setAccessToken, setItem, USER_VISITED } from '@services/storage';
+import {Screen} from '@theme/commonStyles'
+import LinearGradient from 'react-native-linear-gradient';
 
-const { width, height } = Dimensions.get('window');
+// const { width, height } = Dimensions.get('window');
 
 const slides = [
-    { id: '1', image: getStartBg1 },
-    { id: '2', image: getStartBg2 },
-    { id: '3', image: getStartBg3 },
-    { id: '4', image: getStartBg4 },
+  {
+    id: '1',
+    image: getStartBg1,
+    heading: "Your Journey\n Begins Here",
+    heading2: "Discover exclusive travel deals,\ncurated experiences, and smart\nplanning — all in one place.",
+    subHeading: "Let DS Max Club simplify every\ntrip you take."
+  },
+  {
+    id: '2',
+    image: getStartBg2,
+    heading: "Unlock a World \nof Adventures",
+    heading2: "From flights to unforgettable \ndestinations, explore the best\nholiday options with ease.\n",
+    subHeading: "Your perfect trip is just a tap away."
+  },
+  {
+    id: '3',
+    image: getStartBg3,
+    heading: "Travel Beyond\nExpectations",
+    heading2: "Plan effortlessly and explore\nhandpicked destinations tailored for\nyour comfort.",
+    subHeading: "Experience travel the DS Max Club \nway."
+  },
+  {
+    id: '4',
+    image: getStartBg4,
+    heading: "Enjoy Premium\nMember Benefits",
+    heading2: "Access exclusive offers, hotel deals,\nrewards, and personalized travel\nservices.",
+    subHeading: "Let’s make every trip unforgettable."
+  },
 ];
+
 
 const OnboardingScreen = () => {
     const scrollX = useRef(new Animated.Value(0)).current;
@@ -50,12 +77,13 @@ const OnboardingScreen = () => {
     };
 
     const renderItem = ({ item }) => (
-        <ImageBackground source={item.image} style={styles.image} resizeMode="cover">
+        
+        <ImageBackground source={item.image} style={styles.image} resizeMode="contain">
             <View style={styles.textWrapper}>
-                <AppText type={TWENTY_EIGHT} weight={BOLD} color={BLACK}>WELCOME!</AppText>
-                <AppText type={TWENTY_EIGHT} weight={BOLD} color={BLACK} >TO DS MAX CLUB</AppText>
-                <AppText type={EIGHTEEN} weight={NORMAL} style={styles.description}>
-                    Lorem Ipsum is simply dummy AppText of the printing and typesetting.
+                <AppText type={TWENTY} weight={BOLD} color={BLACK} style={{textAlign:'center'}}>{item?.heading.toUpperCase()}</AppText>
+                <AppText type={SIXTEEN} weight={NORMAL} style={{textAlign:'center',marginTop:vs(36)}}>{item?.heading2}</AppText>
+                <AppText type={SIXTEEN} weight={NORMAL} style={styles.description}>
+                   {item?.subHeading}
                 </AppText>
             </View>
         </ImageBackground>
@@ -63,6 +91,10 @@ const OnboardingScreen = () => {
 
     return (
         <View style={styles.container}>
+    {/* //     <LinearGradient
+    //     colors={['#FFFFFF', '#989b9bff']}
+    //     style={styles.container}
+    // > */}
             <StatusBar
                 translucent
                 backgroundColor="transparent"
@@ -88,7 +120,7 @@ const OnboardingScreen = () => {
                 {currentIndex < slides.length - 1 && (
                     <View style={styles.pagination}>
                         {slides.map((_, i) => {
-                            const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
+                            const inputRange = [(i - 1) * Screen.width, i * Screen.width, (i + 1) * Screen.width];
                             const dotWidth = scrollX.interpolate({
                                 inputRange,
                                 outputRange: [30, 30, 30],
@@ -111,7 +143,7 @@ const OnboardingScreen = () => {
                     <TouchableOpacityView containerStyle={styles.skipButtons} onPress={() => {
                         setItem(USER_VISITED, "userVisited");
                         NavigationService.replace(routes.NAVIGATION_AUTH_STACK)}}>
-                        <AppText type={EIGHTEEN}  >Skip</AppText>
+                        <AppText type={EIGHTEEN} color={BUTTON_TEXT} >Skip</AppText>
                     </TouchableOpacityView>
                 ) : null}
 
@@ -131,22 +163,26 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.white,
-        // paddingBottom: 10
+        // paddingVertical: 20
     },
     image: {
-        width,
-        height,
-        justifyContent: 'flex-end',
-        paddingBottom: vs(200),
+        width:Screen.width,
+        height:"100%",
+        justifyContent: "center",
         alignItems: 'center',
+        backgroundColor:colors.white,
     },
     textWrapper: {
         paddingHorizontal: 24,
         alignItems: 'center',
+        top:"20%"
+    //     position:'absolute',
+    //    bottom:"20%"
     },
     description: {
         textAlign: 'center',
-        marginTop: 30
+        marginTop: 30,
+        lineHeight:ms(27)
     },
     pagination: {
         flexDirection: 'row',
@@ -165,7 +201,7 @@ const styles = StyleSheet.create({
     },
     skipButtons: {
         position: 'absolute',
-        bottom: 30,
+        bottom: 35,
         width: '100%',
         alignItems: 'flex-end',
     },

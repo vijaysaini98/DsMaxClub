@@ -12,6 +12,7 @@ import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import { NoInternetModal, ServerCheckComp } from "@components/NoInternetConnections";
 import { commonStyles } from "@theme/commonStyles";
 import { BaseUrlConfig } from "@config/config";
+import RootComponent from "./src/RootComponent";
 
 
 const App = () => {
@@ -49,7 +50,7 @@ const App = () => {
     <GestureHandlerRootView style={commonStyles.flex}>
       <SafeAreaProvider >
         <Provider store={store}>
-          <BottomSheetModalProvider>
+          {/* <BottomSheetModalProvider>
             <SafeAreaView style={styles.safeArea} edges={['bottom']}>
               <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
               <NoInternetModal
@@ -58,7 +59,10 @@ const App = () => {
                <ServerCheckComp visible={BaseUrlConfig.ENVIRONMENT} />
               <Navigator />
             </SafeAreaView>
-          </BottomSheetModalProvider>
+          </BottomSheetModalProvider> */}
+          <RootComponent>
+            <Navigator />
+          </RootComponent>
         </Provider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

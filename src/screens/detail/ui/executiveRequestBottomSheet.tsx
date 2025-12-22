@@ -1,6 +1,6 @@
-import { Keyboard, StyleSheet } from 'react-native';
+import { Image, Keyboard, StyleSheet, View } from 'react-native';
 import React, { useCallback, useRef, useState } from 'react';
-import { AppText, FOURTEEN, SEMI_BOLD, SIXTEEN, WHITE } from '@components/AppText';
+import { AppText, ERROR_TEXT, FOURTEEN, MEDIUM, SEMI_BOLD, SIXTEEN, TWELVE, WHITE } from '@components/AppText';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
@@ -10,8 +10,10 @@ import { colors } from '@theme/colors';
 import { ms, s, vs } from 'react-native-size-matters';
 import Toast from 'react-native-simple-toast';
 import { emailRegex } from '@utils/index';
+import styles from '../styles';
+import { checkIcon, unCheckIcon } from '@helper/imagesAssets';
 
-const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss,onSubmit }) => {
+const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss,onSubmit,setAcceptContent,acceptContent }) => {
     const dispatch = useAppDispatch();
     const { isBtnLoading } = useAppSelector((state) => state?.home);
 
@@ -149,6 +151,29 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
                         inputContainerStyle={bottomSheetStyles.inputContainer}
                         inputStyle={bottomSheetStyles.inputText}
                     />
+                    <View style={styles.acceptTermsConditionContainer}>
+                                      <TouchableOpacityView
+                                        onPress={() => setAcceptContent(!acceptContent)}
+                                        style={styles.acceptTermsConditionBtn}>
+                                        {acceptContent ?
+                                          <Image
+                                            source={checkIcon}
+                                            style={{ height: s(24), width: s(24) }}
+                                            resizeMode={"contain"}
+                                            tintColor={colors.buttonBg}
+                                          />
+                                          : <Image
+                                            source={unCheckIcon}
+                                            style={{ height: s(20), width: s(20) }}
+                                            resizeMode={"contain"}
+                                            tintColor={colors.buttonBg}
+                                          />
+                                        }
+                                        <AppText type={FOURTEEN} weight={SEMI_BOLD} >{"Accept the Term&Conditions"}
+                                            <AppText type={TWELVE} color={ERROR_TEXT} weight={SEMI_BOLD}>{"*"}</AppText>
+                                        </AppText>
+                                      </TouchableOpacityView>
+                                    </View>
                     <TouchableOpacityView
                         onPress={handleSubmit}
                         style={bottomSheetStyles.submitBtn}

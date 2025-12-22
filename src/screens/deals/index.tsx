@@ -16,6 +16,7 @@ import { defaultBookletImage } from '@helper/imagesAssets';
 import { setVendorUserList } from '@actions/deals/dealSlice';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
+import moment from 'moment';
 
 const Deal = () => {
 
@@ -44,7 +45,6 @@ const Deal = () => {
 
 
   const renderItem = ({ item, index }: any) => {
-
     return (
       <View style={styles.shadowContainer}>
         <Card item={item} index={index}
@@ -56,6 +56,7 @@ const Deal = () => {
           name={item?.name}
           price={item.price}
            address={ item?.location.length>0 ? item?.location[0]?.location : "---"}
+            date={item?.validity_months ? `Up to ${item?.validity_months} months` : `Validity: ${moment(item?.start_date).format("D-MMM-YYYY")} - ${ moment(item?.end_date).format("D-MMM-YYYY")}`}
           handleCardOnPress={() => {
             dispatch(setVendorUserList([]))
             NavigationService.navigate(VENDOR_USER_LIST, { title: item?.name, booklet_id: item?.uuid })

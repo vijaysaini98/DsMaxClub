@@ -41,7 +41,8 @@ const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
                         // NavigationService.navigate(REQUEST_COUPON_LIST_SCREEN, { booklet_id: item?.uuid })
                     }}
                     status={item?.status}
-                    date={moment(item?.created_at, "YYYY-MM-DD ").format("D MMM YYYY ")}
+                    date={`Request: ${moment(item?.created_at, "YYYY-MM-DD ").format("D MMM YYYY ")}`}
+                    shortDesc={item?.short_desc}
                 />
             </View>
         )

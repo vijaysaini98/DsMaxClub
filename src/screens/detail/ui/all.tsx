@@ -60,7 +60,8 @@ const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
                     <CommonCard
                         data={item}
                         heading={item?.heading}
-                        description={item?.short_desc}
+                        // description={item?.short_desc}
+                        htmlContent={item?.description}
                         onViewPress={() => onViewPress(item)}
                         btnStyle={styles.viewBtnStyle}
                         status={item?.coupon_type_id == 1 ? 'Free' : ""}
@@ -68,6 +69,7 @@ const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
                         statusTextColor={item?.coupon_type_id == 1 && WHITE}
                         location={from == "ComboBooklet" ? item?.locations : null}
                         vendorName={item?.vendor?.name}
+                        shortDesc={item?.vendor?.short_desc}
                     />
                 )
             },

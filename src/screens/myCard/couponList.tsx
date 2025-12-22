@@ -62,6 +62,8 @@ const CouponList = ({ data, route }) => {
     const renderItem = useMemo(
         () =>
             ({ item, index }: { item: CardItem, index: number }) => {
+                console.log("item",item);
+                
                 return (
                     <CommonCard
                         key={index}
@@ -77,6 +79,7 @@ const CouponList = ({ data, route }) => {
                         statusTextColor={item?.coupon_type_id == 1 && WHITE}
                         viewBtnLoader={item?.uuid == selectedId && isBtnLoading}
                         vendorName={item?.vendor_name}
+                        shortDesc={item?.short_description}
                     />
                 )
             },

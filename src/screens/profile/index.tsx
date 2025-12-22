@@ -14,6 +14,7 @@ import { ms, s, vs } from 'react-native-size-matters/extend'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import DeleteAccountModal from '@components/DeleteAccountModal'
 import LogOutModal from '@components/LogoutModal'
+import { shareToAny } from '@utils/index'
 
 export const MoreTabButton = ({ title, leftIcon, handleOnPress }) => {
   return (
@@ -88,7 +89,13 @@ const Profile = () => {
         <MoreTabButton
           leftIcon={shareIcon}
           title={"Share App"}
-          handleOnPress={() => { }}
+          handleOnPress={() => {
+            shareToAny(
+            `Save big on food, hotels, events & trips with DS Max Club Trip Experts 🎉
+            Exclusive deals & unbeatable offers — all in one app!
+            👉 Download now & start saving instantly
+            https://play.google.com/store/apps/details?id=com.dsmaxclub`)
+          }}
         />
         <MoreTabButton
           leftIcon={termsCondIcon}

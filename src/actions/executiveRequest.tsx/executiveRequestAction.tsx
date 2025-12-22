@@ -53,7 +53,6 @@ export const getExecutiveRequestUserDetails = (data?: any, onSucess?: any, onFai
     try {
         dispatch(setBtnLoading(true));
         const response = await API.executiveRequestApi.execuitve_Request_User_Details(data);
-        console.log("responnse",response);
         
         if (response?.status == 200) {
             // dispatch(setCouponCode(response?.data))
@@ -77,8 +76,7 @@ export const executiveRequestStatusChange =
         try {
             dispatch(setLoading(true));
             const response = await API.executiveRequestApi.executive_Request_Status_Change(data);
-            console.log("response",response);
-            
+          
             if (response?.status == 200) {
                 // dispatch(setCouponCode(response?.data))
                  onSucess && onSucess()

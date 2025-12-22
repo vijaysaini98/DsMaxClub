@@ -14,6 +14,8 @@ const REST_PASSWORD: string = `${BASE_URL}reset-password`;
 const CUSTOMER_SEND_OTP_VERIFY: string = `${BASE_URL}send-customer-email-otp`;
 const DELETE_ACCOUNT: string = `${BASE_URL}delete-customer-account`;
 
+const APP_VERSION : string = `${BASE_URL}get-userapp-version`;
+
 // userApi
 const USER_PROFILE: string = `${BASE_URL}edit-profile`;
 const UPDATE_USER_PROFILE: string = `${BASE_URL}update-profile`;
@@ -66,6 +68,8 @@ const config = {
   CITY_LIST,
   CUSTOMER_SEND_OTP_VERIFY,
   DELETE_ACCOUNT,
+
+  APP_VERSION,
 
   USER_PROFILE,
   UPDATE_USER_PROFILE,

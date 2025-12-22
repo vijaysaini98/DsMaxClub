@@ -13,6 +13,7 @@ import { defaultBookletImage } from '@helper/imagesAssets';
 import { getMyCardBookletList, getMyCardCouponList } from '@actions/myCard/myCardAction';
 import Toast from 'react-native-simple-toast';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
+import moment from 'moment';
 
 const MyCardList = ({ value }) => {
   const dispatch = useAppDispatch();
@@ -55,7 +56,6 @@ const MyCardList = ({ value }) => {
     ({ item, index }) => {
       return (
         <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
-          {/* <AppText style={{alignSelf:'center'}}>{index + 1}</AppText> */}
           <Card
             item={item}
             index={index}
@@ -73,11 +73,16 @@ const MyCardList = ({ value }) => {
               if (item?.tab_status === 'expired') {
                 Toast.show('Booklet has been Expired', Toast.LONG);
               }
-               else {
+              else {
                 handleOnPress(item);
               }
             }}
             status={item?.tab_status}
+            shortDesc={item?.short_desc}
+            date={`Valid From: ${moment(item?.purchase_date).format("D-MMM-YYYY")} - ${item?.validity_months
+                ? `Up to ${item?.validity_months} months`
+                : `Up to ${moment(item?.end_date).format("D-MMM-YYYY")}`
+              }`}
           />
         </View>
       );
@@ -90,8 +95,8 @@ const MyCardList = ({ value }) => {
       {/* {isBtnLoading && <SpinnerSecond/>} */}
       {isLoading && !isRefresh ? (
         // <Loader />
-        <View style={{paddingHorizontal:s(16)}}>
-        <CategoriesListShimmerLoader/>
+        <View style={{ paddingHorizontal: s(16) }}>
+          <CategoriesListShimmerLoader />
         </View>
       ) : (
         <FlatList

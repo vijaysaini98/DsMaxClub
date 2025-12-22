@@ -7,7 +7,8 @@ export const initialState = {
   cityList: [],
   termsCondition:{},
   privacyPolicy:{},
-  howToRedeem:{}
+  howToRedeem:{},
+  appInfo:{},
 };
 
 export const authSlice = createSlice({
@@ -35,9 +36,12 @@ export const authSlice = createSlice({
      setHowToRedeem:(state,{payload})=>{
       state.howToRedeem = payload;
     },
+   setAppinfo : (state,{payload})=>{
+      state.appInfo = payload
+    },
     resetAuth: () => initialState, 
   },
 });
 export const { setLoading, setBtnLoading, setUserData, setCityList,
-  setTermCondition,setPrivacyPolicy,setHowToRedeem, resetAuth }: any = authSlice.actions;
+  setTermCondition,setPrivacyPolicy,setHowToRedeem, resetAuth,setAppinfo }: any = authSlice.actions;
 export const authReducer = authSlice.reducer;

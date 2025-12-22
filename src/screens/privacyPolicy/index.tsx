@@ -31,7 +31,7 @@ const PrivacyPolicy = () => {
     useEffect(() => {
         dispatch(getPrivacy_TermCondition("privacy-policy"))
     }, [])
-
+    
     return (
         <AppSafeAreaView style={commonStyles.mainContainer}>
             <View style={styles.containerStyle}>

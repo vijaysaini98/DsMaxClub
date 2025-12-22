@@ -1,6 +1,6 @@
 import { Animated, Image, Keyboard, Linking, StatusBar, View } from 'react-native'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { backIcon, checkIcon, defaultBookletImage, downArrowIcon, locationIcon, shareIcon, unCheckIcon } from '@helper/imagesAssets'
+import { backIcon, checkIcon, defaultBookletImage, downArrowIcon, helpLineIcon, locationIcon, phoneIcon, shareIcon, unCheckIcon } from '@helper/imagesAssets'
 import { AppText, BOLD, BUTTON_TEXT, MEDIUM, PLACEHOLDER, SIXTEEN, TEN, THIRTEEN, TWELVE, TWENTY_TWO, WHITE } from '@components/AppText'
 import { colors } from '@theme/colors'
 import { TabView, SceneMap } from 'react-native-tab-view'
@@ -10,7 +10,7 @@ import About from './ui/about'
 import Gallery from './ui/gallery'
 import Terms_Condition from './ui/terms_condition'
 import styles from './styles'
-import { extractLatLngFromUrl, openMap, shareToAny, width } from '@utils/index'
+import { extractLatLngFromUrl, openMap, openPhoneDialer, shareToAny, width } from '@utils/index'
 import { RenderTabBar } from '@components/RenderTabBar'
 import { IMGE_URL } from '@services/config'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
@@ -27,7 +27,7 @@ import RequestBottomSheet from './ui/requestBottomSheet'
 import ExecutiveRequestBottomSheet from './ui/executiveRequestBottomSheet'
 import HowToRedeem from './ui/howToRedeem'
 import ViewDetailsBottomSheet from './ui/viewDetailsBottomSheet'
-import { s } from 'react-native-size-matters/extend'
+import { s, vs } from 'react-native-size-matters/extend'
 import { commonStyles } from '@theme/commonStyles'
 const initialLayout = { width: width };
 
@@ -151,11 +151,11 @@ const Details = ({ route }) => {
     let apidata = {
       booklet_id: data.uuid
     }
-    if (!acceptContent) {
-      setIndex(2)
-      Toast.show("Accept the booklet Terms and Condition", Toast.LONG);
-    }
-    else if (userData?.user_type == "1") {
+    // if (!acceptContent) {
+    //   setIndex(2)
+    //   Toast.show("Accept the booklet Terms and Condition", Toast.LONG);
+    // }
+    if (userData?.user_type == "1") {
       executiveBottomSheetRef?.current?.expand()
     }
     else {
@@ -209,10 +209,18 @@ const Details = ({ route }) => {
       executive_code: _data?.executiveCode,
       quantity: _data?.bookletQty
     }
-    dispatch(bookletRequest(apidata, handleSucess))
+    if (!acceptContent) {
+      // setIndex(2)
+      Toast.show("Accept the booklet Terms and Condition", Toast.LONG);
+    }
+    else {
+      dispatch(bookletRequest(apidata, handleSucess))
+    }
+
   }
 
   const handleExecutiveSubmit = (_data) => {
+    Keyboard?.dismiss()
     let apiData = {
       name: _data?.customerName,
       email: _data?.customerEmail,
@@ -220,9 +228,17 @@ const Details = ({ route }) => {
       quantity: _data?.bookletQty,
       booklet_id: data.uuid
     }
-    Keyboard?.dismiss()
-    dispatch(executiveBookletRequest(apiData, handleSucess))
+    if (!acceptContent) {
+      // setIndex(2)
+      Toast.show("Accept the booklet Terms and Condition", Toast.LONG);
+    }
+    else {
+      dispatch(executiveBookletRequest(apiData, handleSucess))
+    }
+
   }
+
+  const isExpired = moment(data?.end_date, "YYYY-MM-DD").isBefore(moment());
 
 
   return (
@@ -250,7 +266,7 @@ const Details = ({ route }) => {
                 resizeMode='contain'
               />
             </TouchableOpacityView>
-            <TouchableOpacityView
+            {/* <TouchableOpacityView
               style={styles.backBtnStyle}
               onPress={handleShareBtn}
             >
@@ -260,7 +276,7 @@ const Details = ({ route }) => {
                 tintColor={colors.disTextColor}
                 resizeMode='contain'
               />
-            </TouchableOpacityView>
+            </TouchableOpacityView> */}
           </View>
         </FastImage>
       </Animated.View>
@@ -292,7 +308,7 @@ const Details = ({ route }) => {
           >
             {data?.client?.name ? data?.client?.name : data?.name}
           </AppText>
-          <TouchableOpacityView
+          {/* <TouchableOpacityView
             style={styles.backBtnStyle}
             onPress={handleShareBtn}
           >
@@ -302,7 +318,7 @@ const Details = ({ route }) => {
               tintColor={colors.disTextColor}
               resizeMode="contain"
             />
-          </TouchableOpacityView>
+          </TouchableOpacityView> */}
         </View>
       </Animated.View>
       <View style={styles.secondContainer}>
@@ -328,20 +344,46 @@ const Details = ({ route }) => {
         </Animated.View>
         {(data?.client?.short_desc || data?.client_short_desc) &&
           <AppText type={SIXTEEN} color={PLACEHOLDER} style={styles.disTextStyle}>
-            {data?.client?.short_desc ? data?.client?.short_desc : data?.client_short_desc}
+            {`${data?.client?.short_desc ? data?.client?.short_desc : data?.client_short_desc}`}
           </AppText>}
+        {/* {data?.client?.mobile && (
+            <TouchableOpacityView
+            onPress={()=>openPhoneDialer(data?.client?.mobile)}
+            style={{flexDirection:'row',alignItems:'center',marginTop:vs(4),gap:5}}
+            >
+              <Image
+              source={helpLineIcon}
+              style={{width:s(16),height:s(16),tintColor:colors.buttonBg}}
+              resizeMode={"contain"}
+              />
+              <AppText type={TWELVE} weight={MEDIUM}>{data?.client?.mobile}</AppText>
+            </TouchableOpacityView>
+          )} */}
 
-        <AppText type={THIRTEEN} color={PLACEHOLDER} style={styles.disTextStyle}>
+        <AppText type={THIRTEEN} color={isExpired ? BUTTON_TEXT : PLACEHOLDER} style={styles.disTextStyle}>
           {`Validity: ${data?.date_type == 1
             ? `${data?.validity_months || "N/A"} months `
             : data?.start_date && data?.end_date
               ? `${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - ${moment(
                 data.end_date,
                 "YYYY-MM-DD"
-              ).format("D MMM YYYY")}`
+              ).format("D MMM YYYY")} ${isExpired ? "(Expired)" : ""}`
               : "N/A"
             }`}
+          {/* {`Validity: ${data?.date_type == 1
+              ? `${data?.validity_months || "N/A"} months`
+              : data?.start_date && data?.end_date
+                ? moment(data?.end_date, "YYYY-MM-DD").isSameOrAfter(moment())
+                  ? `${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - ${moment(
+                    data.end_date,
+                    "YYYY-MM-DD"
+                  ).format("D MMM YYYY")}`
+                  : "Expired"
+                : "N/A"
+            }`} */}
         </AppText>
+
+        {data?.maximum_redeem && <AppText type={THIRTEEN} style={styles.disTextStyle}>{`Free Gift Coupons Maximum Redeem: ${data?.maximum_redeem}`}</AppText>}
 
         {data?.location?.length > 0 && (
           <View
@@ -362,16 +404,17 @@ const Details = ({ route }) => {
                 type={THIRTEEN} color={BUTTON_TEXT}  >
                 {data?.location[0]?.location}</AppText>
             </TouchableOpacityView>
-            <TouchableOpacityView
-              onPress={() => sheetRef.current?.present()}
-              style={styles.downArrowBtnIcon}
-            >
-              <Image
-                source={downArrowIcon}
-                style={styles.locationIcon}
-                resizeMode='contain'
-              />
-            </TouchableOpacityView>
+            {data?.location?.length > 1 &&
+              <TouchableOpacityView
+                onPress={() => sheetRef.current?.present()}
+                style={styles.downArrowBtnIcon}
+              >
+                <Image
+                  source={downArrowIcon}
+                  style={styles.locationIcon}
+                  resizeMode='contain'
+                />
+              </TouchableOpacityView>}
           </View>
         )
         }
@@ -400,13 +443,12 @@ const Details = ({ route }) => {
           </View>
           :
           <>
-            {
+            {/* {
               index == 2 && (
                 <View style={styles.acceptTermsConditionContainer}>
                   <TouchableOpacityView
                     onPress={() => setAcceptContent(!acceptContent)}
                     style={styles.acceptTermsConditionBtn}>
-                    {/* <View style={styles.acceptView(acceptContent)} /> */}
                     {acceptContent ?
                       <Image
                         source={checkIcon}
@@ -425,18 +467,18 @@ const Details = ({ route }) => {
                   </TouchableOpacityView>
                 </View>
               )
-            }
+            } */}
 
             <TouchableOpacityView
               onPress={handleOnPress}
               style={styles.buyBtnStyle(
                 bookletDetailAllDeals?.request_status === "Pending" ||
-                bookletDetailAllDeals?.request_status === "Out of Stock"
+                bookletDetailAllDeals?.request_status === "Out of Stock" || isExpired
               )}
               loader={isBtnLoading}
               disabled={
                 bookletDetailAllDeals?.request_status === "Pending" ||
-                bookletDetailAllDeals?.request_status === "Out of Stock"
+                bookletDetailAllDeals?.request_status === "Out of Stock" || isExpired
               }
             >
               <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
@@ -444,7 +486,9 @@ const Details = ({ route }) => {
                   ? "Out Of Stock"
                   : bookletDetailAllDeals?.request_status === "Pending"
                     ? "REQUEST IN PENDING"
-                    : "REQUEST"}
+                    : isExpired
+                      ? "EXPIRED"
+                      : "REQUEST"}
               </AppText>
             </TouchableOpacityView>
           </>
@@ -459,6 +503,8 @@ const Details = ({ route }) => {
         bottomSheetRef={bottomSheetRef}
         snapPoints={snapPoints}
         onSubmit={(_data) => handleSubmit(_data)}
+        acceptContent={acceptContent}
+        setAcceptContent={setAcceptContent}
         onDismiss={() => {
           Keyboard?.dismiss()
           bottomSheetRef.current?.close();
@@ -468,6 +514,8 @@ const Details = ({ route }) => {
         bottomSheetRef={executiveBottomSheetRef}
         snapPoints={executiveSnapPoints}
         onSubmit={(_data) => handleExecutiveSubmit(_data)}
+        setAcceptContent={setAcceptContent}
+        acceptContent={acceptContent}
         handleDismiss={() => {
           Keyboard?.dismiss()
           executiveBottomSheetRef.current?.close();

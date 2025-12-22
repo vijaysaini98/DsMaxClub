@@ -61,7 +61,6 @@ const Scan = () => {
       try {
         setCameraIsLoading(true)
         const scanData = JSON.parse(value);
-        console.log("scanData", scanData);
 
         const payload = {
           // user_booklet_couponid: scanData?.uuid,

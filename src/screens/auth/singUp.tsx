@@ -77,7 +77,8 @@ const SingUp = () => {
         else {
             let data = {
                 email: state.email,
-                mobile: state?.phone
+                mobile: state?.phone,
+                name:state?.name
             }
 
             // sheetRef.current?.open();

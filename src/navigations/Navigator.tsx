@@ -3,9 +3,10 @@ import { NavigationContainer, DarkTheme } from "@react-navigation/native";
 import "react-native-gesture-handler";
 import NavigationService from "./NavigationService";
 import * as React from "react";
-import { RootStackScreen } from "./StackNavigation";
+import { MyAuthLoadingStack, RootStackScreen } from "./StackNavigation";
+import { createStackNavigator } from "@react-navigation/stack";
 
-// const Stack = createStackNavigator();
+const Stack = createStackNavigator();
 
 // const options = { ...TransitionPresets.SlideFromRightIOS, headerShown: false };
 
@@ -18,7 +19,18 @@ const Navigator = () => {
         NavigationService.setTopLevelNavigator(navigationRef);
       }}
     >
-      <RootStackScreen />
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen
+          name="MyAuthLoadingStack"
+          component={MyAuthLoadingStack}
+        />
+      </Stack.Navigator>
+      {/* <RootStackScreen /> */}
+      {/* <MyAuthLoadingStack/> */}
     </NavigationContainer>
   );
 };
