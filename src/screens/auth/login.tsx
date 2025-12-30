@@ -160,10 +160,10 @@ isLeftIcon={true}
                 <AppText
                     type={THIRTEEN}
                     weight={MEDIUM}
-                    color={PLACEHOLDER}
-                    // style={{
-                    //     color: colors.buttonBg,
-                    // }}
+                    // color={PLACEHOLDER}
+                    style={{
+                        color: colors.borderColor,
+                    }}
                 >
                     {" "}
                     V-{`${version} (${buildVersion})`}

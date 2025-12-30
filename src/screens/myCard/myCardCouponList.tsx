@@ -135,6 +135,8 @@ import ViewDetailsBottomSheet from '@screens/home/ui/viewDetailsBottomSheet'
 const MyCardCouponList = ({ route }) => {
   const dispatch = useAppDispatch()
   const { myCardCouponList, isLoading } = useAppSelector((state) => state?.myCard)
+  console.log(myCardCouponList,'myCardCouponList=========>>>>>>>>>');
+  
   const { title, user_booklet_uuid, tab_status, booklet_uniquecode } = route?.params ?? {}
 
   const viewDetailSheet = useRef()
@@ -175,7 +177,10 @@ const MyCardCouponList = ({ route }) => {
   }
 
   const renderItem = ({ item }) => {
+    console.log(item,'item==================>>>');
+    
     return (
+    
       <CommonCard
         key={item.id}
         data={item}

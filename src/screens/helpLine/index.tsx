@@ -54,7 +54,7 @@ const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] = React.useState
           <ContactTabButton
             icon={helpLineIcon}
             title="Call US"
-            text="We’re here to help you +91-9785053501 OR +91-9773399121"
+            text="We’re here to help you +919780973501"
             // handleOnPress={() => openPhoneDialer("+91-9785053501")}
             handleOnPress={()=> setIsPhoneDialerModalVisible(true)}
           />

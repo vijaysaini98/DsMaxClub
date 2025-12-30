@@ -1,7 +1,7 @@
 import { StyleSheet, Image, View, Dimensions } from 'react-native';
 import React, { useRef } from 'react';
 import { colors } from '../theme/colors';
-import { AppText, BLACK, BOLD, BUTTON_TEXT, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, TEN, THIRD, TWELVE, WHITE } from './AppText';
+import { AppText, BLACK, BOLD, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, TEN, THIRD, TWELVE, WHITE } from './AppText';
 import { CardProps } from 'src/types/common';
 import TouchableOpacityView from './TouchableOpacityView';
 import { downArrowIcon, locationIcon, shareIcon } from '@helper/imagesAssets';
@@ -40,6 +40,10 @@ const CommonCard = ({
   shortDesc
 }: CardProps) => {
   if (!data) return null;
+
+  console.log(htmlContent, 'ttml contennt');
+  console.log(description, 'description----=====>->>');
+
 
   const sheetRef = useRef<any>(null);
 
@@ -99,7 +103,7 @@ const CommonCard = ({
               <RenderHTML
                 contentWidth={width}
                 source={{ html: htmlContent }}
-
+                baseStyle={{ color: colors.buttonText }}
               // tagsStyles={{
               //     h1: { fontSize: TWENTY_TW, fontWeight: 'bold', color: colors.black },
               //     h2: { fontSize: TWENTY, fontWeight: 'bold', color: colors.black },
@@ -114,7 +118,7 @@ const CommonCard = ({
           ) :
           (<AppText
             // numberOfLines={2}
-            style={styles.description}>{description}</AppText>)
+            style={styles.description} type={EIGHTEEN} weight={BOLD}>{description}</AppText>)
         }
         {/* </View> */}
 
@@ -259,9 +263,10 @@ const styles = StyleSheet.create({
     // fontSize: ms(12),
   },
   description: {
+    // marginVertical: vs(8),
     marginVertical: vs(8),
     // width: "90%",
-    letterSpacing: (0.5)
+    letterSpacing: (0.5),
   },
   priceRow: {
     flexDirection: 'row',

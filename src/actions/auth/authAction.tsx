@@ -344,6 +344,7 @@ export const getPrivacy_TermCondition =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.pageApi(data);
+      
       if (response?.status == 200) {
         if (data == "privacy-policy") {
           dispatch(setPrivacyPolicy(response?.data))
