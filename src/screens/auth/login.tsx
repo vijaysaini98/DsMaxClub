@@ -73,16 +73,15 @@ const Login = () => {
         dispatch(verifyOtp(data, handleOtpVerify))
     };
 
+
+    
+
     return (
         <AppSafeAreaView
             isSecond
             bgImage={authBg}
             style={styles.mainContainer}>
             <KeyBoardAware style={styles.container}>
-                {/* <ToolBar
-                    title='Login'
-                    isLeftIcon={true}
-                    /> */}
                 <View style={styles.heading}>
                     <FastImage
                         source={logoImage}
