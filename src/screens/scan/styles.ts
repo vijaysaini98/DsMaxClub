@@ -37,6 +37,12 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderRadius: 12,
   },
+  cameraContainer: { 
+    flex: 1, 
+    backgroundColor: colors.tabBg, 
+    width: '100%', 
+    justifyContent: 'center' 
+  },
   noPermissionContainer: {
     flex: 1,
     justifyContent: 'center',

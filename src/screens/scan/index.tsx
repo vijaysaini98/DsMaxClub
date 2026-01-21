@@ -4,7 +4,7 @@ import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import Header from '@components/Header';
 import { AppText, FOURTEEN, MEDIUM, SEMI_BOLD, TWELVE, WHITE } from '@components/AppText';
 import styles from './styles';
-import { useAppDispatch, useAppSelector } from '@redux/hooks';
+import { useAppDispatch } from '@redux/hooks';
 import {
   Camera,
   useCameraDevice,
@@ -16,15 +16,14 @@ import { REDEEM_SUCCESSFULL_SCREEN } from '@navigations/routes';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import { commonStyles } from '@theme/commonStyles';
 import { Loader } from '@components/Spinner';
-import { enterBarCouponCode, scanCouponCode } from '@actions/deals/dealAction';
+import { enterBarCouponCode } from '@actions/deals/dealAction';
 import Toast from 'react-native-simple-toast';
 import BottomSheet from '@gorhom/bottom-sheet';
 import BarCodeBottomSheet from './barCodeBottomSheet';
 import { setVendorBookletCouponist } from '@actions/deals/dealSlice';
-import { ms, s, vs } from 'react-native-size-matters/extend';
 import { closeIcon, torchOfIcon, torchOnIcon } from '@helper/imagesAssets';
 import { colors } from '@theme/colors';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
 const Scan = () => {
   const dispatch = useAppDispatch();
@@ -42,10 +41,6 @@ const Scan = () => {
   const device = useCameraDevice('back');
   const { requestPermission: requestCameraPermission } = useCameraPermission();
 
-  // useEffect(()=>{
-  //   handleCameraPermission()
-  // },[])
-
   useEffect(() => {
     bottomSheetRef.current?.close();
     setEnableOnCodeScanned(false)
@@ -61,14 +56,9 @@ const Scan = () => {
       try {
         setCameraIsLoading(true)
         const scanData = JSON.parse(value);
-
         const payload = {
-          // user_booklet_couponid: scanData?.uuid,
-          // user_id: scanData?.user_uuid,
           generated_code: scanData?.generated_code,
         };
-
-        // dispatch(scanCouponCode(payload, handleSuccess, setCameraIsLoading(false)));
         dispatch(enterBarCouponCode(payload, handleSuccess,setCameraIsLoading(false)));
       } catch (err) {
         Toast.show('Invalid QR Code', Toast.LONG);
@@ -108,7 +98,6 @@ const Scan = () => {
   }
 
   const handleBarCodeSucess = () => {
-    // dispatch(setVendorBookletCouponist([]))
     setTimeout(()=>{
       NavigationService.navigate(REDEEM_SUCCESSFULL_SCREEN);
     },200)
@@ -119,7 +108,7 @@ const Scan = () => {
   const CameraView = useMemo(() => {
     if (!device) return null;
     return (
-      <View style={{ flex: 1, backgroundColor: colors.tabBg, width: '100%', justifyContent: 'center' }}>
+      <View style={styles.cameraContainer}>
         <TouchableOpacityView
           style={styles.closeBtn}
           onPress={() => setEnableOnCodeScanned(false)}

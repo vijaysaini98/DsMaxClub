@@ -13,7 +13,6 @@ const VERIFY_OTP: string = `${BASE_URL}verify-otp`;
 const REST_PASSWORD: string = `${BASE_URL}reset-password`;
 const CUSTOMER_SEND_OTP_VERIFY: string = `${BASE_URL}send-customer-email-otp`;
 const DELETE_ACCOUNT: string = `${BASE_URL}delete-customer-account`;
-
 const APP_VERSION : string = `${BASE_URL}get-userapp-version`;
 
 // userApi

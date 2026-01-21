@@ -5,7 +5,7 @@ import Toast from "react-native-simple-toast";
 import { setIsRefresh } from "@actions/myCard/myCardSlice";
 
 export const getExecutiveRequestList =
-    (data?: any,isRefresh, onSucess?: any) => async (dispatch: AppDispatch) => {
+    (data?: any,isRefresh?:boolean, onSucess?: any) => async (dispatch: AppDispatch) => {
         try {
             dispatch(setLoading(true));
 isRefresh && dispatch(setIsRefresh(true))

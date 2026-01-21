@@ -25,7 +25,16 @@ export default function PhoneDialerModal({ visible, onClose }: any) {
                         style={styles.title}
                     >Contact Number</AppText>
                     <TouchableOpacityView
-                        onPress={() => openPhoneDialer("9780973501")}
+                        onPress={() => openPhoneDialer("9785053501")}
+                    >
+                        <AppText
+                            type={FOURTEEN}
+                            style={styles.message}>
+                            +91-9785053501
+                        </AppText>
+                    </TouchableOpacityView>
+                    <TouchableOpacityView
+                        onPress={() => openPhoneDialer("+91-9780973501")}
                     >
                         <AppText
                             type={FOURTEEN}
@@ -33,15 +42,6 @@ export default function PhoneDialerModal({ visible, onClose }: any) {
                             +91-9780973501
                         </AppText>
                     </TouchableOpacityView>
-                    {/* <TouchableOpacityView
-                        onPress={() => openPhoneDialer("+91-9773399121")}
-                    >
-                        <AppText
-                            type={FOURTEEN}
-                            style={styles.message}>
-                            +91-9773399121
-                        </AppText>
-                    </TouchableOpacityView> */}
                 </View>
             </TouchableOpacityView>
         </Modal>

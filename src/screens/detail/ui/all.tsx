@@ -65,7 +65,7 @@ const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
                         onViewPress={() => onViewPress(item)}
                         btnStyle={styles.viewBtnStyle}
                         status={item?.coupon_type_id == 1 ? 'Free' : ""}
-                        statusBg={item?.coupon_type_id == 1 && colors.lightGreen}
+                        statusBg={item?.coupon_type_id == 1 && colors.buttonBg}
                         statusTextColor={item?.coupon_type_id == 1 && WHITE}
                         location={from == "ComboBooklet" ? item?.locations : null}
                         vendorName={item?.vendor?.name}

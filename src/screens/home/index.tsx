@@ -40,6 +40,7 @@ import { Loader } from '@components/Spinner';
 import AddCityModal from '@components/AddCityModal';
 import HomeShimmerLoader from '@components/ShimerLoader/homeShimerLoader';
 import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomSheet';
+import { setCartList } from '@actions/cart/cartSlice';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -50,6 +51,8 @@ const Home: React.FC = () => {
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isAddCityModal, setIsAddCityModal] = useState(false);
+  const [isAddToCart, setIsAddToCart] = useState(false);
+  const [addTocarBookletId, setAddToCartBookletId] = useState<number | string>('');
 
   const sheetRef = useRef(null);
 
@@ -59,13 +62,13 @@ const Home: React.FC = () => {
     await dispatch(getComboBookletDeals());
     await dispatch(getCategoryBooklet());
     await dispatch(getBannerList({ screen_name: '1' }));
-    if (userData && userData?.otp_verified == 0) {
-      setTimeout(() => {
-        sheetRef?.current?.open();
-      }, 300)
+    // if (userData && userData?.otp_verified == 0) {
+    //   setTimeout(() => {
+    //     sheetRef?.current?.open();
+    //   }, 300)
 
-      dispatch(sendOtp({ email: userData?.email }))
-    }
+    //   dispatch(sendOtp({ email: userData?.email }))
+    // }
   };
 
   useEffect(() => {
@@ -122,14 +125,18 @@ const Home: React.FC = () => {
     }
   }
 
+  const handleAddToCardOnPress = (booklet: any) => {
+     dispatch(setCartList(booklet));
+     setAddToCartBookletId(booklet?.uuid);
+     setIsAddToCart(!isAddToCart);
+    NavigationService.navigate(routes.CART_SCREEN, { data: booklet, from: "Home" });
+  };
+
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
 
       {!show && !refreshing ? (
-        // <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        //   <ActivityIndicator size={'large'} color={colors.buttonBg} />
-        // </View>
         <HomeShimmerLoader />
       ) : (
         <ScrollView
@@ -181,6 +188,7 @@ const Home: React.FC = () => {
                       styles.categoryBookletContainer}>
                       <Card
                         index={i}
+                        // addtoCart={true}
                         item={booklet}
                         cardContainerStyle={comboBookletDeals?.category?.length < 2 && styles.cardContainerStyle}
                         imageBaseUrl={comboBookletDeals?.baseurl}
@@ -188,6 +196,7 @@ const Home: React.FC = () => {
                         handleCardOnPress={() => {
                           NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "ComboBooklet" });
                         }}
+                        
                         imageUrl={
                           booklet?.booklet
                             ? { uri: comboBookletDeals?.baseurl + booklet?.booklet }
@@ -196,6 +205,8 @@ const Home: React.FC = () => {
                         name={booklet?.name}
                         price={booklet?.price}
                         address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
+                        // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                       />
                     </View>
                   )
@@ -292,7 +303,7 @@ const Home: React.FC = () => {
           setIsAddCityModal(false);
         }}
       />
-      <CodeVerificationBottomSheet ref={sheetRef} onVerify={handleVerify} />
+      {/* <CodeVerificationBottomSheet ref={sheetRef} onVerify={handleVerify} /> */}
     </AppSafeAreaView>
   );
 };

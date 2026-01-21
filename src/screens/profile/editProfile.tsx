@@ -162,6 +162,7 @@ const EditProfile: React.FC = () => {
                         leftIcon={phoneIcon}
                         maxLength={10}
                         keyboardType="number-pad"
+                         editable={false}
                     />
 
                     {userData?.user_type == "2" &&

@@ -12,7 +12,7 @@ export const initialState = {
 };
 
 export const executiveRequestSlice = createSlice({
-    name: 'deal',
+    name: 'executive',
     initialState,
     reducers: {
         setLoading: (state, { payload }) => {

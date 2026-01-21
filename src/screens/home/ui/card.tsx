@@ -22,8 +22,11 @@ import {
 } from '@components/AppText';
 import { colors } from '@theme/colors';
 import {
+  addToCardIcon,
   defaultBookletImage,
+  filledCartIcon,
   helpLineIcon,
+  locationIcon,
   nearByIcon,
   restro2,
 } from '@helper/imagesAssets';
@@ -55,7 +58,10 @@ export interface CardProps {
   cardDisabled?: boolean;
   date?: string;
   mobile?: string;
-  shortDesc?: string
+  shortDesc?: string;
+  handleAddToCardOnPress?: () => void;
+  isAddedToCart?: boolean;
+  addtoCart?: boolean;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -72,7 +78,10 @@ const Card: React.FC<CardProps> = ({
   status,
   cardDisabled,
   date,
-  shortDesc
+  shortDesc,
+  handleAddToCardOnPress,
+  isAddedToCart,
+  addtoCart
   // mobile,
 }) => {
   const source: ImageSourcePropType =
@@ -94,6 +103,18 @@ const Card: React.FC<CardProps> = ({
         source={source}
         style={[styles.bannerImage, imageStyle]}
         resizeMode="cover" />
+      {addtoCart && (
+        <TouchableOpacityView
+        onPress={handleAddToCardOnPress}
+        style={{position:'absolute', top:10, right:10,backgroundColor:colors.white, padding:5, borderRadius:20}}
+        >
+        <FastImage
+        style={{width:20, height:20}}
+        source={isAddedToCart ? filledCartIcon : addToCardIcon}
+        resizeMode="contain"
+        />
+        </TouchableOpacityView>
+      )}
 
       <View style={styles.detailContainer}>
         <View style={styles.priceContainer}>

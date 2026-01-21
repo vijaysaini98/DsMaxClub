@@ -4,7 +4,7 @@ import { colors } from '@theme/colors'
 import Header from '@components/Header'
 import TouchableOpacityView from '@components/TouchableOpacityView'
 import { deleteAccountIcon, forwardIcon, hotelBookingIcon, logOutIcon, myCardIcon, myRequestIcon, privacyIcon, proflieIcon, shareIcon, termsCondIcon, travelBookingIcon, userIcon } from '@helper/imagesAssets'
-import { AppText, SIXTEEN } from '@components/AppText'
+import { AppText, MEDIUM, SIXTEEN, THIRTEEN } from '@components/AppText'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { deleteAccount, logout } from '../../actions/auth/authAction'
 import NavigationService from '@navigations/NavigationService';
@@ -15,6 +15,7 @@ import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import DeleteAccountModal from '@components/DeleteAccountModal'
 import LogOutModal from '@components/LogoutModal'
 import { shareToAny } from '@utils/index'
+import { buildVersion, version } from '@screens/auth/login'
 
 export const MoreTabButton = ({ title, leftIcon, handleOnPress }) => {
   return (
@@ -117,6 +118,21 @@ const Profile = () => {
           title={"Delete Account"}
           handleOnPress={() => setDeleteAccountModalVisible(true)}
         />
+
+ <View style={styles.versionContainer}>
+                <AppText
+                    type={THIRTEEN}
+                    weight={MEDIUM}
+                    // color={PLACEHOLDER}
+                    style={{
+                        color: colors.borderColor,
+                    }}
+                >
+                    {" "}
+                    V-{`${version} (${buildVersion})`}
+                </AppText>
+            </View>
+
       </ScrollView>
       <LogOutModal
         visible={logoutVisible}
@@ -164,5 +180,11 @@ const styles = StyleSheet.create({
   rightIconStyle: {
     width: s(14),
     height: s(11)
-  }
+  },
+  versionContainer:  {
+        marginTop: vs(30),
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: vs(10),
+    }
 })

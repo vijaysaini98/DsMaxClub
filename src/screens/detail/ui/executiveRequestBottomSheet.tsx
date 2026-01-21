@@ -13,13 +13,14 @@ import { emailRegex } from '@utils/index';
 import styles from '../styles';
 import { checkIcon, unCheckIcon } from '@helper/imagesAssets';
 
-const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss,onSubmit,setAcceptContent,acceptContent }) => {
+const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss, onSubmit, setAcceptContent, acceptContent }) => {
     const dispatch = useAppDispatch();
     const { isBtnLoading } = useAppSelector((state) => state?.home);
 
     const [state, setState] = useState({
         customerName: '',
         customerEmail: '',
+        customerMobile: '',
         bookletQty: "1",
         executiveCode: ''
     });
@@ -32,9 +33,16 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
 
     const handleSubmit = () => {
         Keyboard.dismiss()
-         if (emailRegex.test(state.customerEmail) === false) {
-             Toast.show("Invalid Email", Toast.LONG);
-        }else{
+        if (emailRegex.test(state.customerEmail) === false) {
+            Toast.show("Invalid Email", Toast.LONG);
+        }
+        else if (state.customerMobile === '') {
+            Toast.show("Mobile Number is required", Toast.LONG);
+        }
+        else if (state.customerMobile.length < 10) {
+            Toast.show("Mobile Number must be at least 10 digits", Toast.LONG);
+        }
+        else {
             onSubmit(state);
         }
     };
@@ -50,15 +58,15 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
         [],
     );
 
-    const onDismiss = ()=>{
+    const onDismiss = () => {
         handleDismiss()
         setState({
-        customerName: '',
-        customerEmail: '',
-        // customerMobile: '',
-        bookletQty: "1",
-        executiveCode: ''
-    })
+            customerName: '',
+            customerEmail: '',
+            // customerMobile: '',
+            bookletQty: "1",
+            executiveCode: ''
+        })
     }
 
     return (
@@ -118,7 +126,7 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
                         inputContainerStyle={bottomSheetStyles.inputContainer}
                         inputStyle={bottomSheetStyles.inputText}
                     />
-                    {/* <Input
+                    <Input
                         label='Mobile '
                         required
                         placeholder="Enter Mobile Number"
@@ -134,7 +142,7 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
                         inputContainerStyle={bottomSheetStyles.inputContainer}
                         maxLength={10}
                         inputStyle={bottomSheetStyles.inputText}
-                    /> */}
+                    />
                     <Input
                         label='Booklet Qty'
                         required
@@ -152,28 +160,28 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
                         inputStyle={bottomSheetStyles.inputText}
                     />
                     <View style={styles.acceptTermsConditionContainer}>
-                                      <TouchableOpacityView
-                                        onPress={() => setAcceptContent(!acceptContent)}
-                                        style={styles.acceptTermsConditionBtn}>
-                                        {acceptContent ?
-                                          <Image
-                                            source={checkIcon}
-                                            style={{ height: s(24), width: s(24) }}
-                                            resizeMode={"contain"}
-                                            tintColor={colors.buttonBg}
-                                          />
-                                          : <Image
-                                            source={unCheckIcon}
-                                            style={{ height: s(20), width: s(20) }}
-                                            resizeMode={"contain"}
-                                            tintColor={colors.buttonBg}
-                                          />
-                                        }
-                                        <AppText type={FOURTEEN} weight={SEMI_BOLD} >{"Accept the Term&Conditions"}
-                                            <AppText type={TWELVE} color={ERROR_TEXT} weight={SEMI_BOLD}>{"*"}</AppText>
-                                        </AppText>
-                                      </TouchableOpacityView>
-                                    </View>
+                        <TouchableOpacityView
+                            onPress={() => setAcceptContent(!acceptContent)}
+                            style={styles.acceptTermsConditionBtn}>
+                            {acceptContent ?
+                                <Image
+                                    source={checkIcon}
+                                    style={bottomSheetStyles.checkIconStyle}
+                                    resizeMode={"contain"}
+                                    tintColor={colors.buttonBg}
+                                />
+                                : <Image
+                                    source={unCheckIcon}
+                                    style={bottomSheetStyles.checkIconStyle}
+                                    resizeMode={"contain"}
+                                    tintColor={colors.buttonBg}
+                                />
+                            }
+                            <AppText type={FOURTEEN} weight={SEMI_BOLD} >{"Accept the Term&Conditions"}
+                                <AppText type={TWELVE} color={ERROR_TEXT} weight={SEMI_BOLD}>{"*"}</AppText>
+                            </AppText>
+                        </TouchableOpacityView>
+                    </View>
                     <TouchableOpacityView
                         onPress={handleSubmit}
                         style={bottomSheetStyles.submitBtn}
@@ -222,4 +230,8 @@ const bottomSheetStyles = StyleSheet.create({
         borderRadius: ms(12),
         marginTop: vs(10),
     },
+    checkIconStyle: { 
+        height: s(24),
+         width: s(24) 
+        }
 });

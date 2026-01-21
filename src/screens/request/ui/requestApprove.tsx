@@ -66,9 +66,9 @@ const RequestApprove = ({ route }) => {
         }));
     }
 
-    const renderUserCard = () => {
+    const renderUserCard = useCallback(() => {
         if (isLoading) {
-            return <UserCardShimer cardContainerStyle={styles.shimerContainer} />
+            return <UserCardShimer cardContainerStyle={styles.shimerContainer} />;
         }
 
         if (!executiveRequestUserDetails) return null;
@@ -81,7 +81,6 @@ const RequestApprove = ({ route }) => {
                 {requested_date && (
                     <View style={styles.dateContainer}>
                         <AppText type={TWELVE} style={styles.requestDateText} numberOfLines={1}>
-
                             {requested_date
                                 ? moment(requested_date, "DD MMMM YYYY, HH:mm").format("DD-MM-YYYY HH:mm")
                                 : ""}
@@ -96,10 +95,8 @@ const RequestApprove = ({ route }) => {
                         numberOfLines={2}
                         ellipsizeMode="tail"
                     >
-                        {`${name ?? ''} (${unique_code ?? ''})`
-                        }
+                        {`${name ?? ''} (${unique_code ?? ''})`}
                     </AppText>
-
                 </View>
 
                 {mobile && (
@@ -119,7 +116,7 @@ const RequestApprove = ({ route }) => {
                         </AppText>
                     </View>
                 )}
-                {tabstatus == 'Approved' && payment_image && (
+                {tabstatus === 'Approved' && payment_image && (
                     <>
                         <AppText type={TWELVE} weight={SEMI_BOLD}>{"Payment Details:-"}</AppText>
                         <View style={styles.approveImageBox}>
@@ -130,18 +127,16 @@ const RequestApprove = ({ route }) => {
                             />
                         </View>
                     </>
-                )
-                }
-                {tabstatus == 'Rejected' && reason && (
+                )}
+                {tabstatus === 'Rejected' && reason && (
                     <>
                         <AppText type={TWELVE} weight={SEMI_BOLD}>{"Reject Reason:-"}</AppText>
-                        <AppText type={FOURTEEN} >{reason}</AppText>
+                        <AppText type={FOURTEEN}>{reason}</AppText>
                     </>
-                )
-                }
+                )}
             </View>
         );
-    };
+    }, [isLoading, executiveRequestUserDetails]);
 
     return (
         <AppSafeAreaView style={commonStyles.mainContainer}>
@@ -152,7 +147,7 @@ const RequestApprove = ({ route }) => {
                 textWeight={SEMI_BOLD}
                 mainContainerStyle={styles.toolBarContainer} />
             {renderUserCard()}
-            {executiveRequestUserDetails?.tabstatus == 'Pending' && (
+            {executiveRequestUserDetails?.tabstatus === 'Pending' && (
                 <View style={styles.bottomContainer}>
                     <View style={styles.requestBtnWrapper}>
                         <TouchableOpacityView

@@ -50,7 +50,6 @@ const CouponList = ({ data, route }) => {
 
     const handleSucess = () => {
         setIsQrCodeVisible(true)
-        // setSelectedId(null)
         dispatch(getCoupon({ coupon_id, user_booklet_id }))
     }
 
@@ -62,8 +61,6 @@ const CouponList = ({ data, route }) => {
     const renderItem = useMemo(
         () =>
             ({ item, index }: { item: CardItem, index: number }) => {
-                console.log("item",item);
-                
                 return (
                     <CommonCard
                         key={index}

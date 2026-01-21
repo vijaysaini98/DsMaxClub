@@ -6,6 +6,7 @@ import { myCardReducer } from '@actions/myCard/myCardSlice';
 import { dealReducer } from '@actions/deals/dealSlice';
 import { historyReducer } from '@actions/history/historySlice';
 import { execuitveRequestReducer } from '@actions/executiveRequest.tsx/executiveRequestSlice';
+import { cartReducer } from '@actions/cart/cartSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   myCard: myCardReducer,
   deal: dealReducer,
   history: historyReducer,
-  executiveRequest:execuitveRequestReducer,
+  executiveRequest: execuitveRequestReducer,
+  cart: cartReducer,
 });
 
 export default rootReducer;

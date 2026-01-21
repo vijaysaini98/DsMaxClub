@@ -41,10 +41,6 @@ const CommonCard = ({
 }: CardProps) => {
   if (!data) return null;
 
-  console.log(htmlContent, 'ttml contennt');
-  console.log(description, 'description----=====>->>');
-
-
   const sheetRef = useRef<any>(null);
 
   return (

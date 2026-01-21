@@ -7,36 +7,28 @@ import Header from '@components/Header';
 import FastImage from 'react-native-fast-image';
 import { emailIcon2, helpLineIcon, locationIcon, mapImagge } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
-import { AppText, BLACK, BOLD, MEDIUM, PLACEHOLDER, SIXTEEN, TWELVE } from '@components/AppText';
+import { AppText, BLACK, BOLD, BUTTON_TEXT, MEDIUM, PLACEHOLDER, SIXTEEN, TWELVE } from '@components/AppText';
 import styles from './styles';
 import { openEmail, openMap, openPhoneDialer } from '@utils/index';
 import PhoneDialerModal from './contactModal';
+import { ContactTabButtonProps } from 'src/types/common';
 
-interface ContactTabButtonProps {
-  icon: any;
-  containerStyle?: object;
-  title: string;
-  text: string;
-  handleOnPress: () => void
-}
-
-
-
-const ContactTabButton: React.FC<ContactTabButtonProps> = ({ handleOnPress, icon, containerStyle, title, text }) => (
-  <View style={[styles.contactTab, containerStyle]}>
-    <TouchableOpacityView
-      onPress={handleOnPress}
+const ContactTabButton: React.FC<ContactTabButtonProps> = ({ handleOnPress, icon, containerStyle, title, text,textColor }) => (
+  <TouchableOpacityView 
+     onPress={handleOnPress}
+  style={[styles.contactTab, containerStyle]}>
+    <View
+   
       style={styles.iconBtn}>
       <Image
         source={icon}
         style={[styles.iconImage]}
         tintColor={colors.white}
-      // resizeMode={FastImage.resizeMode.contain}
       />
-    </TouchableOpacityView>
+    </View>
     <AppText type={SIXTEEN} color={BLACK} weight={BOLD} style={styles.tabTitle}>{title}</AppText>
-    <AppText type={TWELVE} color={PLACEHOLDER} weight={MEDIUM} style={styles.tabText}>{text}</AppText>
-  </View>
+    <AppText type={TWELVE} color={textColor??PLACEHOLDER} weight={MEDIUM} style={styles.tabText}>{text}</AppText>
+  </TouchableOpacityView>
 );
 
 const Help_Line = () => {
@@ -54,7 +46,8 @@ const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] = React.useState
           <ContactTabButton
             icon={helpLineIcon}
             title="Call US"
-            text="We’re here to help you +919780973501"
+            text={"We’re here to help you +919785053501 or +919780973501"}
+            textColor={BUTTON_TEXT}
             // handleOnPress={() => openPhoneDialer("+91-9785053501")}
             handleOnPress={()=> setIsPhoneDialerModalVisible(true)}
           />
@@ -89,7 +82,6 @@ const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] = React.useState
           <FastImage
             source={mapImagge}
             style={styles.mapImage}
-            // tintColor={colors.white}
             resizeMode={FastImage.resizeMode.cover}
           />
         </TouchableOpacityView>

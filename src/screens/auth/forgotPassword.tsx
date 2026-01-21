@@ -8,7 +8,7 @@ import { AppText, BOLD, EIGHTEEN, TWENTY_EIGHT, WHITE } from '@components/AppTex
 import Input from '@components/Input'
 import TouchableOpacityView from '@components/TouchableOpacityView'
 import NavigationService from '@navigations/NavigationService';
-import { emailRegex } from '@utils/index'
+import { emailRegex, phoneRegex } from '@utils/index'
 import { VERIFICATION_SCREEN } from '@navigations/routes'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { sendOtp } from '@actions/auth/authAction'
@@ -27,8 +27,8 @@ const {isLoading} = useAppSelector((state)=>state?.auth)
         if (state.email === '') {
             setState({ ...state, emailErrorText: "Email is required" })
             return;
-        } else if (emailRegex.test(state.email) === false) {
-            setState({ ...state, emailErrorText: "Invalid Email" })
+        } else if (emailRegex.test(state.email) === false && phoneRegex.test(state.email) === false) {
+            setState({ ...state, emailErrorText: "Invalid Email or Phone Number" })
             return;
         } else {
             let data={
@@ -63,7 +63,7 @@ const {isLoading} = useAppSelector((state)=>state?.auth)
             </View>
             <View style={styles.inputContainer}>
                 <Input
-                    placeholder={"Email Address"}
+                    placeholder={"Email Or Phone Number"}
                     value={state?.email}
                     onChangeText={(text: string) => setState({ ...state, email: text.trim()})}
                     leftIcon={emailIcon}

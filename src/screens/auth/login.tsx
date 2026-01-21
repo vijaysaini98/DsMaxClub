@@ -1,31 +1,23 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, version } from 'react';
 import {
     View,
     StyleSheet,
 } from 'react-native';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
-import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, MEDIUM, PLACEHOLDER, SIXTEEN, THIRTEEN, TWENTY_EIGHT, WHITE } from '@components/AppText';
+import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, MEDIUM, SIXTEEN, THIRTEEN, TWENTY_EIGHT, WHITE } from '@components/AppText';
 import { colors } from '@theme/colors';
 import { authBg, emailIcon, eyeCloseIcon, eyeOpenIcon, logoImage } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import Input from '@components/Input';
 import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
-import { emailRegex } from '@utils/index';
+import { buildVersion, emailRegex, phoneRegex } from '@utils/index';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { login, verifyOtp } from '../../actions/auth/authAction';
 import KeyBoardAware from '@components/KeyBoardAware';
 import FastImage from 'react-native-fast-image';
-import { ms, vs } from 'react-native-size-matters';
 import CodeVerificationBottomSheet from './codeVerificationBottomSheet';
-import { s } from 'react-native-size-matters/extend';
-// import ReactNativeVersionInfo from 'react-native-version-info';
-import DeviceInfo from 'react-native-device-info';
-
-// let version = ReactNativeVersionInfo.appVersion;
-// let buildVersion = ReactNativeVersionInfo.buildVersion;
-let version = DeviceInfo.getVersion();
-let buildVersion = DeviceInfo.getBuildNumber();;
+import { ms, vs, s } from 'react-native-size-matters/extend';
 
 const Login = () => {
     const dispatch = useAppDispatch()
@@ -34,7 +26,6 @@ const Login = () => {
 
     const passwordInputRef = React.useRef(null);
     const emailInputRef = React.useRef(null);
-
 
     const [state, setState] = useState({
         email: '',
@@ -46,11 +37,11 @@ const Login = () => {
 
     const handleLoginBtn = () => {
         if (state.email === '') {
-            setState({ ...state, emailError: "Email is required" })
+            setState({ ...state, emailError: "Email Or Phone Number is required" })
         } else if (state.password === '') {
             setState({ ...state, passwordError: "Password is required" })
-        } else if (emailRegex.test(state.email) === false) {
-            setState({ ...state, emailError: "Invalid Email" })
+        } else if (emailRegex.test(state.email) === false && phoneRegex.test(state.email) === false) {
+            setState({ ...state, emailError: "Invalid Email or Phone Number" })
 
         }
         else {
@@ -69,7 +60,9 @@ const Login = () => {
     const handleOtpVerify = () => {
         sheetRef.current?.close()
         setState({ ...state, emailError: "", passwordError: "" })
-        NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+        setTimeout(() => {
+            NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+        }, 200)
     }
 
     const handleVerify = (code: string) => {
@@ -87,9 +80,9 @@ const Login = () => {
             style={styles.mainContainer}>
             <KeyBoardAware style={styles.container}>
                 {/* <ToolBar
-title='Login'
-isLeftIcon={true}
-/> */}
+                    title='Login'
+                    isLeftIcon={true}
+                    /> */}
                 <View style={styles.heading}>
                     <FastImage
                         source={logoImage}
@@ -98,13 +91,13 @@ isLeftIcon={true}
                     />
                     <AppText type={TWENTY_EIGHT} weight={BOLD}>WELCOME BACK</AppText>
                     <AppText type={EIGHTEEN} style={{ marginTop: 26, textAlign: 'center' }}>
-                        We're happy to see you again. {'\n'}Enter your email and password
+                        We're happy to see you again. {'\n'}Enter your email Or phone number and password
                     </AppText>
                 </View>
 
                 <View style={styles.inputContainer}>
                     <Input
-                        placeholder={"Email Address"}
+                        placeholder={"Email or Phone Number"}
                         value={state?.email}
                         onChangeText={(text: string) => setState({ ...state, email: text.toLowerCase().trim() })}
                         leftIcon={emailIcon}

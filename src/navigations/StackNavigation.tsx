@@ -29,6 +29,7 @@ import RequestApprove from "@screens/request/ui/requestApprove";
 import HotelBooking from "@screens/hotelTravelBooking.tsx/hotelBooking";
 import TravelBooking from "@screens/hotelTravelBooking.tsx/travelBooking";
 import OptionsScreen from "@screens/auth/optionsScreen";
+import Cart from "@screens/cart";
 
 const Stack = createStackNavigator();
 
@@ -74,6 +75,7 @@ export const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.EXECUTIVE_REQUEST_APPROVE} component={RequestApprove} />
     <Stack.Screen name={routes.HOTEL_BOOKING} component={HotelBooking} />
     <Stack.Screen name={routes.TRAVEL_BOOKING} component={TravelBooking} />
+    <Stack.Screen name={routes.CART_SCREEN} component={Cart} />
 
   </Stack.Navigator>
 );

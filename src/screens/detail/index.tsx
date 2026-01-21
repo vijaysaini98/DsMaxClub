@@ -1,7 +1,7 @@
 import { Animated, Image, Keyboard, Linking, StatusBar, View } from 'react-native'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { backIcon, checkIcon, defaultBookletImage, downArrowIcon, helpLineIcon, locationIcon, phoneIcon, shareIcon, unCheckIcon } from '@helper/imagesAssets'
-import { AppText, BOLD, BUTTON_TEXT, MEDIUM, PLACEHOLDER, SIXTEEN, TEN, THIRTEEN, TWELVE, TWENTY_TWO, WHITE } from '@components/AppText'
+import { backIcon, defaultBookletImage, downArrowIcon, locationIcon } from '@helper/imagesAssets'
+import { AppText, BOLD, BUTTON_TEXT, PLACEHOLDER, SIXTEEN, TEN, THIRTEEN, TWENTY_TWO, WHITE } from '@components/AppText'
 import { colors } from '@theme/colors'
 import { TabView, SceneMap } from 'react-native-tab-view'
 import TouchableOpacityView from '@components/TouchableOpacityView'
@@ -10,7 +10,7 @@ import About from './ui/about'
 import Gallery from './ui/gallery'
 import Terms_Condition from './ui/terms_condition'
 import styles from './styles'
-import { extractLatLngFromUrl, openMap, openPhoneDialer, shareToAny, width } from '@utils/index'
+import { extractLatLngFromUrl, openMap, shareToAny, width } from '@utils/index'
 import { RenderTabBar } from '@components/RenderTabBar'
 import { IMGE_URL } from '@services/config'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
@@ -27,8 +27,8 @@ import RequestBottomSheet from './ui/requestBottomSheet'
 import ExecutiveRequestBottomSheet from './ui/executiveRequestBottomSheet'
 import HowToRedeem from './ui/howToRedeem'
 import ViewDetailsBottomSheet from './ui/viewDetailsBottomSheet'
-import { s, vs } from 'react-native-size-matters/extend'
 import { commonStyles } from '@theme/commonStyles'
+import { MY_REQUEST_SCREEN } from '@navigations/routes'
 const initialLayout = { width: width };
 
 // ✅ Make sure route keys match those in renderScene
@@ -182,6 +182,7 @@ const Details = ({ route }) => {
     } else {
       setAcceptContent(!acceptContent)
       bottomSheetRef.current?.close()
+      NavigationService.navigate(MY_REQUEST_SCREEN,{tabIndex:1})
     }
   }
 
@@ -224,7 +225,7 @@ const Details = ({ route }) => {
     let apiData = {
       name: _data?.customerName,
       email: _data?.customerEmail,
-      // mobile: _data?.customerMobile,
+      mobile: _data?.customerMobile,
       quantity: _data?.bookletQty,
       booklet_id: data.uuid
     }

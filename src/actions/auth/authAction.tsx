@@ -32,6 +32,9 @@ export const login =
         if (response?.data?.user?.user_type == 2) {
 
           if (response?.data?.user?.otp_verified == 0) {
+          setAccessToken(response?.data?.user?.remember_token);
+          setItem(USER_ID, response?.data?.user?.uuid);
+          setItem(USER_TYPE, response?.data?.user?.user_type);
             let apiData = {
               email: data.email,
               // mobile: state?.phone
@@ -190,7 +193,6 @@ export const customerVerifySendOtp =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.customer_send_otp_verify(data);
-      console.log();
       
       if (response?.status == 200) {
         Toast.show(response?.message, Toast.LONG);

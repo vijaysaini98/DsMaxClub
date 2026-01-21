@@ -16,6 +16,7 @@ import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { resetPassword } from '@actions/auth/authAction';
 import { passwordRegex } from '@utils/index';
 import { ms, s, vs } from 'react-native-size-matters/extend';
+import KeyBoardAware from '@components/KeyBoardAware';
 
 const ResetPassword = ({ route }) => {
     const { email } = route?.params ?? ''
@@ -73,6 +74,7 @@ const ResetPassword = ({ route }) => {
                 isLeftIcon={true}
                 handleLeftIconPress={() => NavigationService.reset(LOGIN_SCREEN)}
             />
+            <KeyBoardAware>
             <View style={styles.heading}>
                 <AppText type={TWENTY_EIGHT} weight={BOLD}>Reset Password</AppText>
                 <AppText type={EIGHTEEN} style={{textAlign:'center'}} >
@@ -109,6 +111,7 @@ const ResetPassword = ({ route }) => {
                 style={styles.saveBtn}>
                 <AppText type={EIGHTEEN} color={WHITE} weight={BOLD}>Save</AppText>
             </TouchableOpacityView>
+            </KeyBoardAware>
         </AppSafeAreaView>
     );
 };

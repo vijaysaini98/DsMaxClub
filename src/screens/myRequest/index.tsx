@@ -10,6 +10,7 @@ import MyRequestList from './myRequestList'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { getMyRequestList } from '@actions/myRequest/myRequestAction'
 import { ms, s, vs } from 'react-native-size-matters/extend'
+import { useRoute } from '@react-navigation/native'
 // import { RenderTabBar } from '@components/RenderTabBar'
 
 
@@ -71,8 +72,9 @@ const RenderTabBar = (props) => {
 
 const MyRequest = () => {
   const dispatch = useAppDispatch()
+  const {tabIndex}= useRoute().params as {tabIndex:number} || 0
   const { myRequestApproveList, myRequestAllList, myRequestPendingList, myRequestRejectList } = useAppSelector((state) => state?.myRequest)
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(tabIndex ?? 0)
   const renderScene = SceneMap({
     all: () => <MyRequestList data={myRequestAllList} tabname={"all"} />,
     pending: () => <MyRequestList data={myRequestPendingList} tabname={"pending"} />,

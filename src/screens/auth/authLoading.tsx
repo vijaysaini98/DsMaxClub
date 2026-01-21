@@ -11,7 +11,6 @@ import { getBannerList } from '@actions/home/homeAction';
 import FastImage from 'react-native-fast-image';
 import { logoImage } from '@helper/imagesAssets';
 import { s, vs } from 'react-native-size-matters/extend';
-import { AppText } from '@components/AppText';
 
 const AuthLoading = () => {
   const dispatch = useAppDispatch();

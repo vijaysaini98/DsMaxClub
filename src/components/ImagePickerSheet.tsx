@@ -10,7 +10,7 @@ import { colors } from '@theme/colors';
 interface ImagePickersheetProps {
     refRBSheet: React.RefObject<RBSheet>;
     setImageUri?: (uri: string) => void;
-    onSucess:(uri:string)=>void;
+    onSucess?:(uri:string)=>void | any;
 }
 
 const ImagePickersheet: React.FC<ImagePickersheetProps> = ({ refRBSheet, setImageUri,onSuccess }) => {

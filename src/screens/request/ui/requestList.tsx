@@ -1,8 +1,7 @@
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import React, { useCallback, useMemo, useState } from 'react';
-import { AppText, FOURTEEN, MEDIUM, WHITE } from '@components/AppText';
-import { EXECUTIVE_REQUEST_APPROVE, MY_CARD_COUPON_LIST_SCREEN } from '@navigations/routes';
-import { Loader, SpinnerSecond } from '@components/Spinner';
+import { EXECUTIVE_REQUEST_APPROVE } from '@navigations/routes';
+import { SpinnerSecond } from '@components/Spinner';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import { colors } from '@theme/colors';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
@@ -10,10 +9,8 @@ import Card from '@screens/home/ui/card';
 import NavigationService from '@navigations/NavigationService';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import { defaultBookletImage } from '@helper/imagesAssets';
-import { getMyCardBookletList, getMyCardCouponList } from '@actions/myCard/myCardAction';
-import Toast from 'react-native-simple-toast';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
-import { getExecutiveRequestList, getExecutiveRequestUserDetails } from '@actions/executiveRequest.tsx/executiveRequestAction';
+import { getExecutiveRequestList } from '@actions/executiveRequest.tsx/executiveRequestAction';
 import moment from 'moment';
 
 const RequestList = ({ value }) => {
@@ -57,7 +54,6 @@ const RequestList = ({ value }) => {
       
       return (
         <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
-          {/* <AppText style={{alignSelf:'center'}}>{index + 1}</AppText> */}
           <Card
             item={item}
             index={index}
@@ -71,30 +67,29 @@ const RequestList = ({ value }) => {
             name={`${item?.name} (${item?.unique_code})`}
             price={item.price}
             address={item?.locations?.[0]?.location ?? '---'}
+            cardDisabled={true}
             // cardDisabled={item?.status !== 'pending'}
-            handleCardOnPress={() => {
-              // if (item?.status === 'reject') {
-              //   Toast.show('Booklet has been Expired', Toast.LONG);
-              // }
-              //  else {
-                handleOnPress(item);
-              // }
-            }}
+            // handleCardOnPress={() => {
+            //   // if (item?.status === 'reject') {
+            //   //   Toast.show('Booklet has been Expired', Toast.LONG);
+            //   // }
+            //   //  else {
+            //     handleOnPress(item);
+            //   // }
+            // }}
             status={item?.status}
-            //  date={moment(item?.requested_date, "YYYY-MM-DD hh:mm ").format("D MMM YYYY ")}
             date={moment(item?.requested_date, "DD MMMM YYYY, HH:mm").format("DD-MM-YYYY")}
           />
         </View>
       );
     },
-    [data, handleOnPress] // dependencies
+    [data] // dependencies
   );
 
   return (
     <View style={styles.mainContainer}>
       {isBtnLoading && <SpinnerSecond/>}
       {isLoading && !isRefresh && !isBtnLoading ? (
-        // <Loader />
         <View style={{paddingHorizontal:s(16)}}>
         <CategoriesListShimmerLoader/>
         </View>

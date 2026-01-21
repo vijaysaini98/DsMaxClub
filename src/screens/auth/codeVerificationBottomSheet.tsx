@@ -1,25 +1,13 @@
-import React, { forwardRef, useRef, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import {
     View,
     StyleSheet,
-    TouchableOpacity,
     Platform,
     Text,
-    Keyboard,
 } from 'react-native';
-import { AppSafeAreaView } from '@components/AppSafeAreaView';
-import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, SEMI_BOLD, SIXTEEN, THIRTEEN, TWENTY_EIGHT, TWENTY_FOUR, WHITE } from '@components/AppText';
+import { AppText, EIGHTEEN, MEDIUM, SEMI_BOLD, THIRTEEN, TWENTY_FOUR, WHITE } from '@components/AppText';
 import { colors } from '@theme/colors';
-import { authBg, emailIcon, eyeCloseIcon, eyeOpenIcon, phoneIcon, userIcon } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
-import Input from '@components/Input';
-import NavigationService from '@navigations/NavigationService';
-import * as routes from '@navigations/routes';
-import ToolBar from '@components/ToolBar';
-import { emailRegex, passwordRegex, phoneRegex } from '@utils/index';
-import KeyBoardAware from '@components/KeyBoardAware';
-import { useAppDispatch, useAppSelector } from '@redux/hooks';
-import { customerVerifySendOtp, sendOtp, singUp, verifyOtp } from '../../actions/auth/authAction';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import { ms, s, vs } from 'react-native-size-matters/extend';
@@ -83,7 +71,7 @@ const CodeVerificationBottomSheet = forwardRef(({ onVerify }: { onVerify?: (code
                 <AppText
                     type={THIRTEEN}
                     weight={MEDIUM}
-                    style={{ textAlign: 'center', marginTop: 20 }}>Verification code send on your Email Account</AppText>
+                    style={{ textAlign: 'center', marginTop: 20 }}>Verification code send on your Email or Phone Number</AppText>
 
                 <CodeField
                     ref={blurOnFulfill}

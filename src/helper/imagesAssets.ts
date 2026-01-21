@@ -95,3 +95,8 @@ export const hotelBookingIcon =require('@assets/images/hotelBookingIcon.png')
 
 export const newUpdate = require('@assets/images/NewUpdate.png')
 export const underMaintenance = require('@assets/images/underMaintenance.png')
+
+export const addToCardIcon = require('@assets/images/addToCart.png')
+export const filledCartIcon = require('@assets/images/fillAddToCart.png')
+
+export const deleteIcon  = require('@assets/images/delete.png')

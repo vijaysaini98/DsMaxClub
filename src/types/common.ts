@@ -77,3 +77,12 @@ export interface ImageViewModalProps {
   lng: string | number;
   label: string;
 };
+
+export interface ContactTabButtonProps {
+  icon: any;
+  containerStyle?: object;
+  title: string;
+  text: string;
+  handleOnPress: () => void;
+  textColor?:string;
+}

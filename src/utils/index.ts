@@ -12,6 +12,10 @@ import {
 import moment from 'moment';
 import { Alert, Dimensions, Linking, Platform, Share } from 'react-native';
 import { OpenMapArgs } from 'src/types/common';
+import DeviceInfo from 'react-native-device-info';
+
+export let version = DeviceInfo.getVersion();
+export let buildVersion = DeviceInfo.getBuildNumber();
 
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const phoneRegex = /^\+?[1-9]\d{1,14}$/;
