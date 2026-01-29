@@ -1,6 +1,6 @@
 import NavigationService from '@navigations/NavigationService';
 import { useAppDispatch } from '@redux/hooks';
-import { Access_Token, getItem, USER_ID, USER_TYPE, USER_VISITED } from '@services/storage';
+import { Access_Token, getItem, PROFILE_COMPLETE, USER_ID, USER_TYPE, USER_VISITED } from '@services/storage';
 import { useEffect } from 'react';
 import * as routes from '@navigations/routes';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
@@ -29,6 +29,7 @@ const AuthLoading = () => {
       const userId = await getItem(USER_ID);
       const userType: any = await getItem(USER_TYPE);
       const userVisited = await getItem(USER_VISITED);
+      const profileComplete = await getItem(PROFILE_COMPLETE);
 
       if (customerToken) {
         dispatch(userProfile({ userid: userId }));
@@ -38,7 +39,13 @@ const AuthLoading = () => {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_EXECUTIVE)
         }
         else if (userType == 2) {
-          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+          if (profileComplete === '0') {
+            NavigationService.reset(routes?.EDIT_PROFILE_SCREEN);
+            return;
+          }else{
+            NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+          }
+          // NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
         } else {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
         }

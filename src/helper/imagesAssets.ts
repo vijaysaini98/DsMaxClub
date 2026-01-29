@@ -23,7 +23,11 @@ export const scanIcon = require('@assets/images/scanIcon.png');
 export const historyIcon = require('@assets/images/historyIcon.png');
 export const directionIcon=require('@assets/images/directionsIcon.png')
 
-export const logoImage=require('@assets/images/logoImage.png')
+export const logoImage=require('@assets/images/logoImage.png');
+
+export const executiveIcon=require('@assets/images/executiveLogo.png');
+export const vendorIcon=require('@assets/images/vendorLogo.png');
+export const userLogoIcon=require('@assets/images/userLogo.png');
 
 //profile Icon
 export const forwardIcon = require('@assets/images/forwardIcon.png');

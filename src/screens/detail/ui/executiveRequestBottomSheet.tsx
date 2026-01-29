@@ -1,7 +1,7 @@
 import { Image, Keyboard, StyleSheet, View } from 'react-native';
 import React, { useCallback, useRef, useState } from 'react';
-import { AppText, ERROR_TEXT, FOURTEEN, MEDIUM, SEMI_BOLD, SIXTEEN, TWELVE, WHITE } from '@components/AppText';
-import { useAppDispatch, useAppSelector } from '@redux/hooks';
+import { AppText, ERROR_TEXT, FOURTEEN, SEMI_BOLD, SIXTEEN, TWELVE, WHITE } from '@components/AppText';
+import { useAppSelector } from '@redux/hooks';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import Input from '@components/Input';
@@ -9,17 +9,32 @@ import KeyBoardAware from '@components/KeyBoardAware';
 import { colors } from '@theme/colors';
 import { ms, s, vs } from 'react-native-size-matters';
 import Toast from 'react-native-simple-toast';
-import { emailRegex } from '@utils/index';
 import styles from '../styles';
 import { checkIcon, unCheckIcon } from '@helper/imagesAssets';
 
-const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss, onSubmit, setAcceptContent, acceptContent }) => {
-    const dispatch = useAppDispatch();
+interface ExecutiveRequestBottomSheetProps { 
+    bottomSheetRef: any; 
+    snapPoints: number[]; 
+    handleDismiss: () => void; 
+    onSubmit: (state: any) => void; 
+    setAcceptContent: (value: boolean) => void; 
+    acceptContent: boolean 
+}
+
+const ExecutiveRequestBottomSheet = ({ 
+    bottomSheetRef, 
+    snapPoints, 
+    handleDismiss, 
+    onSubmit, 
+    setAcceptContent, 
+    acceptContent 
+}:ExecutiveRequestBottomSheetProps ) => {
+    
     const { isBtnLoading } = useAppSelector((state) => state?.home);
 
     const [state, setState] = useState({
-        customerName: '',
-        customerEmail: '',
+        // customerName: '',
+        // customerEmail: '',
         customerMobile: '',
         bookletQty: "1",
         executiveCode: ''
@@ -28,15 +43,13 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
     const phoneInputRef = useRef(null);
     const emailInputRef = useRef(null);
     const bookletQtyRef = useRef(null);
-
-
-
+    
     const handleSubmit = () => {
         Keyboard.dismiss()
-        if (emailRegex.test(state.customerEmail) === false) {
-            Toast.show("Invalid Email", Toast.LONG);
-        }
-        else if (state.customerMobile === '') {
+        // if (emailRegex.test(state.customerEmail) === false) {
+        //     Toast.show("Invalid Email", Toast.LONG);
+        // }
+         if (state.customerMobile === '') {
             Toast.show("Mobile Number is required", Toast.LONG);
         }
         else if (state.customerMobile.length < 10) {
@@ -61,9 +74,9 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
     const onDismiss = () => {
         handleDismiss()
         setState({
-            customerName: '',
-            customerEmail: '',
-            // customerMobile: '',
+            // customerName: '',
+            // customerEmail: '',
+            customerMobile: '',
             bookletQty: "1",
             executiveCode: ''
         })
@@ -81,8 +94,8 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
                 if (index === -1) {
                     Keyboard.dismiss();
                     setState({
-                        customerName: '',
-                        customerEmail: '',
+                        // customerName: '',
+                        // customerEmail: '',
                         customerMobile: '',
                         bookletQty: "1",
                         executiveCode: ''
@@ -97,7 +110,7 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
                     <AppText type={SIXTEEN} weight={SEMI_BOLD} style={bottomSheetStyles.titleText}>
                         Customer Details
                     </AppText>
-                    <Input
+                    {/* <Input
                         label='Name'
                         required
                         placeholder="Enter Name"
@@ -109,8 +122,8 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
                         keyboardType='email-address'
                         inputContainerStyle={bottomSheetStyles.inputContainer}
                         inputStyle={bottomSheetStyles.inputText}
-                    />
-                    <Input
+                    /> */}
+                    {/* <Input
                         label='Enter Email'
                         required
                         placeholder="Enter Email"
@@ -125,7 +138,7 @@ const ExecutiveRequestBottomSheet = ({ bottomSheetRef, snapPoints, handleDismiss
                         keyboardType='email-address'
                         inputContainerStyle={bottomSheetStyles.inputContainer}
                         inputStyle={bottomSheetStyles.inputText}
-                    />
+                    /> */}
                     <Input
                         label='Mobile '
                         required

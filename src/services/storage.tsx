@@ -4,6 +4,7 @@ export const Access_Token: string = 'accessToken';
 export const Refresh_Token: string = 'refreshToken';
 export const USER_VISITED: string = "User_Visited";
 export const USER_TYPE:string = 'userType';
+export const PROFILE_COMPLETE :string ='profile_complete';
 export const USER_ID:string ='user_id'
 
 // Save access token

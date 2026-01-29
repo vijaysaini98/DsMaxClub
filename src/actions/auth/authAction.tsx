@@ -1,6 +1,7 @@
 import apiClient, { API } from '@services/appClient';
 import { resetAuth, setAppinfo, setCityList, setHowToRedeem, setLoading, setPrivacyPolicy, setTermCondition, setUserData } from './authSlice';
 import {
+  PROFILE_COMPLETE,
   removeAccessToken,
   setAccessToken,
   setItem,
@@ -32,9 +33,9 @@ export const login =
         if (response?.data?.user?.user_type == 2) {
 
           if (response?.data?.user?.otp_verified == 0) {
-          setAccessToken(response?.data?.user?.remember_token);
-          setItem(USER_ID, response?.data?.user?.uuid);
-          setItem(USER_TYPE, response?.data?.user?.user_type);
+            setAccessToken(response?.data?.user?.remember_token);
+            setItem(USER_ID, response?.data?.user?.uuid);
+            setItem(USER_TYPE, response?.data?.user?.user_type);
             let apiData = {
               email: data.email,
               // mobile: state?.phone
@@ -73,6 +74,41 @@ export const login =
     }
   };
 
+export const userLogin =
+  (data: any, onSucess?: any, callBack?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await API.authApi.userLogin(data);
+      if (response?.status == 200) {
+        // setAccessToken(response?.data?.remember_token);
+        // setItem(USER_ID, response?.data?.uuid);
+        // setItem(USER_TYPE, response?.data?.user_type);
+
+        // dispatch(userProfile({ userid: response?.data?.uuid }));
+        // dispatch(getCityList());
+
+        // if (response?.data?.user_type == 2) {
+        //   NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+        // } else {
+        //   NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
+        // }
+        Toast.show(response?.message, Toast.LONG);
+
+        onSucess && onSucess();
+        return;
+      } else {
+        throw new Error('No response data received from backend.');
+      }
+
+    } catch (e: any) {
+      console.log('e', e);
+
+      Toast.show(e?.response?.data?.message, Toast.LONG);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
 export const singUp =
   (data: any, onSucess?: any) => async (dispatch: AppDispatch) => {
     try {
@@ -91,8 +127,6 @@ export const singUp =
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
         }
         Toast.show(response?.message, Toast.LONG);
-        // NavigationService.reset(routes?.LOGIN_SCREEN);
-
         onSucess && onSucess();
         return;
       } else {
@@ -116,12 +150,9 @@ export const logout =
         dispatch(resetAuth());
         dispatch(resetHome())
         dispatch(resetDeal())
-        // dispatch()
         NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
-        // Toast.show("log Out", Toast.LONG);
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess();
-
         return;
       } else {
         throw new Error('No response data received from backend.');
@@ -134,9 +165,7 @@ export const logout =
       dispatch(resetHome())
       dispatch(resetDeal())
       NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
-      // Toast.show("log Out", Toast.LONG);
       Toast.show("Logout Successfully", Toast.LONG);
-
     } finally {
       dispatch(setLoading(false));
     }
@@ -193,7 +222,7 @@ export const customerVerifySendOtp =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.customer_send_otp_verify(data);
-      
+
       if (response?.status == 200) {
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess();
@@ -214,10 +243,23 @@ export const verifyOtp =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.verify_otp(data);
-
       if (response?.status == 200) {
-        Toast.show(response?.message, Toast.LONG);
-        onSucess && onSucess();
+        if (response?.data?.user?.user_type == 2) {
+          setAccessToken(response?.data?.user?.remember_token);
+          setItem(USER_ID, response?.data?.user?.uuid);
+          setItem(USER_TYPE, response?.data?.user?.user_type);
+          setItem(PROFILE_COMPLETE, response?.data?.user?.profile_complete.toString());
+          dispatch(userProfile({ userid: response?.data?.user?.uuid }));
+          dispatch(getCityList());
+          if (response?.data?.user?.profile_complete == 0) {
+            NavigationService.reset(routes?.EDIT_PROFILE_SCREEN);
+          } else {
+            NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+          }
+          onSucess && onSucess();
+        } else {
+          onSucess && onSucess();
+        }
         return;
       } else {
         throw new Error('No response data received from backend.');
@@ -238,7 +280,7 @@ export const resetPassword =
       const response = await API.authApi.reset_password(data);
 
       if (response?.status == 200) {
-        NavigationService.reset(routes?.LOGIN_SCREEN);
+        NavigationService.reset(routes?.LOGIN_TYPE_SCREEN);
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess();
         return;
@@ -253,12 +295,16 @@ export const resetPassword =
   };
 
 export const userProfile =
-  (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+  (data?: any, onSucess?: any, isFirstTime?: boolean) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
       const response = await API.userApi.user_profile(data);
       if (response?.status == 200) {
         dispatch(setUserData(response?.data));
+        if (isFirstTime && response?.data?.profile_complete !== 0) {
+          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+          setItem(PROFILE_COMPLETE, response?.data?.profile_complete.toString());
+        }
         onSucess && onSucess();
         return;
       } else {
@@ -274,7 +320,7 @@ export const userProfile =
   };
 
 export const updateUserProfile =
-  (data?: any, userId?: string, onSucess?: any, from?: string) =>
+  (data?: any, userId?: string, onSucess?: any, from?: string,) =>
     async (dispatch: AppDispatch) => {
       try {
         dispatch(setLoading(true));
@@ -283,8 +329,6 @@ export const updateUserProfile =
           if (from !== "header") {
             Toast.show(response?.message, Toast.LONG);
           }
-
-          dispatch(userProfile(userId));
           onSucess && onSucess();
           return;
         } else {
@@ -314,7 +358,7 @@ export const updateUserProfileImage =
           throw new Error('No response data received from backend.');
         }
       } catch (e: any) {
-        console.log("updateUserProfileImage",e?.response?.data?.message)
+        console.log("updateUserProfileImage", e?.response?.data?.message)
         // Toast.show(e?.response?.data?.message, Toast.LONG);
       } finally {
         dispatch(setLoading(false));
@@ -346,13 +390,13 @@ export const getPrivacy_TermCondition =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.pageApi(data);
-      
+
       if (response?.status == 200) {
         if (data == "privacy-policy") {
           dispatch(setPrivacyPolicy(response?.data))
         }
         else if (data == "how-to-redeem") {
-          
+
           dispatch(setHowToRedeem(response?.data))
         }
         else {
@@ -370,7 +414,7 @@ export const getPrivacy_TermCondition =
     }
   };
 
-  export const getAppVersion = (data?: any) => async (dispatch: AppDispatch) => {
+export const getAppVersion = (data?: any) => async (dispatch: AppDispatch) => {
   try {
     const response: any = await API.authApi.getAppVersion();
     if (response.success) {

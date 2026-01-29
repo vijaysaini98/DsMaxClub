@@ -1,5 +1,5 @@
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { version } from 'react'
 import { colors } from '@theme/colors'
 import Header from '@components/Header'
 import TouchableOpacityView from '@components/TouchableOpacityView'
@@ -14,8 +14,7 @@ import { ms, s, vs } from 'react-native-size-matters/extend'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import DeleteAccountModal from '@components/DeleteAccountModal'
 import LogOutModal from '@components/LogoutModal'
-import { shareToAny } from '@utils/index'
-import { buildVersion, version } from '@screens/auth/login'
+import { buildVersion, shareToAny } from '@utils/index'
 
 export const MoreTabButton = ({ title, leftIcon, handleOnPress }) => {
   return (

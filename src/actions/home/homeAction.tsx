@@ -161,8 +161,8 @@ export const bookletRequest =
       }
     } catch (e: any) {
       if (e?.response) {
-        console.log("bookletRequest error",e?.response)
-        Toast.show(e?.response?.data?.message, Toast.LONG);
+        console.log("bookletRequest error", e?.response)
+        // Toast.show(e?.response?.data?.message, Toast.LONG);
       }
 
     } finally {
@@ -185,7 +185,7 @@ export const executiveBookletRequest =
         return;
       }
     } catch (e: any) {
-      console.log("bookletRequest error=>>", e?.response?.data);
+      console.log("executiveBookletRequest error=>>", e?.response?.data);
 
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
@@ -206,9 +206,9 @@ export const getComboBookletDeals =
         Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      console.log("bookletRequest error=>>", e?.response?.data);
+      console.log("getComboBookletDeals error=>>", e?.response?.data);
 
-      Toast.show(e?.response?.data?.message, Toast.LONG);
+      // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
       dispatch(setLoading(false));
     }

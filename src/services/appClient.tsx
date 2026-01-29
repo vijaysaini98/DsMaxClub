@@ -99,6 +99,7 @@ export default apiClient;
 export const API = {
   authApi: {
     login: (data: any) => apiClient.post(config.LOGIN, data),
+    userLogin: (data: any) => apiClient.post(config.USER_LOGGIN, data),
     singUp: (data: any) => apiClient.post(config.SIGN_UP, data),
     logout: (data?: any) => apiClient.post(config.LOG_OUT),
     send_otp: (data: any) => apiClient.post(config.SEND_OTP, data),

@@ -54,7 +54,7 @@ const UserList = ({ route }) => {
     const handleUserCardClick = useCallback((item) => {
         NavigationService.navigate(VENDOR_COUPON_LIST,
             {
-                title: item?.username,
+                title: item?.username ? item?.username : item?.usermobile,
                 unique_code: item?.unique_code,
                 user_id: item?.useruuid,
                 booklet_id: item?.booklet_uuid,
@@ -76,7 +76,7 @@ const UserList = ({ route }) => {
                             numberOfLines={2}
                             ellipsizeMode="tail"
                         >
-                            {`${item?.username} (${item?.unique_code})`}
+                            {`${item?.username ? item?.username : item?.usermobile} (${item?.unique_code})`}
                         </AppText>
                         <AppText
                             type={TWELVE}

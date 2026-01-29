@@ -5,7 +5,15 @@ import {
     Platform,
     Text,
 } from 'react-native';
-import { AppText, EIGHTEEN, MEDIUM, SEMI_BOLD, THIRTEEN, TWENTY_FOUR, WHITE } from '@components/AppText';
+import {
+    AppText,
+    EIGHTEEN,
+    MEDIUM,
+    SEMI_BOLD,
+    THIRTEEN,
+    TWENTY_FOUR,
+    WHITE
+} from '@components/AppText';
 import { colors } from '@theme/colors';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -21,7 +29,7 @@ const CodeVerificationBottomSheet = forwardRef(({ onVerify }: { onVerify?: (code
         if (onVerify) onVerify(code);
     };
 
-    const renderCell = ({ index, symbol, isFocused }) => {
+    const renderCell = ({ index, symbol, isFocused }: { index: number, symbol: string, isFocused: boolean }) => {
         const isFilled = Boolean(symbol);
         const borderColor = isFilled
             ? colors.black
@@ -50,28 +58,19 @@ const CodeVerificationBottomSheet = forwardRef(({ onVerify }: { onVerify?: (code
             onClose={() => setCode('')}
             height={vs(380)}
             customStyles={{
-                container: {
-                    borderTopLeftRadius: ms(20),
-                    borderTopRightRadius: ms(20),
-                    padding: ms(20),
-                },
-                draggableIcon: {
-                    backgroundColor: '#aaa',
-                },
+                container: styles.rbSheetContainer,
+                draggableIcon: styles.rbSheetDraggableIcon,
             }}
         >
-            <View style={{ justifyContent: 'center' }}>
-                <AppText style={{
-                    // marginBottom: 40,
-                    textAlign: 'center'
-                }}
+            <View style={styles.mainContainer}>
+                <AppText style={styles.titleText}
                     weight={SEMI_BOLD}
                     type={EIGHTEEN}
                 >Enter Verification Code</AppText>
                 <AppText
                     type={THIRTEEN}
                     weight={MEDIUM}
-                    style={{ textAlign: 'center', marginTop: 20 }}>Verification code send on your Email or Phone Number</AppText>
+                    style={styles.subtitleText}>Verification code send on your Email or Phone Number</AppText>
 
                 <CodeField
                     ref={blurOnFulfill}
@@ -79,23 +78,17 @@ const CodeVerificationBottomSheet = forwardRef(({ onVerify }: { onVerify?: (code
                     value={code}
                     onChangeText={setCode}
                     cellCount={6}
-                    rootStyle={{
-                        marginVertical: vs(40),
-                        justifyContent: 'space-between',
-                        flexDirection: 'row',
-                    }}
+                    rootStyle={styles.codeFieldRoot}
                     keyboardType="number-pad"
                     textContentType="oneTimeCode"
                     renderCell={renderCell}
                 />
 
                 <TouchableOpacityView
-                    style={[{
-                        backgroundColor: colors.buttonBg,
-                        paddingVertical: 12,
-                        borderRadius: 10,
-                        alignItems: 'center',
-                    }, { opacity: code.length === 6 ? 1 : 0.5 }]}
+                    style={[
+                        styles.verifyButton,
+                        { opacity: code.length === 6 ? 1 : 0.5 }
+                    ]}
                     onPress={handleVerify}
                     disabled={code.length !== 6}
                 >
@@ -109,6 +102,35 @@ const CodeVerificationBottomSheet = forwardRef(({ onVerify }: { onVerify?: (code
 export default CodeVerificationBottomSheet;
 
 const styles = StyleSheet.create({
+    rbSheetContainer: {
+        borderTopLeftRadius: ms(20),
+        borderTopRightRadius: ms(20),
+        padding: ms(20),
+    },
+    rbSheetDraggableIcon: {
+        backgroundColor: '#aaa',
+    },
+    mainContainer: {
+        justifyContent: 'center',
+    },
+    titleText: {
+        textAlign: 'center',
+    },
+    subtitleText: {
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    codeFieldRoot: {
+        marginVertical: vs(40),
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+    },
+    verifyButton: {
+        backgroundColor: colors.buttonBg,
+        paddingVertical: 12,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
     cellStyle: (borderColor: string) => ({
         width: s(50),
         height: vs(75),

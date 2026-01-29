@@ -6,6 +6,7 @@ export const IMGE_URL = BaseUrlConfig?.IMAGE_URL;
 
 // authApi
 const LOGIN: string = `${BASE_URL}login`;
+const USER_LOGGIN: string = `${BASE_URL}login-register`;
 const SIGN_UP: string = `${BASE_URL}customer-register`;
 const LOG_OUT: string = `${BASE_URL}customer-logout`;
 const SEND_OTP: string = `${BASE_URL}send-otp-to-email`;
@@ -59,6 +60,7 @@ const EXECUTIVE_PAYMENT_IMAGE_UPLOAD: string = `${BASE_URL}update-payment-image`
 const config = {
   BASE_URL,
   LOGIN,
+  USER_LOGGIN,
   SIGN_UP,
   LOG_OUT,
   SEND_OTP,

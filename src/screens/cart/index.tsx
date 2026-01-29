@@ -22,7 +22,6 @@ const Cart = () => {
   }, [cartList]);
 
   const renderItem = ({ item }: any) => {
-    console.log("Cart Item: ", item);
     return (
       <View style={styles.itemCard}>
         <TouchableOpacityView>

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Image, StyleSheet, View, ImageSourcePropType } from 'react-native';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import { colors } from '@theme/colors';
@@ -7,16 +7,17 @@ import ToolBar from '@components/ToolBar';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import KeyBoardAware from '@components/KeyBoardAware';
 import Input from '@components/Input';
-import { AppText, BOLD, BUTTON_TEXT, EIGHTEEN, FOURTEEN, PLACEHOLDER, SEMI_BOLD, SIXTEEN, THIRTY, WHITE } from '@components/AppText';
+import { AppText, BOLD, EIGHTEEN, FOURTEEN, PLACEHOLDER, SEMI_BOLD, SIXTEEN, THIRTY, WHITE } from '@components/AppText';
 import ImagePickersheet from '@components/ImagePickerSheet';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
-import { updateUserProfile, updateUserProfileImage } from '@actions/auth/authAction';
+import { updateUserProfile, updateUserProfileImage, userProfile } from '@actions/auth/authAction';
 import { commonStyles } from '@theme/commonStyles';
 import { SpinnerSecond } from '@components/Spinner';
 import { IMGE_URL } from '@services/config';
 import Toast from "react-native-simple-toast";
 import CityDropDown, { CityOption } from '@components/cityDropDown';
 import { ms, s, vs } from 'react-native-size-matters/extend';
+import { useRoute } from '@react-navigation/native';
 
 interface ProfileState {
     name: string;
@@ -28,8 +29,21 @@ interface ProfileState {
 
 const EditProfile: React.FC = () => {
     const dispatch = useAppDispatch()
+    const route = useRoute();
+    const {from}= route?.params || "";
 
     const { userData, cityList, isLoading, isBtnLoading } = useAppSelector((state) => state.auth)
+
+    useEffect(()=>{
+setState({
+    name: userData?.name,
+    email: userData?.email,
+    phone: userData?.mobile,
+    city: userData?.city_name,
+    cityId: userData?.city,
+})
+setImageUri(userData?.profile_image);
+    },[userData])
 
     const bottomSheetRef = useRef<any>(null);
     const imagePickerRef = useRef<any>(null)
@@ -38,11 +52,11 @@ const EditProfile: React.FC = () => {
     const [filteredLocations, setFilteredLocations] = useState<CityOption[]>(cityList);
 
     const [state, setState] = useState<ProfileState>({
-        name: userData?.name,
-        email: userData?.email,
-        phone: userData?.mobile,
-        city: userData?.city_name,
-        cityId: userData?.city,
+        name: "",
+        email: "",
+        phone: "",
+        city: "",
+        cityId: "",
     });
 
     const [imageUri, setImageUri] = useState<string | ImageSourcePropType | null>(userData?.profile_image);
@@ -68,17 +82,6 @@ const EditProfile: React.FC = () => {
         bottomSheetRef.current?.close();
     };
 
-    // const handleChangeProfileImage = (image) => {
-    //     if (!image?.uri) {
-    //         console.warn('No image selected');
-    //         return;
-    //     }
-    //     let formData = new FormData()
-    //     formData.append("profile_image", image);
-
-    //     dispatch(updateUserProfileImage(formData, { userid: userData?.uuid }))
-    // }
-
     const handleChangeProfileImage = (image) => {
         if (!image?.uri) {
             console.warn('No image selected');
@@ -97,25 +100,49 @@ const EditProfile: React.FC = () => {
     };
 
     const handleSaveBtn = () => {
-        if (state?.cityId === userData?.city && state?.name === userData?.name && state?.phone === userData?.mobile) {
-            Toast.show("There is no change", Toast.LONG);
+        if(state.name === "" || state.name === null){
+            Toast.show("Please enter name", Toast.LONG);
+            return;
         }
+        // else if(state.email === "" || state.email === null){
+        //     Toast.show("Please enter email", Toast.LONG);
+        //     return;
+        // }
+        // else if(emailRegex.test(state.email) === false){
+        //     Toast.show("Please enter valid email", Toast.LONG);
+        //     return;
+        // }
+        else if(!state.cityId){
+            Toast.show("Please select city", Toast.LONG);
+            return;
+        }
+        // else if (state?.cityId === userData?.city && state?.name === userData?.name && state?.phone === userData?.mobile && state?.email === userData?.email) {
+        //     Toast.show("There is no change", Toast.LONG);
+        // }
         else {
             //  // Save logic here
             let data = {
                 name: state?.name,
                 mobile: state?.phone,
                 city: state?.cityId,
+                email:userData?.email ? userData?.email :  state?.email,
+                profile_complete: userData?.profile_complete === 0 ? 1 : userData?.profile_complete,
                 current_city: userData?.current_city ? userData?.current_city : state?.cityId
             }
-            dispatch(updateUserProfile(data, { userid: userData?.uuid }))
+            dispatch(updateUserProfile(data, { userid: userData?.uuid }, handleOnSucess) );
         }
-
     };
+
+    const handleOnSucess = () => {
+        let isFirstTime = userData?.profile_complete === 0 ? true : false;
+        dispatch(userProfile({ userid: userData?.uuid }, undefined, isFirstTime));
+    }
 
     return (
         <AppSafeAreaView style={[commonStyles.mainContainer, styles.safeArea]}>
-            <ToolBar isLeftIcon title="My Profile" />
+            <ToolBar 
+            isLeftIcon ={userData?.profile_complete === 0 ? false : true}
+            title="My Profile" />
             {isLoading && <SpinnerSecond />}
             <KeyBoardAware style={styles.keyboardAware}>
                 <View style={styles.profileImageSection}>
@@ -153,7 +180,7 @@ const EditProfile: React.FC = () => {
                         onChangeText={(text: string) => setState({ ...state, email: text.trim() })}
                         leftIcon={emailIcon}
                         keyboardType="email-address"
-                        editable={false}
+                        editable={(userData?.profile_complete === 0 || userData?.email == null) ? true : false}
                     />
                     <Input
                         placeholder="Phone Number"
@@ -162,7 +189,7 @@ const EditProfile: React.FC = () => {
                         leftIcon={phoneIcon}
                         maxLength={10}
                         keyboardType="number-pad"
-                         editable={false}
+                         editable={(userData?.profile_complete === 0 && userData?.mobile == null) ? true : false}
                     />
 
                     {userData?.user_type == "2" &&
@@ -298,7 +325,7 @@ const styles = StyleSheet.create({
         paddingVertical: vs(19),
         alignItems: 'center',
         borderRadius: ms(50),
-        marginBottom: vs(48),
+        // marginBottom: vs(48),
         marginTop: vs(40),
     },
 });
