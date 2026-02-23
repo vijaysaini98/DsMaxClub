@@ -104,3 +104,4 @@ export const addToCardIcon = require('@assets/images/addToCart.png')
 export const filledCartIcon = require('@assets/images/fillAddToCart.png')
 
 export const deleteIcon  = require('@assets/images/delete.png')
+export const leftArrowIcon  = require('@assets/images/left-arrow.png')

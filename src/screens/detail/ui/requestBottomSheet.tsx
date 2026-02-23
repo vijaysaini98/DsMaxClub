@@ -41,7 +41,8 @@ const RequestBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss,ac
             ref={bottomSheetRef}
             index={-1}
             snapPoints={snapPoints}
-            backdropComponent={renderBackdrop}
+            // backdropComponent={renderBackdrop}
+            
             enablePanDownToClose
             onDismiss={onDismiss}
             onChange={(index) => {

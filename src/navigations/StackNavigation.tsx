@@ -31,6 +31,7 @@ import TravelBooking from "@screens/hotelTravelBooking.tsx/travelBooking";
 import OptionsScreen from "@screens/auth/optionsScreen";
 import Cart from "@screens/cart";
 import LoginType from "@screens/auth/loginType";
+import RequestSuccessfull from "@screens/detail/ui/requestSuccessful";
 
 const Stack = createStackNavigator();
 
@@ -77,7 +78,7 @@ export const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.HOTEL_BOOKING} component={HotelBooking} />
     <Stack.Screen name={routes.TRAVEL_BOOKING} component={TravelBooking} />
     <Stack.Screen name={routes.CART_SCREEN} component={Cart} />
-
+  <Stack.Screen name={routes.REQUEST_SUCCESSFUL_SCREEN} component={RequestSuccessfull} />
   </Stack.Navigator>
 );
 
