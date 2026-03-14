@@ -49,6 +49,8 @@ const COUPON_BAR__CODE: string = `${BASE_URL}vendor-coupon-scan-by-code`;
 const VENDOR_USER_LIST: string = `${BASE_URL}vendor-user-list`;
 const VENDOR_BOOKLET_COUPON_LIST: string = `${BASE_URL}vendor-booklet-coupons`
 const VENDOR_HISTORY_LIST: string = `${BASE_URL}vendor-coupon-history`;
+const MY_REPORT_COUPON_LIST: string = `${BASE_URL}vendor-report-list`;
+
 
 //executive api's
 const EXECUTIVE_BOOKLET_REQUEST: string = `${BASE_URL}executive-request-send`;
@@ -109,7 +111,9 @@ const config = {
   EXECUTIVE_REQUEST_LIST,
   EXECUTIVE_REQUEST_USER_DETAIILS,
   EXECUTIVE_REQUEST_STATUS_CHANGE,
-  EXECUTIVE_PAYMENT_IMAGE_UPLOAD
+  EXECUTIVE_PAYMENT_IMAGE_UPLOAD,
+
+  MY_REPORT_COUPON_LIST
 
 };
 

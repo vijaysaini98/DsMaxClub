@@ -135,6 +135,7 @@ export const API = {
     executive_booklet_request: (data: any) => apiClient.post(config.EXECUTIVE_BOOKLET_REQUEST, data),
     combo_booklet_deals: (data: any) => apiClient.post(config.COMBO_BOOKLET_DEALS, data),
     create_leads:(data: any) => apiClient.post(config.CREATE_LEADS, data),
+    myReport_Coupon_List: (data: any) => apiClient.post(config.MY_REPORT_COUPON_LIST, data),
   },
   myRequestApi: {
     myRequest_List: (data: any) => apiClient.post(config.MY_REQUEST_LIST, data),

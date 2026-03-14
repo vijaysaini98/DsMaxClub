@@ -3,7 +3,7 @@ import React, { version } from 'react'
 import { colors } from '@theme/colors'
 import Header from '@components/Header'
 import TouchableOpacityView from '@components/TouchableOpacityView'
-import { deleteAccountIcon, forwardIcon, hotelBookingIcon, logOutIcon, myCardIcon, myRequestIcon, privacyIcon, proflieIcon, shareIcon, termsCondIcon, travelBookingIcon, userIcon } from '@helper/imagesAssets'
+import { deleteAccountIcon, forwardIcon, hotelBookingIcon, logOutIcon, myCardIcon, myRequestIcon, privacyIcon, proflieIcon, reportIcon, shareIcon, termsCondIcon, travelBookingIcon, userIcon } from '@helper/imagesAssets'
 import { AppText, MEDIUM, SIXTEEN, THIRTEEN } from '@components/AppText'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { deleteAccount, logout } from '../../actions/auth/authAction'
@@ -46,6 +46,8 @@ const Profile = () => {
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] = React.useState(false);
   const [logoutVisible, setLogoutVisible] = React.useState(false);
 
+  console.log(userData,'userData===>');
+  
   const handleLogout = () => {
     dispatch(logout(undefined, setLogoutVisible(false)))
   }
@@ -66,6 +68,13 @@ const Profile = () => {
           title={"My Profile"}
           handleOnPress={() => { NavigationService.navigate(routes.EDIT_PROFILE_SCREEN) }}
         />
+        {userData?.user_type == "0" &&
+          <MoreTabButton
+            leftIcon={reportIcon}
+            title={"Report"}
+            handleOnPress={() => { NavigationService.navigate(routes.REPORT_SCREEN) }}
+          />}
+        
         {userData?.user_type == "2" &&
           <MoreTabButton
             leftIcon={myRequestIcon}

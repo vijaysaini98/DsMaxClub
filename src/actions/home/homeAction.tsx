@@ -1,7 +1,7 @@
 import { API } from '@services/appClient';
 import { AppDispatch } from '@redux/store';
 import Toast from "react-native-simple-toast";
-import { setBannerData, setBookletDetailAbout, setBookletDetailAllDeals, setBookletDetailGallery, setBookletDetailT_C, setBookletList, setBtnLoading, setCategoriBookletData, setCategoriListData, setComboBookletDeals, setLoading } from './homeSlice';
+import { setBannerData, setBookletDetailAbout, setBookletDetailAllDeals, setBookletDetailGallery, setBookletDetailT_C, setBookletList, setBtnLoading, setCategoriBookletData, setCategoriListData, setComboBookletDeals, setLoading, setMyReportCouponList } from './homeSlice';
 
 export const getCategoryList =
   (limit?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
@@ -233,3 +233,25 @@ export const createLeads = (data?: any, onSucess?: any) => async (dispatch: AppD
     dispatch(setLoading(false));
   }
 };
+
+export const getReportList =
+    (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+        try {
+            dispatch(setLoading(true));
+            const response = await API.homeApi.myReport_Coupon_List(data);
+            console.log(response,'response===>');
+            
+            if (response?.status == 200) {
+                dispatch(setMyReportCouponList(response?.data))
+                return;
+            } else {
+                throw new Error('No response data received from backend.');
+            }
+        } catch (e: any) {
+            console.log("e", e);
+
+            Toast.show(e?.response?.data?.message, Toast.LONG);
+        } finally {
+            dispatch(setLoading(false))
+        }
+    };

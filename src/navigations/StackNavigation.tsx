@@ -32,6 +32,7 @@ import OptionsScreen from "@screens/auth/optionsScreen";
 import Cart from "@screens/cart";
 import LoginType from "@screens/auth/loginType";
 import RequestSuccessfull from "@screens/detail/ui/requestSuccessful";
+import ReportScreen from "@screens/report";
 
 const Stack = createStackNavigator();
 
@@ -63,6 +64,7 @@ export const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.CATEGORIES_LIST_SCCREEN} component={CategoriesList} />
     <Stack.Screen name={routes.EDIT_PROFILE_SCREEN} component={EditProfile} />
     <Stack.Screen name={routes.DETAILS_SCREEN} component={Details} />
+    <Stack.Screen name={routes.REPORT_SCREEN} component={ReportScreen} />
     {/* <Stack.Screen name={routes.MY_CARD_SCREEN} component={MyCard} /> */}
     <Stack.Screen name={routes.MY_CARD_COUPON_LIST_SCREEN} component={MyCardCouponList} />
     <Stack.Screen name={routes.COUPON_LIST_SCREEN} component={CouponList} />

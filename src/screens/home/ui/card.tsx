@@ -149,7 +149,7 @@ const Card: React.FC<CardProps> = ({
         ) : null}
         <View style={styles.locationContainer}>
           <FastImage source={nearByIcon} style={styles.locationIconStyle} resizeMode="contain" />
-          <AppText numberOfLines={2} type={TWELVE} weight={MEDIUM} style={styles.locationText}>
+          <AppText numberOfLines={2} type={TWELVE} weight={BOLD} style={styles.locationText}>
             {address}
           </AppText>
         </View>
@@ -227,7 +227,8 @@ const styles = StyleSheet.create({
     tintColor: colors.disTextColor,
   },
   locationText: {
-    color: colors.disTextColor,
+    color: colors.buttonBg,
+    // color: colors.disTextColor,
     marginRight: s(5),
     flex: 1,
   },

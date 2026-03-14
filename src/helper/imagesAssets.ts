@@ -105,3 +105,5 @@ export const filledCartIcon = require('@assets/images/fillAddToCart.png')
 
 export const deleteIcon  = require('@assets/images/delete.png')
 export const leftArrowIcon  = require('@assets/images/left-arrow.png')
+export const filterIcon  = require('@assets/images/filter.png')
+export const reportIcon  = require('@assets/images/report.png')

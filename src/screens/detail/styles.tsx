@@ -123,7 +123,8 @@ const styles = StyleSheet.create({
     marginTop: vs(15)
   },
   disTextStyle: {
-    marginVertical: vs(10)
+    marginVertical: vs(10),
+    color:colors.buttonBg
   },
   headerRow: {
     flexDirection: 'row',

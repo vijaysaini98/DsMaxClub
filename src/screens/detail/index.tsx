@@ -357,7 +357,7 @@ const Details = ({ route }) => {
             {
               opacity: collapsedHeaderOpacity.interpolate({
                 inputRange: [0, 0, 0.5],
-                outputRange: [1, 0.5, 0], // fade OUT when sticky header fades IN
+                outputRange: [1, 0.5, 0], 
               }),
             },
           ]}
@@ -376,6 +376,7 @@ const Details = ({ route }) => {
           <AppText
             type={SIXTEEN}
             color={PLACEHOLDER}
+            weight={BOLD}
             style={styles.disTextStyle}
           >
             {`${

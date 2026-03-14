@@ -80,7 +80,7 @@ const RootComponent = ({children}) =>{
               />
                <ServerCheckComp visible={BaseUrlConfig.ENVIRONMENT} />
                {isMaintainess && <MaintenanceModal isVisible={isMaintainess} />}
-               {isUpdate && <UpdateModal isVisible={isUpdate} />}
+               {/* {isUpdate && <UpdateModal isVisible={isUpdate} />} */}
               {children}
             </SafeAreaView>
           </BottomSheetModalProvider>
