@@ -82,8 +82,8 @@ android {
         applicationId "com.dsmaxclub"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 15
-        versionName "1.4.11"
+        versionCode 17
+        versionName "1.4.13"
     }
     signingConfigs {
         debug {
@@ -107,7 +107,7 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             // signingConfig signingConfigs.release
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
     minifyEnabled false
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"

@@ -207,15 +207,10 @@ import {
   RefreshControl,
   TouchableOpacity,
   Image,
-  Modal
+  Modal,
 } from 'react-native';
 
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  useMemo
-} from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 
 import DatePicker from 'react-native-date-picker';
 
@@ -237,11 +232,9 @@ import { getReportList } from '@actions/home/homeAction';
 import { AppText, BOLD, SIXTEEN } from '@components/AppText';
 
 const ReportScreen = () => {
-
   const dispatch = useAppDispatch();
   const { reportCouponList } = useAppSelector(state => state?.home);
-  console.log(reportCouponList,'report coupon list =======>');
-  
+  console.log(reportCouponList, 'report coupon list =======>');
 
   const [refreshing, setRefreshing] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -275,52 +268,40 @@ const ReportScreen = () => {
    * FILTER LOGIC
    */
   const filteredData = useMemo(() => {
-
     let list = reportCouponList?.data || [];
 
     // SEARCH FILTER
     if (searchText) {
-
       list = list.filter((item: any) => {
-
         const name = item?.user_name?.toLowerCase() || '';
         const mobile = item?.user_mobile?.toString() || '';
 
         return (
-          name.includes(searchText.toLowerCase()) ||
-          mobile.includes(searchText)
+          name.includes(searchText.toLowerCase()) || mobile.includes(searchText)
         );
-
       });
-
     }
 
     // DATE RANGE FILTER
     if (startDate && endDate) {
-
-      const start = new Date(startDate).setHours(0,0,0,0);
-      const end = new Date(endDate).setHours(23,59,59,999);
+      const start = new Date(startDate).setHours(0, 0, 0, 0);
+      const end = new Date(endDate).setHours(23, 59, 59, 999);
 
       list = list.filter((item: any) => {
+        if (!item?.redeem_date) return false;
 
-        if (!item?.valid_till) return false;
-
-        const itemDate = new Date(item.valid_till).getTime();
+        const itemDate = new Date(item.redeem_date).setHours(0, 0, 0, 0);
 
         return itemDate >= start && itemDate <= end;
-
       });
-
     }
 
     return list;
-
   }, [searchText, reportCouponList, startDate, endDate]);
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
       <View style={styles.containerStyle}>
-
         <ToolBar isLeftIcon title={'Report'} />
 
         {/* SEARCH + FILTER */}
@@ -328,10 +309,9 @@ const ReportScreen = () => {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            marginTop: 30
+            marginTop: 30,
           }}
         >
-
           <View style={{ flex: 1 }}>
             <Input
               placeholder="Search by username, mobile..."
@@ -351,26 +331,26 @@ const ReportScreen = () => {
               style={{
                 width: 30,
                 height: 20,
-                resizeMode: 'contain'
+                resizeMode: 'contain',
               }}
             />
           </TouchableOpacity>
-
         </View>
 
         {/* SHOW SELECTED DATE RANGE */}
-        {(startDate && endDate) && (
+        {startDate && endDate && (
           <View
             style={{
               flexDirection: 'row',
               marginTop: 10,
               marginHorizontal: 10,
-              alignItems: 'center'
+              alignItems: 'center',
             }}
           >
-
             <AppText type={SIXTEEN}>
-              {`${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}`}
+              {`${new Date(startDate).toLocaleDateString()} - ${new Date(
+                endDate,
+              ).toLocaleDateString()}`}
             </AppText>
 
             <TouchableOpacity
@@ -384,7 +364,6 @@ const ReportScreen = () => {
                 Reset
               </AppText>
             </TouchableOpacity>
-
           </View>
         )}
 
@@ -397,7 +376,7 @@ const ReportScreen = () => {
           contentContainerStyle={{
             paddingTop: 30,
             paddingBottom: 100,
-            flexGrow: 1
+            flexGrow: 1,
           }}
           refreshControl={
             <RefreshControl
@@ -416,29 +395,22 @@ const ReportScreen = () => {
         />
 
         {/* FILTER MODAL */}
-        <Modal
-          visible={openFilter}
-          transparent
-          animationType="slide"
-        >
-
+        <Modal visible={openFilter} transparent animationType="slide">
           <View
             style={{
-              flex:1,
-              justifyContent:'center',
-              backgroundColor:'rgba(0,0,0,0.5)'
+              flex: 1,
+              justifyContent: 'center',
+              backgroundColor: 'rgba(0,0,0,0.5)',
             }}
           >
-
             <View
               style={{
-                backgroundColor:'#fff',
-                margin:20,
-                borderRadius:10,
-                padding:20
+                backgroundColor: '#fff',
+                margin: 20,
+                borderRadius: 10,
+                padding: 20,
               }}
             >
-
               <AppText type={SIXTEEN} weight={BOLD}>
                 Start Date
               </AppText>
@@ -447,18 +419,16 @@ const ReportScreen = () => {
                 date={tempStartDate}
                 mode="date"
                 maximumDate={today}
-                onDateChange={(date) => {
-
+                onDateChange={date => {
                   setTempStartDate(date);
 
                   if (date > tempEndDate) {
                     setTempEndDate(date);
                   }
-
                 }}
               />
 
-              <AppText type={SIXTEEN} weight={BOLD} style={{marginTop:10}}>
+              <AppText type={SIXTEEN} weight={BOLD} style={{ marginTop: 10 }}>
                 End Date
               </AppText>
 
@@ -472,14 +442,13 @@ const ReportScreen = () => {
 
               <View
                 style={{
-                  flexDirection:'row',
-                  justifyContent:'space-between',
-                  marginTop:20
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginTop: 20,
                 }}
               >
-
                 <TouchableOpacity
-                  onPress={()=>{
+                  onPress={() => {
                     setStartDate(null);
                     setEndDate(null);
                     setOpenFilter(false);
@@ -488,44 +457,33 @@ const ReportScreen = () => {
                   <AppText weight={BOLD}>Reset</AppText>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={()=>setOpenFilter(false)}
-                >
+                <TouchableOpacity onPress={() => setOpenFilter(false)}>
                   <AppText weight={BOLD}>Cancel</AppText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   onPress={() => {
-
                     if (tempStartDate > tempEndDate) {
-                      alert("End date cannot be before start date");
+                      alert('End date cannot be before start date');
                       return;
                     }
 
                     setStartDate(tempStartDate);
                     setEndDate(tempEndDate);
                     setOpenFilter(false);
-
                   }}
                 >
                   <AppText weight={BOLD} color={colors.buttonBg}>
                     Apply
                   </AppText>
                 </TouchableOpacity>
-
               </View>
-
             </View>
-
           </View>
-
         </Modal>
-
       </View>
     </AppSafeAreaView>
   );
 };
 
 export default ReportScreen;
-
-

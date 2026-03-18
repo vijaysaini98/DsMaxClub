@@ -1,76 +1,97 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { colors } from '@theme/colors';
+import { AppText, BOLD, FOURTEEN, TWELVE } from '@components/AppText';
 
-const ReportCard = ({ item }:any) => {
-    console.log(item,'itemmmmmmmms');
-    
+const ReportCard = ({ item }: any) => {
   return (
     <View style={styles.card}>
-
       <View style={styles.row}>
-        <Text style={styles.label}>Username:</Text>
-        <Text style={styles.value}>{item?.user_name}</Text>
-{item?.user_mobile ? (
-  <>
-    <Text style={[styles.label, { marginLeft: 20 }]}>Mobile:</Text>
-    <Text style={styles.value}>{item?.user_mobile}</Text>
-  </>
-) : null}
-       
+        <AppText weight={BOLD} type={FOURTEEN}>
+          Username:
+        </AppText>
+        <AppText style={styles.value} type={FOURTEEN}>
+          {item?.user_name}({item?.booklet_code})
+        </AppText>
+
+        {item?.user_mobile && (
+          <>
+            <AppText style={[styles.label, { marginLeft: 20 }]}>
+              Mobile:
+            </AppText>
+
+            <AppText style={styles.value}>{item?.user_mobile}</AppText>
+          </>
+        )}
       </View>
 
-      <Text style={styles.text}>
-        <Text style={styles.label}>Coupon Code: </Text>
+      <AppText style={styles.text} type={FOURTEEN}>
+        <AppText style={styles.label} type={FOURTEEN}>
+          Coupon Code:{' '}
+        </AppText>
         {item?.generated_code}
-      </Text>
+      </AppText>
 
-      <View style={styles.statusRow}>
-        <View style={styles.redeemedBtn}>
-          <Text style={styles.redeemedText}>Redeemed</Text>
-        </View>
+      <AppText style={styles.text} type={FOURTEEN} weight={BOLD}>
+        {item?.heading}
+      </AppText>
 
-        <Text style={styles.offerText}>{item.offerName}</Text>
+      <AppText style={styles.text} type={TWELVE}>
+        {item?.short_desc}
+      </AppText>
+
+      <View
+        style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}
+      >
+        <AppText weight={BOLD} type={FOURTEEN}>
+          Redeemed Date:
+        </AppText>
+        <AppText style={styles.value} type={FOURTEEN}>
+          {item?.redeem_date?.split(' ')[0]}
+        </AppText>
       </View>
 
- <Text style={styles.text}>
-        <Text style={styles.label}>Heading: </Text>
-        {item?.heading}
-      </Text>
-      <Text style={styles.text}>
-        <Text style={styles.label}>Short Description: </Text>
-        {item?.short_desc}
-      </Text>
-      {/* <Text style={styles.text}>
-        <Text style={styles.label}>Total Coupons: </Text>
-        {item?.total_coupons}
-      </Text>
+      {/* BUTTON ROW */}
+      <View style={styles.buttonRow}>
+        {/* FREE BUTTON (API BASED) */}
+        {item?.coupon_type_id === 1 && (
+          <View style={styles.freeBtn}>
+            <AppText style={styles.freeText}>Free</AppText>
+          </View>
+        )}
 
-      <Text style={styles.text}>
-        <Text style={styles.label}>Used Coupons: </Text>
-        {item.used_coupons}
-      </Text> */}
-
-      {/* <Text style={styles.text}>
-        <Text style={styles.label}>Description: </Text>
-        {item.description || '-'}
-      </Text> */}
-
-      {/* <Text style={styles.text}>
-        <Text style={styles.label}>Date: </Text>
-        {item?.valid_till}
-      </Text> */}
-
+        {/* REDEEMED BUTTON (STATIC) */}
+        <View style={styles.redeemedBtn}>
+          <AppText style={styles.redeemedText}>Redeemed</AppText>
+        </View>
+      </View>
     </View>
   );
 };
 
 export default ReportCard;
 
+const styles = StyleSheet.create({
+  buttonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
 
-const styles = StyleSheet.create({  
+  freeBtn: {
+    backgroundColor: colors.buttonBg,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 5,
+    marginRight: 10,
+  },
 
-    card: {
+  freeText: {
+    color: '#fff',
+    fontSize: 12,
+  },
+
+  card: {
     backgroundColor: '#fff',
     marginHorizontal: 16,
     marginBottom: 15,
@@ -82,17 +103,18 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 6,
+    // marginBottom: 6,
   },
 
   label: {
-    fontWeight: '600',
+    // fontWeight: '600',
     color: '#000',
+    marginLeft: 7,
   },
 
   value: {
     color: '#333',
-    marginLeft: 4,
+    marginLeft: 7,
   },
 
   text: {
@@ -107,7 +129,7 @@ const styles = StyleSheet.create({
   },
 
   redeemedBtn: {
-    backgroundColor: colors.buttonBg,
+    backgroundColor: colors.red,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 5,
@@ -123,4 +145,4 @@ const styles = StyleSheet.create({
     flex: 1,
     color: '#000',
   },
-})
+});
