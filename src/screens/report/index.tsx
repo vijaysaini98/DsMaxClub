@@ -208,6 +208,7 @@ import {
   TouchableOpacity,
   Image,
   Modal,
+  Alert,
 } from 'react-native';
 
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
@@ -464,7 +465,7 @@ const ReportScreen = () => {
                 <TouchableOpacity
                   onPress={() => {
                     if (tempStartDate > tempEndDate) {
-                      alert('End date cannot be before start date');
+                      Alert.alert('End date cannot be before start date');
                       return;
                     }
 

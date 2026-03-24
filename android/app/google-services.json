@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "92392357261",
+    "project_id": "dsmax-a6a05",
+    "storage_bucket": "dsmax-a6a05.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92392357261:android:03610d356283b6e89491c4",
+        "android_client_info": {
+          "package_name": "com.dsmaxclub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDflw4tBbAHGXV5xtDx_Bal6eF_sq5hiQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+

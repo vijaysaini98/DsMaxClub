@@ -1,0 +1,7 @@
+
+export const USER_TOKEN_KEY = "USER_TOKEN_KEY";
+export const REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
+export const LOGIN_TYPE = "LOGIN_TYPE";
+export const FCM_TOKEN_KEY = "FCM_TOKEN_KEY";
+export const NOTIFICATION_DATA = "NOTIFICATION_DATA";
+
