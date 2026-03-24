@@ -55,6 +55,8 @@ export interface CardProps {
   vendorName?:string,
   usedCoupon?:number | string;
   shortDesc?:string
+  completeShortDesc?:string;
+  onContactPress?: () => void;
 }
 
 export interface DetailFieldProps {

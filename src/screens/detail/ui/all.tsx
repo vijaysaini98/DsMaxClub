@@ -11,6 +11,8 @@ import { getBookletDetail, getComboBookletDetail } from '@actions/home/homeActio
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import CouponsShimerLoader from '@components/ShimerLoader/CouponsShimerLoader';
+import PhoneDialerModal from '@screens/helpLine/contactModal';
+import VendorPhoneDialerModal from './vendorContactModal';
 
 interface CardItem {
     id: string | number;
@@ -25,6 +27,9 @@ const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
     const [refreshing, setRefreshing] = useState(false);
     const viewDetailSheet = useRef<any>(null);
     const executiveSnapPoints = useMemo(() => ["50%", "80%"], []);
+    const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] = React.useState(false);
+    const [selectedVendor, setSelectedVendor] = useState<any>(null);
+    
 
     const onViewPress = useCallback((item: CardItem) => {
         // setCouponDetail(item);
@@ -56,8 +61,11 @@ const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
     const renderItem = useMemo(
         () =>
             ({ item }: { item: CardItem }) => {
+                console.log(item,'item of card====>');
+                
                 return (
                     <CommonCard
+                    couponCount={item?.no_of_coupons}
                         data={item}
                         heading={item?.heading}
                         // description={item?.short_desc}
@@ -68,14 +76,20 @@ const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
                         statusBg={item?.coupon_type_id == 1 && colors.buttonBg}
                         statusTextColor={item?.coupon_type_id == 1 && WHITE}
                         location={from == "ComboBooklet" ? item?.locations : null}
-                        vendorName={item?.vendor?.name}
+                        // vendorName={item?.vendor?.name}
                         shortDesc={item?.vendor?.short_desc}
+                        completeShortDesc={item?.short_desc}
+                        onContactPress={() => {
+    setSelectedVendor(item);
+    setIsPhoneDialerModalVisible(true);
+}}
                     />
                 )
             },
         [onViewPress, handleShareOnPress]
     );
 
+   
     return (
         <View style={{ flex: 1 }}>
             {isLoading ? (
@@ -110,7 +124,11 @@ const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
                 data={couponDetail}
                 ref={viewDetailSheet}
             /> */}
-          
+          <VendorPhoneDialerModal
+    visible={isPhoneDialerModalVisible}
+    vendor={selectedVendor}
+    onClose={() => setIsPhoneDialerModalVisible(false)}
+/>
         </View>
     );
 };
