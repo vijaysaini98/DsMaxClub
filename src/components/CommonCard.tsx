@@ -4,7 +4,7 @@ import { colors } from '../theme/colors';
 import { AppText, BLACK, BOLD, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, TEN, THIRD, TWELVE, WHITE } from './AppText';
 import { CardProps } from 'src/types/common';
 import TouchableOpacityView from './TouchableOpacityView';
-import { downArrowIcon, locationIcon, shareIcon } from '@helper/imagesAssets';
+import { contactIcon, downArrowIcon, helpLineIcon, locationIcon, shareIcon } from '@helper/imagesAssets';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import RenderHTML from 'react-native-render-html';
 import MultiLocationSheet from '@screens/detail/ui/multiLoctionSheet';
@@ -37,7 +37,9 @@ const CommonCard = ({
   statusBg,
   statusTextColor,
   usedCoupon,
-  shortDesc
+  shortDesc,
+  completeShortDesc,
+  onContactPress,
 }: CardProps) => {
   if (!data) return null;
 
@@ -82,20 +84,23 @@ const CommonCard = ({
           )
         }
       </View>
-      {vendorName &&
+      {/* {vendorName &&
         <AppText weight={MEDIUM}>{vendorName}</AppText>
-      }
-      {
+      } */}
+      {/* {
         shortDesc && (
           <AppText type={TEN} weight={MEDIUM} color={PLACEHOLDER}>{shortDesc}</AppText>
         )
-      }
+      } */}
+       <AppText style={{ width: status ? "80%" : "100%",marginVertical: vs(4) }} color={PLACEHOLDER} weight={BOLD}>
+          {couponCount ? `No. of Coupons: ${couponCount}` : null}
+        </AppText>
       <View style={styles.rowContainer}>
         {/* <View > */}
         {htmlContent ?
 
           (
-            <View style={{ marginVertical: vs(8) }}>
+            <View style={{ marginVertical: vs(4) }}>
               <RenderHTML
                 contentWidth={width}
                 source={{ html: htmlContent }}
@@ -134,7 +139,7 @@ const CommonCard = ({
           </View>
         )}
       </View>
-      {couponCount && (
+      {/* {couponCount && (
         <View style={styles.couponCountContainer}>
           <AppText type={TEN}
             weight={MEDIUM}
@@ -142,7 +147,7 @@ const CommonCard = ({
             style={{ color: colors.placeholder2 }}
           >{`No of Coupons: ${couponCount}`}</AppText>
 
-        </View>)}
+        </View>)} */}
 
       {usedCoupon && usedCoupon > 0 && (
         <View style={styles.usedCouponCountContainer}>
@@ -193,8 +198,15 @@ const CommonCard = ({
         )
       }
 
+        <AppText style={{ width: status ? "80%" : "100%",marginVertical: vs(4) }} color={PLACEHOLDER}>
+          {completeShortDesc ? completeShortDesc : null}
+        </AppText>
+<TouchableOpacityView style={{paddingVertical: vs(4)}} onPress={onContactPress}>
+  <Image source={contactIcon} style={{tintColor:colors.buttonBg, width: s(30), height: vs(30)}}/>
+</TouchableOpacityView>
+
       <View style={styles.buttonRow}>
-        <TouchableOpacityView
+        {/* <TouchableOpacityView
           style={[showRedeemBtn ? styles.viewButton2 : styles.viewButton1(viewBtnDisabled), btnStyle]}
           onPress={onViewPress}
           disabled={viewBtnDisabled}
@@ -207,7 +219,8 @@ const CommonCard = ({
           >
             {buttonTitle ? buttonTitle : "VIEW"}
           </AppText>
-        </TouchableOpacityView>
+        </TouchableOpacityView> */}
+       
 
         {showRedeemBtn && (
           <TouchableOpacityView
