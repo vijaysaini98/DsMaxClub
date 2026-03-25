@@ -10,7 +10,7 @@ import SplashScreen from 'react-native-splash-screen';
 import NetInfo from '@react-native-community/netinfo';
 import { commonStyles } from '@theme/commonStyles';
 import RootComponent from './src/RootComponent';
-import useFcm from 'src/FcmService';
+import useFcm from './src/fcm-service';
 
 const App = () => {
   // ─── FCM ─────────────────────────────────────────────────────

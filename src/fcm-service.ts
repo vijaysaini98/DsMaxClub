@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert, Platform } from 'react-native';
 import { FCM_TOKEN_KEY, NOTIFICATION_DATA } from '@helper/Constants';
 
-const useFcm1 = (
+const useFcm = (
   onNotification: (n: any) => void,
   onOpenNotification: (n: any) => void,
 ) => {
@@ -111,4 +111,4 @@ const useFcm1 = (
   return { setData };
 };
 
-export default useFcm1;
+export default useFcm;
