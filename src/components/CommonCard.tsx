@@ -4,7 +4,7 @@ import { colors } from '../theme/colors';
 import { AppText, BLACK, BOLD, BUTTON_TEXT, EIGHTEEN, FOURTEEN, MEDIUM, PLACEHOLDER, SEMI_BOLD, SIXTEEN, TEN, THIRD, TWELVE, WHITE } from './AppText';
 import { CardProps } from 'src/types/common';
 import TouchableOpacityView from './TouchableOpacityView';
-import { downArrowIcon, locationIcon, shareIcon } from '@helper/imagesAssets';
+import { contactIcon, downArrowIcon, locationIcon, shareIcon } from '@helper/imagesAssets';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import RenderHTML from 'react-native-render-html';
 import MultiLocationSheet from '@screens/detail/ui/multiLoctionSheet';
@@ -12,6 +12,7 @@ import MultiLocationSheet from '@screens/detail/ui/multiLoctionSheet';
 
 const { width } = Dimensions.get('window');
 const CommonCard = ({
+  hideViewButton,
   data,
   showRedeemBtn = false,
   onViewPress,
@@ -37,7 +38,9 @@ const CommonCard = ({
   statusBg,
   statusTextColor,
   usedCoupon,
-  shortDesc
+  shortDesc,
+  completeShortDesc,
+  onContactPress
 }: CardProps) => {
   if (!data) return null;
 
@@ -90,6 +93,10 @@ const CommonCard = ({
           <AppText type={TEN} weight={MEDIUM} color={PLACEHOLDER}>{shortDesc}</AppText>
         )
       }
+
+        <AppText style={{ width: status ? "80%" : "100%",marginVertical: vs(4) }} color={PLACEHOLDER}>
+          {completeShortDesc ? completeShortDesc : null}
+        </AppText>
       <View style={styles.rowContainer}>
         {/* <View > */}
         {htmlContent ?
@@ -137,12 +144,20 @@ const CommonCard = ({
       {couponCount && (
         <View style={styles.couponCountContainer}>
           <AppText type={TEN}
-            weight={MEDIUM}
+            weight={BOLD}
             // color={WHITE}
             style={{ color: colors.placeholder2 }}
           >{`No of Coupons: ${couponCount}`}</AppText>
 
         </View>)}
+        {
+          onContactPress &&  (
+<TouchableOpacityView style={{paddingVertical: vs(4)}} onPress={onContactPress}>
+  <Image source={contactIcon} style={{tintColor:colors.buttonBg, width: s(30), height: vs(30),marginTop: vs(4)}}/>
+</TouchableOpacityView>
+          )
+        }
+
 
       {usedCoupon && usedCoupon > 0 && (
         <View style={styles.usedCouponCountContainer}>
@@ -159,7 +174,7 @@ const CommonCard = ({
           <View
             // onPress={()=> openInGoogleMaps(data?.client?.location_url)}
 
-            style={{ flexDirection: 'row', gap: 2, alignItems: 'center' }}
+            style={{ flexDirection: 'row', gap: 2, alignItems: 'center',marginTop: vs(10) }}
           >
             {/* <TouchableOpacityView
               // onPress={() => handleRedirection(data?.locations[0]?.location_url)}
@@ -194,20 +209,33 @@ const CommonCard = ({
       }
 
       <View style={styles.buttonRow}>
-        <TouchableOpacityView
-          style={[showRedeemBtn ? styles.viewButton2 : styles.viewButton1(viewBtnDisabled), btnStyle]}
-          onPress={onViewPress}
-          disabled={viewBtnDisabled}
-          loader={viewBtnLoader}
-        >
-          <AppText
-            type={SIXTEEN}
-            weight={BOLD}
-            color={btnTextColor ? btnTextColor : showRedeemBtn ? colors.third : colors.white}
-          >
-            {buttonTitle ? buttonTitle : "VIEW"}
-          </AppText>
-        </TouchableOpacityView>
+        {!hideViewButton && (
+  <TouchableOpacityView
+    style={[
+      showRedeemBtn
+        ? styles.viewButton2
+        : styles.viewButton1(viewBtnDisabled),
+      btnStyle,
+    ]}
+    onPress={onViewPress}
+    disabled={viewBtnDisabled}
+    loader={viewBtnLoader}
+  >
+    <AppText
+      type={SIXTEEN}
+      weight={BOLD}
+      color={
+        btnTextColor
+          ? btnTextColor
+          : showRedeemBtn
+          ? colors.third
+          : colors.white
+      }
+    >
+      {buttonTitle ? buttonTitle : "VIEW"}
+    </AppText>
+  </TouchableOpacityView>
+)}
 
         {showRedeemBtn && (
           <TouchableOpacityView
