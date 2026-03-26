@@ -1,114 +1,141 @@
 import { useEffect, useRef } from 'react';
-import messaging from '@react-native-firebase/messaging';
+import messaging, {
+  FirebaseMessagingTypes,
+} from '@react-native-firebase/messaging';
+// import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
+import { EventType } from '@notifee/react-native';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert, Platform } from 'react-native';
-import { FCM_TOKEN_KEY, NOTIFICATION_DATA } from '@helper/Constants';
+import { Alert } from 'react-native';
+import { FCM_TOKEN_KEY } from '@helper/Constants';
 
-const useFcm = (
-  onNotification: (n: any) => void,
-  onOpenNotification: (n: any) => void,
-) => {
-  const messageListenerRef = useRef<(() => void) | null>(null);
+type RemoteMessage = FirebaseMessagingTypes.RemoteMessage;
 
-  const setToken = async (token: string) => {
-    await AsyncStorage.setItem(FCM_TOKEN_KEY, token);
+export type FcmHandlers = {
+  onForeground?: (msg: RemoteMessage) => void;
+  onOpened?: (msg: RemoteMessage) => void;
+};
+
+// ─── Token helpers ────────────────────────────────────────────────────────────
+async function saveToken(token: string) {
+  await AsyncStorage.setItem(FCM_TOKEN_KEY, token);
+  console.log('[FCM] Token:', token);
+}
+
+async function fetchAndSaveToken() {
+  try {
+    const token = await messaging().getToken();
+    if (token) await saveToken(token);
+  } catch (e) {
+    console.warn('[FCM] getToken error:', e);
+  }
+}
+
+// ─── Display via Notifee (foreground only — background handled in index.js) ──
+async function showNotification(msg: RemoteMessage) {
+  await notifee.displayNotification({
+    title: msg.notification?.title ?? '',
+    body: msg.notification?.body ?? '',
+    data: msg.data ?? {},
+    android: {
+      channelId: 'default',
+      importance: AndroidImportance.HIGH,
+      smallIcon: 'ic_notification',
+      pressAction: { id: 'default' },
+      showTimestamp: true,
+    },
+  });
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
+const useFcm = ({ onForeground, onOpened }: FcmHandlers = {}) => {
+  const unsubFcm = useRef<(() => void) | null>(null);
+  const unsubNotifee = useRef<(() => void) | null>(null);
+
+  const requestPermission = async (): Promise<boolean> => {
+    const status = await messaging().requestPermission();
+    return (
+      status === messaging.AuthorizationStatus.AUTHORIZED ||
+      status === messaging.AuthorizationStatus.PROVISIONAL
+    );
   };
 
-  const setData = async (data: any) => {
-    await AsyncStorage.setItem(NOTIFICATION_DATA, JSON.stringify(data));
-  };
+  const ensurePermission = async (): Promise<boolean> => {
+    const current = await messaging().hasPermission();
+    if (
+      current === messaging.AuthorizationStatus.AUTHORIZED ||
+      current === messaging.AuthorizationStatus.PROVISIONAL
+    )
+      return true;
 
-  const getToken = async () => {
-    try {
-      const fcmToken = await messaging().getToken();
-      console.log('====================================');
-      console.log('✅ FCM Token:', fcmToken);
-      console.log('====================================');
-      if (fcmToken) {
-        await setToken(fcmToken);
-      }
-    } catch (error) {
-      console.log('[FCM] getToken error:', error);
-    }
-  };
-
-  const registerAppWithFCM = async () => {
-    if (Platform.OS === 'ios') {
-      await messaging().registerDeviceForRemoteMessages();
-    }
-    await getToken();
-  };
-
-  const requestPermission = async () => {
-    try {
-      await messaging().requestPermission();
-      await registerAppWithFCM();
-    } catch {
+    const granted = await requestPermission();
+    if (!granted) {
       Alert.alert(
-        'Notification Permission Required',
-        'Please allow notification permission to receive updates.',
-        [{ text: 'OK', onPress: requestPermission }],
+        'Notifications off',
+        'Turn on notifications in Settings to receive updates.',
       );
     }
-  };
-
-  const checkPermission = async () => {
-    try {
-      const enabled = await messaging().hasPermission();
-      if (
-        enabled === messaging.AuthorizationStatus.AUTHORIZED ||
-        enabled === messaging.AuthorizationStatus.PROVISIONAL
-      ) {
-        await registerAppWithFCM();
-      } else {
-        await requestPermission();
-      }
-    } catch {
-      await requestPermission();
-    }
-  };
-
-  const createNotificationListeners = () => {
-    // 1. App opened from BACKGROUND by tapping notification
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log('[FCM] Opened from background:', remoteMessage);
-      if (remoteMessage) onOpenNotification(remoteMessage);
-    });
-
-    // 2. App opened from QUIT STATE by tapping notification
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        console.log('[FCM] Opened from quit state:', remoteMessage);
-        if (remoteMessage) onOpenNotification(remoteMessage);
-      });
-
-    // 3. FOREGROUND message
-    messageListenerRef.current = messaging().onMessage(async remoteMessage => {
-      console.log('[FCM] Foreground message:', remoteMessage);
-      if (remoteMessage) onNotification(remoteMessage);
-    });
-
-    // 4. Token refresh
-    messaging().onTokenRefresh(fcmToken => {
-      console.log('[FCM] Token refreshed:', fcmToken);
-      setToken(fcmToken);
-    });
+    return granted;
   };
 
   useEffect(() => {
-    checkPermission();
-    createNotificationListeners();
+    (async () => {
+      const allowed = await ensurePermission();
+      if (!allowed) return;
+
+      // 1. Fetch + save token
+      await fetchAndSaveToken();
+
+      // 2. Token refresh
+      const unsubRefresh = messaging().onTokenRefresh(saveToken);
+
+      // 3. Foreground FCM → display via Notifee
+      unsubFcm.current = messaging().onMessage(async msg => {
+        console.log('[FCM] Foreground:', msg);
+        await showNotification(msg);
+        onForeground?.(msg);
+      });
+
+      // 4. Foreground Notifee press (user taps while app is open)
+      unsubNotifee.current = notifee.onForegroundEvent(({ type, detail }) => {
+        if (type === EventType.PRESS && detail.notification) {
+          console.log('[Notifee] Foreground press:', detail.notification.data);
+          onOpened?.({
+            messageId: detail.notification.id,
+            data: detail.notification.data as Record<string, string>,
+            notification: {
+              title: detail.notification.title,
+              body: detail.notification.body,
+            },
+          } as RemoteMessage);
+        }
+      });
+
+      // 5. Background tap → app foregrounded
+      messaging().onNotificationOpenedApp(msg => {
+        console.log('[FCM] Opened from background:', msg);
+        onOpened?.(msg);
+      });
+
+      // 6. Kill-state tap → app opened fresh
+      messaging()
+        .getInitialNotification()
+        .then(msg => {
+          if (msg) {
+            console.log('[FCM] Opened from kill state:', msg);
+            onOpened?.(msg);
+          }
+        });
+
+      return unsubRefresh;
+    })();
 
     return () => {
-      if (messageListenerRef.current) {
-        messageListenerRef.current();
-        messageListenerRef.current = null;
-      }
+      unsubFcm.current?.();
+      unsubNotifee.current?.();
     };
   }, []);
-
-  return { setData };
 };
 
 export default useFcm;
