@@ -2,7 +2,7 @@ import Navigator from '@navigations/Navigator';
 import store from '@redux/store';
 import { commonStyles } from '@theme/commonStyles';
 import React, { useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
@@ -10,6 +10,7 @@ import SplashScreen from 'react-native-splash-screen';
 import NetInfo from '@react-native-community/netinfo';
 import RootComponent from './src/RootComponent';
 import useFcm from './src/fcm-service';
+import { PermissionsAndroid, Platform } from 'react-native';
 
 const App = () => {
   useFcm({
@@ -37,6 +38,18 @@ const App = () => {
     return unsub;
   }, []);
 
+  const requestNotificationPermission = async () => {
+    if (Platform.OS === 'android' && Platform.Version >= 33) {
+      const status = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+      return status === PermissionsAndroid.RESULTS.GRANTED;
+    }
+    return true; // Android < 13 doesn't need explicit permission
+  };
+  useEffect(() => {
+    requestNotificationPermission();
+  }, []);
   return (
     <GestureHandlerRootView style={commonStyles.flex}>
       <SafeAreaProvider>
