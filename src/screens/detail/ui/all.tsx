@@ -63,6 +63,7 @@ const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
                 
                 return (
                     <CommonCard
+                    couponCount={item?.no_of_coupons}
                         data={item}
                         heading={item?.heading}
                         // description={item?.short_desc}
@@ -73,10 +74,8 @@ const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
                         statusBg={item?.coupon_type_id == 1 && colors.buttonBg}
                         statusTextColor={item?.coupon_type_id == 1 && WHITE}
                         location={from == "ComboBooklet" ? item?.locations : null}
-                        vendorName={item?.vendor?.name}
-                        // shortDesc={item?.vendor?.short_desc}
-                        hideViewButton={true}
-                        couponCount={item?.no_of_coupons}
+                        // vendorName={item?.vendor?.name}
+                        shortDesc={item?.vendor?.short_desc}
                         completeShortDesc={item?.short_desc}
                         onContactPress={() => {
     setSelectedVendor(item);
@@ -88,6 +87,7 @@ const All: React.FC = ({ id, from, scrollY,handleViewPress }) => {
         [onViewPress, handleShareOnPress]
     );
 
+   
     return (
         <View style={{ flex: 1 }}>
             {isLoading ? (

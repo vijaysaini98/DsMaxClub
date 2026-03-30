@@ -40,7 +40,7 @@ const CommonCard = ({
   usedCoupon,
   shortDesc,
   completeShortDesc,
-  onContactPress
+  onContactPress,
 }: CardProps) => {
   if (!data) return null;
 
@@ -85,24 +85,23 @@ const CommonCard = ({
           )
         }
       </View>
-      {vendorName &&
+      {/* {vendorName &&
         <AppText weight={MEDIUM}>{vendorName}</AppText>
-      }
-      {
+      } */}
+      {/* {
         shortDesc && (
           <AppText type={TEN} weight={MEDIUM} color={PLACEHOLDER}>{shortDesc}</AppText>
         )
-      }
-
-        <AppText style={{ width: status ? "80%" : "100%",marginVertical: vs(4) }} color={PLACEHOLDER}>
-          {completeShortDesc ? completeShortDesc : null}
+      } */}
+       <AppText style={{ width: status ? "80%" : "100%",marginVertical: vs(4) }} color={PLACEHOLDER} weight={BOLD}>
+          {couponCount ? `No. of Coupons: ${couponCount}` : null}
         </AppText>
       <View style={styles.rowContainer}>
         {/* <View > */}
         {htmlContent ?
 
           (
-            <View style={{ marginVertical: vs(8) }}>
+            <View style={{ marginVertical: vs(4) }}>
               <RenderHTML
                 contentWidth={width}
                 source={{ html: htmlContent }}
@@ -141,7 +140,7 @@ const CommonCard = ({
           </View>
         )}
       </View>
-      {couponCount && (
+      {/* {couponCount && (
         <View style={styles.couponCountContainer}>
           <AppText type={TEN}
             weight={BOLD}
@@ -158,6 +157,7 @@ const CommonCard = ({
           )
         }
 
+        </View>)} */}
 
       {usedCoupon && usedCoupon > 0 && (
         <View style={styles.usedCouponCountContainer}>
@@ -208,6 +208,13 @@ const CommonCard = ({
         )
       }
 
+        <AppText style={{ width: status ? "80%" : "100%",marginVertical: vs(4) }} color={PLACEHOLDER}>
+          {completeShortDesc ? completeShortDesc : null}
+        </AppText>
+<TouchableOpacityView style={{paddingVertical: vs(4)}} onPress={onContactPress}>
+  <Image source={contactIcon} style={{tintColor:colors.buttonBg, width: s(30), height: vs(30)}}/>
+</TouchableOpacityView>
+
       <View style={styles.buttonRow}>
         {!hideViewButton && (
   <TouchableOpacityView
@@ -236,6 +243,21 @@ const CommonCard = ({
     </AppText>
   </TouchableOpacityView>
 )}
+        {/* <TouchableOpacityView
+          style={[showRedeemBtn ? styles.viewButton2 : styles.viewButton1(viewBtnDisabled), btnStyle]}
+          onPress={onViewPress}
+          disabled={viewBtnDisabled}
+          loader={viewBtnLoader}
+        >
+          <AppText
+            type={SIXTEEN}
+            weight={BOLD}
+            color={btnTextColor ? btnTextColor : showRedeemBtn ? colors.third : colors.white}
+          >
+            {buttonTitle ? buttonTitle : "VIEW"}
+          </AppText>
+        </TouchableOpacityView> */}
+       
 
         {showRedeemBtn && (
           <TouchableOpacityView
