@@ -11,16 +11,19 @@ import {
   backIcon,
   defaultBookletImage,
   downArrowIcon,
+  helpLineIcon,
   locationIcon,
 } from '@helper/imagesAssets';
 import {
   AppText,
   BOLD,
   BUTTON_TEXT,
+  MEDIUM,
   PLACEHOLDER,
   SIXTEEN,
   TEN,
   THIRTEEN,
+  TWELVE,
   TWENTY_TWO,
   WHITE,
 } from '@components/AppText';
@@ -32,7 +35,7 @@ import About from './ui/about';
 import Gallery from './ui/gallery';
 import Terms_Condition from './ui/terms_condition';
 import styles from './styles';
-import { extractLatLngFromUrl, openMap, shareToAny, width } from '@utils/index';
+import { extractLatLngFromUrl, openMap, openPhoneDialer, shareToAny, width } from '@utils/index';
 import { RenderTabBar } from '@components/RenderTabBar';
 import { IMGE_URL } from '@services/config';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
@@ -60,6 +63,7 @@ import {
   REDEEM_SUCCESSFULL_SCREEN,
   REQUEST_SUCCESSFUL_SCREEN,
 } from '@navigations/routes';
+import { s, vs } from 'react-native-size-matters';
 const initialLayout = { width: width };
 
 // ✅ Make sure route keys match those in renderScene
@@ -372,7 +376,7 @@ const Details = ({ route }) => {
             {data?.client?.name ? data?.client?.name : data?.name}
           </AppText>
         </Animated.View>
-        {(data?.client?.short_desc || data?.client_short_desc) && (
+        {/* {(data?.client?.short_desc || data?.client_short_desc) && (
           <AppText
             type={SIXTEEN}
             color={PLACEHOLDER}
@@ -385,8 +389,8 @@ const Details = ({ route }) => {
                 : data?.client_short_desc
             }`}
           </AppText>
-        )}
-        {/* {data?.client?.mobile && (
+        )} */}
+        {data?.client?.mobile && (
             <TouchableOpacityView
             onPress={()=>openPhoneDialer(data?.client?.mobile)}
             style={{flexDirection:'row',alignItems:'center',marginTop:vs(4),gap:5}}
@@ -396,9 +400,9 @@ const Details = ({ route }) => {
               style={{width:s(16),height:s(16),tintColor:colors.buttonBg}}
               resizeMode={"contain"}
               />
-              <AppText type={TWELVE} weight={MEDIUM}>{data?.client?.mobile}</AppText>
+              <AppText type={TWELVE} weight={BOLD}>{data?.client?.mobile}</AppText>
             </TouchableOpacityView>
-          )} */}
+          )}
 
         <AppText
           type={THIRTEEN}

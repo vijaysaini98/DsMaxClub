@@ -33,13 +33,12 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }) => {
     state => state?.home,
   );
 
-  const [couponDetail, setCouponDetail] = useState<any>();
-  const [refreshing, setRefreshing] = useState(false);
-  const viewDetailSheet = useRef<any>(null);
-  const executiveSnapPoints = useMemo(() => ['50%', '80%'], []);
-  const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] =
-    React.useState(false);
-  const [selectedVendor, setSelectedVendor] = useState<any>(null);
+    const [couponDetail, setCouponDetail] = useState<any>();
+    const [refreshing, setRefreshing] = useState(false);
+    const viewDetailSheet = useRef<any>(null);
+    const executiveSnapPoints = useMemo(() => ["50%", "80%"], []);
+      const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] = React.useState(false);
+    const [selectedVendor, setSelectedVendor] = useState<any>(null);
 
   const onViewPress = useCallback((item: CardItem) => {
     // setCouponDetail(item);
@@ -74,20 +73,19 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }) => {
 
         return (
           <CommonCard
+            couponCount={item?.no_of_coupons}
             data={item}
             heading={item?.heading}
             // description={item?.short_desc}
             htmlContent={item?.description}
             onViewPress={() => onViewPress(item)}
             btnStyle={styles.viewBtnStyle}
-            status={item?.coupon_type_id == 1 ? 'Free' : ''}
+            status={item?.coupon_type_id == 1 ? 'Free' : ""}
             statusBg={item?.coupon_type_id == 1 && colors.buttonBg}
             statusTextColor={item?.coupon_type_id == 1 && WHITE}
-            location={from == 'ComboBooklet' ? item?.locations : null}
-            vendorName={item?.vendor?.name}
-            // shortDesc={item?.vendor?.short_desc}
-            hideViewButton={true}
-            couponCount={item?.no_of_coupons}
+            location={from == "ComboBooklet" ? item?.locations : null}
+            // vendorName={item?.vendor?.name}
+            shortDesc={item?.vendor?.short_desc}
             completeShortDesc={item?.short_desc}
             onContactPress={() => {
               setSelectedVendor(item);
@@ -96,7 +94,7 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }) => {
           />
         );
       },
-    [onViewPress, handleShareOnPress],
+    [onViewPress]
   );
 
   return (
@@ -143,6 +141,7 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }) => {
 };
 
 export default All;
+
 
 const styles = StyleSheet.create({
   containerStyle: {
