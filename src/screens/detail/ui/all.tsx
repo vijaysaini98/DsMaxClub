@@ -27,7 +27,7 @@ interface CardItem {
   // Add other properties as needed
 }
 
-const All: React.FC = ({ id, from, scrollY, handleViewPress }) => {
+const All: React.FC = ({ id, from, scrollY, handleViewPress }:any) => {
   const dispatch = useAppDispatch();
   const { bookletDetailAllDeals, isLoading } = useAppSelector(
     state => state?.home,
@@ -69,11 +69,12 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }) => {
   const renderItem = useMemo(
     () =>
       ({ item }: { item: CardItem }) => {
-        console.log(item, 'card items');
+        // console.log(item, 'card items');
 
         return (
           <CommonCard
             couponCount={item?.no_of_coupons}
+            hideViewButton={true}
             data={item}
             heading={item?.heading}
             // description={item?.short_desc}

@@ -47,6 +47,8 @@ const Home: React.FC = () => {
   const { userData } = useAppSelector((state) => state?.auth);
   const { categoryListData, categoryBookletData, isLoading, bannerList, comboBookletDeals } =
     useAppSelector((state) => state?.home);
+    console.log(comboBookletDeals,'combobbooklet deals');
+    
 
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -183,20 +185,25 @@ const Home: React.FC = () => {
                 contentContainerStyle={styles.listStyle}
               >
                 {comboBookletDeals?.category?.map((booklet, i) => {
+console.log(booklet,'booklet=====>');
+
                   return (
                     <View key={booklet?.id || i} style={comboBookletDeals?.category?.length < 2 ? styles.categoryBookletContainer2 :
                       styles.categoryBookletContainer}>
                       <Card
                         index={i}
+                        isCompleteLocation={true}
                         // addtoCart={true}
                         item={booklet}
                         cardContainerStyle={comboBookletDeals?.category?.length < 2 && styles.cardContainerStyle}
                         imageBaseUrl={comboBookletDeals?.baseurl}
                         imageStyle={comboBookletDeals?.category?.length < 2 && styles.cardImageStyle}
+                        // handleCardOnPress={() => {
+                        //   NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "ComboBooklet" });
+                        // }}
                         handleCardOnPress={() => {
-                          NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "ComboBooklet" });
+                          NavigationService.navigate(routes.COMBO_OFFER_LIST_SCREEN,{ data: booklet, from: "ComboBooklet" });
                         }}
-                        
                         imageUrl={
                           booklet?.booklet
                             ? { uri: comboBookletDeals?.baseurl + booklet?.booklet }
@@ -251,6 +258,7 @@ const Home: React.FC = () => {
                         >
                           <Card
                             index={i}
+                            isCompleteLocation={true}
                             item={booklet}
                             mobile={booklet?.client?.mobile}
                             cardContainerStyle={item.booklets.length < 2 && styles.cardContainerStyle}

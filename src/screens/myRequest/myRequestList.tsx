@@ -26,11 +26,13 @@ const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
     }, [dispatch]);
 
     const renderItem = ({ item, index }: any) => {
+        console.log(item,'request card item');
+        
         return (
             <View 
             key={index}
             style={styles.shadowContainer}>
-                <Card item={item} index={index}
+                {/* <Card item={item} index={index}
                     cardContainerStyle={{ width: "100%" }}
                     imageStyle={styles.imageStyle}
                     imageUrl={item?.booklet ? { uri: IMGE_URL + item?.booklet } : defaultBookletImage}
@@ -43,7 +45,30 @@ const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
                     status={item?.status}
                     date={`Request: ${moment(item?.created_at, "YYYY-MM-DD ").format("D MMM YYYY ")}`}
                     shortDesc={item?.short_desc}
-                />
+                /> */}
+                <Card
+  item={item}
+  index={index}
+  type="request" // 👈 IMPORTANT
+  cardContainerStyle={{ width: "100%" }}
+  imageStyle={styles.imageStyle}
+  imageUrl={
+    item?.booklet
+      ? { uri: IMGE_URL + item?.booklet }
+      : defaultBookletImage
+  }
+  name={`${item?.name} (${item?.unique_code})`}
+  price={item.price}
+  address={item?.locations ? item?.locations[0]?.location : "---"}
+  handleCardOnPress={() => {
+    // NavigationService.navigate(REQUEST_COUPON_LIST_SCREEN, { booklet_id: item?.uuid })
+  }}
+  status={item?.status}
+  shortDesc={item?.short_desc}
+
+  // ✅ NEW CLEAN PROP
+  purchaseDate={item?.created_at}
+/>
             </View>
         )
     }

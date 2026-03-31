@@ -1,7 +1,7 @@
 import { API } from '@services/appClient';
 import { AppDispatch } from '@redux/store';
 import Toast from "react-native-simple-toast";
-import { setBtnLoading, setCouponCodeData, setCouponList, setIsRefresh, setLoading, setMyCardActiveBookletList, setMyCardAllBookletList, setMyCardCouponList, setMyCardExpiredBookletList } from './myCardSlice';
+import { setBtnLoading, setComboOfferList, setCouponCodeData, setCouponList, setIsRefresh, setLoading, setMyCardActiveBookletList, setMyCardAllBookletList, setMyCardCouponList, setMyCardExpiredBookletList } from './myCardSlice';
 
 export const getMyCardBookletList =
     (data?: any,isRefresh?:boolean, onSucess?: any) => async (dispatch: AppDispatch) => {
@@ -102,3 +102,48 @@ export const couponCodeGenrate =
             dispatch(setBtnLoading(false))
         }
     };
+
+
+    export const getComboOffersList =
+    (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+        try {
+            dispatch(setBtnLoading(true));
+            const response = await API.myCardApi.combo_Deals_List(data);
+            console.log(response,'response of combolist==>');
+            
+            if (response?.status == 200) {
+                dispatch(setComboOfferList(response?.data))
+                onSucess && onSucess()
+                return;
+            } else {
+                throw new Error('No response data received from backend.');
+            }
+        } catch (e: any) {
+            console.log("e", e);
+
+            Toast.show(e?.response?.data?.message, Toast.LONG);
+        } finally {
+            dispatch(setBtnLoading(false))
+        }
+    };
+
+
+//     export const getBannerList =
+//   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+//     try {
+//       dispatch(setLoading(true));
+//       const response = await API.homeApi.banner_api(data);
+
+//       if (response?.status == 200) {
+//         dispatch(setBannerData(response?.data))
+//         return;
+//       } else {
+//         Toast.show(response?.message, Toast.LONG);
+//       }
+//     } catch (e: any) {
+//       console.log("bannerApi Error", e?.response?.data);
+//       // Toast.show(e?.response?.data?.message, Toast.LONG);
+//     } finally {
+//       dispatch(setLoading(false))
+//     }
+//   };

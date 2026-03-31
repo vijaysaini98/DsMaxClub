@@ -15,7 +15,7 @@ import { ms, s, vs } from 'react-native-size-matters/extend'
 import ListEmptyComponent from '@components/ListEmptyComponent'
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader'
 
-const CategoriesList = ({ route }) => {
+const CategoriesList = ({ route }:any) => {
     const dispatch = useAppDispatch()
     const { title, id } = route?.params ?? ""
     const { bookletList, isLoading } = useAppSelector((state) => state.home)
@@ -46,6 +46,7 @@ const CategoriesList = ({ route }) => {
             <View style={styles.shadowContainer}>
                 <Card item={item} index={index}
                     cardContainerStyle={{ width: "100%" }}
+                    isCompleteLocation={true}
                     handleCardOnPress={() => { }}
                     imageStyle={styles.imageStyle}
                     imageUrl={item?.booklet ? { uri: bookletList?.baseurl + item?.booklet } : defaultBookletImage}

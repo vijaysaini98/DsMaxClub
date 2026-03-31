@@ -49,6 +49,7 @@ const Deal = () => {
       <View style={styles.shadowContainer}>
         <Card item={item} index={index}
           cardContainerStyle={{ width: "100%" }}
+          isCompleteLocation
           // imageStyle={{ width: s(391) }}
           handleCardOnPress={() => { }}
           imageStyle={styles.imageStyle}

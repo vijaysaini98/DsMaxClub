@@ -15,7 +15,7 @@ import Toast from 'react-native-simple-toast';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
 import moment from 'moment';
 
-const MyCardList = ({ value }) => {
+const MyCardList = ({ value }:any) => {
   const dispatch = useAppDispatch();
   // const { isLoading ,isBtnLoading} = useAppSelector((state) => state.myCard);
   const { isLoading, isRefresh, myCardAllBookletList, myCardActiveBookletList, myCardExpiredBookletList, isBtnLoading } = useAppSelector((state) => state?.myCard)
@@ -53,10 +53,12 @@ const MyCardList = ({ value }) => {
   };
 
   const renderItem = useCallback(
-    ({ item, index }) => {
+    ({ item, index }:any) => {
+      console.log('booklet item',item,);
+      
       return (
         <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
-          <Card
+          {/* <Card
             item={item}
             index={index}
             cardContainerStyle={{ width: '100%' }}
@@ -83,7 +85,35 @@ const MyCardList = ({ value }) => {
                 ? `Up to ${item?.validity_months} months`
                 : `Up to ${moment(item?.end_date).format("D-MMM-YYYY")}`
               }`}
-          />
+          /> */}
+          <Card
+  item={item}
+  index={index}
+  type="booklet" // 👈 IMPORTANT
+  cardContainerStyle={{ width: '100%' }}
+  imageStyle={styles.imageStyle}
+  imageUrl={
+    item?.booklet
+      ? { uri: item?.baseurl + item?.booklet }
+      : defaultBookletImage
+  }
+  name={`${item?.name} (${item?.booklet_uniquecode})`}
+  price={item.price}
+  address={item?.locations?.[0]?.location ?? '---'}
+  handleCardOnPress={() => {
+    if (item?.tab_status === 'expired') {
+      Toast.show('Booklet has been Expired', Toast.LONG);
+    } else {
+      handleOnPress(item);
+    }
+  }}
+  status={item?.tab_status}
+  shortDesc={item?.short_desc}
+
+  // ✅ NEW PROPS (CLEAN)
+  startDate={item?.start_date}
+  validityMonths={item?.validity_months}
+/>
         </View>
       );
     },
