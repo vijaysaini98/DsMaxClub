@@ -11,7 +11,7 @@ import { colors } from '@theme/colors';
 import { shareToAny } from '@utils/index';
 import { useAppSelector, useAppDispatch } from '@redux/hooks';
 import { Loader } from '@components/Spinner';
-import { WHITE } from '@components/AppText';
+import { AppText, WHITE } from '@components/AppText';
 import ViewDetailsBottomSheet from './viewDetailsBottomSheet';
 import {
   getBookletDetail,
@@ -32,6 +32,9 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }:any) => {
   const { bookletDetailAllDeals, isLoading } = useAppSelector(
     state => state?.home,
   );
+
+  console.log(bookletDetailAllDeals,'bookletDetailAllDeals in all==>');
+  
 
     const [couponDetail, setCouponDetail] = useState<any>();
     const [refreshing, setRefreshing] = useState(false);
@@ -69,7 +72,7 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }:any) => {
   const renderItem = useMemo(
     () =>
       ({ item }: { item: CardItem }) => {
-        // console.log(item, 'card items');
+        console.log(item, 'card items');
 
         return (
           <CommonCard
@@ -86,13 +89,16 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }:any) => {
             statusTextColor={item?.coupon_type_id == 1 && WHITE}
             location={from == "ComboBooklet" ? item?.locations : null}
             // vendorName={item?.vendor?.name}
-            shortDesc={item?.vendor?.short_desc}
+            // shortDesc={item?.vendor?.short_desc}
             completeShortDesc={item?.short_desc}
             onContactPress={() => {
               setSelectedVendor(item);
               setIsPhoneDialerModalVisible(true);
             }}
           />
+        //   <View>
+        //     <AppText>sghg</AppText>
+        //   </View>
         );
       },
     [onViewPress]

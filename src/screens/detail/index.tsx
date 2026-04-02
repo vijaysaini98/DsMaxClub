@@ -64,6 +64,7 @@ import {
   REQUEST_SUCCESSFUL_SCREEN,
 } from '@navigations/routes';
 import { s, vs } from 'react-native-size-matters';
+import { logger } from 'react-native-reanimated/lib/typescript/logger';
 const initialLayout = { width: width };
 
 // ✅ Make sure route keys match those in renderScene
@@ -75,13 +76,22 @@ const routes = [
   { key: 'gallery', title: 'Gallery' },
 ];
 
-const Details = ({ route }) => {
-  const { data, from } = route?.params ?? '';
+const Details = ({ route }:any) => {
+  console.log(route,'route in details');
+  
+  const { data, from,noApiCall } = route?.params ?? '';
+  console.log(data,'data in details screen ======>');
+  console.log(data?.client?.name,'data?.client?.name');
+  
+  
   const dispatch = useAppDispatch();
 
   const { isLoading, isBtnLoading, bookletDetailAllDeals } = useAppSelector(
     state => state.home,
   );
+
+  console.log(bookletDetailAllDeals,'bookletDetailAllDeals=================>>>>>>>>>>>>>>');
+  
   const { userData } = useAppSelector(state => state?.auth);
 
   const [index, setIndex] = React.useState(0);
@@ -140,6 +150,9 @@ const Details = ({ route }) => {
         break;
       default:
         value.tabname = '';
+    }
+    if(noApiCall){
+      return;
     }
     if (from === 'ComboBooklet') {
       dispatch(getComboBookletDetail(value));
@@ -270,6 +283,28 @@ const Details = ({ route }) => {
 
   const isExpired = moment(data?.end_date, 'YYYY-MM-DD').isBefore(moment());
 
+  const getValidityText = () => {
+if (bookletDetailAllDeals?.booklet_type === 'Combo') {
+  return bookletDetailAllDeals?.validity_months
+    ? `Upto ${bookletDetailAllDeals.validity_months} month${
+        bookletDetailAllDeals.validity_months > 1 ? 's' : ''
+      }`
+    : 'N/A';
+}
+
+  if (data?.date_type === 1) {
+    return data?.validity_months
+      ? `${data.validity_months} month${data.validity_months > 1 ? 's' : ''}`
+      : 'N/A';
+  }
+
+  if (data?.start_date && data?.end_date) {
+    return `${moment(data.start_date).format('D MMM YYYY')} - ${moment(data.end_date).format('D MMM YYYY')}${isExpired ? ' (Expired)' : ''}`;
+  }
+
+  return 'N/A';
+};
+
   return (
     <View style={styles.mainContainer}>
       <StatusBar
@@ -376,7 +411,7 @@ const Details = ({ route }) => {
             {data?.client?.name ? data?.client?.name : data?.name}
           </AppText>
         </Animated.View>
-        {/* {(data?.client?.short_desc || data?.client_short_desc) && (
+        {(data?.client?.short_desc || data?.client_short_desc) && (
           <AppText
             type={SIXTEEN}
             color={PLACEHOLDER}
@@ -389,7 +424,7 @@ const Details = ({ route }) => {
                 : data?.client_short_desc
             }`}
           </AppText>
-        )} */}
+        )}
         {data?.client?.mobile && (
             <TouchableOpacityView
             onPress={()=>openPhoneDialer(data?.client?.mobile)}
@@ -409,7 +444,7 @@ const Details = ({ route }) => {
           color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
           style={styles.disTextStyle}
         >
-          {`Validity: ${
+          {/* {`Validity: ${
             data?.date_type == 1
               ? `${data?.validity_months || 'N/A'} months `
               : data?.start_date && data?.end_date
@@ -419,7 +454,9 @@ const Details = ({ route }) => {
                   'D MMM YYYY',
                 )} ${isExpired ? '(Expired)' : ''}`
               : 'N/A'
-          }`}
+          }`} */}
+          {`Validity: ${getValidityText()}`}
+
           {/* {`Validity: ${data?.date_type == 1
               ? `${data?.validity_months || "N/A"} months`
               : data?.start_date && data?.end_date

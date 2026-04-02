@@ -1,4 +1,4 @@
-import { AppText, MEDIUM, TWELVE } from "@components/AppText";
+import { AppText, BOLD, BUTTON_BG, MEDIUM, TWELVE, WHITE } from "@components/AppText";
 import { helpLineIcon, homeIcon, myCardIcon, nearByIcon, proflieIcon } from "@helper/imagesAssets";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Help_Line from "@screens/helpLine";
@@ -33,8 +33,11 @@ export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
 
             {/* TEXT */}
             {!isHighlight && <AppText
-                weight={MEDIUM}
-                color={focused ? colors.buttonBg : colors.black}
+                weight={BOLD}
+                // color={focused ? colors.white : colors.black}
+                color={focused ? BUTTON_BG : colors.black}
+                // color={focused ? colors.buttonBg : colors.black}
+                // color={WHITE}
                 type={TWELVE}
                 style={bottomNavigationStyles.tabTitleStyle}
             >

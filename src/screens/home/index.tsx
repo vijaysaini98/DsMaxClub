@@ -47,7 +47,7 @@ const Home: React.FC = () => {
   const { userData } = useAppSelector((state) => state?.auth);
   const { categoryListData, categoryBookletData, isLoading, bannerList, comboBookletDeals } =
     useAppSelector((state) => state?.home);
-    console.log(comboBookletDeals,'combobbooklet deals');
+    // console.log(comboBookletDeals,'combobbooklet deals');
     
 
   const [show, setShow] = useState(false);
@@ -185,7 +185,7 @@ const Home: React.FC = () => {
                 contentContainerStyle={styles.listStyle}
               >
                 {comboBookletDeals?.category?.map((booklet, i) => {
-console.log(booklet,'booklet=====>');
+// console.log(booklet,'booklet=====>');
 
                   return (
                     <View key={booklet?.id || i} style={comboBookletDeals?.category?.length < 2 ? styles.categoryBookletContainer2 :
@@ -250,6 +250,8 @@ console.log(booklet,'booklet=====>');
 
                   >
                     {item.booklets.map((booklet: any, i: number) => {
+                      console.log(booklet,'booklet items==>');
+                      
                       return (
                         <View key={booklet.id || i}
                           // style={styles.categoryBookletContainer}

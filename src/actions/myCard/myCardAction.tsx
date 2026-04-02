@@ -1,7 +1,7 @@
 import { API } from '@services/appClient';
 import { AppDispatch } from '@redux/store';
 import Toast from "react-native-simple-toast";
-import { setBtnLoading, setComboOfferList, setCouponCodeData, setCouponList, setIsRefresh, setLoading, setMyCardActiveBookletList, setMyCardAllBookletList, setMyCardCouponList, setMyCardExpiredBookletList } from './myCardSlice';
+import { setBtnLoading, setComboOfferList, setCouponCodeData, setCouponList, setIsRefresh, setLoading, setMyCardActiveBookletList, setMyCardAllBookletList, setMyCardComboOfferList, setMyCardCouponList, setMyCardExpiredBookletList } from './myCardSlice';
 
 export const getMyCardBookletList =
     (data?: any,isRefresh?:boolean, onSucess?: any) => async (dispatch: AppDispatch) => {
@@ -46,6 +46,27 @@ export const getMyCardCouponList =
             const response = await API.myCardApi.myCard_Coupon_List(data);
             if (response?.status == 200) {
                 dispatch(setMyCardCouponList(response?.data))
+                onSucess && onSucess()
+                return;
+            } else {
+                throw new Error('No response data received from backend.');
+            }
+        } catch (e: any) {
+            console.log("e", e);
+
+            Toast.show(e?.response?.data?.message, Toast.LONG);
+        } finally {
+            dispatch(setBtnLoading(false))
+        }
+    };
+    export const getMyCardComboOffersList =
+    (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+        try {
+            dispatch(setBtnLoading(true));
+            const response = await API.myCardApi.myCard_Combo_Offers_List(data);
+            // console.log(response,'response of combo offer list==>');
+            if (response?.status == 200) {
+                dispatch(setMyCardComboOfferList(response?.data))
                 onSucess && onSucess()
                 return;
             } else {

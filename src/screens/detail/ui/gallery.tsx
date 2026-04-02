@@ -20,7 +20,7 @@ import GalleryShimmer from '@components/ShimerLoader/GalleryShimerLoader';
 
 const ITEM_WIDTH = (width - 30) / 2; // 16px padding each side + 16px between
 
-const Gallery = ({ id, scrollY,from }) => {
+const Gallery = ({ id, scrollY,from }:any) => {
   const dispatch = useAppDispatch();
   const { bookletDetailGallery, isLoading } = useAppSelector(
     (state) => state?.home

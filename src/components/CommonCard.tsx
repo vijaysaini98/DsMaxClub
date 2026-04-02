@@ -448,12 +448,14 @@ import TouchableOpacityView from './TouchableOpacityView';
 import {
   contactIcon,
   downArrowIcon,
+  helpLineIcon,
   locationIcon,
   shareIcon,
 } from '@helper/imagesAssets';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import RenderHTML from 'react-native-render-html';
 import MultiLocationSheet from '@screens/detail/ui/multiLoctionSheet';
+import FastImage from 'react-native-fast-image';
 
 const { width } = Dimensions.get('window');
 
@@ -616,16 +618,18 @@ const CommonCard = ({
 
       {/* CONTACT */}
       {onContactPress ? (
-        <TouchableOpacityView
-          style={{ paddingVertical: vs(4) }}
-          onPress={onContactPress}
-        >
-          <Image
-            source={contactIcon}
-            style={styles.contactIcon}
-          />
-        </TouchableOpacityView>
-      ) : null}
+  <TouchableOpacityView
+    style={styles.contactButton}
+    onPress={onContactPress}
+  >
+    <FastImage
+      source={helpLineIcon}
+      style={styles.contactIcon}
+      resizeMode="contain"
+      tintColor={colors.white}
+    />
+  </TouchableOpacityView>
+) : null}
 
       {/* USED COUPON */}
       {usedCoupon && usedCoupon > 0 ? (
@@ -805,12 +809,26 @@ const styles = StyleSheet.create({
     height: vs(20),
   },
 
+  // contactIcon: {
+  //   // tintColor: colors.buttonBg,
+  //   width: s(30),
+  //   height: vs(30),
+  //   marginTop: vs(4),
+  // },
+  contactButton: {
+  width: s(35),
+  height: s(35),
+  borderRadius: s(25), // ✅ makes it perfect circle
+  backgroundColor: colors.buttonBg,
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginTop: vs(10),
+
+},
   contactIcon: {
-    tintColor: colors.buttonBg,
-    width: s(30),
-    height: vs(30),
-    marginTop: vs(4),
-  },
+  width: s(22),
+  height: s(22),
+},
 
   couponCountContainer: {
     borderWidth: 0.5,

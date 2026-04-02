@@ -51,11 +51,15 @@ const RequestList = ({ value }) => {
 
   const renderItem = useCallback(
     ({ item, index }) => {
+      // console.log(item,'item in requestList====>');
+      // console.log(item?.requested_date,'item?.requested_date');
+      
       
       return (
         <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
           <Card
             item={item}
+            type="request"
             index={index}
             cardContainerStyle={{ width: '100%' }}
             imageStyle={styles.imageStyle}
@@ -78,7 +82,7 @@ const RequestList = ({ value }) => {
             //   // }
             // }}
             status={item?.status}
-            date={moment(item?.requested_date, "DD MMMM YYYY, HH:mm").format("DD-MM-YYYY")}
+            purchaseDate={moment(item?.requested_date, "DD MMMM YYYY, HH:mm").format("DD-MM-YYYY")}
           />
         </View>
       );

@@ -595,7 +595,7 @@
 //   },
 // });
 
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -624,11 +624,13 @@ import {
   restro2,
   helpLineIcon,
   nearByIcon,
+  downArrowIcon,
 } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import { openPhoneDialer } from '@utils/index';
 import moment from 'moment';
+import MultiLocationSheet from '@screens/detail/ui/multiLoctionSheet';
 
 export interface CardProps {
   item: any;
@@ -651,6 +653,9 @@ export interface CardProps {
   handleAddToCardOnPress?: () => void;
   isAddedToCart?: boolean;
   addtoCart?: boolean;
+  location?:Array<{location:string,location_url:string}> | any;
+  showArrow?:boolean;
+  data?:any;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -672,11 +677,15 @@ const Card: React.FC<CardProps> = ({
   isAddedToCart,
   addtoCart,
   isCompleteLocation,
+  location,
+  showArrow,
+  data
 }) => {
   const [activeDropdown, setActiveDropdown] = React.useState<
     'location' | 'contact' | null
   >(null);
 
+    const sheetRef = useRef<any>(null);
   const openDropdown = (type: 'location' | 'contact') => {
     setActiveDropdown(type);
   };
@@ -758,7 +767,17 @@ const Card: React.FC<CardProps> = ({
               >
                 {address}
               </AppText>
+{showArrow && ( // ✅ condition added
+      <TouchableOpacityView onPress={() => sheetRef.current?.present()}>
+        <FastImage
+          source={downArrowIcon}
+          style={styles.arrowIcon}
+          resizeMode="contain"
+        />
+      </TouchableOpacityView>
+    )}
             </View>
+
           ) : (
             <>
               {/* ================= BOOKLET ================= */}
@@ -830,14 +849,14 @@ const Card: React.FC<CardProps> = ({
               {/* ================= REQUEST ================= */}
               {type === 'request' && (
                 <>
-                  <View style={{ marginTop: vs(5) }}>
+                  <View style={{ marginTop: vs(20) }}>
                     <AppText type={TWELVE} weight={BOLD}>
                       Requested Date
                     </AppText>
                     <AppText type={TWELVE}>
                       {purchaseDate
                         ? moment(purchaseDate).format(
-                            'D MMM YYYY, hh:mm A'
+                            'D MMM YYYY, hh:mm '
                           )
                         : '--'}
                     </AppText>
@@ -903,7 +922,7 @@ const Card: React.FC<CardProps> = ({
                 loc?.location_url && Linking.openURL(loc.location_url);
               }}
             >
-              <FastImage source={locationIcon} style={styles.sheetIcon} />
+              <FastImage source={locationIcon} style={styles.sheetIcon} resizeMode='contain'/>
               <AppText style={styles.sheetText}>
                 {loc?.location}
               </AppText>
@@ -931,6 +950,12 @@ const Card: React.FC<CardProps> = ({
     </View>
   </View>
 </Modal>
+
+      <MultiLocationSheet
+        sheetRef={sheetRef}
+        data={location}
+        title={data?.vendor?.name || data?.client_name}
+      />
     </>
   );
 };
@@ -962,7 +987,7 @@ const styles = StyleSheet.create({
   rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: vs(10),
+    marginTop: vs(20),
   },
 
   iconRow: {
@@ -1090,4 +1115,9 @@ sheetIcon: {
 sheetText: {
   flex: 1,
 },
+  arrowIcon: {
+    height: vs(15),
+    width: s(15),
+    marginTop: vs(3),
+  },
 });

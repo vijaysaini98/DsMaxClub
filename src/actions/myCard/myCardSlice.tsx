@@ -10,6 +10,7 @@ export const initialState = {
     couponList: [],
     couponData:{},
     comboOfferList: [],
+    myCardComboOfferList: [],
 };
 
 export const myCardSlice = createSlice({
@@ -37,6 +38,9 @@ export const myCardSlice = createSlice({
         setMyCardCouponList: (state, { payload }) => {
             state.myCardCouponList = payload;
         },
+        setMyCardComboOfferList: (state, { payload }) => {
+            state.myCardComboOfferList = payload;
+        },
         setCouponList: (state, { payload }) => {
             state.couponList = payload;
         },
@@ -57,6 +61,7 @@ export const {
     setMyCardAllBookletList,
     setMyCardExpiredBookletList,
     setMyCardCouponList,
+    setMyCardComboOfferList,
     setCouponList,
     setCouponCodeData,
     resetMyCard,

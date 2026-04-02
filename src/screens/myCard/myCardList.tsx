@@ -1,7 +1,7 @@
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import React, { useCallback, useMemo, useState } from 'react';
 import { AppText, FOURTEEN, MEDIUM, WHITE } from '@components/AppText';
-import { MY_CARD_COUPON_LIST_SCREEN } from '@navigations/routes';
+import { MY_CARD_COMBO_OFFERS_LIST_SCREEN, MY_CARD_COUPON_LIST_SCREEN } from '@navigations/routes';
 import { Loader, SpinnerSecond } from '@components/Spinner';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import { colors } from '@theme/colors';
@@ -10,7 +10,7 @@ import Card from '@screens/home/ui/card';
 import NavigationService from '@navigations/NavigationService';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import { defaultBookletImage } from '@helper/imagesAssets';
-import { getMyCardBookletList, getMyCardCouponList } from '@actions/myCard/myCardAction';
+import { getMyCardBookletList, getMyCardComboOffersList, getMyCardCouponList } from '@actions/myCard/myCardAction';
 import Toast from 'react-native-simple-toast';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
 import moment from 'moment';
@@ -21,18 +21,50 @@ const MyCardList = ({ value }:any) => {
   const { isLoading, isRefresh, myCardAllBookletList, myCardActiveBookletList, myCardExpiredBookletList, isBtnLoading } = useAppSelector((state) => state?.myCard)
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = useCallback(() => {
+  // const onRefresh = useCallback(() => {
+  //   // setRefreshing(true);
+  //   dispatch(getMyCardBookletList(value, isRefresh));
+  // }, [dispatch, value, isRefresh]);
+
+  // const handleOnPress = (item) => {
+  //   dispatch(
+  //     getMyCardCouponList(
+  //       { user_booklet_uuid: item.user_booklet_uuid },
+  //       () => onSuccess(item) // ✅ Pass callback correctly
+  //     )
+  //   );
+  // };
+    const onRefresh = useCallback(() => {
     // setRefreshing(true);
     dispatch(getMyCardBookletList(value, isRefresh));
   }, [dispatch, value, isRefresh]);
 
-  const handleOnPress = (item) => {
+  const handleOnPress = (item:any) => {
+    // console.log(item,'item in handle on press===>');
+  if(item?.booklet_type===2){
+    // Alert.alert('combo')
     dispatch(
-      getMyCardCouponList(
+      getMyCardComboOffersList(
         { user_booklet_uuid: item.user_booklet_uuid },
-        () => onSuccess(item) // ✅ Pass callback correctly
+        () => onComboSuccess(item) 
       )
     );
+  }else{
+ dispatch(
+      getMyCardCouponList(
+        { user_booklet_uuid: item.user_booklet_uuid },
+        () => onSuccess(item) 
+      )
+    );
+  }
+   
+  };
+
+  const onComboSuccess = (item) => {
+    NavigationService.navigate(MY_CARD_COMBO_OFFERS_LIST_SCREEN, {
+      data: item,
+     
+    });
   };
 
   const data = useMemo(() => {
@@ -44,6 +76,8 @@ const MyCardList = ({ value }:any) => {
   }, [value.tabname, myCardAllBookletList, myCardActiveBookletList, myCardExpiredBookletList]);
 
   const onSuccess = (item) => {
+    // console.log(item,'iteemmmm in coupon list');
+    
     NavigationService.navigate(MY_CARD_COUPON_LIST_SCREEN, {
       title: item?.name,
       user_booklet_uuid: item?.user_booklet_uuid,
@@ -54,7 +88,7 @@ const MyCardList = ({ value }:any) => {
 
   const renderItem = useCallback(
     ({ item, index }:any) => {
-      console.log('booklet item',item,);
+      // console.log('booklet item',item,);
       
       return (
         <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>

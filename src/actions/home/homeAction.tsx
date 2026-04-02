@@ -120,6 +120,7 @@ export const getComboBookletDetail =
     try {
       dispatch(setLoading(true));
       const response = await API.homeApi.combo_booklet_detail(data);
+console.log(response,'resonse of booklet details');
 
       if (response?.status == 200) {
         if (data?.tabname == "All Deals") {
@@ -131,11 +132,14 @@ export const getComboBookletDetail =
         } else {
           dispatch(setBookletDetailT_C(response?.data))
         }
+        onSucess(response)
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
+      console.log(e,'error==>');
+      
       dispatch(setBookletDetailAllDeals())
       dispatch(setBookletDetailAbout())
       dispatch(setBookletDetailGallery())

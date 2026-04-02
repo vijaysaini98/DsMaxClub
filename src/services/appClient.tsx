@@ -145,6 +145,7 @@ export const API = {
     myCard_List: (data: any) => apiClient.post(config.MY_CARD_BOOKLET_LIST, data),
     myCard_Coupon_List: (data: any) => apiClient.post(config.MY_CARD_COUPON_LIST, data),
     combo_Deals_List: (data: any) => apiClient.post(config.COMBO_DEALS_LIST, data),
+    myCard_Combo_Offers_List:(data: any) => apiClient.post(config.MY_CARD_COMBO_OFFERS_LIST, data),
 
     myCard_Coupon: (data: any) => apiClient.post(config.MY_CARD_COUPON, data),
     // coupon-code-generate

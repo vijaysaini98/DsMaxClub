@@ -20,8 +20,10 @@ import ListEmptyComponent from '@components/ListEmptyComponent';
 import {
   getComboOffersList,
   getMyCardBookletList,
+  getMyCardComboOffersList,
+  getMyCardCouponList,
 } from '@actions/myCard/myCardAction';
-import Card from './ui/card';
+// import Card from './ui/card';
 import { defaultBookletImage } from '@helper/imagesAssets';
 import Toast from 'react-native-simple-toast';
 import { IMGE_URL } from '@services/config';
@@ -29,72 +31,61 @@ import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
 import { DETAILS_SCREEN } from '@navigations/routes';
 import { getComboBookletDetail } from '@actions/home/homeAction';
+import Card from '@screens/home/ui/card';
 
-const ComboDetailList = ({ route }: any) => {
-  const { isLoading, isRefresh, isBtnLoading, comboOfferList } = useAppSelector(
+const MyCardComboOfferList = ({ route }: any) => {
+  const { isLoading, isRefresh,myCardComboOfferList } = useAppSelector(
     state => state?.myCard,
   );
+    // console.log(myCardComboOfferList,'myCardComboOfferList in my card list dataaaataa===>');
+    // console.log(myCardComboOfferList?.[0]?.user_booklet_uuid,'myCardComboOfferList?.user_booklet_uuid===>');
+    
 
-  console.log(comboOfferList,'comboOfferList====>');
-  
-  const { bookletDetailAllDeals } = useAppSelector(state => state?.home);
-//   console.log(bookletDetailAllDeals, 'bookletDetailAllDeals===>');
-  const [refreshing, setRefreshing] = useState(false);
+
   const { data, from } = route?.params ?? '';
-//   console.log(data, 'data in combo detail list===>');
+  // console.log(data?.uuid,'data?.uuid==>');
+  
+
 
   const dispatch = useAppDispatch();
   useEffect(() => {
-    //  dispatch(getComboOffersList(data?.client?.[0]?.uuid));
-    if (data?.uuid) {
-      dispatch(getComboOffersList({ booklet_uuid: data?.uuid }));
+   
+    if (myCardComboOfferList?.[0]?.user_booklet_uuid) {
+      dispatch(getMyCardComboOffersList({ user_booklet_uuid: myCardComboOfferList?.[0]?.user_booklet_uuid }));
     }
   }, [dispatch, isRefresh, data]);
 
+
   const onRefresh = useCallback(() => {
     // setRefreshing(true);
-    dispatch(getComboOffersList({ booklet_uuid: data?.uuid }));
+    dispatch(getMyCardComboOffersList({ user_booklet_uuid: myCardComboOfferList?.[0]?.user_booklet_uuid }));
   }, [isRefresh]);
 
 
   const onHandlePress = (item: any, index: number) => {
-    let value = {
-      booklet_id: data?.uuid,
-      tabname: '',
-      vendor_id: String(item?.id),
+// console.log(item?.user_booklet_uuid,'item?.user_booklet_uuid in handle press==>');
+
+    dispatch(
+          getMyCardCouponList(
+            { user_booklet_uuid: item.user_booklet_uuid },
+            () => onSuccess(item) 
+          )
+        );
+  };
+
+    const onSuccess = (item) => {
+        // console.log(item,'item on success===>');
+        
+      NavigationService.navigate(routes.MY_CARD_COUPON_LIST_SCREEN, {
+        title: item?.name,
+        user_booklet_uuid: item?.user_booklet_uuid,
+        tab_status: item?.tab_status,
+        booklet_uniquecode: item?.booklet_uniquecode,
+      });
     };
 
-    switch (index) {
-      case 0:
-        value.tabname = 'All Deals';
-        break;
-      case 1:
-        value.tabname = 'About';
-        break;
-      case 2:
-        value.tabname = 'Termscondition';
-        break;
-      case 3:
-        value.tabname = 'Gallery';
-        break;
-      default:
-        value.tabname = 'All Deals';
-    }
 
-    // console.log(value, 'value==>');
 
-    dispatch(getComboBookletDetail(value, () => handleComboSuccess(item)));
-  };
-
-  const handleComboSuccess = (item: any) => {
-    console.log(item,'item on combo success');
-    
-    NavigationService.navigate(routes.DETAILS_SCREEN, {
-      data: item,
-      from: 'ComboBooklet',
-      noApiCall: true, // ✅ NEW FLAG TO AVOID API CALL IN DETAILS SCREEN
-    });
-  };
 
 const getVendorImage = (vendor: any) => {
 
@@ -120,16 +111,12 @@ const getVendorImage = (vendor: any) => {
         <Card
           item={item}
           isCompleteLocation={true}
-          showArrow={true}
+          showArrow
           cardContainerStyle={{ width: '100%' }}
           imageStyle={styles.imageStyle}
-        //   imageUrl={
-        //     item?.profile_image
-        //       ? { uri: IMGE_URL + item?.profile_image }
-        //       : defaultBookletImage
-        //   }
+     
         imageUrl={getVendorImage(item)}
-          price={item.price}
+        //   price={item.price}
           address={item?.locations?.[0]?.location ?? '---'}
           status={item?.tab_status}
           shortDesc={item?.short_desc}
@@ -147,7 +134,7 @@ const getVendorImage = (vendor: any) => {
       <ToolBar isLeftIcon title={data?.name} />
       <View style={styles.containerStyle}>
         <FlatList
-          data={comboOfferList}
+          data={myCardComboOfferList}
           renderItem={renderItem}
           //   extraData={data}
           //   keyExtractor={(item, index) => item?.user_booklet_uuid ?? index.toString()}
@@ -170,7 +157,7 @@ const getVendorImage = (vendor: any) => {
   );
 };
 
-export default ComboDetailList;
+export default MyCardComboOfferList;
 
 const styles = StyleSheet.create({
   mainContainer: {

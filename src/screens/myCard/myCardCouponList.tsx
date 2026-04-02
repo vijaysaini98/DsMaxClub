@@ -1,9 +1,9 @@
-import { FlatList, RefreshControl, StyleSheet } from 'react-native'
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native'
 import React, { useCallback, useRef, useState } from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import { commonStyles } from '@theme/commonStyles'
 import ToolBar from '@components/ToolBar'
-import { FOURTEEN, SEMI_BOLD, WHITE } from '@components/AppText'
+import { AppText, FOURTEEN, SEMI_BOLD, WHITE } from '@components/AppText'
 import NavigationService from '@navigations/NavigationService'
 import { COUPON_LIST_SCREEN } from '@navigations/routes'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
@@ -77,6 +77,7 @@ const MyCardCouponList = ({ route }) => {
         usedCoupon={item?.used_copies}
         shortDesc={item?.short_description}
       />
+      
     )
   }
 
@@ -85,7 +86,11 @@ const MyCardCouponList = ({ route }) => {
       <ToolBar isLeftIcon
         textType={FOURTEEN}
         textWeight={SEMI_BOLD}
-        title={`${title} (${booklet_uniquecode})`} />
+      title={
+  booklet_uniquecode
+    ? `${title} (${booklet_uniquecode})`
+    : title
+} />
       {isLoading && !refreshing ? (
         <Loader />
       ) : (

@@ -58,6 +58,7 @@ import { ms, s, vs } from "react-native-size-matters/extend";
 const bottomNavigationStyles = StyleSheet.create({
     tabBarStyle: {
         backgroundColor: colors.tabBg,
+        // backgroundColor: colors.buttonBg,
         borderTopWidth: 0,
         width: "100%",
         position: "absolute",
@@ -70,11 +71,13 @@ const bottomNavigationStyles = StyleSheet.create({
         width: s(100),
         gap: ms(4),
         backgroundColor: colors.tabBg,
+        // backgroundColor: colors.buttonBg,
     },
     icon: (focused: boolean) => ({
         width: s(24),
         height: vs(24),
         tintColor: focused ? colors.buttonBg : colors.black,
+        // tintColor: colors.white,
     }),
     indicator: {
         position: "absolute",
@@ -83,7 +86,8 @@ const bottomNavigationStyles = StyleSheet.create({
         width: s(22),
         borderBottomLeftRadius: ms(4),
         borderBottomRightRadius: ms(4),
-        backgroundColor: colors.buttonBg,
+        // backgroundColor: colors.buttonBg,
+        backgroundColor: colors.white,
     },
     tabTitleStyle: {
         letterSpacing: -0.5,
