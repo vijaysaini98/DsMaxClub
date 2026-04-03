@@ -388,7 +388,7 @@
 //         {/* ================= BOOKLET UI ================= */}
 //         {/* ================= COMPLETE LOCATION UI ================= */}
 //         {isCompleteLocation ? (
-           
+
 //           <View style={styles.locationContainer}>
 //             <FastImage source={nearByIcon} style={styles.locationIconStyle} resizeMode="contain" />
 //     <AppText
@@ -653,9 +653,9 @@ export interface CardProps {
   handleAddToCardOnPress?: () => void;
   isAddedToCart?: boolean;
   addtoCart?: boolean;
-  location?:Array<{location:string,location_url:string}> | any;
-  showArrow?:boolean;
-  data?:any;
+  location?: Array<{ location: string; location_url: string }> | any;
+  showArrow?: boolean;
+  data?: any;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -679,13 +679,13 @@ const Card: React.FC<CardProps> = ({
   isCompleteLocation,
   location,
   showArrow,
-  data
+  data,
 }) => {
   const [activeDropdown, setActiveDropdown] = React.useState<
     'location' | 'contact' | null
   >(null);
 
-    const sheetRef = useRef<any>(null);
+  const sheetRef = useRef<any>(null);
   const openDropdown = (type: 'location' | 'contact') => {
     setActiveDropdown(type);
   };
@@ -729,13 +729,36 @@ const Card: React.FC<CardProps> = ({
         )}
 
         {/* STATUS */}
-        {status && (
+        {/* {status && (
           <View style={styles.statusContainer}>
             <AppText type={FOURTEEN} weight={MEDIUM} color={WHITE}>
   {status?.charAt(0).toUpperCase() + status?.slice(1)}
 </AppText>
           </View>
-        )}
+        )} */}
+
+        {status && (
+  <View
+    style={[
+      styles.statusContainer,
+      {
+        backgroundColor:
+          status?.toLowerCase() === 'active'
+            ? colors.lightGreen
+            : colors.buttonBg,
+      },
+    ]}
+  >
+    <AppText
+      type={FOURTEEN}
+      weight={MEDIUM}
+      color={WHITE}
+    >
+      {status?.charAt(0).toUpperCase() +
+        status?.slice(1)}
+    </AppText>
+  </View>
+)}
 
         {/* CONTENT */}
         <View style={styles.detailContainer}>
@@ -755,10 +778,7 @@ const Card: React.FC<CardProps> = ({
           {/* ================= COMPLETE LOCATION ================= */}
           {isCompleteLocation ? (
             <View style={styles.locationContainer}>
-              <FastImage
-                source={nearByIcon}
-                style={styles.locationIconStyle}
-              />
+              <FastImage source={nearByIcon} style={styles.locationIconStyle} />
               <AppText
                 type={TWELVE}
                 weight={MEDIUM}
@@ -767,17 +787,18 @@ const Card: React.FC<CardProps> = ({
               >
                 {address}
               </AppText>
-{showArrow && ( // ✅ condition added
-      <TouchableOpacityView onPress={() => sheetRef.current?.present()}>
-        <FastImage
-          source={downArrowIcon}
-          style={styles.arrowIcon}
-          resizeMode="contain"
-        />
-      </TouchableOpacityView>
-    )}
+              {showArrow && ( // ✅ condition added
+                <TouchableOpacityView
+                  onPress={() => sheetRef.current?.present()}
+                >
+                  <FastImage
+                    source={downArrowIcon}
+                    style={styles.arrowIcon}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacityView>
+              )}
             </View>
-
           ) : (
             <>
               {/* ================= BOOKLET ================= */}
@@ -855,9 +876,7 @@ const Card: React.FC<CardProps> = ({
                     </AppText>
                     <AppText type={TWELVE}>
                       {purchaseDate
-                        ? moment(purchaseDate).format(
-                            'D MMM YYYY, hh:mm '
-                          )
+                        ? moment(purchaseDate).format('D MMM YYYY, hh:mm ')
                         : '--'}
                     </AppText>
                   </View>
@@ -867,9 +886,7 @@ const Card: React.FC<CardProps> = ({
                       <AppText type={TWELVE} weight={BOLD}>
                         Booklet Code
                       </AppText>
-                      <AppText type={FOURTEEN}>
-                        {item?.unique_code}
-                      </AppText>
+                      <AppText type={FOURTEEN}>{item?.unique_code}</AppText>
                     </View>
 
                     <TouchableOpacityView
@@ -892,64 +909,61 @@ const Card: React.FC<CardProps> = ({
 
       {/* ================= DROPDOWN ================= */}
       <Modal transparent visible={!!activeDropdown} animationType="slide">
-  <View style={styles.overlay1}>
-    
-    {/* CLICK OUTSIDE CLOSE */}
-    <TouchableOpacityView style={{ flex: 1 }} onPress={closeDropdown} />
+        <View style={styles.overlay1}>
+          {/* CLICK OUTSIDE CLOSE */}
+          <TouchableOpacityView style={{ flex: 1 }} onPress={closeDropdown} />
 
-    {/* BOTTOM SHEET */}
-    <View style={styles.bottomSheet}>
-
-      {/* HEADER */}
-      <View style={styles.sheetHeader}>
-        <View style={styles.dragHandle} />
-        <AppText type={FOURTEEN} weight={BOLD}>
-          {activeDropdown === 'location' ? 'Select Location' : 'Contact'}
-        </AppText>
-      </View>
-
-      {/* LIST */}
-      <View style={{ marginTop: vs(10) }}>
-        
-        {/* LOCATION */}
-        {activeDropdown === 'location' &&
-          item?.locations?.map((loc: any, index: number) => (
-            <TouchableOpacityView
-              key={index}
-              style={styles.sheetItem}
-              onPress={() => {
-                closeDropdown();
-                loc?.location_url && Linking.openURL(loc.location_url);
-              }}
-            >
-              <FastImage source={locationIcon} style={styles.sheetIcon} resizeMode='contain'/>
-              <AppText style={styles.sheetText}>
-                {loc?.location}
+          {/* BOTTOM SHEET */}
+          <View style={styles.bottomSheet}>
+            {/* HEADER */}
+            <View style={styles.sheetHeader}>
+              <View style={styles.dragHandle} />
+              <AppText type={FOURTEEN} weight={BOLD}>
+                {activeDropdown === 'location' ? 'Select Location' : 'Contact'}
               </AppText>
-            </TouchableOpacityView>
-          ))}
+            </View>
 
-        {/* CONTACT */}
-        {activeDropdown === 'contact' &&
-          item?.short_description?.map((num: string, index: number) => (
-            <TouchableOpacityView
-              key={index}
-              style={styles.sheetItem}
-              onPress={() => {
-                closeDropdown();
-                openPhoneDialer(num);
-              }}
-            >
-              <FastImage source={helpLineIcon} style={styles.sheetIcon} />
-              <AppText style={styles.sheetText}>
-                {num}
-              </AppText>
-            </TouchableOpacityView>
-          ))}
-      </View>
-    </View>
-  </View>
-</Modal>
+            {/* LIST */}
+            <View style={{ marginTop: vs(10) }}>
+              {/* LOCATION */}
+              {activeDropdown === 'location' &&
+                item?.locations?.map((loc: any, index: number) => (
+                  <TouchableOpacityView
+                    key={index}
+                    style={styles.sheetItem}
+                    onPress={() => {
+                      closeDropdown();
+                      loc?.location_url && Linking.openURL(loc.location_url);
+                    }}
+                  >
+                    <FastImage
+                      source={locationIcon}
+                      style={styles.sheetIcon}
+                      resizeMode="contain"
+                    />
+                    <AppText style={styles.sheetText}>{loc?.location}</AppText>
+                  </TouchableOpacityView>
+                ))}
+
+              {/* CONTACT */}
+              {activeDropdown === 'contact' &&
+                item?.short_description?.map((num: string, index: number) => (
+                  <TouchableOpacityView
+                    key={index}
+                    style={styles.sheetItem}
+                    onPress={() => {
+                      closeDropdown();
+                      openPhoneDialer(num);
+                    }}
+                  >
+                    <FastImage source={helpLineIcon} style={styles.sheetIcon} />
+                    <AppText style={styles.sheetText}>{num}</AppText>
+                  </TouchableOpacityView>
+                ))}
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <MultiLocationSheet
         sheetRef={sheetRef}
@@ -1070,51 +1084,51 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
   },
   overlay1: {
-  flex: 1,
-  backgroundColor: 'rgba(0,0,0,0.4)',
-  justifyContent: 'flex-end',
-},
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
 
-bottomSheet: {
-  backgroundColor: colors.white,
-  borderTopLeftRadius: 20,
-  borderTopRightRadius: 20,
-  paddingBottom: vs(20),
-  paddingHorizontal: s(15),
-  paddingTop: vs(10),
-},
+  bottomSheet: {
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: vs(20),
+    paddingHorizontal: s(15),
+    paddingTop: vs(10),
+  },
 
-sheetHeader: {
-  alignItems: 'center',
-  marginBottom: vs(10),
-},
+  sheetHeader: {
+    alignItems: 'center',
+    marginBottom: vs(10),
+  },
 
-dragHandle: {
-  width: 40,
-  height: 4,
-  borderRadius: 2,
-  backgroundColor: '#ccc',
-  marginBottom: vs(8),
-},
+  dragHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#ccc',
+    marginBottom: vs(8),
+  },
 
-sheetItem: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  paddingVertical: vs(12),
-  borderBottomWidth: 0.5,
-  borderColor: '#eee',
-},
+  sheetItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: vs(12),
+    borderBottomWidth: 0.5,
+    borderColor: '#eee',
+  },
 
-sheetIcon: {
-  width: 20,
-  height: 20,
-  marginRight: s(10),
-  tintColor: colors.buttonBg,
-},
+  sheetIcon: {
+    width: 20,
+    height: 20,
+    marginRight: s(10),
+    tintColor: colors.buttonBg,
+  },
 
-sheetText: {
-  flex: 1,
-},
+  sheetText: {
+    flex: 1,
+  },
   arrowIcon: {
     height: vs(15),
     width: s(15),

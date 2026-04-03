@@ -87,6 +87,8 @@ export const getBookletList =
 export const getBookletDetail =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
     try {
+          // dispatch(setBookletDetailAllDeals({}))
+
       dispatch(setLoading(true));
       const response = await API.homeApi.booklet_detail(data);
 

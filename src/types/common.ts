@@ -58,6 +58,7 @@ export interface CardProps {
   completeShortDesc?:string;
   onContactPress?: () => void;
   hideViewButton?:boolean;
+  showContactLocationRow?:boolean;
 }
 
 export interface DetailFieldProps {

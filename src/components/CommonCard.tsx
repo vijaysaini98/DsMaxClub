@@ -490,6 +490,7 @@ const CommonCard = ({
   shortDesc,
   completeShortDesc,
   onContactPress,
+  showContactLocationRow,
 }: CardProps) => {
   if (!data) return null;
 
@@ -617,7 +618,7 @@ const CommonCard = ({
       ) : null}
 
       {/* CONTACT */}
-      {onContactPress ? (
+      {/* {onContactPress ? (
   <TouchableOpacityView
     style={styles.contactButton}
     onPress={onContactPress}
@@ -629,6 +630,53 @@ const CommonCard = ({
       tintColor={colors.white}
     />
   </TouchableOpacityView>
+) : null} */}
+{onContactPress ? (
+  showContactLocationRow ? (
+    // ✅ ROW (only for specific screen)
+    <View style={styles.contactLocationRow}>
+      
+      {/* CALL */}
+      <TouchableOpacityView
+        style={styles.contactButton}
+        onPress={onContactPress}
+      >
+        <FastImage
+          source={helpLineIcon}
+          style={styles.contactIcon}
+          resizeMode="contain"
+          tintColor={colors.white}
+        />
+      </TouchableOpacityView>
+
+      {/* LOCATION */}
+      <TouchableOpacityView
+        style={styles.contactButton}
+        onPress={() => sheetRef.current?.present()}
+      >
+        <Image
+          source={locationIcon}
+          style={styles.contactIcon}
+          resizeMode="contain"
+          tintColor={colors.white}
+        />
+      </TouchableOpacityView>
+
+    </View>
+  ) : (
+    // ✅ DEFAULT (existing UI)
+    <TouchableOpacityView
+      style={styles.contactButton}
+      onPress={onContactPress}
+    >
+      <FastImage
+        source={helpLineIcon}
+        style={styles.contactIcon}
+        resizeMode="contain"
+        tintColor={colors.white}
+      />
+    </TouchableOpacityView>
+  )
 ) : null}
 
       {/* USED COUPON */}
@@ -641,7 +689,7 @@ const CommonCard = ({
       ) : null}
 
       {/* LOCATION */}
-      {location && location.length > 0 ? (
+      {/* {location && location.length > 0 ? (
         <View style={styles.locationRow}>
           <Image
             source={locationIcon}
@@ -662,7 +710,7 @@ const CommonCard = ({
             <Image source={downArrowIcon} style={styles.arrowIcon} resizeMode='contain'/>
           </TouchableOpacityView>
         </View>
-      ) : null}
+      ) : null} */}
 
       {/* BUTTONS */}
       <View style={styles.buttonRow}>
@@ -720,6 +768,11 @@ export default CommonCard;
 
 
 const styles = StyleSheet.create({
+  contactLocationRow: {
+  flexDirection: 'row',
+  gap: ms(15),
+  marginTop: vs(10),
+},
   card: {
     borderRadius: 10,
     padding: 16,

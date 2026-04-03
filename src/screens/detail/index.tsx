@@ -155,8 +155,11 @@ const Details = ({ route }:any) => {
       return;
     }
     if (from === 'ComboBooklet') {
+      console.log(value,'value from combo booklet details api call');
       dispatch(getComboBookletDetail(value));
     } else {
+console.log(value,'value from booklet details');
+
       dispatch(getBookletDetail(value));
     }
   }, [index, data?.uuid, from, dispatch]);
@@ -250,12 +253,18 @@ const Details = ({ route }:any) => {
   };
 
   const handleSubmit = (_data: any) => {
+
+    console.log(_data?.executiveCode,'_data?.executiveCode==>');
+    
     Keyboard?.dismiss();
     let apidata = {
       booklet_id: data.uuid,
       executive_code: _data?.executiveCode,
       quantity: _data?.bookletQty,
     };
+    console.log(apidata,'apidata in handle submit');
+    return;
+    
     if (!acceptContent) {
       // setIndex(2)
       Toast.show('Accept the booklet Terms and Condition', Toast.LONG);
@@ -304,6 +313,24 @@ if (bookletDetailAllDeals?.booklet_type === 'Combo') {
 
   return 'N/A';
 };
+       const mobileNumber =
+  bookletDetailAllDeals?.booklet_type === 'Combo'
+    ? data?.mobile
+    : data?.client?.mobile;
+
+            const isCombo =
+  bookletDetailAllDeals?.booklet_type === 'Combo';
+
+// const locationList = isCombo
+//   ? data?.locations
+//   : data?.location;
+const locationList = isCombo
+  ? data?.locations || []
+  : Array.isArray(data?.location)
+  ? data?.location
+  : data?.location
+  ? [data.location] // convert object → array
+  : [];
 
   return (
     <View style={styles.mainContainer}>
@@ -411,21 +438,24 @@ if (bookletDetailAllDeals?.booklet_type === 'Combo') {
             {data?.client?.name ? data?.client?.name : data?.name}
           </AppText>
         </Animated.View>
-        {(data?.client?.short_desc || data?.client_short_desc) && (
-          <AppText
-            type={SIXTEEN}
-            color={PLACEHOLDER}
-            weight={BOLD}
-            style={styles.disTextStyle}
-          >
-            {`${
-              data?.client?.short_desc
-                ? data?.client?.short_desc
-                : data?.client_short_desc
-            }`}
-          </AppText>
-        )}
-        {data?.client?.mobile && (
+       
+        <AppText
+    type={SIXTEEN}
+    color={PLACEHOLDER}
+    weight={BOLD}
+    style={styles.disTextStyle}
+  >
+    {
+      bookletDetailAllDeals?.booklet_type === 'Combo'
+        ? data?.short_desc
+        : (
+            data?.client?.short_desc
+              ? data?.client?.short_desc
+              : data?.client_short_desc
+          )
+    }
+  </AppText>
+        {/* {data?.client?.mobile && (
             <TouchableOpacityView
             onPress={()=>openPhoneDialer(data?.client?.mobile)}
             style={{flexDirection:'row',alignItems:'center',marginTop:vs(4),gap:5}}
@@ -437,47 +467,63 @@ if (bookletDetailAllDeals?.booklet_type === 'Combo') {
               />
               <AppText type={TWELVE} weight={BOLD}>{data?.client?.mobile}</AppText>
             </TouchableOpacityView>
-          )}
+          )} */}
+   
+
+{mobileNumber && (
+  <TouchableOpacityView
+    onPress={() => openPhoneDialer(mobileNumber)}
+    style={{
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: vs(4),
+      gap: 5
+    }}
+  >
+    <Image
+      source={helpLineIcon}
+      style={{
+        width: s(16),
+        height: s(16),
+        tintColor: colors.buttonBg
+      }}
+      resizeMode={"contain"}
+    />
+
+    <AppText type={TWELVE} weight={BOLD}>
+      {mobileNumber}
+    </AppText>
+
+  </TouchableOpacityView>
+)}
 
         <AppText
           type={THIRTEEN}
           color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
           style={styles.disTextStyle}
         >
-          {/* {`Validity: ${
-            data?.date_type == 1
-              ? `${data?.validity_months || 'N/A'} months `
-              : data?.start_date && data?.end_date
-              ? `${moment(data.start_date, 'YYYY-MM-DD').format(
-                  'D MMM YYYY',
-                )} - ${moment(data.end_date, 'YYYY-MM-DD').format(
-                  'D MMM YYYY',
-                )} ${isExpired ? '(Expired)' : ''}`
-              : 'N/A'
-          }`} */}
           {`Validity: ${getValidityText()}`}
 
-          {/* {`Validity: ${data?.date_type == 1
-              ? `${data?.validity_months || "N/A"} months`
-              : data?.start_date && data?.end_date
-                ? moment(data?.end_date, "YYYY-MM-DD").isSameOrAfter(moment())
-                  ? `${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - ${moment(
-                    data.end_date,
-                    "YYYY-MM-DD"
-                  ).format("D MMM YYYY")}`
-                  : "Expired"
-                : "N/A"
-            }`} */}
         </AppText>
 
-        {data?.maximum_redeem && (
+        {/* {data?.maximum_redeem && (
           <AppText
             type={THIRTEEN}
             style={styles.disTextStyle}
           >{`Free Gift Coupons Maximum Redeem: ${data?.maximum_redeem}`}</AppText>
-        )}
+        )} */}
+        <AppText
+    type={THIRTEEN}
+    style={styles.disTextStyle}
+  >
+    {`Free Gift Coupons Maximum Redeem: ${
+      bookletDetailAllDeals?.booklet_type === 'Combo'
+        ? bookletDetailAllDeals?.maximum_redeem
+        : data?.maximum_redeem
+    }`}
+  </AppText>
 
-        {data?.location?.length > 0 && (
+        {/* {data?.location?.length > 0 && (
           <View style={styles.locationContainer}>
             <TouchableOpacityView
               onPress={() => handleRedirection(data?.location[0]?.location_url)}
@@ -506,7 +552,50 @@ if (bookletDetailAllDeals?.booklet_type === 'Combo') {
               </TouchableOpacityView>
             )}
           </View>
-        )}
+        )} */}
+
+
+{locationList?.length > 0 && (
+  <View style={styles.locationContainer}>
+    
+    <TouchableOpacityView
+      onPress={() =>
+        handleRedirection(locationList[0]?.location_url)
+      }
+      style={styles.locationBtn}
+    >
+      <Image
+        source={locationIcon}
+        style={styles.locationIcon}
+        tintColor={colors.borderColor}
+        resizeMode="contain"
+      />
+
+      <AppText
+        numberOfLines={2}
+        type={THIRTEEN}
+        color={BUTTON_TEXT}
+      >
+        {locationList[0]?.location}
+      </AppText>
+
+    </TouchableOpacityView>
+
+    {locationList?.length > 1 && (
+      <TouchableOpacityView
+        onPress={() => sheetRef.current?.present()}
+        style={styles.downArrowBtnIcon}
+      >
+        <Image
+          source={downArrowIcon}
+          style={styles.locationIcon}
+          resizeMode="contain"
+        />
+      </TouchableOpacityView>
+    )}
+
+  </View>
+)}
 
         <View style={styles.thridContainer}>
           <TabView
@@ -563,38 +652,44 @@ if (bookletDetailAllDeals?.booklet_type === 'Combo') {
               )
             } */}
 
-            <TouchableOpacityView
-              onPress={handleOnPress}
-              style={styles.buyBtnStyle(
-                bookletDetailAllDeals?.request_status === 'Pending' ||
-                  bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-                  isExpired,
-              )}
-              loader={isBtnLoading}
-              disabled={
-                bookletDetailAllDeals?.request_status === 'Pending' ||
-                bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-                isExpired
-              }
-            >
-              <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-                {bookletDetailAllDeals?.request_status === 'Out of Stock'
-                  ? 'Out Of Stock'
-                  : bookletDetailAllDeals?.request_status === 'Pending'
-                  ? 'REQUEST IN PENDING'
-                  : isExpired
-                  ? 'EXPIRED'
-                  : 'REQUEST'}
-              </AppText>
-            </TouchableOpacityView>
+            {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
+  <TouchableOpacityView
+    onPress={handleOnPress}
+    style={styles.buyBtnStyle(
+      bookletDetailAllDeals?.request_status === 'Pending' ||
+      bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+      !bookletDetailAllDeals?.request_status  ||
+      isExpired
+    )}
+    loader={isBtnLoading}
+    disabled={
+      bookletDetailAllDeals?.request_status === 'Pending' ||
+      bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+       !bookletDetailAllDeals?.request_status ||
+      isExpired
+    }
+  >
+    <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+      {bookletDetailAllDeals?.request_status === 'Out of Stock'
+        ? 'Out Of Stock'
+        : bookletDetailAllDeals?.request_status === 'Pending'
+        ? 'REQUEST IN PENDING'
+        : isExpired
+        ? 'EXPIRED'
+        :
+         !bookletDetailAllDeals?.request_status? 'not eligible' :
+        'REQUEST'}
+    </AppText>
+  </TouchableOpacityView>
+)}
           </>
         )}
       </View>
       <MultiLocationSheet
-        sheetRef={sheetRef}
-        data={data?.location}
-        title={data?.name ? data?.name : data?.client_name}
-      />
+  sheetRef={sheetRef}
+  data={locationList} // ✅ always array
+  title={data?.name || data?.client_name}
+/>
       <RequestBottomSheet
         bottomSheetRef={bottomSheetRef}
         snapPoints={snapPoints}
