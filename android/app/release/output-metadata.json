@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.dsmaxclub",
+  "applicationId": "com.dsmaxclubdemo",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 15,
-      "versionName": "1.4.11",
+      "versionCode": 17,
+      "versionName": "1.4.13",
       "outputFile": "app-release.apk"
     }
   ],

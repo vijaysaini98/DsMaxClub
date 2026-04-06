@@ -1,4 +1,4 @@
-package com.dsmaxclub
+package com.dsmaxclubdemo
 
 import android.app.Application
 import com.facebook.react.PackageList
