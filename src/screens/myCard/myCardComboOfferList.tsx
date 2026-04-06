@@ -37,6 +37,10 @@ const MyCardComboOfferList = ({ route }: any) => {
   const { isLoading, isRefresh,myCardComboOfferList } = useAppSelector(
     state => state?.myCard,
   );
+
+
+  // console.log(myCardComboOfferList,'myCardOffersList==>');
+  
     // console.log(myCardComboOfferList,'myCardComboOfferList in my card list dataaaataa===>');
     // console.log(myCardComboOfferList?.[0]?.user_booklet_uuid,'myCardComboOfferList?.user_booklet_uuid===>');
     
@@ -82,6 +86,7 @@ const MyCardComboOfferList = ({ route }: any) => {
         tab_status: item?.tab_status,
         booklet_uniquecode: item?.booklet_uniquecode,
       });
+      
     };
 
 

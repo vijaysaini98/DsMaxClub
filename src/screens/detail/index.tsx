@@ -262,8 +262,7 @@ console.log(value,'value from booklet details');
       executive_code: _data?.executiveCode,
       quantity: _data?.bookletQty,
     };
-    console.log(apidata,'apidata in handle submit');
-    return;
+
     
     if (!acceptContent) {
       // setIndex(2)

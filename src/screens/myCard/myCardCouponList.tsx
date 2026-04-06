@@ -18,7 +18,7 @@ import ViewDetailsBottomSheet from '@screens/home/ui/viewDetailsBottomSheet'
 const MyCardCouponList = ({ route }) => {
   const dispatch = useAppDispatch()
   const { myCardCouponList, isLoading } = useAppSelector((state) => state?.myCard)
-  console.log(myCardCouponList,'myCardCouponList==>');
+  // console.log(myCardCouponList,'myCardCouponList==>');
   
   const { title, user_booklet_uuid, tab_status, booklet_uniquecode } = route?.params ?? {}
 
@@ -34,22 +34,53 @@ const MyCardCouponList = ({ route }) => {
     dispatch(getMyCardCouponList({ user_booklet_uuid })).finally(() => setRefreshing(false))
   }, [dispatch, user_booklet_uuid])
 
+  // const handleViewBtn = (item) => {
+  //   console.log(item,'item in coupon list====>');
+  //   console.log(item?.coupon_uuid,'item?.coupon_uuid');
+  //   console.log(item?.user_bookletid,'item?.user_bookletid');
+  //   console.log(item?.item?.tab_status,'item?.item?.tab_status');
+    
+    
+    
+  //   if (tab_status === 'active') {
+  //     setLoadingCouponId(item?.coupon_uuid) 
+  //     dispatch(
+  //       getCoupon(
+  //         { coupon_id: item?.coupon_uuid, user_booklet_id: item?.user_bookletid },
+  //         () => onSuccess(item)
+  //       )
+  //     ).finally(() => setLoadingCouponId(null)) // stop loader
+  //   }
+  //   // } else {
+  //   //   setViewData(item)
+  //   //   setTimeout(() => {
+  //   //     viewDetailSheet?.current?.open()
+  //   //   }, 200)
+  //   // }
+  // }
+
   const handleViewBtn = (item) => {
-    if (tab_status === 'active') {
-      setLoadingCouponId(item?.coupon_uuid) // start loader for this item
-      dispatch(
-        getCoupon(
-          { coupon_id: item?.coupon_uuid, user_booklet_id: item?.user_bookletid },
-          () => onSuccess(item)
-        )
-      ).finally(() => setLoadingCouponId(null)) // stop loader
-    } else {
-      setViewData(item)
-      setTimeout(() => {
-        viewDetailSheet?.current?.open()
-      }, 200)
-    }
+  // console.log(item, 'item in coupon list====>');
+  // console.log(item?.coupon_uuid, 'coupon_uuid');
+  // console.log(item?.user_bookletid, 'user_bookletid');
+  // console.log(item?.tab_status, 'item tab_status');
+
+  if (item?.tab_status?.toLowerCase() === 'active') {
+    setLoadingCouponId(item?.coupon_uuid);
+
+    dispatch(
+      getCoupon(
+        {
+          coupon_id: item?.coupon_uuid,
+          user_booklet_id: item?.user_bookletid,
+        },
+        () => onSuccess(item)
+      )
+    ).finally(() => setLoadingCouponId(null));
+  } else {
+    console.log('Blocked: Not Active');
   }
+};
 
   const onSuccess = (item) => {
     NavigationService.navigate(COUPON_LIST_SCREEN, {
@@ -59,7 +90,7 @@ const MyCardCouponList = ({ route }) => {
     })
   }
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }:any) => {
     return (
       <CommonCard
         key={item.id}
@@ -77,7 +108,7 @@ const MyCardCouponList = ({ route }) => {
         vendorName={item?.vendor_name}
         usedCoupon={item?.used_copies}
         shortDesc={item?.short_description}
-        hideViewButton={item?.booklet_type === "Combo"}
+        // hideViewButton={item?.booklet_type === "Combo"}
       />
       // <View>
       //   <AppText>bcbvc</AppText>

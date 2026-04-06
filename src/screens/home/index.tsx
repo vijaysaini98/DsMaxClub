@@ -250,7 +250,7 @@ const Home: React.FC = () => {
 
                   >
                     {item.booklets.map((booklet: any, i: number) => {
-                      console.log(booklet,'booklet items==>');
+                      // console.log(booklet,'booklet items==>');
                       
                       return (
                         <View key={booklet.id || i}

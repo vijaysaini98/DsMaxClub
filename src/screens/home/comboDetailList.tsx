@@ -55,12 +55,12 @@ const ComboDetailList = ({ route }: any) => {
     state => state?.myCard,
   );
 
-  console.log(comboOfferList, 'comboOfferList====>');
+  // console.log(comboOfferList, 'comboOfferList====>');
   const { userData } = useAppSelector(state => state?.auth);
   const [acceptContent, setAcceptContent] = useState(false);
 
   const { bookletDetailAllDeals } = useAppSelector(state => state?.home);
-  //   console.log(bookletDetailAllDeals, 'bookletDetailAllDeals===>');
+    // console.log(bookletDetailAllDeals, 'bookletDetailAllDeals===>');
   const [refreshing, setRefreshing] = useState(false);
   const { data, from } = route?.params ?? '';
   //   console.log(data, 'data in combo detail list===>');
@@ -86,26 +86,26 @@ const ComboDetailList = ({ route }: any) => {
   const onHandlePress = (item: any, index: number) => {
     let value = {
       booklet_id: data?.uuid,
-      tabname: '',
+      tabname: 'All Deals',
       vendor_id: String(item?.id),
     };
 
-    switch (index) {
-      case 0:
-        value.tabname = 'All Deals';
-        break;
-      case 1:
-        value.tabname = 'About';
-        break;
-      case 2:
-        value.tabname = 'Termscondition';
-        break;
-      case 3:
-        value.tabname = 'Gallery';
-        break;
-      default:
-        value.tabname = 'All Deals';
-    }
+    // switch (index) {
+    //   case 0:
+    //     value.tabname = 'All Deals';
+    //     break;
+    //   case 1:
+    //     value.tabname = 'About';
+    //     break;
+    //   case 2:
+    //     value.tabname = 'Termscondition';
+    //     break;
+    //   case 3:
+    //     value.tabname = 'Gallery';
+    //     break;
+    //   default:
+    //     value.tabname = 'All Deals';
+    // }
 
     console.log(value, 'value from combo booklet details api call');
 
@@ -298,7 +298,7 @@ const ComboDetailList = ({ route }: any) => {
               )
             } */}
 
-              <TouchableOpacityView
+              {/* <TouchableOpacityView
                 onPress={handleOnPress}
                 style={styles.buyBtnStyle(
                   bookletDetailAllDeals?.request_status === 'Pending' ||
@@ -325,7 +325,34 @@ const ComboDetailList = ({ route }: any) => {
                          !bookletDetailAllDeals?.request_status? 'Out of Stock' :
                         'REQUEST'}
                     </AppText>
-              </TouchableOpacityView>
+              </TouchableOpacityView> */}
+              {bookletDetailAllDeals !== null &&
+ 
+    <TouchableOpacityView
+      onPress={handleOnPress}
+      style={styles.buyBtnStyle(
+        bookletDetailAllDeals?.request_status === 'Pending' ||
+        bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+        isExpired
+      )}
+      loader={isBtnLoading}
+      disabled={
+        bookletDetailAllDeals?.request_status === 'Pending' ||
+        bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+        isExpired
+      }
+    >
+      <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+        {bookletDetailAllDeals?.request_status === 'Out of Stock'
+          ? 'Out Of Stock'
+          : bookletDetailAllDeals?.request_status === 'Pending'
+          ? 'REQUEST IN PENDING'
+          : isExpired
+          ? 'EXPIRED'
+          : 'REQUEST'}
+      </AppText>
+    </TouchableOpacityView>
+}
             </>
           )}
         </View>

@@ -100,9 +100,9 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }:any) => {
             }}
             showContactLocationRow={true}
           />
-        //   <View>
-        //     <AppText>sghg</AppText>
-        //   </View>
+          // <View>
+          //   <AppText>sghg</AppText>
+          // </View>
         );
       },
     [onViewPress]
