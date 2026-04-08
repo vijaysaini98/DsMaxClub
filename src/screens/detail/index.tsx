@@ -173,6 +173,37 @@ const Details = ({ route }: any) => {
     }
   }, [index, data?.uuid, from, dispatch]);
 
+  useEffect(() => {
+    if (!data?.uuid) return;
+
+    let value = {
+      booklet_id: data.uuid,
+      tabname: '',
+    };
+
+    switch (index) {
+      case 0:
+        value.tabname = 'All Deals';
+        break;
+      case 1:
+        value.tabname = 'About';
+        break;
+      case 2:
+        value.tabname = 'Termscondition';
+        break;
+      case 4:
+        value.tabname = 'Gallery';
+        break;
+      default:
+        value.tabname = '';
+    }
+    if (noApiCall && from === 'ComboBooklet' && value.tabname !== 'All Deals') {
+      console.log(value, 'value from combo booklet details api call');
+      dispatch(getComboBookletDetail(value));
+      return;
+    }
+  }, [index, data?.uuid, from, noApiCall]);
+
   const handleViewPress = (item: any) => {
     setCouponDetail(item);
     setTimeout(() => {
@@ -359,7 +390,11 @@ const Details = ({ route }: any) => {
         barStyle={'light-content'}
       />
       <Animated.View style={{ height: headerHeight, opacity: headerOpacity }}>
-        <FastImage source={headerImage} style={styles.coverImageStyle} resizeMode="cover">
+        <FastImage
+          source={headerImage}
+          style={styles.coverImageStyle}
+          resizeMode="cover"
+        >
           <View style={styles.headerContainer}>
             <TouchableOpacityView
               hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
