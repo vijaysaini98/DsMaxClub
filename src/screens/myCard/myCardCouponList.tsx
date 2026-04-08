@@ -18,7 +18,7 @@ import ViewDetailsBottomSheet from '@screens/home/ui/viewDetailsBottomSheet'
 const MyCardCouponList = ({ route }) => {
   const dispatch = useAppDispatch()
   const { myCardCouponList, isLoading } = useAppSelector((state) => state?.myCard)
-  // console.log(myCardCouponList,'myCardCouponList==>');
+  console.log(myCardCouponList,'myCardCouponList==>');
   
   const { title, user_booklet_uuid, tab_status, booklet_uniquecode } = route?.params ?? {}
 
@@ -109,6 +109,7 @@ const MyCardCouponList = ({ route }) => {
         usedCoupon={item?.used_copies}
         shortDesc={item?.short_description}
         // hideViewButton={item?.booklet_type === "Combo"}
+        showLocationText={true}
       />
       // <View>
       //   <AppText>bcbvc</AppText>

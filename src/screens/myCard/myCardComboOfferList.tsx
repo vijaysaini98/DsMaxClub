@@ -108,7 +108,7 @@ const getVendorImage = (vendor: any) => {
   return defaultBookletImage; // ✅ use imported local image
 };
   const renderItem = ({ item, index }: any) => {
-    // console.log(item, 'item in render===>');
+    console.log(item, 'item in render===>');
 
 
     return (
@@ -130,6 +130,9 @@ const getVendorImage = (vendor: any) => {
           startDate={item?.start_date}
           validityMonths={item?.validity_months}
           location={item?.locations}
+          showDateSection={true}
+          cardDisabled={item?.tab_status === 'Expired'}
+          
         />
       </View>
     );

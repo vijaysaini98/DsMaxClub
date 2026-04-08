@@ -27,21 +27,24 @@ interface CardItem {
   // Add other properties as needed
 }
 
-const All: React.FC = ({ id, from, scrollY, handleViewPress }:any) => {
+const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
   const dispatch = useAppDispatch();
   const { bookletDetailAllDeals, isLoading } = useAppSelector(
     state => state?.home,
   );
 
-  console.log(bookletDetailAllDeals?.coupons,'bookletDetailAllDeals?.coupons in all==>');
-  
+  console.log(
+    bookletDetailAllDeals?.coupons,
+    'bookletDetailAllDeals?.coupons in all==>',
+  );
 
-    const [couponDetail, setCouponDetail] = useState<any>();
-    const [refreshing, setRefreshing] = useState(false);
-    const viewDetailSheet = useRef<any>(null);
-    const executiveSnapPoints = useMemo(() => ["50%", "80%"], []);
-      const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] = React.useState(false);
-    const [selectedVendor, setSelectedVendor] = useState<any>(null);
+  const [couponDetail, setCouponDetail] = useState<any>();
+  const [refreshing, setRefreshing] = useState(false);
+  const viewDetailSheet = useRef<any>(null);
+  const executiveSnapPoints = useMemo(() => ['50%', '80%'], []);
+  const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] =
+    React.useState(false);
+  const [selectedVendor, setSelectedVendor] = useState<any>(null);
 
   const onViewPress = useCallback((item: CardItem) => {
     // setCouponDetail(item);
@@ -63,11 +66,11 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }:any) => {
       tabname: 'All Deals',
     };
     if (from == 'ComboBooklet') {
-     console.log(data,'value from combo booklet details api call');
-      
+      console.log(data, 'value from combo booklet details api call');
+
       dispatch(getComboBookletDetail(data)).finally(() => setRefreshing(false));
     } else {
-      console.log(data,'value from  booklet details api call');
+      console.log(data, 'value from  booklet details api call');
       dispatch(getBookletDetail(data)).finally(() => setRefreshing(false));
     }
   }, [dispatch]);
@@ -87,10 +90,10 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }:any) => {
             htmlContent={item?.description}
             onViewPress={() => onViewPress(item)}
             btnStyle={styles.viewBtnStyle}
-            status={item?.coupon_type_id == 1 ? 'Free' : ""}
+            status={item?.coupon_type_id == 1 ? 'Free' : ''}
             statusBg={item?.coupon_type_id == 1 && colors.buttonBg}
             statusTextColor={item?.coupon_type_id == 1 && WHITE}
-            location={from == "ComboBooklet" ? item?.locations : null}
+            location={from == 'ComboBooklet' ? item?.locations : null}
             // vendorName={item?.vendor?.name}
             // shortDesc={item?.vendor?.short_desc}
             completeShortDesc={item?.short_desc}
@@ -99,13 +102,15 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }:any) => {
               setIsPhoneDialerModalVisible(true);
             }}
             showContactLocationRow={true}
+            showLocationIconOnly={true}
+            showLocationText={false}
           />
           // <View>
           //   <AppText>sghg</AppText>
           // </View>
         );
       },
-    [onViewPress]
+    [onViewPress],
   );
 
   return (
@@ -152,7 +157,6 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }:any) => {
 };
 
 export default All;
-
 
 const styles = StyleSheet.create({
   containerStyle: {

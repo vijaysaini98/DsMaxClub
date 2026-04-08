@@ -59,6 +59,8 @@ export interface CardProps {
   onContactPress?: () => void;
   hideViewButton?:boolean;
   showContactLocationRow?:boolean;
+  showLocationText?: boolean
+showLocationIconOnly?: boolean
 }
 
 export interface DetailFieldProps {

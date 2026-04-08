@@ -62,7 +62,7 @@ const VerndorCouponList = ({ route }) => {
                 btnTextColor={WHITE}
                 couponCount={item?.total_coupons}
                 status={item?.coupon_type_id == 1 ? 'Free' : ""}
-                statusBg={item?.coupon_type_id == 1 && colors.lightGreen}
+                statusBg={item?.coupon_type_id == 1 && colors.buttonBg}
                 statusTextColor={item?.coupon_type_id == 1 && WHITE}
                 usedCoupon={item?.used_copies}
             />

@@ -425,7 +425,7 @@
 
 // export default CommonCard;
 
-import { StyleSheet, Image, View, Dimensions } from 'react-native';
+import { StyleSheet, Image, View, Dimensions, Linking } from 'react-native';
 import React, { useRef } from 'react';
 import { colors } from '../theme/colors';
 import {
@@ -491,6 +491,8 @@ const CommonCard = ({
   completeShortDesc,
   onContactPress,
   showContactLocationRow,
+  showLocationText,
+showLocationIconOnly,
 }: CardProps) => {
   if (!data) return null;
 
@@ -631,9 +633,48 @@ const CommonCard = ({
     />
   </TouchableOpacityView>
 ) : null} */}
+{/* LOCATION TEXT  */}
+
+{showLocationText && location && location.length > 0 && (
+  <TouchableOpacityView
+    style={styles.locationRow}
+    onPress={() => {
+      if (location.length === 1) {
+        // 👉 single location → open map
+        Linking.openURL(location[0]?.location_url)
+      } else {
+        // 👉 multiple → open bottom sheet
+        sheetRef.current?.present()
+      }
+    }}
+  >
+    <Image
+      source={locationIcon}
+      style={styles.locationIcon}
+      tintColor={colors.borderColor}
+    />
+
+    <AppText
+      type={TWELVE}
+      color={BUTTON_TEXT}
+      numberOfLines={2}
+      style={styles.locationText}
+    >
+      {location[0]?.location}
+    </AppText>
+
+    {/* Only show arrow for multiple */}
+    {location.length > 1 && (
+      <Image
+        source={downArrowIcon}
+        style={styles.arrowIcon}
+        resizeMode="contain"
+      />
+    )}
+  </TouchableOpacityView>
+)}
 {onContactPress ? (
   showContactLocationRow ? (
-    // ✅ ROW (only for specific screen)
     <View style={styles.contactLocationRow}>
       
       {/* CALL */}
@@ -649,22 +690,22 @@ const CommonCard = ({
         />
       </TouchableOpacityView>
 
-      {/* LOCATION */}
-      <TouchableOpacityView
-        style={styles.contactButton}
-        onPress={() => sheetRef.current?.present()}
-      >
-        <Image
-          source={locationIcon}
-          style={styles.contactIcon}
-          resizeMode="contain"
-          tintColor={colors.white}
-        />
-      </TouchableOpacityView>
-
+      {/* LOCATION ICON ONLY */}
+      {showLocationIconOnly && (
+        <TouchableOpacityView
+          style={styles.contactButton}
+          onPress={() => sheetRef.current?.present()}
+        >
+          <Image
+            source={locationIcon}
+            style={styles.contactIcon}
+            resizeMode="contain"
+            tintColor={colors.white}
+          />
+        </TouchableOpacityView>
+      )}
     </View>
   ) : (
-    // ✅ DEFAULT (existing UI)
     <TouchableOpacityView
       style={styles.contactButton}
       onPress={onContactPress}
@@ -678,7 +719,6 @@ const CommonCard = ({
     </TouchableOpacityView>
   )
 ) : null}
-
       {/* USED COUPON */}
       {usedCoupon && usedCoupon > 0 ? (
         <View style={styles.usedCouponCountContainer}>

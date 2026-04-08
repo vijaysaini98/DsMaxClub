@@ -131,7 +131,8 @@ const MyCardList = ({ value }:any) => {
       ? { uri: item?.baseurl + item?.booklet }
       : defaultBookletImage
   }
-  name={`${item?.name} (${item?.booklet_uniquecode})`}
+  // name={`${item?.name} (${item?.booklet_uniquecode})`}
+  name={`${item?.name}`}
   price={item.price}
   address={item?.locations?.[0]?.location ?? '---'}
   handleCardOnPress={() => {

@@ -2,6 +2,7 @@ import {
   Alert,
   FlatList,
   Keyboard,
+  Platform,
   RefreshControl,
   StyleSheet,
   Text,
@@ -49,6 +50,7 @@ import RequestBottomSheet from '@screens/detail/ui/requestBottomSheet';
 import BottomSheet from '@gorhom/bottom-sheet';
 import moment from 'moment';
 import { setBookletDetailAllDeals } from '@actions/home/homeSlice';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ComboDetailList = ({ route }: any) => {
   const { isLoading, isRefresh, isBtnLoading, comboOfferList } = useAppSelector(
@@ -235,12 +237,15 @@ const ComboDetailList = ({ route }: any) => {
           startDate={item?.start_date}
           validityMonths={item?.validity_months}
           location={item?.locations}
+          showDateSection={true}
+          cardDisabled={item?.tab_status === 'Expire'}
+
         />
       </View>
     );
   };
   return (
-    <AppSafeAreaView style={[commonStyles.mainContainer, styles.mainContainer]}>
+    <AppSafeAreaView style={styles.mainContainer}>
       <ToolBar isLeftIcon title={data?.name} />
       <View style={styles.containerStyle}>
         <FlatList
@@ -386,10 +391,13 @@ const ComboDetailList = ({ route }: any) => {
 
 export default ComboDetailList;
 
+const insets = useSafeAreaInsets();
+
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     paddingHorizontal: s(16),
+     backgroundColor: colors.white,
   },
   containerStyle: {
     flex: 1,
@@ -439,5 +447,7 @@ const styles = StyleSheet.create({
     // paddingHorizontal: s(20),
     borderTopWidth: 1,
     borderTopColor: '#eee',
+     paddingBottom: insets.bottom + vs(10),
+    // ✅ FIX
   },
 });

@@ -656,6 +656,7 @@ export interface CardProps {
   location?: Array<{ location: string; location_url: string }> | any;
   showArrow?: boolean;
   data?: any;
+  showDateSection?: boolean;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -680,6 +681,7 @@ const Card: React.FC<CardProps> = ({
   location,
   showArrow,
   data,
+  showDateSection
 }) => {
   const [activeDropdown, setActiveDropdown] = React.useState<
     'location' | 'contact' | null
@@ -704,9 +706,16 @@ const Card: React.FC<CardProps> = ({
   return (
     <>
       <TouchableOpacityView
-        onPress={() => handleCardOnPress(item)}
-        disabled={cardDisabled}
-        style={[styles.cardInner, cardContainerStyle]}
+  onPress={() => {
+    if (cardDisabled) return; // ❌ stop navigation
+    handleCardOnPress(item);
+  }}
+  disabled={cardDisabled}
+        style={[
+  styles.cardInner,
+  cardContainerStyle,
+  cardDisabled && { opacity: 0.5 } // 👈 faded UI
+]}
       >
         {/* IMAGE */}
         <FastImage
@@ -777,29 +786,59 @@ const Card: React.FC<CardProps> = ({
 
           {/* ================= COMPLETE LOCATION ================= */}
           {isCompleteLocation ? (
-            <View style={styles.locationContainer}>
-              <FastImage source={nearByIcon} style={styles.locationIconStyle} />
-              <AppText
-                type={TWELVE}
-                weight={MEDIUM}
-                style={styles.locationText}
-                numberOfLines={2}
-              >
-                {address}
-              </AppText>
-              {showArrow && ( // ✅ condition added
-                <TouchableOpacityView
-                  onPress={() => sheetRef.current?.present()}
-                >
-                  <FastImage
-                    source={downArrowIcon}
-                    style={styles.arrowIcon}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacityView>
-              )}
-            </View>
-          ) : (
+  <>
+    {/* ✅ SHOW DATE ONLY WHEN NEEDED */}
+    {showDateSection && (
+      <View style={styles.rowBetween}>
+        <View>
+          <AppText type={TWELVE} weight={BOLD}>
+            Start Date
+          </AppText>
+          <AppText type={TWELVE}>
+            {startDate
+              ? moment(startDate).format('YYYY-MM-DD')
+              : '--'}
+          </AppText>
+        </View>
+
+        <View>
+          <AppText type={TWELVE} weight={BOLD}>
+            Expiry Date
+          </AppText>
+          <AppText type={TWELVE}>
+            {validityMonths
+              ? `Upto ${validityMonths} months`
+              : '--'}
+          </AppText>
+        </View>
+      </View>
+    )}
+
+    {/* ✅ ALWAYS SHOW LOCATION */}
+    <View style={styles.locationContainer}>
+      <FastImage source={nearByIcon} style={styles.locationIconStyle} />
+      <AppText
+        type={TWELVE}
+        weight={MEDIUM}
+        style={styles.locationText}
+        numberOfLines={2}
+      >
+        {address}
+      </AppText>
+
+      {showArrow && (
+        <TouchableOpacityView
+          onPress={() => sheetRef.current?.present()}
+        >
+          <FastImage
+            source={downArrowIcon}
+            style={styles.arrowIcon}
+          />
+        </TouchableOpacityView>
+      )}
+    </View>
+  </>
+) : (
             <>
               {/* ================= BOOKLET ================= */}
               {type === 'booklet' && (
@@ -874,11 +913,17 @@ const Card: React.FC<CardProps> = ({
                     <AppText type={TWELVE} weight={BOLD}>
                       Requested Date
                     </AppText>
-                    <AppText type={TWELVE}>
+                    {/* <AppText type={TWELVE}>
                       {purchaseDate
-                        ? moment(purchaseDate).format('D MMM YYYY, hh:mm ')
+                        ? moment(purchaseDate).format('DD MMMM YYYY, HH:mm ')
                         : '--'}
-                    </AppText>
+                    </AppText> */}
+                    <AppText type={TWELVE}>
+  {purchaseDate
+    ? moment(purchaseDate, "DD MMMM YYYY, HH:mm", true)
+        .format('DD MMM YYYY, hh:mm ')
+    : '--'}
+</AppText>
                   </View>
 
                   <View style={styles.rowBetween}>
@@ -1050,7 +1095,7 @@ const styles = StyleSheet.create({
   locationContainer: {
     flexDirection: 'row',
     gap: s(5),
-    marginTop: vs(5),
+    marginTop: vs(20),
   },
   locationIconStyle: {
     marginTop: vs(2),

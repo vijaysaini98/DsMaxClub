@@ -8,7 +8,11 @@ import { vs } from 'react-native-size-matters';
 import About_TermsConditionShimmer from '@components/ShimerLoader/About_TermsConditionShimerLoader';
 
 const About = ({ scrollY }: { scrollY: Animated.Value }) => {
-  const { bookletDetailAbout, isLoading } = useAppSelector((state) => state?.home);
+  const { bookletDetailAbout, isLoading, comboBookletDeals} = useAppSelector((state) => state?.home);
+  console.log(comboBookletDeals || comboBookletDeals?.category?.[0]?.about,'comboBookletDeals?.category?.[0]?.about');
+  console.log(bookletDetailAbout,'bookletDetailAbout==>');
+  
+  
 
   return (
     <Animated.ScrollView
