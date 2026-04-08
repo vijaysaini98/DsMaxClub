@@ -20,6 +20,7 @@ const MyCardList = ({ value }:any) => {
   // const { isLoading ,isBtnLoading} = useAppSelector((state) => state.myCard);
   const { isLoading, isRefresh, myCardAllBookletList, myCardActiveBookletList, myCardExpiredBookletList, isBtnLoading } = useAppSelector((state) => state?.myCard)
   const [refreshing, setRefreshing] = useState(false);
+console.log(myCardAllBookletList,'myCardAllBookletList');
 
   // const onRefresh = useCallback(() => {
   //   // setRefreshing(true);

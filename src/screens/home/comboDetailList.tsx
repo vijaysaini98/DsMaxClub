@@ -53,11 +53,12 @@ import { setBookletDetailAllDeals } from '@actions/home/homeSlice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ComboDetailList = ({ route }: any) => {
+  const insets = useSafeAreaInsets();
   const { isLoading, isRefresh, isBtnLoading, comboOfferList } = useAppSelector(
     state => state?.myCard,
   );
 
-  // console.log(comboOfferList, 'comboOfferList====>');
+  console.log(comboOfferList, 'comboOfferList====>');
   const { userData } = useAppSelector(state => state?.auth);
   const [acceptContent, setAcceptContent] = useState(false);
 
@@ -65,7 +66,7 @@ const ComboDetailList = ({ route }: any) => {
     // console.log(bookletDetailAllDeals, 'bookletDetailAllDeals===>');
   const [refreshing, setRefreshing] = useState(false);
   const { data, from } = route?.params ?? '';
-  //   console.log(data, 'data in combo detail list===>');
+    // console.log(data, 'data in combo detail list===>');
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const executiveBottomSheetRef = useRef<BottomSheet>(null);
@@ -112,6 +113,7 @@ const ComboDetailList = ({ route }: any) => {
     console.log(value, 'value from combo booklet details api call');
 
     dispatch(getComboBookletDetail(value, () => handleComboSuccess(item)));
+    
   };
 
   const handleComboSuccess = (item: any) => {
@@ -237,8 +239,8 @@ const ComboDetailList = ({ route }: any) => {
           startDate={item?.start_date}
           validityMonths={item?.validity_months}
           location={item?.locations}
-          showDateSection={true}
-          cardDisabled={item?.tab_status === 'Expire'}
+          // showDateSection={true}
+          cardDisabled={item?.tab_status === 'Expired'}
 
         />
       </View>
@@ -267,7 +269,12 @@ const ComboDetailList = ({ route }: any) => {
             />
           }
         />
-        <View style={styles.bottomBtnContainer}>
+       <View
+  style={[
+    styles.bottomBtnContainer,
+    { paddingBottom: insets.bottom - vs(15) } // ✅ HERE
+  ]}
+>
           {isLoading ? (
             <View style={{ width: '100%' }}>
               <ShimmerPlaceholder
@@ -391,7 +398,7 @@ const ComboDetailList = ({ route }: any) => {
 
 export default ComboDetailList;
 
-const insets = useSafeAreaInsets();
+
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -402,12 +409,13 @@ const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
     paddingTop: vs(25),
-    paddingBottom: vs(80),
+    // paddingBottom: vs(80),
   },
   listContainerStyle: {
-    gap: ms(26),
-    paddingBottom: vs(150),
-    marginTop: vs(22),
+    // gap: ms(26),
+    // paddingBottom: vs(100),
+    // paddingBottom: vs(80),
+    // marginTop: vs(22),
     // marginHorizontal: 16,
   },
   shadowContainer: {
@@ -447,7 +455,7 @@ const styles = StyleSheet.create({
     // paddingHorizontal: s(20),
     borderTopWidth: 1,
     borderTopColor: '#eee',
-     paddingBottom: insets.bottom + vs(10),
-    // ✅ FIX
+    // paddingTop: vs(20),
   },
+
 });
