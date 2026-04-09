@@ -63,10 +63,10 @@ const ComboDetailList = ({ route }: any) => {
   const [acceptContent, setAcceptContent] = useState(false);
 
   const { bookletDetailAllDeals } = useAppSelector(state => state?.home);
-    // console.log(bookletDetailAllDeals, 'bookletDetailAllDeals===>');
+    console.log(bookletDetailAllDeals?.request_status, 'bookletDetailAllDeals?.request_status');
   const [refreshing, setRefreshing] = useState(false);
   const { data, from } = route?.params ?? '';
-    // console.log(data, 'data in combo detail list===>');
+    console.log(data, 'data in combo detail list===>');
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const executiveBottomSheetRef = useRef<BottomSheet>(null);
@@ -87,11 +87,15 @@ const ComboDetailList = ({ route }: any) => {
   }, [isRefresh]);
 
   const onHandlePress = (item: any, index: number) => {
+    console.log(item,'itemmmmmmm-->');
+    
     let value = {
+      // booklet_id: data?.uuid,
       booklet_id: data?.uuid,
       tabname: 'All Deals',
       vendor_id: String(item?.id),
     };
+
 
     // switch (index) {
     //   case 0:

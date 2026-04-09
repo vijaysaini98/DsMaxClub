@@ -79,6 +79,7 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
     () =>
       ({ item }: { item: CardItem }) => {
         console.log(item, 'card items');
+        
 
         return (
           <CommonCard
@@ -97,10 +98,19 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
             // vendorName={item?.vendor?.name}
             // shortDesc={item?.vendor?.short_desc}
             completeShortDesc={item?.short_desc}
-            onContactPress={() => {
-              setSelectedVendor(item);
-              setIsPhoneDialerModalVisible(true);
-            }}
+            // onContactPress={() => {
+            //   setSelectedVendor(item);
+            //   setIsPhoneDialerModalVisible(true);
+            // }}
+            onContactPress={
+  item?.vendor?.short_desc?.trim()
+    ? () => {
+        setSelectedVendor(item);
+        setIsPhoneDialerModalVisible(true);
+      }
+    : null
+}
+            
             showContactLocationRow={true}
             showLocationIconOnly={true}
             showLocationText={false}

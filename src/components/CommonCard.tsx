@@ -493,6 +493,7 @@ const CommonCard = ({
   showContactLocationRow,
   showLocationText,
 showLocationIconOnly,
+showFreeDotUI,
 }: CardProps) => {
   if (!data) return null;
 
@@ -510,7 +511,7 @@ showLocationIconOnly,
           {heading}
         </AppText>
 
-        {status ? (
+        {/* {status ? (
           <View
             style={[
               styles.statusBadge,
@@ -538,7 +539,57 @@ showLocationIconOnly,
               {status}
             </AppText>
           </View>
-        ) : null}
+        ) : null} */}
+       {showFreeDotUI ? (
+  // ✅ ONLY dot + free (NO status)
+  data?.coupon_type_id == 1 ? (
+    <View style={styles.row}>
+      <View style={styles.greenDot} />
+
+      <View style={styles.freeBadge}>
+        <AppText
+          type={TWELVE}
+          weight={SEMI_BOLD}
+          style={styles.freeText}
+        >
+          Free
+        </AppText>
+      </View>
+    </View>
+  ) : (
+    <View style={styles.greenDot} />
+  )
+) : (
+  status ? (
+    <View
+      style={[
+        styles.statusBadge,
+        {
+          backgroundColor: statusBg
+            ? statusBg
+            : status === 'Active'
+            ? colors.lightGreen
+            : colors.tabBg,
+        },
+      ]}
+    >
+      <AppText
+        type={TWELVE}
+        color={
+          statusTextColor
+            ? statusTextColor
+            : status === 'Active'
+            ? WHITE
+            : BUTTON_TEXT
+        }
+        weight={SEMI_BOLD}
+        style={{ textTransform: 'capitalize' }}
+      >
+        {status}
+      </AppText>
+    </View>
+  ) : null
+)}
 
         {rightIcon ? (
           <TouchableOpacityView onPress={handleRightIcon}>
@@ -965,4 +1016,32 @@ const styles = StyleSheet.create({
     width: s(15),
     marginTop: vs(3),
   },
+//  row: {
+//   flexDirection: 'row',
+//   alignItems: 'center',
+// },
+row: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: 6,
+},
+
+greenDot: {
+  width: 12,
+  height: 12,
+  borderRadius: 6,
+  backgroundColor: colors.lightGreen,
+},
+
+freeBadge: {
+  backgroundColor: colors.buttonBg,
+  paddingHorizontal: 8,
+  paddingVertical: 2,
+  borderRadius: 10,
+},
+
+freeText: {
+  color: colors.white,
+},
+
 });

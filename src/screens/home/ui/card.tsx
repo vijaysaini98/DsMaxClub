@@ -703,18 +703,26 @@ const Card: React.FC<CardProps> = ({
   const displayPrice =
     price !== undefined && price !== null ? `Rs. ${price}` : '';
 
+
+    const openMap = () => {
+  if (address) {
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    Linking.openURL(url);
+  }
+};
+
   return (
     <>
       <TouchableOpacityView
         onPress={() => {
-          if (cardDisabled) return; // ❌ stop navigation
+          if (cardDisabled) return;
           handleCardOnPress(item);
         }}
         disabled={cardDisabled}
         style={[
           styles.cardInner,
           cardContainerStyle,
-          cardDisabled && { opacity: 0.6 }, // 👈 faded UI
+          cardDisabled && type === 'booklet' && { opacity: 0.6 }, // 👈 faded UI
         ]}
       >
         {/* IMAGE */}
@@ -815,7 +823,7 @@ const Card: React.FC<CardProps> = ({
                 )}
 
               {/* ✅ ALWAYS SHOW LOCATION */}
-              <View style={styles.locationContainer}>
+              <TouchableOpacityView style={styles.locationContainer} onPress={openMap}>
                 <FastImage
                   source={nearByIcon}
                   style={styles.locationIconStyle}
@@ -839,7 +847,7 @@ const Card: React.FC<CardProps> = ({
                     />
                   </TouchableOpacityView>
                 )}
-              </View>
+              </TouchableOpacityView>
             </>
           ) : (
             <>
@@ -1220,6 +1228,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: s(5),
     marginTop: vs(20),
+    // backgroundColor:colors.red
   },
   locationIconStyle: {
     marginTop: vs(2),

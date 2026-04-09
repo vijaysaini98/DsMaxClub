@@ -142,6 +142,7 @@ const Details = ({ route }: any) => {
     let value = {
       booklet_id: data.uuid,
       tabname: '',
+      
     };
 
     switch (index) {
@@ -171,20 +172,21 @@ const Details = ({ route }: any) => {
 
       dispatch(getBookletDetail(value));
     }
-  }, [index, data?.uuid, from, dispatch]);
+  }, [index, data?.uuid, from, dispatch,noApiCall]);
 
   useEffect(() => {
     if (!data?.uuid) return;
 
     let value = {
-      booklet_id: data.uuid,
-      tabname: '',
+      booklet_id: "afe43851-3170-11f1-b469-bc24113813ed",
+      tabname: 'About',
+      vendor_id: String(data?.id),
     };
 
     switch (index) {
-      case 0:
-        value.tabname = 'All Deals';
-        break;
+      // case 0:
+      //   value.tabname = 'All Deals';
+      //   break;
       case 1:
         value.tabname = 'About';
         break;
@@ -197,9 +199,10 @@ const Details = ({ route }: any) => {
       default:
         value.tabname = '';
     }
-    if (noApiCall && from === 'ComboBooklet' && value.tabname !== 'All Deals') {
+    if (noApiCall && from === 'ComboBooklet' && value.tabname !== 'All Deals' && value.tabname) {
       console.log(value, 'value from combo booklet details api call');
       dispatch(getComboBookletDetail(value));
+      
       return;
     }
   }, [index, data?.uuid, from, noApiCall]);
@@ -537,13 +540,22 @@ const Details = ({ route }: any) => {
           </TouchableOpacityView>
         )}
 
-        <AppText
+        {/* <AppText
           type={THIRTEEN}
           color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
           style={styles.disTextStyle}
         >
           {`Validity: ${getValidityText()}`}
-        </AppText>
+        </AppText> */}
+        {getValidityText() !== 'N/A' && (
+  <AppText
+    type={THIRTEEN}
+    color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
+    style={styles.disTextStyle}
+  >
+    {`Validity: ${getValidityText()}`}
+  </AppText>
+)}
 
         {/* {data?.maximum_redeem && (
           <AppText

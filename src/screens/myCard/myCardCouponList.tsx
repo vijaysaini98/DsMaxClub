@@ -105,11 +105,12 @@ const MyCardCouponList = ({ route }) => {
         // ✅ Only show loader for the clicked item
         viewBtnLoader={loadingCouponId === item?.coupon_uuid}
         location={item?.locations}
-        vendorName={item?.vendor_name}
+        // vendorName={item?.vendor_name}
         usedCoupon={item?.used_copies}
         shortDesc={item?.short_description}
         // hideViewButton={item?.booklet_type === "Combo"}
         showLocationText={true}
+        showFreeDotUI={true}
       />
       // <View>
       //   <AppText>bcbvc</AppText>

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Animated } from 'react-native'
+import { StyleSheet, View, Animated, useWindowDimensions } from 'react-native'
 import React, {  } from 'react'
 import { useAppSelector } from '@redux/hooks';
 import { WebView } from "react-native-webview";
@@ -6,13 +6,16 @@ import { Loader } from '@components/Spinner';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import { vs } from 'react-native-size-matters';
 import About_TermsConditionShimmer from '@components/ShimerLoader/About_TermsConditionShimerLoader';
+import RenderHTML from 'react-native-render-html';
 
-const About = ({ scrollY }: { scrollY: Animated.Value }) => {
+const About = ({ scrollY,from }: { scrollY: Animated.Value }) => {
+  console.log(from,'from==>');
+  
   const { bookletDetailAbout, isLoading, comboBookletDeals} = useAppSelector((state) => state?.home);
   console.log(comboBookletDeals || comboBookletDeals?.category?.[0]?.about,'comboBookletDeals?.category?.[0]?.about');
   console.log(bookletDetailAbout,'bookletDetailAbout==>');
   
-  
+  const { width } = useWindowDimensions();
 
   return (
     <Animated.ScrollView
@@ -28,7 +31,14 @@ const About = ({ scrollY }: { scrollY: Animated.Value }) => {
       {isLoading ? (
         // <Loader />
         <About_TermsConditionShimmer/>
-      ) : bookletDetailAbout?.url ? (
+      ) :
+      from === 'ComboBooklet' ? (
+         <RenderHTML
+        contentWidth={width}
+        source={{ html: bookletDetailAbout?.description }}
+      />
+      ) :
+      bookletDetailAbout?.url ? (
         <View style={{ flex: 1, minHeight: vs(600) }}>
           <WebView
             source={{ uri: bookletDetailAbout.url }}

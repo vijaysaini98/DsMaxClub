@@ -61,6 +61,7 @@ export interface CardProps {
   showContactLocationRow?:boolean;
   showLocationText?: boolean
 showLocationIconOnly?: boolean
+showFreeDotUI?: boolean
 }
 
 export interface DetailFieldProps {
