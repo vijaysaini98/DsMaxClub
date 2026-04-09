@@ -119,6 +119,8 @@ export const getBookletDetail =
 
 export const getComboBookletDetail =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+    console.log(data,'data in home action');
+    
     try {
       dispatch(setLoading(true));
       const response = await API.homeApi.combo_booklet_detail(data);
@@ -129,12 +131,17 @@ console.log(response,'resonse of booklet details');
           dispatch(setBookletDetailAllDeals(response?.data))
         } else if (data?.tabname == "About") {
           dispatch(setBookletDetailAbout(response?.data))
+          console.log(response,'response in about');
+          
         } else if (data?.tabname == "Gallery") {
           dispatch(setBookletDetailGallery(response?.data))
         } else {
           dispatch(setBookletDetailT_C(response?.data))
         }
-        onSucess(response)
+         if (onSucess) {
+          onSucess(response);
+        }
+        // onSucess(response)
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);

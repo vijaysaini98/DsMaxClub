@@ -10,6 +10,7 @@ import { openPhoneDialer } from "@utils/index";
 export default function VendorPhoneDialerModal({ visible, onClose, vendor }: any) {
     const phoneNumber = vendor?.vendor?.short_desc;
     // const phoneNumber = vendor?.vendor?.mobile;
+    
 
     return (
         <Modal

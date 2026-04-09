@@ -29,9 +29,9 @@ export default function QrCodeModal({ visible, onClose, couponData }: any) {
                             Code Generated Successfully!
                         </AppText>
 
-                        <AppText type={FOURTEEN} color={colors.forth} style={styles.successText}>
+                        {/* <AppText type={FOURTEEN} color={colors.forth} style={styles.successText}>
                             Your voucher has been redeemed
-                        </AppText>
+                        </AppText> */}
                         <AppText type={SIXTEEN} color={colors.forth} weight={SEMI_BOLD} style={styles.subText}>
                             {`Coupon Code: ${couponData?.coupons?.generated_code}`}
                         </AppText>

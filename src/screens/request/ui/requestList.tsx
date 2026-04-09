@@ -50,7 +50,7 @@ const RequestList = ({ value }) => {
 )
 
   const renderItem = useCallback(
-    ({ item, index }) => {
+    ({ item, index }:any) => {
       // console.log(item,'item in requestList====>');
       // console.log(item?.requested_date,'item?.requested_date');
       
@@ -82,7 +82,8 @@ const RequestList = ({ value }) => {
             //   // }
             // }}
             status={item?.status}
-            purchaseDate={moment(item?.requested_date, "DD MMMM YYYY, HH:mm").format("DD-MM-YYYY")}
+
+            purchaseDate={item?.requested_date}
           />
         </View>
       );

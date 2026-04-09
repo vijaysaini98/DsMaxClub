@@ -20,6 +20,7 @@ const MyCardList = ({ value }:any) => {
   // const { isLoading ,isBtnLoading} = useAppSelector((state) => state.myCard);
   const { isLoading, isRefresh, myCardAllBookletList, myCardActiveBookletList, myCardExpiredBookletList, isBtnLoading } = useAppSelector((state) => state?.myCard)
   const [refreshing, setRefreshing] = useState(false);
+console.log(myCardAllBookletList,'myCardAllBookletList');
 
   // const onRefresh = useCallback(() => {
   //   // setRefreshing(true);
@@ -131,7 +132,8 @@ const MyCardList = ({ value }:any) => {
       ? { uri: item?.baseurl + item?.booklet }
       : defaultBookletImage
   }
-  name={`${item?.name} (${item?.booklet_uniquecode})`}
+  // name={`${item?.name} (${item?.booklet_uniquecode})`}
+  name={`${item?.name}`}
   price={item.price}
   address={item?.locations?.[0]?.location ?? '---'}
   handleCardOnPress={() => {

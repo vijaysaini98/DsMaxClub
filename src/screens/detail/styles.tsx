@@ -162,6 +162,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: s(20),
     borderTopWidth: 1,
     borderTopColor: '#eee',
+    
+
   },
   backIconStyle: {
     height: vs(20),

@@ -56,12 +56,14 @@ const Deal = () => {
           imageUrl={item?.booklet ? { uri: vendorDealBookletList?.baseurl + item?.booklet } : defaultBookletImage}
           name={item?.name}
           price={item.price}
+          location={item?.location}
            address={ item?.location.length>0 ? item?.location[0]?.location : "---"}
             date={item?.validity_months ? `Up to ${item?.validity_months} months` : `Validity: ${moment(item?.start_date).format("D-MMM-YYYY")} - ${ moment(item?.end_date).format("D-MMM-YYYY")}`}
           handleCardOnPress={() => {
             dispatch(setVendorUserList([]))
             NavigationService.navigate(VENDOR_USER_LIST, { title: item?.name, booklet_id: item?.uuid })
           }}
+          showArrow
         />
       </View>
     )

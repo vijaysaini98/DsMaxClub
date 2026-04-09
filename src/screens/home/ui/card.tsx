@@ -645,7 +645,7 @@ export interface CardProps {
   cardDisabled?: boolean;
   isCompleteLocation?: boolean;
 
-  type?: 'booklet' | 'request';
+  type?: 'booklet' | 'request'| 'combo';
   startDate?: string;
   purchaseDate?: string;
   validityMonths?: number;
@@ -656,6 +656,7 @@ export interface CardProps {
   location?: Array<{ location: string; location_url: string }> | any;
   showArrow?: boolean;
   data?: any;
+  showDateSection?: boolean;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -680,6 +681,7 @@ const Card: React.FC<CardProps> = ({
   location,
   showArrow,
   data,
+  showDateSection,
 }) => {
   const [activeDropdown, setActiveDropdown] = React.useState<
     'location' | 'contact' | null
@@ -701,12 +703,27 @@ const Card: React.FC<CardProps> = ({
   const displayPrice =
     price !== undefined && price !== null ? `Rs. ${price}` : '';
 
+
+    const openMap = () => {
+  if (address) {
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    Linking.openURL(url);
+  }
+};
+
   return (
     <>
       <TouchableOpacityView
-        onPress={() => handleCardOnPress(item)}
+        onPress={() => {
+          if (cardDisabled) return;
+          handleCardOnPress(item);
+        }}
         disabled={cardDisabled}
-        style={[styles.cardInner, cardContainerStyle]}
+        style={[
+          styles.cardInner,
+          cardContainerStyle,
+          cardDisabled && type === 'booklet' && { opacity: 0.6 }, // 👈 faded UI
+        ]}
       >
         {/* IMAGE */}
         <FastImage
@@ -738,27 +755,22 @@ const Card: React.FC<CardProps> = ({
         )} */}
 
         {status && (
-  <View
-    style={[
-      styles.statusContainer,
-      {
-        backgroundColor:
-          status?.toLowerCase() === 'active'
-            ? colors.lightGreen
-            : colors.buttonBg,
-      },
-    ]}
-  >
-    <AppText
-      type={FOURTEEN}
-      weight={MEDIUM}
-      color={WHITE}
-    >
-      {status?.charAt(0).toUpperCase() +
-        status?.slice(1)}
-    </AppText>
-  </View>
-)}
+          <View
+            style={[
+              styles.statusContainer,
+              {
+                backgroundColor:
+                  status?.toLowerCase() === 'active'
+                    ? colors.lightGreen
+                    : colors.buttonBg,
+              },
+            ]}
+          >
+            <AppText type={FOURTEEN} weight={MEDIUM} color={WHITE}>
+              {status?.charAt(0).toUpperCase() + status?.slice(1)}
+            </AppText>
+          </View>
+        )}
 
         {/* CONTENT */}
         <View style={styles.detailContainer}>
@@ -777,28 +789,67 @@ const Card: React.FC<CardProps> = ({
 
           {/* ================= COMPLETE LOCATION ================= */}
           {isCompleteLocation ? (
-            <View style={styles.locationContainer}>
-              <FastImage source={nearByIcon} style={styles.locationIconStyle} />
-              <AppText
-                type={TWELVE}
-                weight={MEDIUM}
-                style={styles.locationText}
-                numberOfLines={2}
-              >
-                {address}
-              </AppText>
-              {showArrow && ( // ✅ condition added
-                <TouchableOpacityView
-                  onPress={() => sheetRef.current?.present()}
+            <>
+              {showDateSection &&
+                (startDate || item?.end_date || validityMonths) && (
+                  <View style={styles.rowBetween}>
+                    {/* START DATE */}
+                    {startDate && (
+                      <View>
+                        <AppText type={TWELVE} weight={BOLD}>
+                          Start Date
+                        </AppText>
+                        <AppText type={TWELVE}>
+                          {moment(startDate).format('DD-MMM-YYYY')}
+                        </AppText>
+                      </View>
+                    )}
+
+                    {/* EXPIRY DATE */}
+                    {(item?.end_date || validityMonths) && (
+                      <View>
+                        <AppText type={TWELVE} weight={BOLD}>
+                          Expiry Date
+                        </AppText>
+
+                        <AppText type={TWELVE}>
+                          {item?.end_date
+                            ? moment(item.end_date).format('DD-MMM-YYYY')
+                            : `Upto ${validityMonths} months`}
+                        </AppText>
+                      </View>
+                    )}
+                  </View>
+                )}
+
+              {/* ✅ ALWAYS SHOW LOCATION */}
+              <TouchableOpacityView style={styles.locationContainer} onPress={openMap}>
+                <FastImage
+                  source={nearByIcon}
+                  style={styles.locationIconStyle}
+                />
+                <AppText
+                  type={TWELVE}
+                  weight={MEDIUM}
+                  style={styles.locationText}
+                  numberOfLines={2}
                 >
-                  <FastImage
-                    source={downArrowIcon}
-                    style={styles.arrowIcon}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacityView>
-              )}
-            </View>
+                  {address}
+                </AppText>
+
+                {showArrow && (
+                  <TouchableOpacityView
+                    onPress={() => sheetRef.current?.present()}
+                  >
+                    <FastImage
+                      source={downArrowIcon}
+                      style={styles.arrowIcon}
+                      resizeMode='contain'
+                    />
+                  </TouchableOpacityView>
+                )}
+              </TouchableOpacityView>
+            </>
           ) : (
             <>
               {/* ================= BOOKLET ================= */}
@@ -874,9 +925,18 @@ const Card: React.FC<CardProps> = ({
                     <AppText type={TWELVE} weight={BOLD}>
                       Requested Date
                     </AppText>
+                    {/* <AppText type={TWELVE}>
+                      {purchaseDate
+                        ? moment(purchaseDate).format('DD MMMM YYYY, HH:mm ')
+                        : '--'}
+                    </AppText> */}
                     <AppText type={TWELVE}>
                       {purchaseDate
-                        ? moment(purchaseDate).format('D MMM YYYY, hh:mm ')
+                        ? moment(
+                            purchaseDate,
+                            'DD MMMM YYYY, HH:mm',
+                            true,
+                          ).format('DD MMM YYYY, hh:mm ')
                         : '--'}
                     </AppText>
                   </View>
@@ -902,6 +962,83 @@ const Card: React.FC<CardProps> = ({
                   </View>
                 </>
               )}
+{type === 'combo' && (
+  <>
+    {/* ✅ DATE ROW */}
+    {showDateSection &&
+      (startDate || item?.end_date || validityMonths) && (
+        <View style={styles.rowBetween}>
+          
+          {/* START DATE */}
+          {startDate && (
+            <View>
+              <AppText type={TWELVE} weight={BOLD}>
+                Start Date
+              </AppText>
+              <AppText type={TWELVE}>
+                {moment(startDate).format('DD-MMM-YYYY')}
+              </AppText>
+            </View>
+          )}
+
+          {/* EXPIRY DATE */}
+          {(item?.end_date || validityMonths) && (
+            <View>
+              <AppText type={TWELVE} weight={BOLD}>
+                Expiry Date
+              </AppText>
+
+              <AppText type={TWELVE}>
+                {item?.end_date
+                  ? moment(item.end_date).format('DD-MMM-YYYY')
+                  : `Upto ${validityMonths} months`}
+              </AppText>
+            </View>
+          )}
+        </View>
+      )}
+
+    {/* ✅ ICON ROW (RIGHT SIDE) */}
+    <View style={styles.iconRowRight}>
+      
+      {/* 📍 LOCATION ICON */}
+      <TouchableOpacityView
+        style={styles.circleBtn}
+        onPress={() => sheetRef.current?.present()}
+      >
+        <FastImage
+          source={locationIcon}
+          style={styles.circleIcon}
+          tintColor={colors.white}
+        />
+      </TouchableOpacityView>
+
+      {/* 📞 CONTACT ICON */}
+      <TouchableOpacityView
+        style={styles.circleBtn}
+        // onPress={openDropdown('contact')}
+        onPress={() => {
+  if (
+    item?.mobile ||
+    item?.short_desc ||
+    item?.short_description
+  ) {
+    openDropdown('contact');
+  } else {
+    console.log('No contact available');
+  }
+}}
+      >
+        <FastImage
+          source={helpLineIcon}
+          style={styles.circleIcon}
+          tintColor={colors.white}
+        />
+      </TouchableOpacityView>
+
+    </View>
+  </>
+)}
             </>
           )}
         </View>
@@ -946,7 +1083,7 @@ const Card: React.FC<CardProps> = ({
                 ))}
 
               {/* CONTACT */}
-              {activeDropdown === 'contact' &&
+              {/* {activeDropdown === 'contact' &&
                 item?.short_description?.map((num: string, index: number) => (
                   <TouchableOpacityView
                     key={index}
@@ -959,7 +1096,48 @@ const Card: React.FC<CardProps> = ({
                     <FastImage source={helpLineIcon} style={styles.sheetIcon} />
                     <AppText style={styles.sheetText}>{num}</AppText>
                   </TouchableOpacityView>
-                ))}
+                ))} */}
+                {/* CONTACT */}
+{activeDropdown === 'contact' && (() => {
+  let contactList: string[] = [];
+
+  // ✅ Case 1: array (short_description)
+  if (Array.isArray(item?.short_description)) {
+    contactList = item.short_description;
+  }
+
+  // ✅ Case 2: string (short_desc)
+  else if (typeof item?.short_desc === 'string') {
+    contactList = [item.short_desc];
+  }
+
+  // ✅ Case 3: mobile field
+  else if (item?.mobile) {
+    contactList = [item.mobile];
+  }
+
+  return contactList.map((num: string, index: number) => {
+    const cleanNumber = num?.split('-')[0]?.trim();
+
+    return (
+      <TouchableOpacityView
+        key={index}
+        style={styles.sheetItem}
+        onPress={() => {
+          closeDropdown();
+          openPhoneDialer(cleanNumber);
+        }}
+      >
+        <FastImage source={helpLineIcon} style={styles.sheetIcon} />
+        <AppText style={styles.sheetText}>
+          {cleanNumber}
+        </AppText>
+      </TouchableOpacityView>
+    );
+  });
+})()}
+
+
             </View>
           </View>
         </View>
@@ -1050,7 +1228,8 @@ const styles = StyleSheet.create({
   locationContainer: {
     flexDirection: 'row',
     gap: s(5),
-    marginTop: vs(5),
+    marginTop: vs(20),
+    // backgroundColor:colors.red
   },
   locationIconStyle: {
     marginTop: vs(2),
@@ -1134,4 +1313,10 @@ const styles = StyleSheet.create({
     width: s(15),
     marginTop: vs(3),
   },
+  iconRowRight: {
+  flexDirection: 'row',
+  justifyContent: 'flex-end', // 👉 right align
+  gap: s(10),
+  marginTop: vs(12),
+},
 });

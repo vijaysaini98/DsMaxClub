@@ -42,6 +42,8 @@ export const homeSlice = createSlice({
             state.bookletDetailAllDeals = payload;
         },
         setBookletDetailAbout: (state, { payload }) => {
+            console.log(payload,'payload--->');
+            
             state.bookletDetailAbout = payload;
         },
         setBookletDetailGallery: (state, { payload }) => {

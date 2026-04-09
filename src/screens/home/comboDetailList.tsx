@@ -2,6 +2,7 @@ import {
   Alert,
   FlatList,
   Keyboard,
+  Platform,
   RefreshControl,
   StyleSheet,
   Text,
@@ -49,21 +50,23 @@ import RequestBottomSheet from '@screens/detail/ui/requestBottomSheet';
 import BottomSheet from '@gorhom/bottom-sheet';
 import moment from 'moment';
 import { setBookletDetailAllDeals } from '@actions/home/homeSlice';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ComboDetailList = ({ route }: any) => {
+  const insets = useSafeAreaInsets();
   const { isLoading, isRefresh, isBtnLoading, comboOfferList } = useAppSelector(
     state => state?.myCard,
   );
 
-  // console.log(comboOfferList, 'comboOfferList====>');
+  console.log(comboOfferList, 'comboOfferList====>');
   const { userData } = useAppSelector(state => state?.auth);
   const [acceptContent, setAcceptContent] = useState(false);
 
   const { bookletDetailAllDeals } = useAppSelector(state => state?.home);
-    // console.log(bookletDetailAllDeals, 'bookletDetailAllDeals===>');
+    console.log(bookletDetailAllDeals?.request_status, 'bookletDetailAllDeals?.request_status');
   const [refreshing, setRefreshing] = useState(false);
   const { data, from } = route?.params ?? '';
-  //   console.log(data, 'data in combo detail list===>');
+    console.log(data, 'data in combo detail list===>');
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const executiveBottomSheetRef = useRef<BottomSheet>(null);
@@ -84,11 +87,15 @@ const ComboDetailList = ({ route }: any) => {
   }, [isRefresh]);
 
   const onHandlePress = (item: any, index: number) => {
+    console.log(item,'itemmmmmmm-->');
+    
     let value = {
+      // booklet_id: data?.uuid,
       booklet_id: data?.uuid,
       tabname: 'All Deals',
       vendor_id: String(item?.id),
     };
+
 
     // switch (index) {
     //   case 0:
@@ -110,6 +117,7 @@ const ComboDetailList = ({ route }: any) => {
     console.log(value, 'value from combo booklet details api call');
 
     dispatch(getComboBookletDetail(value, () => handleComboSuccess(item)));
+    
   };
 
   const handleComboSuccess = (item: any) => {
@@ -235,12 +243,15 @@ const ComboDetailList = ({ route }: any) => {
           startDate={item?.start_date}
           validityMonths={item?.validity_months}
           location={item?.locations}
+          // showDateSection={true}
+          cardDisabled={item?.tab_status === 'Expired'}
+
         />
       </View>
     );
   };
   return (
-    <AppSafeAreaView style={[commonStyles.mainContainer, styles.mainContainer]}>
+    <AppSafeAreaView style={styles.mainContainer}>
       <ToolBar isLeftIcon title={data?.name} />
       <View style={styles.containerStyle}>
         <FlatList
@@ -262,7 +273,12 @@ const ComboDetailList = ({ route }: any) => {
             />
           }
         />
-        <View style={styles.bottomBtnContainer}>
+       <View
+  style={[
+    styles.bottomBtnContainer,
+    { paddingBottom: insets.bottom - vs(15) } // ✅ HERE
+  ]}
+>
           {isLoading ? (
             <View style={{ width: '100%' }}>
               <ShimmerPlaceholder
@@ -331,21 +347,21 @@ const ComboDetailList = ({ route }: any) => {
     <TouchableOpacityView
       onPress={handleOnPress}
       style={styles.buyBtnStyle(
-        bookletDetailAllDeals?.request_status === 'Pending' ||
-        bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+        comboOfferList?.[0]?.request_status === 'Pending' ||
+        comboOfferList?.[0]?.request_status === 'Out of Stock' ||
         isExpired
       )}
       loader={isBtnLoading}
       disabled={
-        bookletDetailAllDeals?.request_status === 'Pending' ||
-        bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+        comboOfferList?.[0]?.request_status === 'Pending' ||
+        comboOfferList?.[0]?.request_status === 'Out of Stock' ||
         isExpired
       }
     >
       <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-        {bookletDetailAllDeals?.request_status === 'Out of Stock'
+        {comboOfferList?.[0]?.request_status === 'Out of Stock'
           ? 'Out Of Stock'
-          : bookletDetailAllDeals?.request_status === 'Pending'
+          : comboOfferList?.[0]?.request_status === 'Pending'
           ? 'REQUEST IN PENDING'
           : isExpired
           ? 'EXPIRED'
@@ -386,20 +402,24 @@ const ComboDetailList = ({ route }: any) => {
 
 export default ComboDetailList;
 
+
+
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     paddingHorizontal: s(16),
+     backgroundColor: colors.white,
   },
   containerStyle: {
     flex: 1,
     paddingTop: vs(25),
-    paddingBottom: vs(80),
+    // paddingBottom: vs(80),
   },
   listContainerStyle: {
     gap: ms(26),
-    paddingBottom: vs(150),
-    marginTop: vs(22),
+    paddingBottom: vs(100),
+    // paddingBottom: vs(80),
+    // marginTop: vs(22),
     // marginHorizontal: 16,
   },
   shadowContainer: {
@@ -439,5 +459,7 @@ const styles = StyleSheet.create({
     // paddingHorizontal: s(20),
     borderTopWidth: 1,
     borderTopColor: '#eee',
+    // paddingTop: vs(20),
   },
+
 });

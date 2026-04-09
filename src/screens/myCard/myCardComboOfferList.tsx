@@ -34,94 +34,88 @@ import { getComboBookletDetail } from '@actions/home/homeAction';
 import Card from '@screens/home/ui/card';
 
 const MyCardComboOfferList = ({ route }: any) => {
-  const { isLoading, isRefresh,myCardComboOfferList } = useAppSelector(
+  const { isLoading, isRefresh, myCardComboOfferList } = useAppSelector(
     state => state?.myCard,
   );
 
+  console.log(myCardComboOfferList, 'myCardOffersList==>');
 
-  // console.log(myCardComboOfferList,'myCardOffersList==>');
-  
-    // console.log(myCardComboOfferList,'myCardComboOfferList in my card list dataaaataa===>');
-    // console.log(myCardComboOfferList?.[0]?.user_booklet_uuid,'myCardComboOfferList?.user_booklet_uuid===>');
-    
-
+  // console.log(myCardComboOfferList,'myCardComboOfferList in my card list dataaaataa===>');
+  // console.log(myCardComboOfferList?.[0]?.user_booklet_uuid,'myCardComboOfferList?.user_booklet_uuid===>');
 
   const { data, from } = route?.params ?? '';
   // console.log(data?.uuid,'data?.uuid==>');
-  
-
 
   const dispatch = useAppDispatch();
   useEffect(() => {
-   
     if (myCardComboOfferList?.[0]?.user_booklet_uuid) {
-      dispatch(getMyCardComboOffersList({ user_booklet_uuid: myCardComboOfferList?.[0]?.user_booklet_uuid }));
+      dispatch(
+        getMyCardComboOffersList({
+          user_booklet_uuid: myCardComboOfferList?.[0]?.user_booklet_uuid,
+        }),
+      );
     }
   }, [dispatch, isRefresh, data]);
 
-
   const onRefresh = useCallback(() => {
     // setRefreshing(true);
-    dispatch(getMyCardComboOffersList({ user_booklet_uuid: myCardComboOfferList?.[0]?.user_booklet_uuid }));
+    dispatch(
+      getMyCardComboOffersList({
+        user_booklet_uuid: myCardComboOfferList?.[0]?.user_booklet_uuid,
+      }),
+    );
   }, [isRefresh]);
 
-
   const onHandlePress = (item: any, index: number) => {
-// console.log(item?.user_booklet_uuid,'item?.user_booklet_uuid in handle press==>');
+    console.log(item, 'item in on handle press===>');
 
     dispatch(
-          getMyCardCouponList(
-            { user_booklet_uuid: item.user_booklet_uuid },
-            () => onSuccess(item) 
-          )
-        );
+      getMyCardCouponList(
+        { user_booklet_uuid: item.user_booklet_uuid, vendor_id: item?.id },
+        () => onSuccess(item),
+      ),
+    );
   };
 
-    const onSuccess = (item) => {
-        // console.log(item,'item on success===>');
-        
-      NavigationService.navigate(routes.MY_CARD_COUPON_LIST_SCREEN, {
-        title: item?.name,
-        user_booklet_uuid: item?.user_booklet_uuid,
-        tab_status: item?.tab_status,
-        booklet_uniquecode: item?.booklet_uniquecode,
-      });
-      
-    };
+  const onSuccess = item => {
+    // console.log(item,'item on success===>');
 
+    NavigationService.navigate(routes.MY_CARD_COUPON_LIST_SCREEN, {
+      title: item?.name,
+      user_booklet_uuid: item?.user_booklet_uuid,
+      tab_status: item?.tab_status,
+      booklet_uniquecode: item?.booklet_uniquecode,
+    });
+  };
 
-
-
-const getVendorImage = (vendor: any) => {
-
-  if (vendor?.gallery) {
-    const firstGallery = vendor.gallery.split(",")[0];
-    if (firstGallery) {
-      return { uri: IMGE_URL + firstGallery };
+  const getVendorImage = (vendor: any) => {
+    if (vendor?.gallery) {
+      const firstGallery = vendor.gallery.split(',')[0];
+      if (firstGallery) {
+        return { uri: IMGE_URL + firstGallery };
+      }
     }
-  }
 
-  if (vendor?.profile_image) {
-    return { uri: IMGE_URL + vendor.profile_image };
-  }
+    if (vendor?.profile_image) {
+      return { uri: IMGE_URL + vendor.profile_image };
+    }
 
-  return defaultBookletImage; // ✅ use imported local image
-};
+    return defaultBookletImage; // ✅ use imported local image
+  };
   const renderItem = ({ item, index }: any) => {
-    // console.log(item, 'item in render===>');
-
+    console.log(item, 'item in render===>');
 
     return (
       <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
         <Card
           item={item}
-          isCompleteLocation={true}
+          type="combo"
+          // isCompleteLocation={true}
           showArrow
           cardContainerStyle={{ width: '100%' }}
           imageStyle={styles.imageStyle}
-     
-        imageUrl={getVendorImage(item)}
-        //   price={item.price}
+          imageUrl={getVendorImage(item)}
+          //   price={item.price}
           address={item?.locations?.[0]?.location ?? '---'}
           status={item?.tab_status}
           shortDesc={item?.short_desc}
@@ -130,6 +124,11 @@ const getVendorImage = (vendor: any) => {
           startDate={item?.start_date}
           validityMonths={item?.validity_months}
           location={item?.locations}
+          showDateSection={true}
+          cardDisabled={item?.tab_status === 'Expired'||item?.tab_status === 'Coming Soon'}
+          // mobile={item?.mobile}
+          
+          
         />
       </View>
     );

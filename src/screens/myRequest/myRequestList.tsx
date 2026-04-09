@@ -57,7 +57,9 @@ const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
       ? { uri: IMGE_URL + item?.booklet }
       : defaultBookletImage
   }
-  name={`${item?.name} (${item?.unique_code})`}
+//   name={`${item?.name} (${item?.unique_code})`}
+ name={item?.name}
+  uniqueCode={item?.unique_code}
   price={item.price}
   address={item?.locations ? item?.locations[0]?.location : "---"}
   handleCardOnPress={() => {
@@ -67,7 +69,7 @@ const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
   shortDesc={item?.short_desc}
 
   // ✅ NEW CLEAN PROP
-  purchaseDate={item?.created_at}
+  purchaseDate={item?.requested_date}
 />
             </View>
         )

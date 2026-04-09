@@ -425,7 +425,7 @@
 
 // export default CommonCard;
 
-import { StyleSheet, Image, View, Dimensions } from 'react-native';
+import { StyleSheet, Image, View, Dimensions, Linking } from 'react-native';
 import React, { useRef } from 'react';
 import { colors } from '../theme/colors';
 import {
@@ -491,6 +491,10 @@ const CommonCard = ({
   completeShortDesc,
   onContactPress,
   showContactLocationRow,
+  showLocationText,
+showLocationIconOnly,
+showFreeDotUI,
+showCouponLocationIcon,
 }: CardProps) => {
   if (!data) return null;
 
@@ -508,7 +512,7 @@ const CommonCard = ({
           {heading}
         </AppText>
 
-        {status ? (
+        {/* {status ? (
           <View
             style={[
               styles.statusBadge,
@@ -536,7 +540,57 @@ const CommonCard = ({
               {status}
             </AppText>
           </View>
-        ) : null}
+        ) : null} */}
+       {showFreeDotUI ? (
+  // ✅ ONLY dot + free (NO status)
+  data?.coupon_type_id == 1 ? (
+    <View style={styles.row}>
+      <View style={styles.greenDot} />
+
+      <View style={styles.freeBadge}>
+        <AppText
+          type={TWELVE}
+          weight={SEMI_BOLD}
+          style={styles.freeText}
+        >
+          Free
+        </AppText>
+      </View>
+    </View>
+  ) : (
+    <View style={styles.greenDot} />
+  )
+) : (
+  status ? (
+    <View
+      style={[
+        styles.statusBadge,
+        {
+          backgroundColor: statusBg
+            ? statusBg
+            : status === 'Active'
+            ? colors.lightGreen
+            : colors.tabBg,
+        },
+      ]}
+    >
+      <AppText
+        type={TWELVE}
+        color={
+          statusTextColor
+            ? statusTextColor
+            : status === 'Active'
+            ? WHITE
+            : BUTTON_TEXT
+        }
+        weight={SEMI_BOLD}
+        style={{ textTransform: 'capitalize' }}
+      >
+        {status}
+      </AppText>
+    </View>
+  ) : null
+)}
 
         {rightIcon ? (
           <TouchableOpacityView onPress={handleRightIcon}>
@@ -609,13 +663,46 @@ const CommonCard = ({
       ) : null}
 
       {/* COUPON COUNT */}
-      {couponCount ? (
+      {/* {couponCount ? (
         <View style={styles.couponCountContainer}>
           <AppText type={TEN} weight={BOLD} style={{ color: colors.placeholder2 }}>
             {`No of Coupons: ${couponCount}`}
           </AppText>
         </View>
-      ) : null}
+      ) : null} */}
+      {couponCount ? (
+  <View style={styles.couponRow}>
+    
+    {/* Coupon Count */}
+    <View style={styles.couponCountContainer}>
+      <AppText type={TEN} weight={BOLD} style={{ color: colors.placeholder2 }}>
+        {`No of Coupons: ${couponCount}`}
+      </AppText>
+    </View>
+
+    {/* 👉 Location Icon ONLY (conditional) */}
+    {showCouponLocationIcon && location && location.length > 0 && (
+      <TouchableOpacityView
+        style={styles.couponLocationIcon}
+        onPress={() => {
+          if (location.length === 1) {
+            Linking.openURL(location[0]?.location_url)
+          } else {
+            sheetRef.current?.present()
+          }
+        }}
+      >
+        <FastImage
+          source={locationIcon}
+          style={styles.contactIcon}
+          tintColor={colors.white}
+          resizeMode="contain"
+        />
+      </TouchableOpacityView>
+    )}
+
+  </View>
+) : null}
 
       {/* CONTACT */}
       {/* {onContactPress ? (
@@ -631,9 +718,48 @@ const CommonCard = ({
     />
   </TouchableOpacityView>
 ) : null} */}
+{/* LOCATION TEXT  */}
+
+{showLocationText && location && location.length > 0 && (
+  <TouchableOpacityView
+    style={styles.locationRow}
+    onPress={() => {
+      if (location.length === 1) {
+        // 👉 single location → open map
+        Linking.openURL(location[0]?.location_url)
+      } else {
+        // 👉 multiple → open bottom sheet
+        sheetRef.current?.present()
+      }
+    }}
+  >
+    <Image
+      source={locationIcon}
+      style={styles.locationIcon}
+      tintColor={colors.borderColor}
+    />
+
+    <AppText
+      type={TWELVE}
+      color={BUTTON_TEXT}
+      numberOfLines={2}
+      style={styles.locationText}
+    >
+      {location[0]?.location}
+    </AppText>
+
+    {/* Only show arrow for multiple */}
+    {location.length > 1 && (
+      <Image
+        source={downArrowIcon}
+        style={styles.arrowIcon}
+        resizeMode="contain"
+      />
+    )}
+  </TouchableOpacityView>
+)}
 {onContactPress ? (
   showContactLocationRow ? (
-    // ✅ ROW (only for specific screen)
     <View style={styles.contactLocationRow}>
       
       {/* CALL */}
@@ -649,22 +775,22 @@ const CommonCard = ({
         />
       </TouchableOpacityView>
 
-      {/* LOCATION */}
-      <TouchableOpacityView
-        style={styles.contactButton}
-        onPress={() => sheetRef.current?.present()}
-      >
-        <Image
-          source={locationIcon}
-          style={styles.contactIcon}
-          resizeMode="contain"
-          tintColor={colors.white}
-        />
-      </TouchableOpacityView>
-
+      {/* LOCATION ICON ONLY */}
+      {showLocationIconOnly && (
+        <TouchableOpacityView
+          style={styles.contactButton}
+          onPress={() => sheetRef.current?.present()}
+        >
+          <Image
+            source={locationIcon}
+            style={styles.contactIcon}
+            resizeMode="contain"
+            tintColor={colors.white}
+          />
+        </TouchableOpacityView>
+      )}
     </View>
   ) : (
-    // ✅ DEFAULT (existing UI)
     <TouchableOpacityView
       style={styles.contactButton}
       onPress={onContactPress}
@@ -678,11 +804,10 @@ const CommonCard = ({
     </TouchableOpacityView>
   )
 ) : null}
-
       {/* USED COUPON */}
       {usedCoupon && usedCoupon > 0 ? (
         <View style={styles.usedCouponCountContainer}>
-          <AppText type={TEN} weight={MEDIUM} style={{ color: colors.placeholder2 }}>
+          <AppText type={TEN} weight={MEDIUM} style={{ color: colors.white }}>
             {`No of Used Coupons: ${usedCoupon}`}
           </AppText>
         </View>
@@ -888,7 +1013,7 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     borderRadius: ms(6),
     backgroundColor: colors.tabBg,
-    maxWidth: s(120),
+    // maxWidth: s(120),
     padding: ms(10),
     marginTop: vs(10),
   },
@@ -897,7 +1022,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderStyle: 'dashed',
     borderRadius: ms(6),
-    backgroundColor: colors.mainBg,
+    // backgroundColor: colors.mainBg,
+    backgroundColor: '#5c5c5c',
     maxWidth: s(150),
     padding: ms(10),
     marginVertical: vs(5),
@@ -925,4 +1051,45 @@ const styles = StyleSheet.create({
     width: s(15),
     marginTop: vs(3),
   },
+//  row: {
+//   flexDirection: 'row',
+//   alignItems: 'center',
+// },
+row: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: 6,
+},
+
+greenDot: {
+  width: 12,
+  height: 12,
+  borderRadius: 6,
+  backgroundColor: colors.lightGreen,
+},
+
+freeBadge: {
+  backgroundColor: colors.buttonBg,
+  paddingHorizontal: 8,
+  paddingVertical: 2,
+  borderRadius: 10,
+},
+
+freeText: {
+  color: colors.white,
+},
+couponRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+},
+
+couponLocationIcon: {
+  width: s(35),
+  height: s(35),
+  borderRadius: s(20),
+  backgroundColor: colors.buttonBg,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
 });
