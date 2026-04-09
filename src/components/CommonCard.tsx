@@ -494,6 +494,7 @@ const CommonCard = ({
   showLocationText,
 showLocationIconOnly,
 showFreeDotUI,
+showCouponLocationIcon,
 }: CardProps) => {
   if (!data) return null;
 
@@ -662,13 +663,46 @@ showFreeDotUI,
       ) : null}
 
       {/* COUPON COUNT */}
-      {couponCount ? (
+      {/* {couponCount ? (
         <View style={styles.couponCountContainer}>
           <AppText type={TEN} weight={BOLD} style={{ color: colors.placeholder2 }}>
             {`No of Coupons: ${couponCount}`}
           </AppText>
         </View>
-      ) : null}
+      ) : null} */}
+      {couponCount ? (
+  <View style={styles.couponRow}>
+    
+    {/* Coupon Count */}
+    <View style={styles.couponCountContainer}>
+      <AppText type={TEN} weight={BOLD} style={{ color: colors.placeholder2 }}>
+        {`No of Coupons: ${couponCount}`}
+      </AppText>
+    </View>
+
+    {/* 👉 Location Icon ONLY (conditional) */}
+    {showCouponLocationIcon && location && location.length > 0 && (
+      <TouchableOpacityView
+        style={styles.couponLocationIcon}
+        onPress={() => {
+          if (location.length === 1) {
+            Linking.openURL(location[0]?.location_url)
+          } else {
+            sheetRef.current?.present()
+          }
+        }}
+      >
+        <FastImage
+          source={locationIcon}
+          style={styles.contactIcon}
+          tintColor={colors.white}
+          resizeMode="contain"
+        />
+      </TouchableOpacityView>
+    )}
+
+  </View>
+) : null}
 
       {/* CONTACT */}
       {/* {onContactPress ? (
@@ -773,7 +807,7 @@ showFreeDotUI,
       {/* USED COUPON */}
       {usedCoupon && usedCoupon > 0 ? (
         <View style={styles.usedCouponCountContainer}>
-          <AppText type={TEN} weight={MEDIUM} style={{ color: colors.placeholder2 }}>
+          <AppText type={TEN} weight={MEDIUM} style={{ color: colors.white }}>
             {`No of Used Coupons: ${usedCoupon}`}
           </AppText>
         </View>
@@ -979,7 +1013,7 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     borderRadius: ms(6),
     backgroundColor: colors.tabBg,
-    maxWidth: s(120),
+    // maxWidth: s(120),
     padding: ms(10),
     marginTop: vs(10),
   },
@@ -988,7 +1022,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderStyle: 'dashed',
     borderRadius: ms(6),
-    backgroundColor: colors.mainBg,
+    // backgroundColor: colors.mainBg,
+    backgroundColor: '#5c5c5c',
     maxWidth: s(150),
     padding: ms(10),
     marginVertical: vs(5),
@@ -1043,5 +1078,18 @@ freeBadge: {
 freeText: {
   color: colors.white,
 },
+couponRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+},
 
+couponLocationIcon: {
+  width: s(35),
+  height: s(35),
+  borderRadius: s(20),
+  backgroundColor: colors.buttonBg,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
 });

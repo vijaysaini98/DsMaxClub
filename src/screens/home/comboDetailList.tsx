@@ -347,21 +347,21 @@ const ComboDetailList = ({ route }: any) => {
     <TouchableOpacityView
       onPress={handleOnPress}
       style={styles.buyBtnStyle(
-        bookletDetailAllDeals?.request_status === 'Pending' ||
-        bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+        comboOfferList?.[0]?.request_status === 'Pending' ||
+        comboOfferList?.[0]?.request_status === 'Out of Stock' ||
         isExpired
       )}
       loader={isBtnLoading}
       disabled={
-        bookletDetailAllDeals?.request_status === 'Pending' ||
-        bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+        comboOfferList?.[0]?.request_status === 'Pending' ||
+        comboOfferList?.[0]?.request_status === 'Out of Stock' ||
         isExpired
       }
     >
       <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-        {bookletDetailAllDeals?.request_status === 'Out of Stock'
+        {comboOfferList?.[0]?.request_status === 'Out of Stock'
           ? 'Out Of Stock'
-          : bookletDetailAllDeals?.request_status === 'Pending'
+          : comboOfferList?.[0]?.request_status === 'Pending'
           ? 'REQUEST IN PENDING'
           : isExpired
           ? 'EXPIRED'
@@ -416,8 +416,8 @@ const styles = StyleSheet.create({
     // paddingBottom: vs(80),
   },
   listContainerStyle: {
-    // gap: ms(26),
-    // paddingBottom: vs(100),
+    gap: ms(26),
+    paddingBottom: vs(100),
     // paddingBottom: vs(80),
     // marginTop: vs(22),
     // marginHorizontal: 16,

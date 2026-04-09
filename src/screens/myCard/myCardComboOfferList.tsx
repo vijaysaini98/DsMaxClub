@@ -125,8 +125,9 @@ const MyCardComboOfferList = ({ route }: any) => {
           validityMonths={item?.validity_months}
           location={item?.locations}
           showDateSection={true}
-          cardDisabled={item?.tab_status === 'Expired'}
+          cardDisabled={item?.tab_status === 'Expired'||item?.tab_status === 'Coming Soon'}
           // mobile={item?.mobile}
+          
           
         />
       </View>

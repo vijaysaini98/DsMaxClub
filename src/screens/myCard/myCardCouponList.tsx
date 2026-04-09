@@ -109,8 +109,9 @@ const MyCardCouponList = ({ route }) => {
         usedCoupon={item?.used_copies}
         shortDesc={item?.short_description}
         // hideViewButton={item?.booklet_type === "Combo"}
-        showLocationText={true}
+        // showLocationText={true}
         showFreeDotUI={true}
+        showCouponLocationIcon={true}
       />
       // <View>
       //   <AppText>bcbvc</AppText>

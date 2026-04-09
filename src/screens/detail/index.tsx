@@ -96,6 +96,7 @@ const Details = ({ route }: any) => {
     state => state.home,
   );
 
+  console.log( bookletDetailAllDeals?.request_status ,'bookletDetailAllDeals?.request_status=================>>>>>>>>>>>>>>');
   // console.log(
   //   bookletDetailAllDeals,
   //   'bookletDetailAllDeals=================>>>>>>>>>>>>>>',
@@ -178,8 +179,8 @@ const Details = ({ route }: any) => {
     if (!data?.uuid) return;
 
     let value = {
-      booklet_id: "afe43851-3170-11f1-b469-bc24113813ed",
-      tabname: 'About',
+      booklet_id: data?.booklet_uuid,
+      tabname: '',
       vendor_id: String(data?.id),
     };
 
@@ -365,13 +366,13 @@ const Details = ({ route }: any) => {
   // const locationList = isCombo
   //   ? data?.locations
   //   : data?.location;
-  const locationList = isCombo
-    ? data?.locations || []
-    : Array.isArray(data?.location)
-    ? data?.location
-    : data?.location
-    ? [data.location] // convert object → array
-    : [];
+const locationList = isCombo
+  ? (Array.isArray(data?.location) ? data.location : [])
+  : Array.isArray(data?.location)
+  ? data.location
+  : data?.location
+  ? [data.location]
+  : [];
   const galleryImages = data?.gallery
     ? data.gallery.split(',').map(img => IMGE_URL + img.trim())
     : [];
@@ -488,7 +489,7 @@ const Details = ({ route }: any) => {
           </AppText>
         </Animated.View>
 
-        <AppText
+        {/* <AppText
           type={SIXTEEN}
           color={PLACEHOLDER}
           weight={BOLD}
@@ -499,7 +500,29 @@ const Details = ({ route }: any) => {
             : data?.client?.short_desc
             ? data?.client?.short_desc
             : data?.client_short_desc}
-        </AppText>
+        </AppText> */}
+        <TouchableOpacityView
+  onPress={() =>
+    openPhoneDialer(
+      bookletDetailAllDeals?.booklet_type === 'Combo'
+        ? data?.short_desc
+        : data?.clients?.[0]?.short_desc || data?.clients?.[0]?.short_desc
+    )
+  }
+>
+  <AppText
+    type={SIXTEEN}
+    color={PLACEHOLDER}
+    weight={BOLD}
+    style={styles.disTextStyle}
+  >
+    {bookletDetailAllDeals?.booklet_type === 'Combo'
+      ? data?.short_desc
+      : data?.clients?.[0]?.short_desc
+      ? data?.clients?.[0]?.short_desc
+      : data?.clients?.[0]?.short_desc}
+  </AppText>
+</TouchableOpacityView>
         {/* {data?.client?.mobile && (
             <TouchableOpacityView
             onPress={()=>openPhoneDialer(data?.client?.mobile)}
@@ -514,7 +537,7 @@ const Details = ({ route }: any) => {
             </TouchableOpacityView>
           )} */}
 
-        {mobileNumber && (
+        {/* {mobileNumber && (
           <TouchableOpacityView
             onPress={() => openPhoneDialer(mobileNumber)}
             style={{
@@ -538,7 +561,7 @@ const Details = ({ route }: any) => {
               {mobileNumber}
             </AppText>
           </TouchableOpacityView>
-        )}
+        )} */}
 
         {/* <AppText
           type={THIRTEEN}
@@ -702,8 +725,9 @@ const Details = ({ route }: any) => {
                 loader={isBtnLoading}
                 disabled={
                   bookletDetailAllDeals?.request_status === 'Pending' ||
-                  bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-                  !bookletDetailAllDeals?.request_status ||
+                  // bookletDetailAllDeals?.request_status === 'Rejected' ||
+                   bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+                  // !bookletDetailAllDeals?.request_status ||
                   isExpired
                 }
               >
@@ -714,9 +738,12 @@ const Details = ({ route }: any) => {
                     ? 'REQUEST IN PENDING'
                     : isExpired
                     ? 'EXPIRED'
-                    : !bookletDetailAllDeals?.request_status
-                    ? 'not eligible'
+                    // : !bookletDetailAllDeals?.request_status
+                    // ? 'not eligible'
                     : 'REQUEST'}
+                    {/* {
+                      bookletDetailAllDeals?.request_status 
+                    } */}
                 </AppText>
               </TouchableOpacityView>
             )}

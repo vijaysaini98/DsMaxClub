@@ -844,6 +844,7 @@ const Card: React.FC<CardProps> = ({
                     <FastImage
                       source={downArrowIcon}
                       style={styles.arrowIcon}
+                      resizeMode='contain'
                     />
                   </TouchableOpacityView>
                 )}

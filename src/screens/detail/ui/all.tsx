@@ -94,7 +94,8 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
             status={item?.coupon_type_id == 1 ? 'Free' : ''}
             statusBg={item?.coupon_type_id == 1 && colors.buttonBg}
             statusTextColor={item?.coupon_type_id == 1 && WHITE}
-            location={from == 'ComboBooklet' ? item?.locations : null}
+            // location={from == 'ComboBooklet' ? item?.locations : null}
+            location={item?.locations ? item?.locations : null}
             // vendorName={item?.vendor?.name}
             // shortDesc={item?.vendor?.short_desc}
             completeShortDesc={item?.short_desc}

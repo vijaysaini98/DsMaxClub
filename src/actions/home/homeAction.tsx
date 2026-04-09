@@ -138,7 +138,10 @@ console.log(response,'resonse of booklet details');
         } else {
           dispatch(setBookletDetailT_C(response?.data))
         }
-        onSucess(response)
+         if (onSucess) {
+          onSucess(response);
+        }
+        // onSucess(response)
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);

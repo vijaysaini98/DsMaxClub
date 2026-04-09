@@ -44,7 +44,7 @@ const CategoriesList = ({ route }:any) => {
     const renderItem = ({ item, index }: any) => {
         return (
             <View style={styles.shadowContainer}>
-                <Card item={item} index={index}
+                {/* <Card item={item} index={index}
                     cardContainerStyle={{ width: "100%" }}
                     isCompleteLocation={true}
                     handleCardOnPress={() => { }}
@@ -61,7 +61,43 @@ const CategoriesList = ({ route }:any) => {
                             NavigationService.navigate(DETAILS_SCREEN, { data: item, from: "Booklet" })
                         }
                     }}
-                />
+                    // location={item?.locations}
+                    showArrow={true}
+                /> */}
+                <Card
+  item={item}
+  index={index}
+  cardContainerStyle={{ width: "100%" }}
+  isCompleteLocation={true}
+  imageStyle={styles.imageStyle}
+  imageUrl={
+    item?.booklet
+      ? { uri: bookletList?.baseurl + item?.booklet }
+      : defaultBookletImage
+  }
+  name={item?.name}
+  price={item.price}
+
+  // ✅ FIX
+  address={item?.location?.length > 0 ? item?.location[0]?.location : "---"}
+  location={item?.location}   // ⭐ THIS WAS MISSING
+
+  showArrow={true}
+
+  handleCardOnPress={() => {
+    if (item?.booklet_type == 2) {
+      NavigationService.navigate(DETAILS_SCREEN, {
+        data: item,
+        from: "ComboBooklet",
+      });
+    } else {
+      NavigationService.navigate(DETAILS_SCREEN, {
+        data: item,
+        from: "Booklet",
+      });
+    }
+  }}
+/>
             </View>
         )
     }
