@@ -722,7 +722,8 @@ const Card: React.FC<CardProps> = ({
         style={[
           styles.cardInner,
           cardContainerStyle,
-          cardDisabled && type === 'booklet' && { opacity: 0.6 }, // 👈 faded UI
+          // cardDisabled && type === 'booklet' && { opacity: 0.6 }, // 👈 faded UI
+          cardDisabled && (type === 'booklet' || type === 'combo') && { opacity: 0.7 }
         ]}
       >
         {/* IMAGE */}
