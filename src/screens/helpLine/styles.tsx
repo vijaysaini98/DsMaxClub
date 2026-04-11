@@ -29,7 +29,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: ms(12),
-    backgroundColor: colors.placeholder2,
+    // backgroundColor: colors.placeholder2,
+    backgroundColor: colors.buttonBg,
+
   },
   iconImage: {
     width: s(24),
