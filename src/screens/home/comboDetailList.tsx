@@ -236,7 +236,7 @@ const ComboDetailList = ({ route }: any) => {
           //   }
           imageUrl={getVendorImage(item)}
           price={item.price}
-          address={item?.locations?.[0]?.location ?? '---'}
+          address={item?.locations?.[0]?.location || null}
           status={item?.tab_status}
           shortDesc={item?.short_desc}
           handleCardOnPress={() => onHandlePress(item, index)}

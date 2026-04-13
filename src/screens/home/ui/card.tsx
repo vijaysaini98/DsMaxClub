@@ -824,7 +824,10 @@ const Card: React.FC<CardProps> = ({
                 )}
 
               {/* ✅ ALWAYS SHOW LOCATION */}
-              <TouchableOpacityView style={styles.locationContainer} onPress={openMap}>
+              {
+                address &&
+                
+                <TouchableOpacityView style={styles.locationContainer} onPress={openMap}>
                 <FastImage
                   source={nearByIcon}
                   style={styles.locationIconStyle}
@@ -849,7 +852,7 @@ const Card: React.FC<CardProps> = ({
                     />
                   </TouchableOpacityView>
                 )}
-              </TouchableOpacityView>
+              </TouchableOpacityView>}
             </>
           ) : (
             <>
