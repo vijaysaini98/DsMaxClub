@@ -24,6 +24,7 @@ const ContactTabButton: React.FC<ContactTabButtonProps> = ({ handleOnPress, icon
         source={icon}
         style={[styles.iconImage]}
         tintColor={colors.white}
+        resizeMode='contain'
       />
     </View>
     <AppText type={SIXTEEN} color={BLACK} weight={BOLD} style={styles.tabTitle}>{title}</AppText>
@@ -46,15 +47,17 @@ const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] = React.useState
           <ContactTabButton
             icon={helpLineIcon}
             title="Call US"
-            text={"We’re here to help you +919785053501 or +919780973501"}
-            textColor={BUTTON_TEXT}
+            // text={"We’re here to help you +919785053501 or +919780973501"}
+            text={"+919785053501  +919780973501"}
+            // textColor={BUTTON_TEXT}
             // handleOnPress={() => openPhoneDialer("+91-9785053501")}
             handleOnPress={()=> setIsPhoneDialerModalVisible(true)}
           />
           <ContactTabButton
             icon={emailIcon2}
             title="Email us"
-            text="Our team is online dsmaxclub@gmail.com"
+            // text="Our team is online dsmaxclub@gmail.com"
+            text="dsmaxclub@gmail.com"
             handleOnPress={() => openEmail("dsmaxclub@gmail.com")}
           />
         </View>

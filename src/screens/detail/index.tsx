@@ -386,6 +386,24 @@ const locationList = isCombo
       ? { uri: IMGE_URL + data?.booklet }
       : defaultBookletImage;
 
+const status = bookletDetailAllDeals?.request_status;
+
+let buttonText = 'REQUEST';
+let isDisabled = false;
+
+// ❌ Disabled cases
+if (status === 'Out of Stock') {
+  buttonText = 'Out Of Stock';
+  isDisabled = true;
+} else if (status === 'Pending') {
+  buttonText = 'REQUEST IN PENDING';
+  isDisabled = true;
+} else if (!status && isExpired) {
+  buttonText = 'EXPIRED';
+  isDisabled = true;
+}
+
+
   return (
     <View style={styles.mainContainer}>
       <StatusBar
@@ -714,38 +732,48 @@ const locationList = isCombo
             } */}
 
             {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
-              <TouchableOpacityView
-                onPress={handleOnPress}
-                style={styles.buyBtnStyle(
-                  bookletDetailAllDeals?.request_status === 'Pending' ||
-                    bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-                    !bookletDetailAllDeals?.request_status ||
-                    isExpired,
-                )}
-                loader={isBtnLoading}
-                disabled={
-                  bookletDetailAllDeals?.request_status === 'Pending' ||
-                  // bookletDetailAllDeals?.request_status === 'Rejected' ||
-                   bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-                  // !bookletDetailAllDeals?.request_status ||
-                  isExpired
-                }
-              >
-                <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-                  {bookletDetailAllDeals?.request_status === 'Out of Stock'
-                    ? 'Out Of Stock'
-                    : bookletDetailAllDeals?.request_status === 'Pending'
-                    ? 'REQUEST IN PENDING'
-                    : isExpired
-                    ? 'EXPIRED'
-                    // : !bookletDetailAllDeals?.request_status
-                    // ? 'not eligible'
-                    : 'REQUEST'}
-                    {/* {
-                      bookletDetailAllDeals?.request_status 
-                    } */}
-                </AppText>
-              </TouchableOpacityView>
+//               <TouchableOpacityView
+//                 onPress={handleOnPress}
+//                 style={styles.buyBtnStyle(
+//                   bookletDetailAllDeals?.request_status === 'Pending' ||
+//                     bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+//                     !bookletDetailAllDeals?.request_status ||
+//                     isExpired,
+//                 )}
+//                 loader={isBtnLoading}
+//                 disabled={
+//                   bookletDetailAllDeals?.request_status === 'Pending' ||
+//                   // bookletDetailAllDeals?.request_status === 'Rejected' ||
+//                    bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+//                   // !bookletDetailAllDeals?.request_status ||
+//                   isExpired
+//                 }
+//               >
+//              <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+//   {bookletDetailAllDeals?.request_status === 'Out of Stock'
+//     ? 'Out Of Stock'
+//     : bookletDetailAllDeals?.request_status === 'Pending'
+//     ? 'REQUEST IN PENDING'
+//     : bookletDetailAllDeals?.request_status === null ||
+//       bookletDetailAllDeals?.request_status === undefined ||
+//       bookletDetailAllDeals?.request_status === ''
+//     ? 'REQUEST'
+//     : 'REQUEST'}
+// </AppText>
+//               </TouchableOpacityView>
+
+
+
+<TouchableOpacityView
+  onPress={handleOnPress}
+  style={styles.buyBtnStyle(isDisabled)}
+  loader={isBtnLoading}
+  disabled={isDisabled}
+>
+  <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+    {buttonText}
+  </AppText>
+</TouchableOpacityView>
             )}
           </>
         )}

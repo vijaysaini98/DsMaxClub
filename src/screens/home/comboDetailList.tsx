@@ -63,10 +63,13 @@ const ComboDetailList = ({ route }: any) => {
   const [acceptContent, setAcceptContent] = useState(false);
 
   const { bookletDetailAllDeals } = useAppSelector(state => state?.home);
-    console.log(bookletDetailAllDeals?.request_status, 'bookletDetailAllDeals?.request_status');
+  console.log(
+    bookletDetailAllDeals?.request_status,
+    'bookletDetailAllDeals?.request_status',
+  );
   const [refreshing, setRefreshing] = useState(false);
   const { data, from } = route?.params ?? '';
-    console.log(data, 'data in combo detail list===>');
+  console.log(data, 'data in combo detail list===>');
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const executiveBottomSheetRef = useRef<BottomSheet>(null);
@@ -87,15 +90,14 @@ const ComboDetailList = ({ route }: any) => {
   }, [isRefresh]);
 
   const onHandlePress = (item: any, index: number) => {
-    console.log(item,'itemmmmmmm-->');
-    
+    console.log(item, 'itemmmmmmm-->');
+
     let value = {
       // booklet_id: data?.uuid,
       booklet_id: data?.uuid,
       tabname: 'All Deals',
       vendor_id: String(item?.id),
     };
-
 
     // switch (index) {
     //   case 0:
@@ -117,12 +119,11 @@ const ComboDetailList = ({ route }: any) => {
     console.log(value, 'value from combo booklet details api call');
 
     dispatch(getComboBookletDetail(value, () => handleComboSuccess(item)));
-    
   };
 
   const handleComboSuccess = (item: any) => {
     console.log(item, 'item on combo success');
-          // dispatch(setBookletDetailAllDeals({}))
+    // dispatch(setBookletDetailAllDeals({}))
 
     NavigationService.navigate(routes.DETAILS_SCREEN, {
       data: item,
@@ -245,20 +246,19 @@ const ComboDetailList = ({ route }: any) => {
           location={item?.locations}
           // showDateSection={true}
           cardDisabled={item?.tab_status === 'Expired'}
-
         />
       </View>
     );
   };
   return (
-    <AppSafeAreaView style={styles.mainContainer}>
-      <ToolBar isLeftIcon title={data?.name} />
+    <View style={styles.mainContainer}>
+      <ToolBar isLeftIcon title={data?.name} mainContainerStyle={{marginTop:30}}/>
+
       <View style={styles.containerStyle}>
+        {/* LIST */}
         <FlatList
           data={comboOfferList}
           renderItem={renderItem}
-          //   extraData={data}
-          //   keyExtractor={(item, index) => item?.user_booklet_uuid ?? index.toString()}
           contentContainerStyle={styles.listContainerStyle}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={() => (
@@ -273,12 +273,9 @@ const ComboDetailList = ({ route }: any) => {
             />
           }
         />
-       <View
-  style={[
-    styles.bottomBtnContainer,
-    { paddingBottom: insets.bottom - vs(15) } // ✅ HERE
-  ]}
->
+
+        {/* FIXED BOTTOM BUTTON */}
+        <View style={styles.bottomBtnContainer}>
           {isLoading ? (
             <View style={{ width: '100%' }}>
               <ShimmerPlaceholder
@@ -288,127 +285,73 @@ const ComboDetailList = ({ route }: any) => {
             </View>
           ) : (
             <>
-              {/* {
-              index == 2 && (
-                <View style={styles.acceptTermsConditionContainer}>
-                  <TouchableOpacityView
-                    onPress={() => setAcceptContent(!acceptContent)}
-                    style={styles.acceptTermsConditionBtn}>
-                    {acceptContent ?
-                      <Image
-                        source={checkIcon}
-                        style={{ height: s(24), width: s(24) }}
-                        resizeMode={"contain"}
-                        tintColor={colors.buttonBg}
-                      />
-                      : <Image
-                        source={unCheckIcon}
-                        style={{ height: s(20), width: s(20) }}
-                        resizeMode={"contain"}
-                        tintColor={colors.buttonBg}
-                      />
-                    }
-                    <AppText type={TWELVE} weight={MEDIUM} >{"Accept the Term&Conditions"}</AppText>
-                  </TouchableOpacityView>
-                </View>
-              )
-            } */}
-
-              {/* <TouchableOpacityView
-                onPress={handleOnPress}
-                style={styles.buyBtnStyle(
-                  bookletDetailAllDeals?.request_status === 'Pending' ||
-                    bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-                    !bookletDetailAllDeals?.request_status ||
-                    isExpired,
-                )}
-                loader={isBtnLoading}
-                disabled={
-                  bookletDetailAllDeals?.request_status === 'Pending' ||
-                  bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-                   !bookletDetailAllDeals?.request_status ||
-                  isExpired
-                }
-              >
-                <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-                      {bookletDetailAllDeals?.request_status === 'Out of Stock'
-                        ? 'Out Of Stock'
-                        : bookletDetailAllDeals?.request_status === 'Pending'
-                        ? 'REQUEST IN PENDING'
-                        : isExpired
-                        ? 'EXPIRED'
-                        :
-                         !bookletDetailAllDeals?.request_status? 'Out of Stock' :
-                        'REQUEST'}
-                    </AppText>
-              </TouchableOpacityView> */}
-              {bookletDetailAllDeals !== null &&
- 
-    <TouchableOpacityView
-      onPress={handleOnPress}
-      style={styles.buyBtnStyle(
-        comboOfferList?.[0]?.request_status === 'Pending' ||
-        comboOfferList?.[0]?.request_status === 'Out of Stock' ||
-        isExpired
-      )}
-      loader={isBtnLoading}
-      disabled={
-        comboOfferList?.[0]?.request_status === 'Pending' ||
-        comboOfferList?.[0]?.request_status === 'Out of Stock' ||
-        isExpired
-      }
-    >
-      <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-        {comboOfferList?.[0]?.request_status === 'Out of Stock'
-          ? 'Out Of Stock'
-          : comboOfferList?.[0]?.request_status === 'Pending'
-          ? 'REQUEST IN PENDING'
-          : isExpired
-          ? 'EXPIRED'
-          : 'REQUEST'}
-      </AppText>
-    </TouchableOpacityView>
-}
+              {bookletDetailAllDeals !== null && (
+                <TouchableOpacityView
+                  onPress={handleOnPress}
+                  style={styles.buyBtnStyle(
+                    comboOfferList?.[0]?.request_status === 'Pending' ||
+                      comboOfferList?.[0]?.request_status === 'Out of Stock' ||
+                      isExpired,
+                  )}
+                  loader={isBtnLoading}
+                  disabled={
+                    comboOfferList?.[0]?.request_status === 'Pending' ||
+                    comboOfferList?.[0]?.request_status === 'Out of Stock' ||
+                    isExpired
+                  }
+                >
+                  <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                    {comboOfferList?.[0]?.request_status === 'Out of Stock'
+                      ? 'Out Of Stock'
+                      : comboOfferList?.[0]?.request_status === 'Pending'
+                      ? 'REQUEST IN PENDING'
+                      : isExpired
+                      ? 'EXPIRED'
+                      : 'REQUEST'}
+                  </AppText>
+                </TouchableOpacityView>
+              )}
             </>
           )}
         </View>
-
-        <RequestBottomSheet
-          bottomSheetRef={bottomSheetRef}
-          snapPoints={snapPoints}
-          onSubmit={_data => handleSubmit(_data)}
-          acceptContent={acceptContent}
-          setAcceptContent={setAcceptContent}
-          onDismiss={() => {
-            Keyboard?.dismiss();
-            bottomSheetRef.current?.close();
-          }}
-        />
-        <ExecutiveRequestBottomSheet
-          bottomSheetRef={executiveBottomSheetRef}
-          snapPoints={executiveSnapPoints}
-          onSubmit={_data => handleExecutiveSubmit(_data)}
-          setAcceptContent={setAcceptContent}
-          acceptContent={acceptContent}
-          handleDismiss={() => {
-            Keyboard?.dismiss();
-            executiveBottomSheetRef.current?.close();
-          }}
-        />
       </View>
-    </AppSafeAreaView>
+
+      {/* BOTTOM SHEETS */}
+      <RequestBottomSheet
+        bottomSheetRef={bottomSheetRef}
+        snapPoints={snapPoints}
+        onSubmit={_data => handleSubmit(_data)}
+        acceptContent={acceptContent}
+        setAcceptContent={setAcceptContent}
+        onDismiss={() => {
+          Keyboard.dismiss();
+          bottomSheetRef.current?.close();
+        }}
+      />
+
+      <ExecutiveRequestBottomSheet
+        bottomSheetRef={executiveBottomSheetRef}
+        snapPoints={executiveSnapPoints}
+        onSubmit={_data => handleExecutiveSubmit(_data)}
+        setAcceptContent={setAcceptContent}
+        acceptContent={acceptContent}
+        handleDismiss={() => {
+          Keyboard.dismiss();
+          executiveBottomSheetRef.current?.close();
+        }}
+      />
+    </View>
   );
 };
 
 export default ComboDetailList;
 
-
-
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     paddingHorizontal: s(16),
-     backgroundColor: colors.white,
+    backgroundColor: colors.white,
+
   },
   containerStyle: {
     flex: 1,
@@ -417,7 +360,7 @@ const styles = StyleSheet.create({
   },
   listContainerStyle: {
     gap: ms(26),
-    paddingBottom: vs(100),
+    paddingBottom: vs(120),
     // paddingBottom: vs(80),
     // marginTop: vs(22),
     // marginHorizontal: 16,
@@ -461,5 +404,4 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
     // paddingTop: vs(20),
   },
-
 });
