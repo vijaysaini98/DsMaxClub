@@ -1,10 +1,10 @@
-import { Keyboard, StyleSheet } from 'react-native';
+import { Keyboard, StyleSheet, View } from 'react-native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AppText, FOURTEEN, SEMI_BOLD, SIXTEEN, WHITE } from '@components/AppText';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import { getVendorBookletCouponList } from '@actions/deals/dealAction';
-import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetTextInput, BottomSheetView } from '@gorhom/bottom-sheet';
 import Input from '@components/Input';
 import KeyBoardAware from '@components/KeyBoardAware';
 import { colors } from '@theme/colors';
@@ -12,7 +12,7 @@ import { ms, s, vs } from 'react-native-size-matters';
 import DropdownComponent from '@components/DropDown';
 
 
-const BarCodeBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss }) => {
+const BarCodeBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss }:any) => {
     const dispatch = useAppDispatch()
     const { vendorDealBookletList, vendorBookletCouponList, isLoading } = useAppSelector((state) => state?.deal)
 
@@ -82,7 +82,8 @@ const BarCodeBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss })
                     })
                 }
             }}
-
+keyboardBehavior="fillParent"
+//   keyboardBlurBehavior="restore"
         >
             <BottomSheetView style={bottomSheetStyles.contentContainer}>
 
@@ -142,7 +143,7 @@ const BarCodeBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss })
                                 : [{ label: "No Coupon Available", value: "" }]
                         }
                     /> */}
-                    <Input
+                    {/* <Input
                         label='Coupon Code'
                         required
                         placeholder="Enter Coupon Code"
@@ -152,7 +153,30 @@ const BarCodeBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss })
                         inputContainerStyle={bottomSheetStyles.inputContainer}
                         inputStyle={{ fontSize: ms(14) }}
 
-                    />
+                    /> */}
+                    <View style={{ width: '100%' }}>
+  <AppText type={FOURTEEN} weight={SEMI_BOLD}>
+    Coupon Code
+  </AppText>
+
+  <BottomSheetTextInput
+    placeholder="Enter Coupon Code"
+    value={state?.couponCode}
+    onChangeText={(text) =>
+      setState({ ...state, couponCode: text })
+    }
+    style={{
+      borderWidth: 1,
+      borderColor: colors.borderColor,
+      borderRadius: ms(12),
+      height: vs(50),
+      paddingHorizontal: ms(12),
+      marginTop: vs(6),
+      fontSize: ms(14),
+      color: colors.black,
+    }}
+  />
+</View>
                     <TouchableOpacityView
                         onPress={handleSubmit}
                         style={bottomSheetStyles.submitBtn}

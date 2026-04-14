@@ -26,7 +26,6 @@ const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
     }, [dispatch]);
 
     const renderItem = ({ item, index }: any) => {
-        console.log(item,'request card item');
         
         return (
             <View 

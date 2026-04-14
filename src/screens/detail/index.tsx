@@ -83,10 +83,14 @@ const routes = [
 ];
 
 const Details = ({ route }: any) => {
-  console.log(route, 'route in details');
 
   const { data, from, noApiCall } = route?.params ?? '';
-  console.log(data, 'data in details screen ======>');
+  console.log(data,'dataaaaa===>');
+  console.log(data?.client?.short_desc,'data?.client?.short_desc===>');
+  console.log(data?.clients?.[0]?.short_desc,'data?.clients?.[0]?.short_desc===>');
+  
+  
+  
 
   // console.log(data?.gallery, 'data?.gallery');
 
@@ -96,11 +100,8 @@ const Details = ({ route }: any) => {
     state => state.home,
   );
 
-  console.log( bookletDetailAllDeals?.request_status ,'bookletDetailAllDeals?.request_status=================>>>>>>>>>>>>>>');
-  // console.log(
-  //   bookletDetailAllDeals,
-  //   'bookletDetailAllDeals=================>>>>>>>>>>>>>>',
-  // );
+  console.log(bookletDetailAllDeals, 'bookletDetailAllDeals in details screen==>');
+  
 
   const { userData } = useAppSelector(state => state?.auth);
 
@@ -403,6 +404,13 @@ if (status === 'Out of Stock') {
   isDisabled = true;
 }
 
+ const phoneNumber =
+  bookletDetailAllDeals?.booklet_type === 'Combo'
+    ? data?.short_desc
+    : Array.isArray(data?.client)
+      ? data?.client?.[0]?.short_desc
+      : data?.client?.short_desc;
+
 
   return (
     <View style={styles.mainContainer}>
@@ -519,28 +527,22 @@ if (status === 'Out of Stock') {
             ? data?.client?.short_desc
             : data?.client_short_desc}
         </AppText> */}
-        <TouchableOpacityView
-  onPress={() =>
-    openPhoneDialer(
-      bookletDetailAllDeals?.booklet_type === 'Combo'
-        ? data?.short_desc
-        : data?.clients?.[0]?.short_desc || data?.clients?.[0]?.short_desc
-    )
-  }
->
-  <AppText
-    type={SIXTEEN}
-    color={PLACEHOLDER}
-    weight={BOLD}
-    style={styles.disTextStyle}
+      
+
+{phoneNumber && (
+  <TouchableOpacityView
+    onPress={() => openPhoneDialer(phoneNumber)}
   >
-    {bookletDetailAllDeals?.booklet_type === 'Combo'
-      ? data?.short_desc
-      : data?.clients?.[0]?.short_desc
-      ? data?.clients?.[0]?.short_desc
-      : data?.clients?.[0]?.short_desc}
-  </AppText>
-</TouchableOpacityView>
+    <AppText
+      type={SIXTEEN}
+      color={PLACEHOLDER}
+      weight={BOLD}
+      style={styles.disTextStyle}
+    >
+      {phoneNumber}
+    </AppText>
+  </TouchableOpacityView>
+)}
         {/* {data?.client?.mobile && (
             <TouchableOpacityView
             onPress={()=>openPhoneDialer(data?.client?.mobile)}

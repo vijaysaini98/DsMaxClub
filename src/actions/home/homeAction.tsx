@@ -119,12 +119,10 @@ export const getBookletDetail =
 
 export const getComboBookletDetail =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
-    console.log(data,'data in home action');
     
     try {
       dispatch(setLoading(true));
       const response = await API.homeApi.combo_booklet_detail(data);
-console.log(response,'resonse of booklet details');
 
       if (response?.status == 200) {
         if (data?.tabname == "All Deals") {
@@ -252,7 +250,6 @@ export const getReportList =
         try {
             dispatch(setLoading(true));
             const response = await API.homeApi.myReport_Coupon_List(data);
-            console.log(response,'response===>');
             
             if (response?.status == 200) {
                 dispatch(setMyReportCouponList(response?.data))

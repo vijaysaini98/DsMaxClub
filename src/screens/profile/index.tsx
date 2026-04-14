@@ -68,7 +68,6 @@ const Profile = () => {
     React.useState(false);
   const [logoutVisible, setLogoutVisible] = React.useState(false);
 
-  console.log(userData, 'userData===>');
 
   const handleLogout = () => {
     dispatch(logout(undefined, setLogoutVisible(false)));

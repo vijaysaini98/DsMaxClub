@@ -47,7 +47,6 @@ const Home: React.FC = () => {
   const { userData } = useAppSelector((state) => state?.auth);
   const { categoryListData, categoryBookletData, isLoading, bannerList, comboBookletDeals } =
     useAppSelector((state) => state?.home);
-    console.log(comboBookletDeals,'combobbooklet deals');
     
 
   const [show, setShow] = useState(false);

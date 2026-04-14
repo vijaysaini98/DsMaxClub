@@ -20,7 +20,6 @@ export type FcmHandlers = {
 // ─── Token helpers ────────────────────────────────────────────────────────────
 async function saveToken(token: string) {
   await AsyncStorage.setItem(FCM_TOKEN_KEY, token);
-  console.log('[FCM] Token:', token);
 }
 
 async function fetchAndSaveToken() {

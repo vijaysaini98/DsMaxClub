@@ -214,6 +214,7 @@ const Scan = () => {
           Keyboard?.dismiss();
           bottomSheetRef.current?.close();
         }}
+       
       />
     </AppSafeAreaView>
   );

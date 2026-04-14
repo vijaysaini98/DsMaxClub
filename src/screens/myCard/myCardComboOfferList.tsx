@@ -38,7 +38,6 @@ const MyCardComboOfferList = ({ route }: any) => {
     state => state?.myCard,
   );
 
-  console.log(myCardComboOfferList, 'myCardOffersList==>');
 
   // console.log(myCardComboOfferList,'myCardComboOfferList in my card list dataaaataa===>');
   // console.log(myCardComboOfferList?.[0]?.user_booklet_uuid,'myCardComboOfferList?.user_booklet_uuid===>');
@@ -67,7 +66,6 @@ const MyCardComboOfferList = ({ route }: any) => {
   }, [isRefresh]);
 
   const onHandlePress = (item: any, index: number) => {
-    console.log(item, 'item in on handle press===>');
 
     dispatch(
       getMyCardCouponList(

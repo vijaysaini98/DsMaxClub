@@ -15,87 +15,87 @@ import Requests from "@screens/request";
 
 const Tab = createBottomTabNavigator();
 
-// export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
-//     return (
-//         <View style={[bottomNavigationStyles.container, isHighlight && bottomNavigationStyles.hightLightContainer]}>
-//             {/* TOP INDICATOR */}
-//             {(focused && !isHighlight) && <View style={bottomNavigationStyles.indicator} />}
-
-//             {/* ICON */}
-//             <Image
-//                 source={icon}
-//                 style={[isHighlight ? { height: vs(30), width: s(30), tintColor: colors.white } :
-//                     bottomNavigationStyles.icon(focused),
-//                 ]}
-//                 resizeMode="contain"
-//             />
-
-//             {/* <SvgIcon name="home" size={30} color={colors.transparent} /> */}
-
-//             {/* TEXT */}
-//             {!isHighlight && <AppText
-//                 weight={MEDIUM}
-//                 color={focused ? colors.buttonBg : colors.black}
-//                 type={TWELVE}
-//                 style={bottomNavigationStyles.tabTitleStyle}
-//             >
-//                 {title}
-//             </AppText>}
-//         </View>
-//     );
-// };
-
 export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
-  return (
-    <View
-      style={[
-        bottomNavigationStyles.container,
-        isHighlight && bottomNavigationStyles.hightLightContainer,
-      ]}
-    >
-      {/* TOP INDICATOR */}
-      {focused && !isHighlight && (
-        <View style={bottomNavigationStyles.indicator} />
-      )}
+    return (
+        <View style={[bottomNavigationStyles.container, isHighlight && bottomNavigationStyles.hightLightContainer]}>
+            {/* TOP INDICATOR */}
+            {(focused && !isHighlight) && <View style={bottomNavigationStyles.indicator} />}
 
-      {/* ICON BOX (white when focused) */}
-      <View
-        style={[
-          bottomNavigationStyles.iconWrapper,
-          focused && bottomNavigationStyles.activeIconWrapper,
-        ]}
-      >
-        <Image
-          source={icon}
-          resizeMode="contain"
-          style={[
-            bottomNavigationStyles.icon(focused),
-            {
-                tintColor: focused
-                    ? colors.buttonBg
-                    : colors.white,
-            }
-           
-          ]}
-        />
-      </View>
+            {/* ICON */}
+            <Image
+                source={icon}
+                style={[isHighlight ? { height: vs(30), width: s(30), tintColor: colors.white } :
+                    bottomNavigationStyles.icon(focused),
+                ]}
+                resizeMode="contain"
+            />
 
-      {/* TEXT */}
-      {!isHighlight && (
-        <AppText
-          weight={BOLD}
-          // color={focused ? WHITE : colors.black}
-          color={WHITE}
-          type={TEN}
-          numberOfLines={1}
-          style={bottomNavigationStyles.tabTitleStyle}
-        >
-          {title}
-        </AppText>
-      )}
-    </View>
-  );
+            {/* <SvgIcon name="home" size={30} color={colors.transparent} /> */}
+
+            {/* TEXT */}
+            {!isHighlight && <AppText
+                weight={MEDIUM}
+                color={focused ? colors.buttonBg : colors.black}
+                type={TWELVE}
+                style={bottomNavigationStyles.tabTitleStyle}
+            >
+                {title}
+            </AppText>}
+        </View>
+    );
 };
+
+// export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
+//   return (
+//     <View
+//       style={[
+//         bottomNavigationStyles.container,
+//         isHighlight && bottomNavigationStyles.hightLightContainer,
+//       ]}
+//     >
+//       {/* TOP INDICATOR */}
+//       {focused && !isHighlight && (
+//         <View style={bottomNavigationStyles.indicator} />
+//       )}
+
+//       {/* ICON BOX (white when focused) */}
+//       <View
+//         style={[
+//           bottomNavigationStyles.iconWrapper,
+//           focused && bottomNavigationStyles.activeIconWrapper,
+//         ]}
+//       >
+//         <Image
+//           source={icon}
+//           resizeMode="contain"
+//           style={[
+//             bottomNavigationStyles.icon(focused),
+//             {
+//                 tintColor: focused
+//                     ? colors.buttonBg
+//                     : colors.white,
+//             }
+           
+//           ]}
+//         />
+//       </View>
+
+//       {/* TEXT */}
+//       {!isHighlight && (
+//         <AppText
+//           weight={BOLD}
+//           // color={focused ? WHITE : colors.black}
+//           color={WHITE}
+//           type={TEN}
+//           numberOfLines={1}
+//           style={bottomNavigationStyles.tabTitleStyle}
+//         >
+//           {title}
+//         </AppText>
+//       )}
+//     </View>
+//   );
+// };
 
 
 export default function BottomNavigationExecutive() {
