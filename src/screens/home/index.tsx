@@ -321,7 +321,7 @@ const Home: React.FC = () => {
                 contentContainerStyle={styles.listStyle}
               >
                 {comboBookletDeals?.category?.map((booklet, i) => {
-// console.log(booklet,'booklet=====>');
+console.log(booklet,'booklet=====>');
 
                   return (
                     <View key={booklet?.id || i} style={comboBookletDeals?.category?.length < 2 ? styles.categoryBookletContainer2 :
@@ -347,7 +347,7 @@ const Home: React.FC = () => {
                         }
                         name={booklet?.name}
                         price={booklet?.price}
-                        address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
+                        address={ booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
                         // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
                         // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                       />

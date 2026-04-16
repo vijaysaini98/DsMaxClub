@@ -368,12 +368,14 @@ const Details = ({ route }: any) => {
   //   ? data?.locations
   //   : data?.location;
 const locationList = isCombo
-  ? (Array.isArray(data?.location) ? data.location : [])
+  ? Array.isArray(data?.locations)
+    ? data.locations
+    : []
   : Array.isArray(data?.location)
-  ? data.location
-  : data?.location
-  ? [data.location]
-  : [];
+    ? data.location
+    : data?.location
+      ? [data.location]
+      : [];
   const galleryImages = data?.gallery
     ? data.gallery.split(',').map(img => IMGE_URL + img.trim())
     : [];
@@ -409,7 +411,9 @@ if (status === 'Out of Stock') {
     ? data?.short_desc
     : Array.isArray(data?.client)
       ? data?.client?.[0]?.short_desc
-      : data?.client?.short_desc;
+      : data?.client?.[0]?.short_desc
+      ? data?.clients?.[0]?.short_desc
+      : data?.clients?.[0]?.short_desc
 
 
   return (
@@ -590,15 +594,20 @@ if (status === 'Out of Stock') {
         >
           {`Validity: ${getValidityText()}`}
         </AppText> */}
-        {getValidityText() !== 'N/A' && (
-  <AppText
-    type={THIRTEEN}
-    color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
-    style={styles.disTextStyle}
-  >
-    {`Validity: ${getValidityText()}`}
-  </AppText>
-)}
+      
+   <AppText type={THIRTEEN} color={isExpired ? BUTTON_TEXT : PLACEHOLDER} style={styles.disTextStyle}>
+          {`Validity: ${data?.date_type == 1
+            ? ` ${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - Upto ${data?.validity_months || "N/A"} months `
+            : data?.start_date && data?.end_date
+              ? `${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - ${moment(
+                data.end_date,
+                "YYYY-MM-DD"
+              ).format("D MMM YYYY")} ${isExpired ? "(Expired)" : ""}`
+              : "N/A"
+            }`}
+          
+        </AppText>
+
 
         {/* {data?.maximum_redeem && (
           <AppText

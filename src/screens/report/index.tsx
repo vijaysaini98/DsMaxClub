@@ -315,7 +315,7 @@ const ReportScreen = () => {
         >
           <View style={{ flex: 1 }}>
             <Input
-              placeholder="Search by username, mobile..."
+              placeholder="Search by username..."
               placeholderTextColor={colors.placeholder}
               value={searchText}
               onChangeText={text => setSearchText(text)}

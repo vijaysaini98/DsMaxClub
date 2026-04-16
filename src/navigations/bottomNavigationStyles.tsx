@@ -5,7 +5,8 @@ import { ms, s, vs } from "react-native-size-matters/extend";
 const bottomNavigationStyles = StyleSheet.create({
     tabBarStyle: {
         backgroundColor: colors.tabBg,
-        // height: Platform.OS !== 'ios' ? vs(0) : vs(80),
+        // height: Platform.OS !== 'ios' ? vs(0) : vs(20),
+        height:50,
         borderTopWidth: 0,
         width: "100%",
         // alignItems: 'center',
@@ -14,7 +15,7 @@ const bottomNavigationStyles = StyleSheet.create({
     container: {
         alignItems: 'center',
         alignSelf: 'center',
-        height: Platform.OS == 'ios' ? vs(20) : vs(50),
+        height: Platform.OS == 'ios' ? vs(20) : vs(80),
         paddingTop: vs(10),
         width: s(100),
         gap: ms(4),

@@ -790,6 +790,8 @@ const Card: React.FC<CardProps> = ({
             ) : null}
           </View>
 
+          {}
+
           {/* ================= COMPLETE LOCATION ================= */}
           {isCompleteLocation ? (
             <>
@@ -826,7 +828,40 @@ const Card: React.FC<CardProps> = ({
                 )}
 
               {/* ✅ ALWAYS SHOW LOCATION */}
-              {address && (
+              {/* {address && (
+                <TouchableOpacityView
+                  style={styles.locationContainer}
+                  onPress={openMap}
+                >
+                  <FastImage
+                    source={nearByIcon}
+                    style={styles.locationIconStyle}
+                  />
+                  <AppText
+                    type={TWELVE}
+                    weight={MEDIUM}
+                    style={styles.locationText}
+                    numberOfLines={2}
+                  >
+                    {address}
+                  </AppText>
+
+                  {showArrow && (
+                    <TouchableOpacityView
+                      onPress={() => sheetRef.current?.present()}
+                    >
+                      <FastImage
+                        source={downArrowIcon}
+                        style={styles.arrowIcon}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacityView>
+                  )}
+                </TouchableOpacityView>
+              )}
+               */}
+              {/* ✅ ALWAYS SHOW LOCATION */}
+              {address && item?.booklet_type !== 2 && (
                 <TouchableOpacityView
                   style={styles.locationContainer}
                   onPress={openMap}
@@ -871,21 +906,28 @@ const Card: React.FC<CardProps> = ({
                         </AppText>
                         <AppText type={TWELVE}>
                           {startDate
-                            ? moment(startDate).format('D MMM YYYY')
+                            ? moment(startDate).format('DD MMM YYYY')
                             : null}
                         </AppText>
                       </View>
                     )}
-                    {validityMonths && (
+                    {(item?.validity_months || item?.end_date) && (
                       <View>
                         <AppText type={TWELVE} weight={BOLD}>
                           Expiry Date
                         </AppText>
-                        <AppText type={TWELVE}>
-                          {validityMonths
-                            ? `Upto ${validityMonths} months`
-                            : null}
-                        </AppText>
+                       <AppText type={TWELVE}>
+  {/* {item?.validity_months
+    ? `Upto ${item?.validity_months} Months`
+    : item?.end_date
+      ? moment(item?.end_date).format('DD MMM YYYY')
+      : ''} */}
+
+      {
+        moment(item?.end_date).format('DD MMM YYYY')
+      }
+      
+</AppText>
                       </View>
                     )}
                   </View>
@@ -932,30 +974,26 @@ const Card: React.FC<CardProps> = ({
               {/* ================= REQUEST ================= */}
               {type === 'request' && (
                 <>
-                {
-                  purchaseDate && (
-<View style={{ marginTop: vs(20) }}>
-                    <AppText type={TWELVE} weight={BOLD}>
-                      Requested Date
-                    </AppText>
-                    {/* <AppText type={TWELVE}>
+                  {purchaseDate && (
+                    <View style={{ marginTop: vs(20) }}>
+                      <AppText type={TWELVE} weight={BOLD}>
+                        Requested Date
+                      </AppText>
+                      {/* <AppText type={TWELVE}>
                       {purchaseDate
                         ? moment(purchaseDate).format('DD MMMM YYYY, HH:mm ')
                         : '--'}
                     </AppText> */}
-                    <AppText type={TWELVE}>
-                      {purchaseDate
-                        ? moment(
+                      <AppText type={TWELVE}>
+                        {purchaseDate &&
+                          moment(
                             purchaseDate,
                             'DD MMMM YYYY, HH:mm',
                             true,
-                          ).format('DD MMM YYYY, hh:mm ')
-                        : '--'}
-                    </AppText>
-                  </View>
-                  )
-                }
-                  
+                          ).format('DD MMM YYYY, hh:mm ')}
+                      </AppText>
+                    </View>
+                  )}
 
                   <View style={styles.rowBetween}>
                     <View>
