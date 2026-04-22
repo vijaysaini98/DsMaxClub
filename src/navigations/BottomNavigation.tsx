@@ -52,7 +52,7 @@ export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
                 color={focused ? BUTTON_BG : colors.black}
                 // color={focused ? colors.buttonBg : colors.black}
                 // color={WHITE}
-                type={TWELVE}
+                type={TEN}
                 style={bottomNavigationStyles.tabTitleStyle}
             >
                 {title}

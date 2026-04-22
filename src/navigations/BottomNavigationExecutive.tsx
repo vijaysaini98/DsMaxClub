@@ -36,7 +36,7 @@ export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
             {!isHighlight && <AppText
                 weight={MEDIUM}
                 color={focused ? colors.buttonBg : colors.black}
-                type={TWELVE}
+                type={TEN}
                 style={bottomNavigationStyles.tabTitleStyle}
             >
                 {title}

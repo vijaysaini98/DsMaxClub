@@ -83,14 +83,10 @@ const routes = [
 ];
 
 const Details = ({ route }: any) => {
-
   const { data, from, noApiCall } = route?.params ?? '';
   console.log(data,'dataaaaa===>');
   console.log(data?.client?.short_desc,'data?.client?.short_desc===>');
   console.log(data?.clients?.[0]?.short_desc,'data?.clients?.[0]?.short_desc===>');
-  
-  
-  
 
   // console.log(data?.gallery, 'data?.gallery');
 
@@ -101,7 +97,6 @@ const Details = ({ route }: any) => {
   );
 
   console.log(bookletDetailAllDeals, 'bookletDetailAllDeals in details screen==>');
-  
 
   const { userData } = useAppSelector(state => state?.auth);
 
@@ -144,7 +139,6 @@ const Details = ({ route }: any) => {
     let value = {
       booklet_id: data.uuid,
       tabname: '',
-      
     };
 
     switch (index) {
@@ -174,7 +168,7 @@ const Details = ({ route }: any) => {
 
       dispatch(getBookletDetail(value));
     }
-  }, [index, data?.uuid, from, dispatch,noApiCall]);
+  }, [index, data?.uuid, from, dispatch, noApiCall]);
 
   useEffect(() => {
     if (!data?.uuid) return;
@@ -201,10 +195,15 @@ const Details = ({ route }: any) => {
       default:
         value.tabname = '';
     }
-    if (noApiCall && from === 'ComboBooklet' && value.tabname !== 'All Deals' && value.tabname) {
+    if (
+      noApiCall &&
+      from === 'ComboBooklet' &&
+      value.tabname !== 'All Deals' &&
+      value.tabname
+    ) {
       console.log(value, 'value from combo booklet details api call');
       dispatch(getComboBookletDetail(value));
-      
+
       return;
     }
   }, [index, data?.uuid, from, noApiCall]);
@@ -367,15 +366,15 @@ const Details = ({ route }: any) => {
   // const locationList = isCombo
   //   ? data?.locations
   //   : data?.location;
-const locationList = isCombo
-  ? Array.isArray(data?.locations)
-    ? data.locations
-    : []
-  : Array.isArray(data?.location)
+  const locationList = isCombo
+    ? Array.isArray(data?.locations)
+      ? data.locations
+      : []
+    : Array.isArray(data?.location)
     ? data.location
     : data?.location
-      ? [data.location]
-      : [];
+    ? [data.location]
+    : [];
   const galleryImages = data?.gallery
     ? data.gallery.split(',').map(img => IMGE_URL + img.trim())
     : [];
@@ -389,32 +388,43 @@ const locationList = isCombo
       ? { uri: IMGE_URL + data?.booklet }
       : defaultBookletImage;
 
-const status = bookletDetailAllDeals?.request_status;
+  const status = bookletDetailAllDeals?.request_status;
 
-let buttonText = 'REQUEST';
-let isDisabled = false;
+  let buttonText = 'REQUEST';
+  let isDisabled = false;
 
-// ❌ Disabled cases
-if (status === 'Out of Stock') {
-  buttonText = 'Out Of Stock';
-  isDisabled = true;
-} else if (status === 'Pending') {
-  buttonText = 'REQUEST IN PENDING';
-  isDisabled = true;
-} else if (!status && isExpired) {
-  buttonText = 'EXPIRED';
-  isDisabled = true;
-}
+  // ❌ Disabled cases
+  if (status === 'Out of Stock') {
+    buttonText = 'Out Of Stock';
+    isDisabled = true;
+  } else if (status === 'Pending') {
+    buttonText = 'REQUEST IN PENDING';
+    isDisabled = true;
+  } else if (!status && isExpired) {
+    buttonText = 'EXPIRED';
+    isDisabled = true;
+  }
 
- const phoneNumber =
+const phoneNumber =
   bookletDetailAllDeals?.booklet_type === 'Combo'
     ? data?.short_desc
-    : Array.isArray(data?.client)
-      ? data?.client?.[0]?.short_desc
-      : data?.client?.[0]?.short_desc
-      ? data?.clients?.[0]?.short_desc
-      : data?.clients?.[0]?.short_desc
+    : data?.client?.short_desc ||
+      data?.clients?.[0]?.short_desc;
 
+  const validityText =
+    data?.date_type == 1
+      ? data?.start_date
+        ? `${moment(data.start_date, 'YYYY-MM-DD').format(
+            'D MMM YYYY',
+          )} - Upto ${data?.validity_months || 'N/A'} months`
+        : null
+      : data?.start_date && data?.end_date
+      ? `${moment(data.start_date, 'YYYY-MM-DD').format(
+          'D MMM YYYY',
+        )} - ${moment(data.end_date, 'YYYY-MM-DD').format('D MMM YYYY')} ${
+          isExpired ? '(Expired)' : ''
+        }`
+      : null;
 
   return (
     <View style={styles.mainContainer}>
@@ -531,22 +541,19 @@ if (status === 'Out of Stock') {
             ? data?.client?.short_desc
             : data?.client_short_desc}
         </AppText> */}
-      
 
-{phoneNumber && (
-  <TouchableOpacityView
-    onPress={() => openPhoneDialer(phoneNumber)}
-  >
-    <AppText
-      type={SIXTEEN}
-      color={PLACEHOLDER}
-      weight={BOLD}
-      style={styles.disTextStyle}
-    >
-      {phoneNumber}
-    </AppText>
-  </TouchableOpacityView>
-)}
+        {phoneNumber && (
+          <TouchableOpacityView onPress={() => openPhoneDialer(phoneNumber)}>
+            <AppText
+              type={SIXTEEN}
+              color={PLACEHOLDER}
+              weight={BOLD}
+              style={styles.disTextStyle}
+            >
+              {phoneNumber}
+            </AppText>
+          </TouchableOpacityView>
+        )}
         {/* {data?.client?.mobile && (
             <TouchableOpacityView
             onPress={()=>openPhoneDialer(data?.client?.mobile)}
@@ -587,15 +594,7 @@ if (status === 'Out of Stock') {
           </TouchableOpacityView>
         )} */}
 
-        {/* <AppText
-          type={THIRTEEN}
-          color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
-          style={styles.disTextStyle}
-        >
-          {`Validity: ${getValidityText()}`}
-        </AppText> */}
-      
-   <AppText type={THIRTEEN} color={isExpired ? BUTTON_TEXT : PLACEHOLDER} style={styles.disTextStyle}>
+        {/* <AppText type={THIRTEEN} color={isExpired ? BUTTON_TEXT : PLACEHOLDER} style={styles.disTextStyle}>
           {`Validity: ${data?.date_type == 1
             ? ` ${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - Upto ${data?.validity_months || "N/A"} months `
             : data?.start_date && data?.end_date
@@ -606,8 +605,17 @@ if (status === 'Out of Stock') {
               : "N/A"
             }`}
           
-        </AppText>
+        </AppText> */}
 
+        {validityText && (
+          <AppText
+            type={THIRTEEN}
+            color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
+            style={styles.disTextStyle}
+          >
+            {`Validity: ${validityText}`}
+          </AppText>
+        )}
 
         {/* {data?.maximum_redeem && (
           <AppText
@@ -743,48 +751,46 @@ if (status === 'Out of Stock') {
             } */}
 
             {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
-//               <TouchableOpacityView
-//                 onPress={handleOnPress}
-//                 style={styles.buyBtnStyle(
-//                   bookletDetailAllDeals?.request_status === 'Pending' ||
-//                     bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-//                     !bookletDetailAllDeals?.request_status ||
-//                     isExpired,
-//                 )}
-//                 loader={isBtnLoading}
-//                 disabled={
-//                   bookletDetailAllDeals?.request_status === 'Pending' ||
-//                   // bookletDetailAllDeals?.request_status === 'Rejected' ||
-//                    bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-//                   // !bookletDetailAllDeals?.request_status ||
-//                   isExpired
-//                 }
-//               >
-//              <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-//   {bookletDetailAllDeals?.request_status === 'Out of Stock'
-//     ? 'Out Of Stock'
-//     : bookletDetailAllDeals?.request_status === 'Pending'
-//     ? 'REQUEST IN PENDING'
-//     : bookletDetailAllDeals?.request_status === null ||
-//       bookletDetailAllDeals?.request_status === undefined ||
-//       bookletDetailAllDeals?.request_status === ''
-//     ? 'REQUEST'
-//     : 'REQUEST'}
-// </AppText>
-//               </TouchableOpacityView>
+              //               <TouchableOpacityView
+              //                 onPress={handleOnPress}
+              //                 style={styles.buyBtnStyle(
+              //                   bookletDetailAllDeals?.request_status === 'Pending' ||
+              //                     bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+              //                     !bookletDetailAllDeals?.request_status ||
+              //                     isExpired,
+              //                 )}
+              //                 loader={isBtnLoading}
+              //                 disabled={
+              //                   bookletDetailAllDeals?.request_status === 'Pending' ||
+              //                   // bookletDetailAllDeals?.request_status === 'Rejected' ||
+              //                    bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+              //                   // !bookletDetailAllDeals?.request_status ||
+              //                   isExpired
+              //                 }
+              //               >
+              //              <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+              //   {bookletDetailAllDeals?.request_status === 'Out of Stock'
+              //     ? 'Out Of Stock'
+              //     : bookletDetailAllDeals?.request_status === 'Pending'
+              //     ? 'REQUEST IN PENDING'
+              //     : bookletDetailAllDeals?.request_status === null ||
+              //       bookletDetailAllDeals?.request_status === undefined ||
+              //       bookletDetailAllDeals?.request_status === ''
+              //     ? 'REQUEST'
+              //     : 'REQUEST'}
+              // </AppText>
+              //               </TouchableOpacityView>
 
-
-
-<TouchableOpacityView
-  onPress={handleOnPress}
-  style={styles.buyBtnStyle(isDisabled)}
-  loader={isBtnLoading}
-  disabled={isDisabled}
->
-  <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-    {buttonText}
-  </AppText>
-</TouchableOpacityView>
+              <TouchableOpacityView
+                onPress={handleOnPress}
+                style={styles.buyBtnStyle(isDisabled)}
+                loader={isBtnLoading}
+                disabled={isDisabled}
+              >
+                <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                  {buttonText}
+                </AppText>
+              </TouchableOpacityView>
             )}
           </>
         )}
