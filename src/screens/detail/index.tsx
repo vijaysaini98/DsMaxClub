@@ -84,9 +84,7 @@ const routes = [
 
 const Details = ({ route }: any) => {
   const { data, from, noApiCall } = route?.params ?? '';
-  console.log(data,'dataaaaa===>');
-  console.log(data?.client?.short_desc,'data?.client?.short_desc===>');
-  console.log(data?.clients?.[0]?.short_desc,'data?.clients?.[0]?.short_desc===>');
+
 
   // console.log(data?.gallery, 'data?.gallery');
 
@@ -164,7 +162,6 @@ const Details = ({ route }: any) => {
       console.log(value, 'value from combo booklet details api call');
       dispatch(getComboBookletDetail(value));
     } else {
-      console.log(value, 'value from booklet details');
 
       dispatch(getBookletDetail(value));
     }
@@ -201,7 +198,6 @@ const Details = ({ route }: any) => {
       value.tabname !== 'All Deals' &&
       value.tabname
     ) {
-      console.log(value, 'value from combo booklet details api call');
       dispatch(getComboBookletDetail(value));
 
       return;
@@ -297,7 +293,6 @@ const Details = ({ route }: any) => {
   };
 
   const handleSubmit = (_data: any) => {
-    console.log(_data?.executiveCode, '_data?.executiveCode==>');
 
     Keyboard?.dismiss();
     let apidata = {
@@ -305,6 +300,7 @@ const Details = ({ route }: any) => {
       executive_code: _data?.executiveCode,
       quantity: _data?.bookletQty,
     };
+
 
     if (!acceptContent) {
       // setIndex(2)
@@ -333,34 +329,8 @@ const Details = ({ route }: any) => {
 
   const isExpired = moment(data?.end_date, 'YYYY-MM-DD').isBefore(moment());
 
-  const getValidityText = () => {
-    // if (bookletDetailAllDeals?.booklet_type === 'Combo') {
-    //   return bookletDetailAllDeals?.validity_months
-    //     ? `Upto ${bookletDetailAllDeals.validity_months} month${
-    //         bookletDetailAllDeals.validity_months > 1 ? 's' : ''
-    //       }`
-    //     : 'N/A';
-    // }
-
-    if (data?.date_type === 1) {
-      return data?.validity_months
-        ? `${data.validity_months} month${data.validity_months > 1 ? 's' : ''}`
-        : 'N/A';
-    }
-
-    if (data?.start_date && data?.end_date) {
-      return `${moment(data.start_date).format('D MMM YYYY')} - ${moment(
-        data.end_date,
-      ).format('D MMM YYYY')}${isExpired ? ' (Expired)' : ''}`;
-    }
-
-    return 'N/A';
-  };
-  const mobileNumber =
-    bookletDetailAllDeals?.booklet_type === 'Combo'
-      ? data?.mobile
-      : data?.client?.mobile;
-
+ 
+ 
   const isCombo = bookletDetailAllDeals?.booklet_type === 'Combo';
 
   // const locationList = isCombo
@@ -411,20 +381,71 @@ const phoneNumber =
     : data?.client?.short_desc ||
       data?.clients?.[0]?.short_desc;
 
-  const validityText =
-    data?.date_type == 1
-      ? data?.start_date
-        ? `${moment(data.start_date, 'YYYY-MM-DD').format(
-            'D MMM YYYY',
-          )} - Upto ${data?.validity_months || 'N/A'} months`
-        : null
-      : data?.start_date && data?.end_date
-      ? `${moment(data.start_date, 'YYYY-MM-DD').format(
-          'D MMM YYYY',
-        )} - ${moment(data.end_date, 'YYYY-MM-DD').format('D MMM YYYY')} ${
-          isExpired ? '(Expired)' : ''
-        }`
-      : null;
+  // const validityText =
+  //   data?.date_type == 1
+  //     ? data?.start_date
+  //       ? `${moment(data.start_date, 'YYYY-MM-DD').format(
+  //           'D MMM YYYY',
+  //         )} - Upto ${data?.validity_months || 'N/A'} months`
+  //       : null
+  //     : data?.start_date && data?.end_date
+  //     ? `${moment(data.start_date, 'YYYY-MM-DD').format(
+  //         'D MMM YYYY',
+  //       )} - ${moment(data.end_date, 'YYYY-MM-DD').format('D MMM YYYY')} ${
+  //         isExpired ? '(Expired)' : ''
+  //       }`
+  //     : null;
+  const validityText = useMemo(() => {
+
+    // ✅ SINGLE VENDOR
+    if (bookletDetailAllDeals?.booklet_type === "Single" && bookletDetailAllDeals) {
+      if (bookletDetailAllDeals?.date_type === 1) {
+        return `${moment(bookletDetailAllDeals?.start_date).format(
+          "D MMM YYYY",
+        )} - Upto ${bookletDetailAllDeals?.validity_months || "N/A"} months`;
+      }
+
+      if (
+        bookletDetailAllDeals.date_type === 2 &&
+        bookletDetailAllDeals?.end_date
+      ) {
+        return `${moment(bookletDetailAllDeals?.start_date).format(
+          "D MMM YYYY",
+        )} - ${moment(bookletDetailAllDeals?.end_date).format("D MMM YYYY")}`;
+      }
+
+      return "N/A";
+    }
+// console.log(bookletDetailAllDeals,'dtata in validuty');
+
+    // ✅ COMBO (existing logic)
+    // if (bookletType === "combo" && resolvedData?.date_type === 1) {
+    //   return `Validity:  ${moment(resolvedData?.start_date).format(
+    //     "D MMM YYYY",
+    //   )} - Upto ${resolvedData?.validity_months || "N/A"} months`;
+    // }
+
+
+    if ( bookletDetailAllDeals?.date_type === 1) {
+      const formattedStart = bookletDetailAllDeals?.start_date
+        ? moment(bookletDetailAllDeals.start_date).format("D MMM YYYY")
+        : "N/A";
+
+      return `${formattedStart} - Upto ${
+        bookletDetailAllDeals?.validity_months || "N/A"
+      } months`;
+    }
+
+    if (bookletDetailAllDeals?.date_type === 2) {
+      return `${moment(bookletDetailAllDeals?.start_date).format(
+        "D MMM YYYY",
+      )} - ${moment(bookletDetailAllDeals?.end_date).format("D MMM YYYY")} ${
+        isExpired ? "(Expired)" : ""
+      }`;
+    }
+
+    return "N/A";
+  }, [bookletDetailAllDeals, data, isExpired]);
 
   return (
     <View style={styles.mainContainer}>
@@ -525,7 +546,8 @@ const phoneNumber =
             numberOfLines={2}
             style={{ width: '90%' }}
           >
-            {data?.client?.name ? data?.client?.name : data?.name}
+            {/* {data?.client?.name ? data?.client?.name : data?.name} */}
+            {data?.name}
           </AppText>
         </Animated.View>
 
@@ -613,7 +635,7 @@ const phoneNumber =
             color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
             style={styles.disTextStyle}
           >
-            {`Validity: ${validityText}`}
+            {`Validity:  ${validityText}`}
           </AppText>
         )}
 

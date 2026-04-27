@@ -58,6 +58,9 @@ const ComboDetailList = ({ route }: any) => {
     state => state?.myCard,
   );
 
+  console.log(comboOfferList,'comboOfferList===>');
+  
+
   const { userData } = useAppSelector(state => state?.auth);
   const [acceptContent, setAcceptContent] = useState(false);
 

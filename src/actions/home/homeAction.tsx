@@ -173,7 +173,7 @@ export const bookletRequest =
     } catch (e: any) {
       if (e?.response) {
         console.log("bookletRequest error", e?.response)
-        // Toast.show(e?.response?.data?.message, Toast.LONG);
+        Toast.show(e?.response?.data?.message, Toast.LONG);
       }
 
     } finally {
@@ -265,3 +265,29 @@ export const getReportList =
             dispatch(setLoading(false))
         }
     };
+
+export const getReportPdf =
+  (data?: any, onSuccess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+
+      const response = await API.homeApi.myReport_Coupon_List(data || {});
+
+      const resData = response?.data || response;
+
+      if (resData) {
+        onSuccess && onSuccess(resData);
+      } else {
+        throw new Error('No PDF data');
+      }
+    } catch (e: any) {
+      console.log('PDF API Error =>', e);
+
+      Toast.show(
+        e?.response?.data?.message || 'Something went wrong',
+        Toast.LONG,
+      );
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };

@@ -269,7 +269,8 @@ const Home: React.FC = () => {
                               NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "Booklet" });
                             }}
                             imageUrl={booklet?.booklet ? { uri: categoryBookletData?.baseurl + booklet?.booklet } : defaultBookletImage}
-                            name={booklet?.client?.name ? booklet?.client?.name : booklet?.name}
+                            // name={booklet?.client?.name ? booklet?.client?.name : booklet?.name}
+                            name={booklet?.name}
                             price={booklet.price}
                             address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
                             // shortDesc={booklet?.client?.short_desc}
