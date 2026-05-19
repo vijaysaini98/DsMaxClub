@@ -85,7 +85,6 @@ const routes = [
 const Details = ({ route }: any) => {
   const { data, from, noApiCall } = route?.params ?? '';
 
-
   // console.log(data?.gallery, 'data?.gallery');
 
   const dispatch = useAppDispatch();
@@ -93,8 +92,6 @@ const Details = ({ route }: any) => {
   const { isLoading, isBtnLoading, bookletDetailAllDeals } = useAppSelector(
     state => state.home,
   );
-
-  console.log(bookletDetailAllDeals, 'bookletDetailAllDeals in details screen==>');
 
   const { userData } = useAppSelector(state => state?.auth);
 
@@ -162,7 +159,6 @@ const Details = ({ route }: any) => {
       console.log(value, 'value from combo booklet details api call');
       dispatch(getComboBookletDetail(value));
     } else {
-
       dispatch(getBookletDetail(value));
     }
   }, [index, data?.uuid, from, dispatch, noApiCall]);
@@ -293,14 +289,12 @@ const Details = ({ route }: any) => {
   };
 
   const handleSubmit = (_data: any) => {
-
     Keyboard?.dismiss();
     let apidata = {
       booklet_id: data.uuid,
       executive_code: _data?.executiveCode,
       quantity: _data?.bookletQty,
     };
-
 
     if (!acceptContent) {
       // setIndex(2)
@@ -329,8 +323,6 @@ const Details = ({ route }: any) => {
 
   const isExpired = moment(data?.end_date, 'YYYY-MM-DD').isBefore(moment());
 
- 
- 
   const isCombo = bookletDetailAllDeals?.booklet_type === 'Combo';
 
   // const locationList = isCombo
@@ -375,11 +367,10 @@ const Details = ({ route }: any) => {
     isDisabled = true;
   }
 
-const phoneNumber =
-  bookletDetailAllDeals?.booklet_type === 'Combo'
-    ? data?.short_desc
-    : data?.client?.short_desc ||
-      data?.clients?.[0]?.short_desc;
+  const phoneNumber =
+    bookletDetailAllDeals?.booklet_type === 'Combo'
+      ? data?.short_desc
+      : data?.client?.short_desc || data?.clients?.[0]?.short_desc;
 
   // const validityText =
   //   data?.date_type == 1
@@ -396,13 +387,15 @@ const phoneNumber =
   //       }`
   //     : null;
   const validityText = useMemo(() => {
-
     // ✅ SINGLE VENDOR
-    if (bookletDetailAllDeals?.booklet_type === "Single" && bookletDetailAllDeals) {
+    if (
+      bookletDetailAllDeals?.booklet_type === 'Single' &&
+      bookletDetailAllDeals
+    ) {
       if (bookletDetailAllDeals?.date_type === 1) {
         return `${moment(bookletDetailAllDeals?.start_date).format(
-          "D MMM YYYY",
-        )} - Upto ${bookletDetailAllDeals?.validity_months || "N/A"} months`;
+          'D MMM YYYY',
+        )} - Upto ${bookletDetailAllDeals?.validity_months || 'N/A'} months`;
       }
 
       if (
@@ -410,13 +403,13 @@ const phoneNumber =
         bookletDetailAllDeals?.end_date
       ) {
         return `${moment(bookletDetailAllDeals?.start_date).format(
-          "D MMM YYYY",
-        )} - ${moment(bookletDetailAllDeals?.end_date).format("D MMM YYYY")}`;
+          'D MMM YYYY',
+        )} - ${moment(bookletDetailAllDeals?.end_date).format('D MMM YYYY')}`;
       }
 
-      return "N/A";
+      return 'N/A';
     }
-// console.log(bookletDetailAllDeals,'dtata in validuty');
+    // console.log(bookletDetailAllDeals,'dtata in validuty');
 
     // ✅ COMBO (existing logic)
     // if (bookletType === "combo" && resolvedData?.date_type === 1) {
@@ -425,26 +418,25 @@ const phoneNumber =
     //   )} - Upto ${resolvedData?.validity_months || "N/A"} months`;
     // }
 
-
-    if ( bookletDetailAllDeals?.date_type === 1) {
+    if (bookletDetailAllDeals?.date_type === 1) {
       const formattedStart = bookletDetailAllDeals?.start_date
-        ? moment(bookletDetailAllDeals.start_date).format("D MMM YYYY")
-        : "N/A";
+        ? moment(bookletDetailAllDeals.start_date).format('D MMM YYYY')
+        : 'N/A';
 
       return `${formattedStart} - Upto ${
-        bookletDetailAllDeals?.validity_months || "N/A"
+        bookletDetailAllDeals?.validity_months || 'N/A'
       } months`;
     }
 
     if (bookletDetailAllDeals?.date_type === 2) {
       return `${moment(bookletDetailAllDeals?.start_date).format(
-        "D MMM YYYY",
-      )} - ${moment(bookletDetailAllDeals?.end_date).format("D MMM YYYY")} ${
-        isExpired ? "(Expired)" : ""
+        'D MMM YYYY',
+      )} - ${moment(bookletDetailAllDeals?.end_date).format('D MMM YYYY')} ${
+        isExpired ? '(Expired)' : ''
       }`;
     }
 
-    return "N/A";
+    return 'N/A';
   }, [bookletDetailAllDeals, data, isExpired]);
 
   return (

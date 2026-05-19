@@ -1,12 +1,4 @@
-import {
-  AppText,
-  BOLD,
-  BUTTON_BG,
-  MEDIUM,
-  TEN,
-  TWELVE,
-  WHITE,
-} from '@components/AppText';
+import { AppText, BOLD, BUTTON_BG, TEN } from '@components/AppText';
 import {
   helpLineIcon,
   homeIcon,
@@ -29,36 +21,47 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const Tab = createBottomTabNavigator();
 
 export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
-    return (
-        <View style={[bottomNavigationStyles.container, isHighlight && bottomNavigationStyles.hightLightContainer]}>
-            {/* TOP INDICATOR */}
-            {(focused && !isHighlight) && <View style={bottomNavigationStyles.indicator} />}
+  return (
+    <View
+      style={[
+        bottomNavigationStyles.container,
+        isHighlight && bottomNavigationStyles.hightLightContainer,
+      ]}
+    >
+      {/* TOP INDICATOR */}
+      {focused && !isHighlight && (
+        <View style={bottomNavigationStyles.indicator} />
+      )}
 
-            {/* ICON */}
-            <Image
-                source={icon}
-                style={[isHighlight ? { height: vs(30), width: s(30), tintColor: colors.white } :
-                    bottomNavigationStyles.icon(focused),
-                ]}
-                resizeMode="contain"
-            />
+      {/* ICON */}
+      <Image
+        source={icon}
+        style={[
+          isHighlight
+            ? { height: vs(30), width: s(30), tintColor: colors.white }
+            : bottomNavigationStyles.icon(focused),
+        ]}
+        resizeMode="contain"
+      />
 
-            {/* <SvgIcon name="home" size={30} color={colors.transparent} /> */}
+      {/* <SvgIcon name="home" size={30} color={colors.transparent} /> */}
 
-            {/* TEXT */}
-            {!isHighlight && <AppText
-                weight={BOLD}
-                // color={focused ? colors.white : colors.black}
-                color={focused ? BUTTON_BG : colors.black}
-                // color={focused ? colors.buttonBg : colors.black}
-                // color={WHITE}
-                type={TEN}
-                style={bottomNavigationStyles.tabTitleStyle}
-            >
-                {title}
-            </AppText>}
-        </View>
-    );
+      {/* TEXT */}
+      {!isHighlight && (
+        <AppText
+          weight={BOLD}
+          // color={focused ? colors.white : colors.black}
+          color={focused ? BUTTON_BG : colors.black}
+          // color={focused ? colors.buttonBg : colors.black}
+          // color={WHITE}
+          type={TEN}
+          style={bottomNavigationStyles.tabTitleStyle}
+        >
+          {title}
+        </AppText>
+      )}
+    </View>
+  );
 };
 // export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
 //   return (
@@ -90,7 +93,7 @@ export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
 //                     ? colors.buttonBg
 //                     : colors.white,
 //             }
-           
+
 //           ]}
 //         />
 //       </View>
@@ -125,9 +128,7 @@ export default function BottomNavigation() {
         tabBarHideOnKeyboard: false,
         tabBarAllowFontScaling: false,
         tabBarStyle: bottomNavigationStyles.tabBarStyle,
-        
       }}
-      
     >
       <Tab.Screen
         name="Home"

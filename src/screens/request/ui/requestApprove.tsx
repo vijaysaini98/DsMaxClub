@@ -1,5 +1,5 @@
 import { Image, Keyboard, StyleSheet, View } from 'react-native';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import ToolBar from '@components/ToolBar';
 import { emailIcon, phoneIcon } from '@helper/imagesAssets';

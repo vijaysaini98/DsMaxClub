@@ -94,14 +94,13 @@ const MyCardComboOfferList = ({ route }: any) => {
       }
     }
 
-    if (vendor?.profile_image) {
-      return { uri: IMGE_URL + vendor.profile_image };
-    }
+    // if (vendor?.profile_image) {
+    //   return { uri: IMGE_URL + vendor.profile_image };
+    // }
 
     return defaultBookletImage; // ✅ use imported local image
   };
   const renderItem = ({ item, index }: any) => {
-    console.log(item, 'item in render===>');
 
     return (
       <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>

@@ -3,7 +3,7 @@ import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import { colors } from "@theme/colors";
-import { AppText, EIGHTEEN, SEMI_BOLD, SIXTEEN, WHITE } from "@components/AppText";
+import { AppText, EIGHTEEN, FOURTEEN, SEMI_BOLD, SIXTEEN, TWELVE, WHITE } from "@components/AppText";
 import { ms, s, vs } from "react-native-size-matters/extend";
 
 type HotelBottomSheetProps = {
@@ -89,8 +89,9 @@ const HotelBottomSheet = ({ snapPoints, onClose, onDone, onDismiss, bottomSheetR
         </View>
 
         {/* Children */}
-        <View style={styles.row}>
+        {/* <View style={styles.row}>
           <AppText type={SIXTEEN} weight={SEMI_BOLD} >Children</AppText>
+          
           <Dropdown
             style={styles.dropdown}
             data={dataChildren}
@@ -101,10 +102,34 @@ const HotelBottomSheet = ({ snapPoints, onClose, onDone, onDismiss, bottomSheetR
             onChange={(item) => setState({ ...state, childern: item.value })}
           />
         </View>
+        <AppText type={TWELVE} >(Below 12 years)</AppText> */}
+        <View style={[styles.row, { alignItems: 'flex-start' }]}>
+  <View style={{ flex: 1 }}>
+    <AppText type={SIXTEEN} weight={SEMI_BOLD}>
+      Children
+    </AppText>
+
+    <AppText type={TWELVE}>
+      (Below 12 years)
+    </AppText>
+  </View>
+
+  <Dropdown
+    style={styles.dropdown}
+    data={dataChildren}
+    labelField="label"
+    valueField="value"
+    dropdownPosition="top"
+    value={state.childern}
+    onChange={(item) =>
+      setState({ ...state, childern: item.value })
+    }
+  />
+</View>
 
         {/* Done Button */}
         <TouchableOpacity style={styles.button} onPress={handleDone}>
-          <AppText type={SIXTEEN} weight={SEMI_BOLD} color={WHITE}>DONE</AppText>
+          <AppText type={SIXTEEN} weight={SEMI_BOLD} color={WHITE}>SAVE</AppText>
         </TouchableOpacity>
       </BottomSheetView>
     </BottomSheet>

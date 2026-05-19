@@ -27,6 +27,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.10.0",
     "babel-plugin-dotenv-import": "^3.0.1",
+    "buffer": "^6.0.3",
     "lottie-react-native": "^7.3.4",
     "moment": "^2.30.1",
     "react": "19.1.0",
@@ -52,6 +53,7 @@
     "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "^4.14.0",
+    "react-native-share": "^12.3.1",
     "react-native-shimmer-placeholder": "^2.0.9",
     "react-native-simple-toast": "^3.3.2",
     "react-native-size-matters": "^0.4.2",
@@ -61,7 +63,8 @@
     "react-native-tab-view": "^4.1.2",
     "react-native-vision-camera": "^4.7.0",
     "react-native-webview": "^13.15.0",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

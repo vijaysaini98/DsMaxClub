@@ -92,7 +92,8 @@ export const mapImagge =require('@assets/images/mapImage.png');
 export const emailIcon2 =require('@assets/images/emailIcon2.png')
 export const closeIcon = require('@assets/images/closeIcon.png');
 
-export const defaultBookletImage= require('@assets/images/bookletDefault.png')
+// export const defaultBookletImage= require('@assets/images/bookletDefault.png')
+export const defaultBookletImage= require('@assets/images/default.png')
 
 export const torchOfIcon = require('@assets/images/flashlightOff.png')
 export const torchOnIcon = require('@assets/images/flashlightOn.png')
@@ -118,3 +119,4 @@ export const reportIcon  = require('@assets/images/report.png')
 export const contactIcon  = require('@assets/images/phone.png')
 export const pdfIcon  = require('@assets/images/pdf.png')
 export const resetIcon  = require('@assets/images/undo.png')
+

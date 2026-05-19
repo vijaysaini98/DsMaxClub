@@ -59,7 +59,7 @@ const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
 //   name={`${item?.name} (${item?.unique_code})`}
  name={item?.name}
   uniqueCode={item?.unique_code}
-  price={item.price}
+//   price={item.price}
   address={item?.locations ? item?.locations[0]?.location : "---"}
   handleCardOnPress={() => {
     // NavigationService.navigate(REQUEST_COUPON_LIST_SCREEN, { booklet_id: item?.uuid })

@@ -34,7 +34,6 @@ const MyCardList = ({ value }: any) => {
     isBtnLoading,
   } = useAppSelector(state => state?.myCard);
   const [refreshing, setRefreshing] = useState(false);
-  console.log(myCardAllBookletList, 'myCardAllBookletList');
 
   // const onRefresh = useCallback(() => {
   //   // setRefreshing(true);
@@ -105,6 +104,7 @@ const MyCardList = ({ value }: any) => {
   const renderItem = useCallback(
     ({ item, index }: any) => {
       console.log('booklet itemsssssss===>', item);
+      // booklet_type
 
       return (
         <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
@@ -149,7 +149,7 @@ const MyCardList = ({ value }: any) => {
             }
             // name={`${item?.name} (${item?.booklet_uniquecode})`}
             name={`${item?.name}`}
-            price={item.price}
+            // price={item.price}
             address={item?.locations?.[0]?.location ?? '---'}
             handleCardOnPress={() => {
               if (item?.tab_status === 'expired') {

@@ -109,7 +109,8 @@ export const API = {
     customer_send_otp_verify: (data: any) => apiClient.post(config.CUSTOMER_SEND_OTP_VERIFY, data),
     delete_account: (data: any) => apiClient.post(config.DELETE_ACCOUNT, data),
     getAppVersion:(data?:any) => apiClient.get(config.APP_VERSION),
-
+    maintenance_status: () =>
+      apiClient.get(config.MAINTENANCE_STATUS),
     // refresh_token: (data: any) => apiClient.post(config.REFRESH_TOKEN, data),
   },
 

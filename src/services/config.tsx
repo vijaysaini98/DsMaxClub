@@ -1,5 +1,4 @@
-import { BaseUrlConfig } from "@config/config";
-
+import { BaseUrlConfig } from '@config/config';
 
 export const BASE_URL = BaseUrlConfig?.WEBSITE_URL;
 export const IMGE_URL = BaseUrlConfig?.IMAGE_URL;
@@ -14,7 +13,8 @@ const VERIFY_OTP: string = `${BASE_URL}verify-otp`;
 const REST_PASSWORD: string = `${BASE_URL}reset-password`;
 const CUSTOMER_SEND_OTP_VERIFY: string = `${BASE_URL}send-customer-email-otp`;
 const DELETE_ACCOUNT: string = `${BASE_URL}delete-customer-account`;
-const APP_VERSION : string = `${BASE_URL}get-userapp-version`;
+const APP_VERSION: string = `${BASE_URL}get-userapp-version`;
+const MAINTENANCE_STATUS: string = `${BASE_URL}maintenance/status`;
 
 // userApi
 const USER_PROFILE: string = `${BASE_URL}edit-profile`;
@@ -49,17 +49,16 @@ const VENDOR_COUPON_LIST: string = `${BASE_URL}vendor-coupon-list`;
 const SCAN_COUPON_CODE: string = `${BASE_URL}vendor-coupon-scan`;
 const COUPON_BAR__CODE: string = `${BASE_URL}vendor-coupon-scan-by-code`;
 const VENDOR_USER_LIST: string = `${BASE_URL}vendor-user-list`;
-const VENDOR_BOOKLET_COUPON_LIST: string = `${BASE_URL}vendor-booklet-coupons`
+const VENDOR_BOOKLET_COUPON_LIST: string = `${BASE_URL}vendor-booklet-coupons`;
 const VENDOR_HISTORY_LIST: string = `${BASE_URL}vendor-coupon-history`;
 const MY_REPORT_COUPON_LIST: string = `${BASE_URL}vendor-report-list`;
-
 
 //executive api's
 const EXECUTIVE_BOOKLET_REQUEST: string = `${BASE_URL}executive-request-send`;
 const EXECUTIVE_REQUEST_LIST: string = `${BASE_URL}executive-request-list`;
 const EXECUTIVE_REQUEST_USER_DETAIILS: string = `${BASE_URL}executive-request-userdetail`;
 const EXECUTIVE_REQUEST_STATUS_CHANGE: string = `${BASE_URL}executive-request-status-change`;
-const EXECUTIVE_PAYMENT_IMAGE_UPLOAD: string = `${BASE_URL}update-payment-image`
+const EXECUTIVE_PAYMENT_IMAGE_UPLOAD: string = `${BASE_URL}update-payment-image`;
 
 const config = {
   BASE_URL,
@@ -75,6 +74,7 @@ const config = {
   DELETE_ACCOUNT,
 
   APP_VERSION,
+  MAINTENANCE_STATUS,
 
   USER_PROFILE,
   UPDATE_USER_PROFILE,
@@ -117,8 +117,7 @@ const config = {
   EXECUTIVE_REQUEST_STATUS_CHANGE,
   EXECUTIVE_PAYMENT_IMAGE_UPLOAD,
 
-  MY_REPORT_COUPON_LIST
-
+  MY_REPORT_COUPON_LIST,
 };
 
 export default config;

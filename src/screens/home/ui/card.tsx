@@ -790,8 +790,6 @@ const Card: React.FC<CardProps> = ({
             ) : null}
           </View>
 
-          {}
-
           {/* ================= COMPLETE LOCATION ================= */}
           {isCompleteLocation ? (
             <>
@@ -899,29 +897,23 @@ const Card: React.FC<CardProps> = ({
               {type === 'booklet' && (
                 <>
                   <View style={styles.rowBetween}>
-                    {startDate && (
+                    {startDate && item?.booklet_type === 1 && (
                       <View>
                         <AppText type={TWELVE} weight={BOLD}>
                           Start Date
                         </AppText>
                         <AppText type={TWELVE}>
-                          {startDate
-                            ? moment(startDate).format('DD MMM YYYY')
-                            : null}
+                          {moment(startDate).format('DD MMM YYYY')}
                         </AppText>
                       </View>
                     )}
-                    {(item?.validity_months || item?.end_date) && (
+                    {/* {(item?.validity_months || item?.end_date) && (
                       <View>
                         <AppText type={TWELVE} weight={BOLD}>
                           Expiry Date
                         </AppText>
                        <AppText type={TWELVE}>
-  {/* {item?.validity_months
-    ? `Upto ${item?.validity_months} Months`
-    : item?.end_date
-      ? moment(item?.end_date).format('DD MMM YYYY')
-      : ''} */}
+
 
       {
         moment(item?.end_date).format('DD MMM YYYY')
@@ -929,7 +921,21 @@ const Card: React.FC<CardProps> = ({
       
 </AppText>
                       </View>
-                    )}
+                    )} */}
+                    {item?.booklet_type === 1 &&
+                      (item?.validity_months || item?.end_date) && (
+                        <View>
+                          <AppText type={TWELVE} weight={BOLD}>
+                            Expiry Date
+                          </AppText>
+
+                          <AppText type={TWELVE}>
+                            {item?.validity_months
+                              ? `Upto ${item.validity_months} Months`
+                              : moment(item?.end_date).format('DD MMM YYYY')}
+                          </AppText>
+                        </View>
+                      )}
                   </View>
 
                   <View style={styles.rowBetween}>
