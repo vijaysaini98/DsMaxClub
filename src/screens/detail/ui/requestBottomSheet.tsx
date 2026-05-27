@@ -11,7 +11,7 @@ import { ms, s, vs } from 'react-native-size-matters';
 import styles from '../styles';
 import { checkIcon, unCheckIcon } from '@helper/imagesAssets';
 
-const RequestBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss,acceptContent,setAcceptContent }) => {
+const RequestBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss,acceptContent,setAcceptContent }:any) => {
     const dispatch = useAppDispatch();
     const { isBtnLoading } = useAppSelector((state) => state?.home);
     
@@ -109,6 +109,9 @@ const RequestBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss,ac
                         <AppText type={FOURTEEN} weight={SEMI_BOLD} color={WHITE}>
                             Submit
                         </AppText>
+                        {/* <AppText type={FOURTEEN} weight={SEMI_BOLD} color={WHITE}>
+                            Add to Cart
+                        </AppText> */}
                     </TouchableOpacityView>
                 </KeyBoardAware>
             </BottomSheetView>

@@ -65,12 +65,14 @@ import HowToRedeem from './ui/howToRedeem';
 import ViewDetailsBottomSheet from './ui/viewDetailsBottomSheet';
 import { commonStyles } from '@theme/commonStyles';
 import {
+  CART_SCREEN,
   MY_REQUEST_SCREEN,
   REDEEM_SUCCESSFULL_SCREEN,
   REQUEST_SUCCESSFUL_SCREEN,
 } from '@navigations/routes';
 import { s, vs } from 'react-native-size-matters';
 import { logger } from 'react-native-reanimated/lib/typescript/logger';
+import { addToCartAction } from '@actions/cart/cartActions';
 const initialLayout = { width: width };
 
 // ✅ Make sure route keys match those in renderScene
@@ -303,6 +305,44 @@ const Details = ({ route }: any) => {
       dispatch(bookletRequest(apidata, handleSucess));
     }
   };
+//   const handleSubmit = (_data: any) => {
+//   Keyboard?.dismiss();
+
+//   if (!acceptContent) {
+//     Toast.show(
+//       'Accept the booklet Terms and Condition',
+//       Toast.LONG,
+//     );
+
+//     return;
+//   }
+
+//   // API PAYLOAD
+//   const apiData = {
+//     booklet_id: data?.uuid,
+//     quantity: _data?.bookletQty,
+//   };
+
+//   // LOCAL REDUX DATA
+//   const cartItem = {
+//     uuid: data?.uuid,
+//     booklet_id: data?.uuid,
+//     quantity: _data?.bookletQty,
+//     name: data?.name,
+//     price: data?.price,
+//     booklet: data?.booklet,
+//   };
+
+//   dispatch(
+//     addToCartAction(
+//       apiData,
+//       cartItem,
+//       () => {
+//         NavigationService.navigate(CART_SCREEN);
+//       },
+//     ),
+//   );
+// };
 
   const handleExecutiveSubmit = _data => {
     Keyboard?.dismiss();

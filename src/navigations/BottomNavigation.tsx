@@ -17,6 +17,7 @@ import bottomNavigationStyles from './bottomNavigationStyles';
 import MyCard from '@screens/myCard';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Cart from '@screens/cart';
 
 const Tab = createBottomTabNavigator();
 
@@ -166,6 +167,15 @@ export default function BottomNavigation() {
           ),
         }}
       />
+       {/* <Tab.Screen
+        name={'MyCard'}
+        component={Cart}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} icon={myCardIcon} title="MY BOOKLETS" />
+          ),
+        }}
+      /> */}
       <Tab.Screen
         name="Profile"
         component={Profile}

@@ -60,6 +60,10 @@ const EXECUTIVE_REQUEST_USER_DETAIILS: string = `${BASE_URL}executive-request-us
 const EXECUTIVE_REQUEST_STATUS_CHANGE: string = `${BASE_URL}executive-request-status-change`;
 const EXECUTIVE_PAYMENT_IMAGE_UPLOAD: string = `${BASE_URL}update-payment-image`;
 
+const ADD_CART: string = `${BASE_URL}cart/add`;
+const CART_LIST: string = `${BASE_URL}cart`;
+const UPDATE_CART_QUANTITY: string = `${BASE_URL}cart/update-quantity`;
+const REMOVE_CART: string = `${BASE_URL}cart/remove`;
 const config = {
   BASE_URL,
   LOGIN,
@@ -118,6 +122,11 @@ const config = {
   EXECUTIVE_PAYMENT_IMAGE_UPLOAD,
 
   MY_REPORT_COUPON_LIST,
+
+  ADD_CART,
+  CART_LIST,
+  UPDATE_CART_QUANTITY,
+  REMOVE_CART,
 };
 
 export default config;
