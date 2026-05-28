@@ -65,12 +65,14 @@ import HowToRedeem from './ui/howToRedeem';
 import ViewDetailsBottomSheet from './ui/viewDetailsBottomSheet';
 import { commonStyles } from '@theme/commonStyles';
 import {
+  CART_SCREEN,
   MY_REQUEST_SCREEN,
   REDEEM_SUCCESSFULL_SCREEN,
   REQUEST_SUCCESSFUL_SCREEN,
 } from '@navigations/routes';
 import { s, vs } from 'react-native-size-matters';
 import { logger } from 'react-native-reanimated/lib/typescript/logger';
+import { addToCartAction } from '@actions/cart/cartActions';
 const initialLayout = { width: width };
 
 // ✅ Make sure route keys match those in renderScene
@@ -83,10 +85,7 @@ const routes = [
 ];
 
 const Details = ({ route }: any) => {
-  console.log(route, 'route in details');
-
   const { data, from, noApiCall } = route?.params ?? '';
-  console.log(data, 'data in details screen ======>');
 
   // console.log(data?.gallery, 'data?.gallery');
 
@@ -95,12 +94,6 @@ const Details = ({ route }: any) => {
   const { isLoading, isBtnLoading, bookletDetailAllDeals } = useAppSelector(
     state => state.home,
   );
-
-  console.log( bookletDetailAllDeals?.request_status ,'bookletDetailAllDeals?.request_status=================>>>>>>>>>>>>>>');
-  // console.log(
-  //   bookletDetailAllDeals,
-  //   'bookletDetailAllDeals=================>>>>>>>>>>>>>>',
-  // );
 
   const { userData } = useAppSelector(state => state?.auth);
 
@@ -143,7 +136,6 @@ const Details = ({ route }: any) => {
     let value = {
       booklet_id: data.uuid,
       tabname: '',
-      
     };
 
     switch (index) {
@@ -169,11 +161,9 @@ const Details = ({ route }: any) => {
       console.log(value, 'value from combo booklet details api call');
       dispatch(getComboBookletDetail(value));
     } else {
-      console.log(value, 'value from booklet details');
-
       dispatch(getBookletDetail(value));
     }
-  }, [index, data?.uuid, from, dispatch,noApiCall]);
+  }, [index, data?.uuid, from, dispatch, noApiCall]);
 
   useEffect(() => {
     if (!data?.uuid) return;
@@ -200,10 +190,14 @@ const Details = ({ route }: any) => {
       default:
         value.tabname = '';
     }
-    if (noApiCall && from === 'ComboBooklet' && value.tabname !== 'All Deals' && value.tabname) {
-      console.log(value, 'value from combo booklet details api call');
+    if (
+      noApiCall &&
+      from === 'ComboBooklet' &&
+      value.tabname !== 'All Deals' &&
+      value.tabname
+    ) {
       dispatch(getComboBookletDetail(value));
-      
+
       return;
     }
   }, [index, data?.uuid, from, noApiCall]);
@@ -297,8 +291,6 @@ const Details = ({ route }: any) => {
   };
 
   const handleSubmit = (_data: any) => {
-    console.log(_data?.executiveCode, '_data?.executiveCode==>');
-
     Keyboard?.dismiss();
     let apidata = {
       booklet_id: data.uuid,
@@ -313,6 +305,44 @@ const Details = ({ route }: any) => {
       dispatch(bookletRequest(apidata, handleSucess));
     }
   };
+//   const handleSubmit = (_data: any) => {
+//   Keyboard?.dismiss();
+
+//   if (!acceptContent) {
+//     Toast.show(
+//       'Accept the booklet Terms and Condition',
+//       Toast.LONG,
+//     );
+
+//     return;
+//   }
+
+//   // API PAYLOAD
+//   const apiData = {
+//     booklet_id: data?.uuid,
+//     quantity: _data?.bookletQty,
+//   };
+
+//   // LOCAL REDUX DATA
+//   const cartItem = {
+//     uuid: data?.uuid,
+//     booklet_id: data?.uuid,
+//     quantity: _data?.bookletQty,
+//     name: data?.name,
+//     price: data?.price,
+//     booklet: data?.booklet,
+//   };
+
+//   dispatch(
+//     addToCartAction(
+//       apiData,
+//       cartItem,
+//       () => {
+//         NavigationService.navigate(CART_SCREEN);
+//       },
+//     ),
+//   );
+// };
 
   const handleExecutiveSubmit = _data => {
     Keyboard?.dismiss();
@@ -333,46 +363,20 @@ const Details = ({ route }: any) => {
 
   const isExpired = moment(data?.end_date, 'YYYY-MM-DD').isBefore(moment());
 
-  const getValidityText = () => {
-    // if (bookletDetailAllDeals?.booklet_type === 'Combo') {
-    //   return bookletDetailAllDeals?.validity_months
-    //     ? `Upto ${bookletDetailAllDeals.validity_months} month${
-    //         bookletDetailAllDeals.validity_months > 1 ? 's' : ''
-    //       }`
-    //     : 'N/A';
-    // }
-
-    if (data?.date_type === 1) {
-      return data?.validity_months
-        ? `${data.validity_months} month${data.validity_months > 1 ? 's' : ''}`
-        : 'N/A';
-    }
-
-    if (data?.start_date && data?.end_date) {
-      return `${moment(data.start_date).format('D MMM YYYY')} - ${moment(
-        data.end_date,
-      ).format('D MMM YYYY')}${isExpired ? ' (Expired)' : ''}`;
-    }
-
-    return 'N/A';
-  };
-  const mobileNumber =
-    bookletDetailAllDeals?.booklet_type === 'Combo'
-      ? data?.mobile
-      : data?.client?.mobile;
-
   const isCombo = bookletDetailAllDeals?.booklet_type === 'Combo';
 
   // const locationList = isCombo
   //   ? data?.locations
   //   : data?.location;
-const locationList = isCombo
-  ? (Array.isArray(data?.location) ? data.location : [])
-  : Array.isArray(data?.location)
-  ? data.location
-  : data?.location
-  ? [data.location]
-  : [];
+  const locationList = isCombo
+    ? Array.isArray(data?.locations)
+      ? data.locations
+      : []
+    : Array.isArray(data?.location)
+    ? data.location
+    : data?.location
+    ? [data.location]
+    : [];
   const galleryImages = data?.gallery
     ? data.gallery.split(',').map(img => IMGE_URL + img.trim())
     : [];
@@ -386,23 +390,94 @@ const locationList = isCombo
       ? { uri: IMGE_URL + data?.booklet }
       : defaultBookletImage;
 
-const status = bookletDetailAllDeals?.request_status;
+  const status = bookletDetailAllDeals?.request_status;
 
-let buttonText = 'REQUEST';
-let isDisabled = false;
+  let buttonText = 'REQUEST';
+  let isDisabled = false;
 
-// ❌ Disabled cases
-if (status === 'Out of Stock') {
-  buttonText = 'Out Of Stock';
-  isDisabled = true;
-} else if (status === 'Pending') {
-  buttonText = 'REQUEST IN PENDING';
-  isDisabled = true;
-} else if (!status && isExpired) {
-  buttonText = 'EXPIRED';
-  isDisabled = true;
-}
+  // ❌ Disabled cases
+  if (status === 'Out of Stock') {
+    buttonText = 'Out Of Stock';
+    isDisabled = true;
+  } else if (status === 'Pending') {
+    buttonText = 'REQUEST IN PENDING';
+    isDisabled = true;
+  } else if (!status && isExpired) {
+    buttonText = 'EXPIRED';
+    isDisabled = true;
+  }
 
+  const phoneNumber =
+    bookletDetailAllDeals?.booklet_type === 'Combo'
+      ? data?.short_desc
+      : data?.client?.short_desc || data?.clients?.[0]?.short_desc;
+
+  // const validityText =
+  //   data?.date_type == 1
+  //     ? data?.start_date
+  //       ? `${moment(data.start_date, 'YYYY-MM-DD').format(
+  //           'D MMM YYYY',
+  //         )} - Upto ${data?.validity_months || 'N/A'} months`
+  //       : null
+  //     : data?.start_date && data?.end_date
+  //     ? `${moment(data.start_date, 'YYYY-MM-DD').format(
+  //         'D MMM YYYY',
+  //       )} - ${moment(data.end_date, 'YYYY-MM-DD').format('D MMM YYYY')} ${
+  //         isExpired ? '(Expired)' : ''
+  //       }`
+  //     : null;
+  const validityText = useMemo(() => {
+    // ✅ SINGLE VENDOR
+    if (
+      bookletDetailAllDeals?.booklet_type === 'Single' &&
+      bookletDetailAllDeals
+    ) {
+      if (bookletDetailAllDeals?.date_type === 1) {
+        return `${moment(bookletDetailAllDeals?.start_date).format(
+          'D MMM YYYY',
+        )} - Upto ${bookletDetailAllDeals?.validity_months || 'N/A'} months`;
+      }
+
+      if (
+        bookletDetailAllDeals.date_type === 2 &&
+        bookletDetailAllDeals?.end_date
+      ) {
+        return `${moment(bookletDetailAllDeals?.start_date).format(
+          'D MMM YYYY',
+        )} - ${moment(bookletDetailAllDeals?.end_date).format('D MMM YYYY')}`;
+      }
+
+      return 'N/A';
+    }
+    // console.log(bookletDetailAllDeals,'dtata in validuty');
+
+    // ✅ COMBO (existing logic)
+    // if (bookletType === "combo" && resolvedData?.date_type === 1) {
+    //   return `Validity:  ${moment(resolvedData?.start_date).format(
+    //     "D MMM YYYY",
+    //   )} - Upto ${resolvedData?.validity_months || "N/A"} months`;
+    // }
+
+    if (bookletDetailAllDeals?.date_type === 1) {
+      const formattedStart = bookletDetailAllDeals?.start_date
+        ? moment(bookletDetailAllDeals.start_date).format('D MMM YYYY')
+        : 'N/A';
+
+      return `${formattedStart} - Upto ${
+        bookletDetailAllDeals?.validity_months || 'N/A'
+      } months`;
+    }
+
+    if (bookletDetailAllDeals?.date_type === 2) {
+      return `${moment(bookletDetailAllDeals?.start_date).format(
+        'D MMM YYYY',
+      )} - ${moment(bookletDetailAllDeals?.end_date).format('D MMM YYYY')} ${
+        isExpired ? '(Expired)' : ''
+      }`;
+    }
+
+    return 'N/A';
+  }, [bookletDetailAllDeals, data, isExpired]);
 
   return (
     <View style={styles.mainContainer}>
@@ -503,7 +578,8 @@ if (status === 'Out of Stock') {
             numberOfLines={2}
             style={{ width: '90%' }}
           >
-            {data?.client?.name ? data?.client?.name : data?.name}
+            {/* {data?.client?.name ? data?.client?.name : data?.name} */}
+            {data?.name}
           </AppText>
         </Animated.View>
 
@@ -519,28 +595,19 @@ if (status === 'Out of Stock') {
             ? data?.client?.short_desc
             : data?.client_short_desc}
         </AppText> */}
-        <TouchableOpacityView
-  onPress={() =>
-    openPhoneDialer(
-      bookletDetailAllDeals?.booklet_type === 'Combo'
-        ? data?.short_desc
-        : data?.clients?.[0]?.short_desc || data?.clients?.[0]?.short_desc
-    )
-  }
->
-  <AppText
-    type={SIXTEEN}
-    color={PLACEHOLDER}
-    weight={BOLD}
-    style={styles.disTextStyle}
-  >
-    {bookletDetailAllDeals?.booklet_type === 'Combo'
-      ? data?.short_desc
-      : data?.clients?.[0]?.short_desc
-      ? data?.clients?.[0]?.short_desc
-      : data?.clients?.[0]?.short_desc}
-  </AppText>
-</TouchableOpacityView>
+
+        {phoneNumber && (
+          <TouchableOpacityView onPress={() => openPhoneDialer(phoneNumber)}>
+            <AppText
+              type={SIXTEEN}
+              color={PLACEHOLDER}
+              weight={BOLD}
+              style={styles.disTextStyle}
+            >
+              {phoneNumber}
+            </AppText>
+          </TouchableOpacityView>
+        )}
         {/* {data?.client?.mobile && (
             <TouchableOpacityView
             onPress={()=>openPhoneDialer(data?.client?.mobile)}
@@ -581,22 +648,28 @@ if (status === 'Out of Stock') {
           </TouchableOpacityView>
         )} */}
 
-        {/* <AppText
-          type={THIRTEEN}
-          color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
-          style={styles.disTextStyle}
-        >
-          {`Validity: ${getValidityText()}`}
+        {/* <AppText type={THIRTEEN} color={isExpired ? BUTTON_TEXT : PLACEHOLDER} style={styles.disTextStyle}>
+          {`Validity: ${data?.date_type == 1
+            ? ` ${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - Upto ${data?.validity_months || "N/A"} months `
+            : data?.start_date && data?.end_date
+              ? `${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - ${moment(
+                data.end_date,
+                "YYYY-MM-DD"
+              ).format("D MMM YYYY")} ${isExpired ? "(Expired)" : ""}`
+              : "N/A"
+            }`}
+          
         </AppText> */}
-        {getValidityText() !== 'N/A' && (
-  <AppText
-    type={THIRTEEN}
-    color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
-    style={styles.disTextStyle}
-  >
-    {`Validity: ${getValidityText()}`}
-  </AppText>
-)}
+
+        {validityText && (
+          <AppText
+            type={THIRTEEN}
+            color={isExpired ? BUTTON_TEXT : PLACEHOLDER}
+            style={styles.disTextStyle}
+          >
+            {`Validity:  ${validityText}`}
+          </AppText>
+        )}
 
         {/* {data?.maximum_redeem && (
           <AppText
@@ -732,48 +805,46 @@ if (status === 'Out of Stock') {
             } */}
 
             {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
-//               <TouchableOpacityView
-//                 onPress={handleOnPress}
-//                 style={styles.buyBtnStyle(
-//                   bookletDetailAllDeals?.request_status === 'Pending' ||
-//                     bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-//                     !bookletDetailAllDeals?.request_status ||
-//                     isExpired,
-//                 )}
-//                 loader={isBtnLoading}
-//                 disabled={
-//                   bookletDetailAllDeals?.request_status === 'Pending' ||
-//                   // bookletDetailAllDeals?.request_status === 'Rejected' ||
-//                    bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-//                   // !bookletDetailAllDeals?.request_status ||
-//                   isExpired
-//                 }
-//               >
-//              <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-//   {bookletDetailAllDeals?.request_status === 'Out of Stock'
-//     ? 'Out Of Stock'
-//     : bookletDetailAllDeals?.request_status === 'Pending'
-//     ? 'REQUEST IN PENDING'
-//     : bookletDetailAllDeals?.request_status === null ||
-//       bookletDetailAllDeals?.request_status === undefined ||
-//       bookletDetailAllDeals?.request_status === ''
-//     ? 'REQUEST'
-//     : 'REQUEST'}
-// </AppText>
-//               </TouchableOpacityView>
+              //               <TouchableOpacityView
+              //                 onPress={handleOnPress}
+              //                 style={styles.buyBtnStyle(
+              //                   bookletDetailAllDeals?.request_status === 'Pending' ||
+              //                     bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+              //                     !bookletDetailAllDeals?.request_status ||
+              //                     isExpired,
+              //                 )}
+              //                 loader={isBtnLoading}
+              //                 disabled={
+              //                   bookletDetailAllDeals?.request_status === 'Pending' ||
+              //                   // bookletDetailAllDeals?.request_status === 'Rejected' ||
+              //                    bookletDetailAllDeals?.request_status === 'Out of Stock' ||
+              //                   // !bookletDetailAllDeals?.request_status ||
+              //                   isExpired
+              //                 }
+              //               >
+              //              <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+              //   {bookletDetailAllDeals?.request_status === 'Out of Stock'
+              //     ? 'Out Of Stock'
+              //     : bookletDetailAllDeals?.request_status === 'Pending'
+              //     ? 'REQUEST IN PENDING'
+              //     : bookletDetailAllDeals?.request_status === null ||
+              //       bookletDetailAllDeals?.request_status === undefined ||
+              //       bookletDetailAllDeals?.request_status === ''
+              //     ? 'REQUEST'
+              //     : 'REQUEST'}
+              // </AppText>
+              //               </TouchableOpacityView>
 
-
-
-<TouchableOpacityView
-  onPress={handleOnPress}
-  style={styles.buyBtnStyle(isDisabled)}
-  loader={isBtnLoading}
-  disabled={isDisabled}
->
-  <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-    {buttonText}
-  </AppText>
-</TouchableOpacityView>
+              <TouchableOpacityView
+                onPress={handleOnPress}
+                style={styles.buyBtnStyle(isDisabled)}
+                loader={isBtnLoading}
+                disabled={isDisabled}
+              >
+                <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                  {buttonText}
+                </AppText>
+              </TouchableOpacityView>
             )}
           </>
         )}

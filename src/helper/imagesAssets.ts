@@ -9,22 +9,22 @@ export const emailIcon = require('@assets/images/emailIcon.png');
 export const authBg = require('@assets/images/authBg.png');
 export const userIcon = require('@assets/images/userIcon.png');
 export const phoneIcon = require('@assets/images/phoneIcon.png');
-// export const homeIcon = require('@assets/images/homeIcon.png');
-export const homeIcon = require('@assets/images/home.png');
-// export const helpLineIcon = require('@assets/images/helpLineIcon.png');
-export const helpLineIcon = require('@assets/images/helpline.png');
+export const homeIcon = require('@assets/images/homeIcon.png');
+// export const homeIcon = require('@assets/images/home.png');
+export const helpLineIcon = require('@assets/images/helpLineIcon.png');
+// export const helpLineIcon = require('@assets/images/helpline.png');
 export const nearByIcon = require('@assets/images/nearByIcon.png');
-// export const proflieIcon = require('@assets/images/profileIcon.png');
-export const proflieIcon = require('@assets/images/profile.png');
+export const proflieIcon = require('@assets/images/profileIcon.png');
+// export const proflieIcon = require('@assets/images/profile.png');
 export const locationIcon = require('@assets/images/locationIcon.png');
 export const downArrowIcon = require('@assets/images/downIcon.png');
 export const searchIcon = require('@assets/images/searchIcon.png');
 export const starIcon = require('@assets/images/starIcon.png');
 export const checkReedemIcon = require('@assets/images/checkRedeemIcon.png');
-// export const dealIcon = require('@assets/images/dealIcon.png');
-export const dealIcon = require('@assets/images/home.png');
-// export const scanIcon = require('@assets/images/scanIcon.png');
-export const scanIcon = require('@assets/images/scan.png');
+export const dealIcon = require('@assets/images/dealIcon.png');
+// export const dealIcon = require('@assets/images/home.png');
+export const scanIcon = require('@assets/images/scanIcon.png');
+// export const scanIcon = require('@assets/images/scan.png');
 export const historyIcon = require('@assets/images/historyIcon.png');
 export const directionIcon=require('@assets/images/directionsIcon.png')
 
@@ -37,10 +37,10 @@ export const userLogoIcon=require('@assets/images/userLogo.png');
 //profile Icon
 export const forwardIcon = require('@assets/images/forwardIcon.png');
 export const logOutIcon = require('@assets/images/logoutIcon.png');
-// export const myCardIcon = require('@assets/images/myCardIcon.png');
-export const myCardIcon = require('@assets/images/myBooklets.png');
-// export const myRequestIcon = require('@assets/images/myRequestIcon.png');
-export const myRequestIcon = require('@assets/images/request.png');
+export const myCardIcon = require('@assets/images/myCardIcon.png');
+// export const myCardIcon = require('@assets/images/myBooklets.png');
+export const myRequestIcon = require('@assets/images/myRequestIcon.png');
+// export const myRequestIcon = require('@assets/images/request.png');
 export const privacyIcon = require('@assets/images/privacyIcon.png');
 export const shareIcon = require('@assets/images/shareIcon.png');
 export const termsCondIcon = require('@assets/images/terms&ConditionIcon.png');
@@ -92,7 +92,8 @@ export const mapImagge =require('@assets/images/mapImage.png');
 export const emailIcon2 =require('@assets/images/emailIcon2.png')
 export const closeIcon = require('@assets/images/closeIcon.png');
 
-export const defaultBookletImage= require('@assets/images/bookletDefault.png')
+// export const defaultBookletImage= require('@assets/images/bookletDefault.png')
+export const defaultBookletImage= require('@assets/images/default.png')
 
 export const torchOfIcon = require('@assets/images/flashlightOff.png')
 export const torchOnIcon = require('@assets/images/flashlightOn.png')
@@ -116,3 +117,6 @@ export const filterIcon  = require('@assets/images/filter.png')
 export const reportIcon  = require('@assets/images/report.png')
 
 export const contactIcon  = require('@assets/images/phone.png')
+export const pdfIcon  = require('@assets/images/pdf.png')
+export const resetIcon  = require('@assets/images/undo.png')
+

@@ -18,11 +18,7 @@ import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import styles from './styles';
 import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
-import {
-  AppText,
-  SEMI_BOLD,
-  TWENTY_TWO,
-} from '@components/AppText';
+import { AppText, SEMI_BOLD, TWENTY_TWO } from '@components/AppText';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import {
   getBannerList,
@@ -44,17 +40,22 @@ import { setCartList } from '@actions/cart/cartSlice';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { userData } = useAppSelector((state) => state?.auth);
-  const { categoryListData, categoryBookletData, isLoading, bannerList, comboBookletDeals } =
-    useAppSelector((state) => state?.home);
-    console.log(comboBookletDeals,'combobbooklet deals');
-    
+  const { userData } = useAppSelector(state => state?.auth);
+  const {
+    categoryListData,
+    categoryBookletData,
+    isLoading,
+    bannerList,
+    comboBookletDeals,
+  } = useAppSelector(state => state?.home);
 
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isAddCityModal, setIsAddCityModal] = useState(false);
   const [isAddToCart, setIsAddToCart] = useState(false);
-  const [addTocarBookletId, setAddToCartBookletId] = useState<number | string>('');
+  const [addTocarBookletId, setAddToCartBookletId] = useState<number | string>(
+    '',
+  );
 
   const sheetRef = useRef(null);
 
@@ -101,49 +102,63 @@ const Home: React.FC = () => {
   };
 
   const handleOtpVerify = () => {
-    sheetRef.current?.close()
-  }
+    sheetRef.current?.close();
+  };
 
   const handleVerify = (code: string) => {
     let data = {
       email: userData.email,
-      otp: code
-    }
-    dispatch(verifyOtp(data, handleOtpVerify))
+      otp: code,
+    };
+    dispatch(verifyOtp(data, handleOtpVerify));
   };
 
   const handleBannerPress = (item: any, index: number) => {
-    if (item?.booklet !== null && item?.type == 'combobooklet' || item?.type == 'singlebooklet') {
+    if (
+      (item?.booklet !== null && item?.type == 'combobooklet') ||
+      item?.type == 'singlebooklet'
+    ) {
       if (item?.type == 'combobooklet') {
-        NavigationService.navigate(routes.DETAILS_SCREEN, { data: item?.booklet, from: "ComboBooklet" });
+        NavigationService.navigate(routes.DETAILS_SCREEN, {
+          data: item?.booklet,
+          from: 'ComboBooklet',
+        });
       } else {
-        NavigationService.navigate(routes.DETAILS_SCREEN, { data: item?.booklet, from: "Booklet" });
+        NavigationService.navigate(routes.DETAILS_SCREEN, {
+          data: item?.booklet,
+          from: 'Booklet',
+        });
       }
     } else if (item?.type == 'Travel Deals') {
       NavigationService.navigate(routes.TRAVEL_BOOKING);
-    }
-    else if (item?.type == 'Hotels') {
+    } else if (item?.type == 'Hotels') {
       NavigationService.navigate(routes.HOTEL_BOOKING);
     }
-  }
-
-  const handleAddToCardOnPress = (booklet: any) => {
-     dispatch(setCartList(booklet));
-     setAddToCartBookletId(booklet?.uuid);
-     setIsAddToCart(!isAddToCart);
-    NavigationService.navigate(routes.CART_SCREEN, { data: booklet, from: "Home" });
   };
 
+  const handleAddToCardOnPress = (booklet: any) => {
+    dispatch(setCartList(booklet));
+    setAddToCartBookletId(booklet?.uuid);
+    setIsAddToCart(!isAddToCart);
+    NavigationService.navigate(routes.CART_SCREEN, {
+      data: booklet,
+      from: 'Home',
+    });
+  };
+
+  
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
-
       {!show && !refreshing ? (
         <HomeShimmerLoader />
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.containerStyle, { backgroundColor: colors.white }]}
+          contentContainerStyle={[
+            styles.containerStyle,
+            {backgroundColor: colors.white},
+          ]}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -159,13 +174,13 @@ const Home: React.FC = () => {
             onPressBanner={(item, index) => handleBannerPress(item, index)}
           />
 
-          <CategoriesComponent
+          {/* <CategoriesComponent
             data={categoryListData}
             handleSeeAll={() => {
               dispatch(setCategoriListData());
               NavigationService.navigate(routes?.CATEGORIES_SCCREEN);
             }}
-          />
+          /> */}
           {/* {comboBookletDeals?.category?.length > 0 && (
             <View>
               <View style={styles.trendingContainer}>
@@ -227,7 +242,8 @@ const Home: React.FC = () => {
           ) : categoryBookletData?.category?.length === 0 ? (
             <ListEmptyComponent
               containerStyle={{ marginTop: 20 }}
-              title={'No Booklet Available'} />
+              title={'No Booklet Available'}
+            />
           ) : (
             categoryBookletData?.category?.map((item, index) => {
               if (!item?.booklets || item?.booklets.length === 0) return null;
@@ -247,36 +263,58 @@ const Home: React.FC = () => {
                     scrollEnabled={item.booklets.length > 1}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.listStyle}
-
                   >
                     {item.booklets.map((booklet: any, i: number) => {
-                      // console.log(booklet,'booklet items==>');
-                      
                       return (
-                        <View key={booklet.id || i}
+                        <View
+                          key={booklet.id || i}
                           // style={styles.categoryBookletContainer}
-                          style={item.booklets.length < 2 ? styles.categoryBookletContainer2 :
-                            styles.categoryBookletContainer}
+                          style={
+                            item.booklets.length < 2
+                              ? styles.categoryBookletContainer2
+                              : styles.categoryBookletContainer
+                          }
                         >
                           <Card
                             index={i}
                             isCompleteLocation={true}
                             item={booklet}
                             mobile={booklet?.client?.mobile}
-                            cardContainerStyle={item.booklets.length < 2 && styles.cardContainerStyle}
+                            cardContainerStyle={
+                              item.booklets.length < 2 &&
+                              styles.cardContainerStyle
+                            }
                             imageBaseUrl={categoryBookletData?.baseurl}
-                            imageStyle={item.booklets.length < 2 && styles.cardImageStyle}
+                            imageStyle={
+                              item.booklets.length < 2 && styles.cardImageStyle
+                            }
                             handleCardOnPress={() => {
-                              NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "Booklet" });
+                              NavigationService.navigate(
+                                routes.DETAILS_SCREEN,
+                                { data: booklet, from: 'Booklet' },
+                              );
                             }}
-                            imageUrl={booklet?.booklet ? { uri: categoryBookletData?.baseurl + booklet?.booklet } : defaultBookletImage}
-                            name={booklet?.client?.name ? booklet?.client?.name : booklet?.name}
+                            imageUrl={
+                              booklet?.booklet
+                                ? {
+                                    uri:
+                                      categoryBookletData?.baseurl +
+                                      booklet?.booklet,
+                                  }
+                                : defaultBookletImage
+                            }
+                            // name={booklet?.client?.name ? booklet?.client?.name : booklet?.name}
+                            name={booklet?.name}
                             price={booklet.price}
-                            address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
+                            address={
+                              booklet?.location.length > 0
+                                ? booklet?.location[0]?.location
+                                : '---'
+                            }
                             // shortDesc={booklet?.client?.short_desc}
                           />
                         </View>
-                      )
+                      );
                     })}
 
                     {item?.booklets.length > 3 && (
@@ -284,10 +322,13 @@ const Home: React.FC = () => {
                         <TouchableOpacityView
                           style={styles.seeAllBtn2Style}
                           onPress={() =>
-                            NavigationService.navigate(routes.CATEGORIES_LIST_SCCREEN, {
-                              title: item?.name,
-                              id: item?.uuid,
-                            })
+                            NavigationService.navigate(
+                              routes.CATEGORIES_LIST_SCCREEN,
+                              {
+                                title: item?.name,
+                                id: item?.uuid,
+                              },
+                            )
                           }
                         >
                           <Image
@@ -311,7 +352,7 @@ const Home: React.FC = () => {
                   weight={SEMI_BOLD}
                   style={styles.titleStyle}
                 >
-                  {"Combo Deals"}
+                  {'Combo Deals'}
                 </AppText>
               </View>
               <ScrollView
@@ -322,38 +363,58 @@ const Home: React.FC = () => {
                 contentContainerStyle={styles.listStyle}
               >
                 {comboBookletDeals?.category?.map((booklet, i) => {
-// console.log(booklet,'booklet=====>');
-
                   return (
-                    <View key={booklet?.id || i} style={comboBookletDeals?.category?.length < 2 ? styles.categoryBookletContainer2 :
-                      styles.categoryBookletContainer}>
+                    <View
+                      key={booklet?.id || i}
+                      style={
+                        comboBookletDeals?.category?.length < 2
+                          ? styles.categoryBookletContainer2
+                          : styles.categoryBookletContainer
+                      }
+                    >
                       <Card
                         index={i}
                         isCompleteLocation={true}
                         // addtoCart={true}
                         item={booklet}
-                        cardContainerStyle={comboBookletDeals?.category?.length < 2 && styles.cardContainerStyle}
+                        cardContainerStyle={
+                          comboBookletDeals?.category?.length < 2 &&
+                          styles.cardContainerStyle
+                        }
                         imageBaseUrl={comboBookletDeals?.baseurl}
-                        imageStyle={comboBookletDeals?.category?.length < 2 && styles.cardImageStyle}
+                        imageStyle={
+                          comboBookletDeals?.category?.length < 2 &&
+                          styles.cardImageStyle
+                        }
                         // handleCardOnPress={() => {
                         //   NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "ComboBooklet" });
                         // }}
                         handleCardOnPress={() => {
-                          NavigationService.navigate(routes.COMBO_OFFER_LIST_SCREEN,{ data: booklet, from: "ComboBooklet" });
+                          NavigationService.navigate(
+                            routes.COMBO_OFFER_LIST_SCREEN,
+                            { data: booklet, from: 'ComboBooklet' },
+                          );
                         }}
                         imageUrl={
                           booklet?.booklet
-                            ? { uri: comboBookletDeals?.baseurl + booklet?.booklet }
+                            ? {
+                                uri:
+                                  comboBookletDeals?.baseurl + booklet?.booklet,
+                              }
                             : defaultBookletImage
                         }
                         name={booklet?.name}
                         price={booklet?.price}
-                        address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
+                        address={
+                          booklet?.location.length > 0
+                            ? booklet?.location[0]?.location
+                            : '---'
+                        }
                         // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
                         // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                       />
                     </View>
-                  )
+                  );
                 })}
               </ScrollView>
             </View>
@@ -364,7 +425,7 @@ const Home: React.FC = () => {
         visible={isAddCityModal}
         onClose={() => setIsAddCityModal(false)}
         onConfirm={() => {
-          NavigationService.navigate(routes.EDIT_PROFILE_SCREEN)
+          NavigationService.navigate(routes.EDIT_PROFILE_SCREEN);
           setIsAddCityModal(false);
         }}
       />

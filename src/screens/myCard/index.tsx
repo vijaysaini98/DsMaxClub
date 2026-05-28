@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet,View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import { commonStyles } from '@theme/commonStyles'
@@ -21,13 +21,13 @@ const routes = [
   { key: 'expired', title: 'Expired' },
 ];
 
-const RenderTabBar = (props) => {
+const RenderTabBar = (props:any) => {
   const { tabTextType } = props;
   return (
     <TabBar
       {...props}
       scrollEnabled
-      renderLabel={({ route, focused }) => (
+      renderLabel={({ route, focused }:any) => (
         <AppText
           type={EIGHTEEN}
           weight={focused ? MEDIUM : NORMAL}

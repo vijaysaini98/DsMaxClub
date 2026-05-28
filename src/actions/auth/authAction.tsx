@@ -1,5 +1,5 @@
 import apiClient, { API } from '@services/appClient';
-import { resetAuth, setAppinfo, setCityList, setHowToRedeem, setLoading, setPrivacyPolicy, setTermCondition, setUserData } from './authSlice';
+import { resetAuth, setAppinfo, setCityList, setHowToRedeem, setLoading, setMaintenanceInfo, setPrivacyPolicy, setTermCondition, setUserData } from './authSlice';
 import {
   PROFILE_COMPLETE,
   removeAccessToken,
@@ -426,3 +426,26 @@ export const getAppVersion = (data?: any) => async (dispatch: AppDispatch) => {
   }
 };
 
+export const getMaintenanceStatus =
+  () => async (dispatch: AppDispatch) => {
+    try {
+      const response: any =
+        await API.authApi.maintenance_status();
+
+      console.log(
+        'Maintenance Response',
+        response,
+      );
+
+      if (response?.success) {
+        dispatch(
+          setMaintenanceInfo(response),
+        );
+      }
+    } catch (e: any) {
+      console.log(
+        'Maintenance Error',
+        e?.response?.data,
+      );
+    }
+  };

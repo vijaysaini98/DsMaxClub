@@ -1,7 +1,10 @@
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import React, { useCallback, useMemo, useState } from 'react';
 import { AppText, FOURTEEN, MEDIUM, WHITE } from '@components/AppText';
-import { MY_CARD_COMBO_OFFERS_LIST_SCREEN, MY_CARD_COUPON_LIST_SCREEN } from '@navigations/routes';
+import {
+  MY_CARD_COMBO_OFFERS_LIST_SCREEN,
+  MY_CARD_COUPON_LIST_SCREEN,
+} from '@navigations/routes';
 import { Loader, SpinnerSecond } from '@components/Spinner';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import { colors } from '@theme/colors';
@@ -10,17 +13,27 @@ import Card from '@screens/home/ui/card';
 import NavigationService from '@navigations/NavigationService';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import { defaultBookletImage } from '@helper/imagesAssets';
-import { getMyCardBookletList, getMyCardComboOffersList, getMyCardCouponList } from '@actions/myCard/myCardAction';
+import {
+  getMyCardBookletList,
+  getMyCardComboOffersList,
+  getMyCardCouponList,
+} from '@actions/myCard/myCardAction';
 import Toast from 'react-native-simple-toast';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
 import moment from 'moment';
 
-const MyCardList = ({ value }:any) => {
+const MyCardList = ({ value }: any) => {
   const dispatch = useAppDispatch();
   // const { isLoading ,isBtnLoading} = useAppSelector((state) => state.myCard);
-  const { isLoading, isRefresh, myCardAllBookletList, myCardActiveBookletList, myCardExpiredBookletList, isBtnLoading } = useAppSelector((state) => state?.myCard)
+  const {
+    isLoading,
+    isRefresh,
+    myCardAllBookletList,
+    myCardActiveBookletList,
+    myCardExpiredBookletList,
+    isBtnLoading,
+  } = useAppSelector(state => state?.myCard);
   const [refreshing, setRefreshing] = useState(false);
-console.log(myCardAllBookletList,'myCardAllBookletList');
 
   // const onRefresh = useCallback(() => {
   //   // setRefreshing(true);
@@ -35,50 +48,51 @@ console.log(myCardAllBookletList,'myCardAllBookletList');
   //     )
   //   );
   // };
-    const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(() => {
     // setRefreshing(true);
     dispatch(getMyCardBookletList(value, isRefresh));
   }, [dispatch, value, isRefresh]);
 
-  const handleOnPress = (item:any) => {
+  const handleOnPress = (item: any) => {
     // console.log(item,'item in handle on press===>');
-  if(item?.booklet_type===2){
-    // Alert.alert('combo')
-    dispatch(
-      getMyCardComboOffersList(
-        { user_booklet_uuid: item.user_booklet_uuid },
-        () => onComboSuccess(item) 
-      )
-    );
-  }else{
- dispatch(
-      getMyCardCouponList(
-        { user_booklet_uuid: item.user_booklet_uuid },
-        () => onSuccess(item) 
-      )
-    );
-  }
-   
+    if (item?.booklet_type === 2) {
+      // Alert.alert('combo')
+      dispatch(
+        getMyCardComboOffersList(
+          { user_booklet_uuid: item.user_booklet_uuid },
+          () => onComboSuccess(item),
+        ),
+      );
+    } else {
+      dispatch(
+        getMyCardCouponList({ user_booklet_uuid: item.user_booklet_uuid }, () =>
+          onSuccess(item),
+        ),
+      );
+    }
   };
 
-  const onComboSuccess = (item) => {
+  const onComboSuccess = item => {
     NavigationService.navigate(MY_CARD_COMBO_OFFERS_LIST_SCREEN, {
       data: item,
-     
     });
   };
 
   const data = useMemo(() => {
-
-    if (value.tabname == "all") return myCardAllBookletList;
-    if (value.tabname == "active") return myCardActiveBookletList;
-    if (value.tabname == "expire") return myCardExpiredBookletList;
+    if (value.tabname == 'all') return myCardAllBookletList;
+    if (value.tabname == 'active') return myCardActiveBookletList;
+    if (value.tabname == 'expire') return myCardExpiredBookletList;
     return [];
-  }, [value.tabname, myCardAllBookletList, myCardActiveBookletList, myCardExpiredBookletList]);
+  }, [
+    value.tabname,
+    myCardAllBookletList,
+    myCardActiveBookletList,
+    myCardExpiredBookletList,
+  ]);
 
-  const onSuccess = (item) => {
+  const onSuccess = item => {
     // console.log(item,'iteemmmm in coupon list');
-    
+
     NavigationService.navigate(MY_CARD_COUPON_LIST_SCREEN, {
       title: item?.name,
       user_booklet_uuid: item?.user_booklet_uuid,
@@ -88,9 +102,10 @@ console.log(myCardAllBookletList,'myCardAllBookletList');
   };
 
   const renderItem = useCallback(
-    ({ item, index }:any) => {
-      // console.log('booklet item',item,);
-      
+    ({ item, index }: any) => {
+      console.log('booklet itemsssssss===>', item);
+      // booklet_type
+
       return (
         <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
           {/* <Card
@@ -122,38 +137,43 @@ console.log(myCardAllBookletList,'myCardAllBookletList');
               }`}
           /> */}
           <Card
-  item={item}
-  index={index}
-  type="booklet" // 👈 IMPORTANT
-  cardContainerStyle={{ width: '100%' }}
-  imageStyle={styles.imageStyle}
-  imageUrl={
-    item?.booklet
-      ? { uri: item?.baseurl + item?.booklet }
-      : defaultBookletImage
-  }
-  // name={`${item?.name} (${item?.booklet_uniquecode})`}
-  name={`${item?.name}`}
-  price={item.price}
-  address={item?.locations?.[0]?.location ?? '---'}
-  handleCardOnPress={() => {
-    if (item?.tab_status === 'expired') {
-      Toast.show('Booklet has been Expired', Toast.LONG);
-    } else {
-      handleOnPress(item);
-    }
-  }}
-  status={item?.tab_status}
-  shortDesc={item?.short_desc}
-
-  // ✅ NEW PROPS (CLEAN)
-  startDate={item?.start_date}
-  validityMonths={item?.validity_months}
-/>
+            item={item}
+            index={index}
+            type="booklet" // 👈 IMPORTANT
+            cardContainerStyle={{ width: '100%' }}
+            imageStyle={styles.imageStyle}
+            imageUrl={
+              item?.booklet
+                ? { uri: item?.baseurl + item?.booklet }
+                : defaultBookletImage
+            }
+            // name={`${item?.name} (${item?.booklet_uniquecode})`}
+            name={`${item?.name}`}
+            // price={item.price}
+            address={item?.locations?.[0]?.location ?? '---'}
+            handleCardOnPress={() => {
+              if (item?.tab_status === 'expired') {
+                Toast.show('Booklet has been Expired', Toast.LONG);
+              } else {
+                handleOnPress(item);
+              }
+            }}
+            status={item?.tab_status}
+            shortDesc={item?.short_desc}
+            // ✅ NEW PROPS (CLEAN)
+            startDate={item?.start_date}
+            // validityMonths={item?.validity_months?item?.validity_months: item?.end_date}
+            //   validityMonths={
+            //   item?.date_type === 1
+            //     ? `Upto ${item?.validity_months} months`
+            //     : moment(item?.end_date).format("DD MMM YYYY")
+            // }
+            validityMonths={item?.end_date}
+          />
         </View>
       );
     },
-    [data, handleOnPress] // dependencies
+    [data, handleOnPress],
   );
 
   return (
@@ -169,10 +189,14 @@ console.log(myCardAllBookletList,'myCardAllBookletList');
           data={data}
           renderItem={renderItem}
           extraData={data}
-          keyExtractor={(item, index) => item?.user_booklet_uuid ?? index.toString()}
+          keyExtractor={(item, index) =>
+            item?.user_booklet_uuid ?? index.toString()
+          }
           contentContainerStyle={styles.listContainerStyle}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={() => <ListEmptyComponent title={'No Card Available'} />}
+          ListEmptyComponent={() => (
+            <ListEmptyComponent title={'No Card Available'} />
+          )}
           refreshControl={
             <RefreshControl
               refreshing={isRefresh}

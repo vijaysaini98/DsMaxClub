@@ -33,10 +33,6 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
     state => state?.home,
   );
 
-  console.log(
-    bookletDetailAllDeals?.coupons,
-    'bookletDetailAllDeals?.coupons in all==>',
-  );
 
   const [couponDetail, setCouponDetail] = useState<any>();
   const [refreshing, setRefreshing] = useState(false);
@@ -66,11 +62,9 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
       tabname: 'All Deals',
     };
     if (from == 'ComboBooklet') {
-      console.log(data, 'value from combo booklet details api call');
 
       dispatch(getComboBookletDetail(data)).finally(() => setRefreshing(false));
     } else {
-      console.log(data, 'value from  booklet details api call');
       dispatch(getBookletDetail(data)).finally(() => setRefreshing(false));
     }
   }, [dispatch]);
@@ -78,7 +72,6 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
   const renderItem = useMemo(
     () =>
       ({ item }: { item: CardItem }) => {
-        console.log(item, 'card items');
         
 
         return (

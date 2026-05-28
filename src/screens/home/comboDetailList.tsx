@@ -58,18 +58,16 @@ const ComboDetailList = ({ route }: any) => {
     state => state?.myCard,
   );
 
-  console.log(comboOfferList, 'comboOfferList====>');
+  console.log(comboOfferList,'comboOfferList===>');
+  
+
   const { userData } = useAppSelector(state => state?.auth);
   const [acceptContent, setAcceptContent] = useState(false);
 
   const { bookletDetailAllDeals } = useAppSelector(state => state?.home);
-  console.log(
-    bookletDetailAllDeals?.request_status,
-    'bookletDetailAllDeals?.request_status',
-  );
+ 
   const [refreshing, setRefreshing] = useState(false);
   const { data, from } = route?.params ?? '';
-  console.log(data, 'data in combo detail list===>');
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const executiveBottomSheetRef = useRef<BottomSheet>(null);
@@ -90,7 +88,6 @@ const ComboDetailList = ({ route }: any) => {
   }, [isRefresh]);
 
   const onHandlePress = (item: any, index: number) => {
-    console.log(item, 'itemmmmmmm-->');
 
     let value = {
       // booklet_id: data?.uuid,
@@ -116,13 +113,11 @@ const ComboDetailList = ({ route }: any) => {
     //     value.tabname = 'All Deals';
     // }
 
-    console.log(value, 'value from combo booklet details api call');
 
     dispatch(getComboBookletDetail(value, () => handleComboSuccess(item)));
   };
 
   const handleComboSuccess = (item: any) => {
-    console.log(item, 'item on combo success');
     // dispatch(setBookletDetailAllDeals({}))
 
     NavigationService.navigate(routes.DETAILS_SCREEN, {
@@ -149,7 +144,6 @@ const ComboDetailList = ({ route }: any) => {
     }
   };
   const handleSubmit = (_data: any) => {
-    console.log(data, 'data on handle submit===>');
 
     Keyboard?.dismiss();
     let apidata = {
@@ -210,9 +204,9 @@ const ComboDetailList = ({ route }: any) => {
       }
     }
 
-    if (vendor?.profile_image) {
-      return { uri: IMGE_URL + vendor.profile_image };
-    }
+    // if (vendor?.profile_image) {
+    //   return { uri: IMGE_URL + vendor.profile_image };
+    // }
 
     return defaultBookletImage; // ✅ use imported local image
   };
@@ -236,7 +230,7 @@ const ComboDetailList = ({ route }: any) => {
           //   }
           imageUrl={getVendorImage(item)}
           price={item.price}
-          address={item?.locations?.[0]?.location || null}
+          address={item?.locations?.[0]?.location}
           status={item?.tab_status}
           shortDesc={item?.short_desc}
           handleCardOnPress={() => onHandlePress(item, index)}

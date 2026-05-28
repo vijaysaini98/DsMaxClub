@@ -203,7 +203,7 @@ const TravelBooking: React.FC = () => {
                 </View>
                 <View style={{ gap: 5 }}>
                     <AppText type={FOURTEEN} weight={MEDIUM}>
-                        {'Select Rooms and Guest'}
+                        {'Select Guest'}
                         <AppText type={TWELVE} color={ERROR_TEXT} weight={BOLD}>
                             {' '}
                             *

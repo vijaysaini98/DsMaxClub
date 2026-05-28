@@ -37,12 +37,10 @@ export const homeSlice = createSlice({
             state.bookletList = payload;
         },
         setBookletDetailAllDeals: (state, { payload }) => {
-            console.log(payload,'payload===>');
             
             state.bookletDetailAllDeals = payload;
         },
         setBookletDetailAbout: (state, { payload }) => {
-            console.log(payload,'payload--->');
             
             state.bookletDetailAbout = payload;
         },

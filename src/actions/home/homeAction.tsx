@@ -1,7 +1,20 @@
 import { API } from '@services/appClient';
 import { AppDispatch } from '@redux/store';
-import Toast from "react-native-simple-toast";
-import { setBannerData, setBookletDetailAbout, setBookletDetailAllDeals, setBookletDetailGallery, setBookletDetailT_C, setBookletList, setBtnLoading, setCategoriBookletData, setCategoriListData, setComboBookletDeals, setLoading, setMyReportCouponList } from './homeSlice';
+import Toast from 'react-native-simple-toast';
+import {
+  setBannerData,
+  setBookletDetailAbout,
+  setBookletDetailAllDeals,
+  setBookletDetailGallery,
+  setBookletDetailT_C,
+  setBookletList,
+  setBtnLoading,
+  setCategoriBookletData,
+  setCategoriListData,
+  setComboBookletDeals,
+  setLoading,
+  setMyReportCouponList,
+} from './homeSlice';
 
 export const getCategoryList =
   (limit?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
@@ -10,17 +23,17 @@ export const getCategoryList =
       const response = await API.homeApi.categori_list(limit);
 
       if (response?.status == 200) {
-        dispatch(setCategoriListData(response?.data))
+        dispatch(setCategoriListData(response?.data));
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      console.log("category list error", e?.response?.data);
+      console.log('category list error', e?.response?.data);
 
       // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
     }
   };
 
@@ -30,17 +43,17 @@ export const getCategoryBooklet =
       dispatch(setLoading(true));
       const response = await API.homeApi.category_booklet(data);
       if (response?.status == 200) {
-        dispatch(setCategoriBookletData(response?.data))
+        dispatch(setCategoriBookletData(response?.data));
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      console.log("category booklet Error", e?.response?.data);
+      console.log('category booklet Error', e?.response?.data);
 
       // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
     }
   };
 
@@ -51,16 +64,16 @@ export const getBannerList =
       const response = await API.homeApi.banner_api(data);
 
       if (response?.status == 200) {
-        dispatch(setBannerData(response?.data))
+        dispatch(setBannerData(response?.data));
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      console.log("bannerApi Error", e?.response?.data);
+      console.log('bannerApi Error', e?.response?.data);
       // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
     }
   };
 
@@ -70,75 +83,71 @@ export const getBookletList =
       dispatch(setLoading(true));
       const response = await API.homeApi.booklet_list(data);
       if (response?.status == 200) {
-        dispatch(setBookletList(response?.data))
+        dispatch(setBookletList(response?.data));
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      console.log("e", e?.response?.data);
+      console.log('e', e?.response?.data);
 
       // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
     }
   };
 
 export const getBookletDetail =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
     try {
-          // dispatch(setBookletDetailAllDeals({}))
+      // dispatch(setBookletDetailAllDeals({}))
 
       dispatch(setLoading(true));
       const response = await API.homeApi.booklet_detail(data);
 
       if (response?.status == 200) {
-        if (data?.tabname == "All Deals") {
-          dispatch(setBookletDetailAllDeals(response?.data))
-        } else if (data?.tabname == "About") {
-          dispatch(setBookletDetailAbout(response?.data))
-        } else if (data?.tabname == "Gallery") {
-          dispatch(setBookletDetailGallery(response?.data))
+        if (data?.tabname == 'All Deals') {
+          dispatch(setBookletDetailAllDeals(response?.data));
+        } else if (data?.tabname == 'About') {
+          dispatch(setBookletDetailAbout(response?.data));
+        } else if (data?.tabname == 'Gallery') {
+          dispatch(setBookletDetailGallery(response?.data));
         } else {
-          dispatch(setBookletDetailT_C(response?.data))
+          dispatch(setBookletDetailT_C(response?.data));
         }
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      dispatch(setBookletDetailAllDeals())
-      dispatch(setBookletDetailAbout())
-      dispatch(setBookletDetailGallery())
-      dispatch(setBookletDetailT_C())
+      dispatch(setBookletDetailAllDeals());
+      dispatch(setBookletDetailAbout());
+      dispatch(setBookletDetailGallery());
+      dispatch(setBookletDetailT_C());
       // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
     }
   };
 
 export const getComboBookletDetail =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
-    console.log(data,'data in home action');
-    
     try {
       dispatch(setLoading(true));
       const response = await API.homeApi.combo_booklet_detail(data);
-console.log(response,'resonse of booklet details');
 
       if (response?.status == 200) {
-        if (data?.tabname == "All Deals") {
-          dispatch(setBookletDetailAllDeals(response?.data))
-        } else if (data?.tabname == "About") {
-          dispatch(setBookletDetailAbout(response?.data))
-          console.log(response,'response in about');
-          
-        } else if (data?.tabname == "Gallery") {
-          dispatch(setBookletDetailGallery(response?.data))
+        if (data?.tabname == 'All Deals') {
+          dispatch(setBookletDetailAllDeals(response?.data));
+        } else if (data?.tabname == 'About') {
+          dispatch(setBookletDetailAbout(response?.data));
+          console.log(response, 'response in about');
+        } else if (data?.tabname == 'Gallery') {
+          dispatch(setBookletDetailGallery(response?.data));
         } else {
-          dispatch(setBookletDetailT_C(response?.data))
+          dispatch(setBookletDetailT_C(response?.data));
         }
-         if (onSucess) {
+        if (onSucess) {
           onSucess(response);
         }
         // onSucess(response)
@@ -147,15 +156,15 @@ console.log(response,'resonse of booklet details');
         Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      console.log(e,'error==>');
-      
-      dispatch(setBookletDetailAllDeals())
-      dispatch(setBookletDetailAbout())
-      dispatch(setBookletDetailGallery())
-      dispatch(setBookletDetailT_C())
+      console.log(e, 'error==>');
+
+      dispatch(setBookletDetailAllDeals());
+      dispatch(setBookletDetailAbout());
+      dispatch(setBookletDetailGallery());
+      dispatch(setBookletDetailT_C());
       // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
     }
   };
 
@@ -166,7 +175,7 @@ export const bookletRequest =
       const response = await API.homeApi.booklet_request(data);
       if (response?.status == 200) {
         Toast.show(response?.message, Toast.LONG);
-        onSucess && onSucess()
+        onSucess && onSucess();
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);
@@ -174,12 +183,11 @@ export const bookletRequest =
       }
     } catch (e: any) {
       if (e?.response) {
-        console.log("bookletRequest error", e?.response)
-        // Toast.show(e?.response?.data?.message, Toast.LONG);
+        console.log('bookletRequest error', e?.response);
+        Toast.show(e?.response?.data?.message, Toast.LONG);
       }
-
     } finally {
-      dispatch(setBtnLoading(false))
+      dispatch(setBtnLoading(false));
     }
   };
 
@@ -191,18 +199,18 @@ export const executiveBookletRequest =
 
       if (response?.status == 200) {
         Toast.show(response?.message, Toast.LONG);
-        onSucess && onSucess()
+        onSucess && onSucess();
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);
         return;
       }
     } catch (e: any) {
-      console.log("executiveBookletRequest error=>>", e?.response?.data);
+      console.log('executiveBookletRequest error=>>', e?.response?.data);
 
       Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
-      dispatch(setBtnLoading(false))
+      dispatch(setBtnLoading(false));
     }
   };
 
@@ -212,14 +220,14 @@ export const getComboBookletDeals =
       dispatch(setLoading(true));
       const response = await API.homeApi.combo_booklet_deals(data);
       if (response?.status == 200) {
-        dispatch(setComboBookletDeals(response?.data))
-        onSucess && onSucess()
+        dispatch(setComboBookletDeals(response?.data));
+        onSucess && onSucess();
         return;
       } else {
         Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      console.log("getComboBookletDeals error=>>", e?.response?.data);
+      console.log('getComboBookletDeals error=>>', e?.response?.data);
 
       // Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
@@ -227,44 +235,70 @@ export const getComboBookletDeals =
     }
   };
 
-export const createLeads = (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
-  try {
-    dispatch(setLoading(true));
-    const response = await API.homeApi.create_leads(data);
-    if (response?.status == 200) {
-      onSucess && onSucess()
-      Toast.show(response?.message, Toast.LONG);
-      return;
-    } else {
-      Toast.show(response?.message, Toast.LONG);
-    }
-  } catch (e: any) {
-    console.log("bookletRequest error=>>", e?.response?.data);
+export const createLeads =
+  (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await API.homeApi.create_leads(data);
+      if (response?.status == 200) {
+        onSucess && onSucess();
+        Toast.show(response?.message, Toast.LONG);
+        return;
+      } else {
+        Toast.show(response?.message, Toast.LONG);
+      }
+    } catch (e: any) {
+      console.log('bookletRequest error=>>', e?.response?.data);
 
-    Toast.show(e?.response?.data?.message, Toast.LONG);
-  } finally {
-    dispatch(setLoading(false));
-  }
-};
+      Toast.show(e?.response?.data?.message, Toast.LONG);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
 
 export const getReportList =
-    (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
-        try {
-            dispatch(setLoading(true));
-            const response = await API.homeApi.myReport_Coupon_List(data);
-            console.log(response,'response===>');
-            
-            if (response?.status == 200) {
-                dispatch(setMyReportCouponList(response?.data))
-                return;
-            } else {
-                throw new Error('No response data received from backend.');
-            }
-        } catch (e: any) {
-            console.log("e", e);
+  (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await API.homeApi.myReport_Coupon_List(data);
 
-            Toast.show(e?.response?.data?.message, Toast.LONG);
-        } finally {
-            dispatch(setLoading(false))
-        }
-    };
+      if (response?.status == 200) {
+        dispatch(setMyReportCouponList(response?.data));
+        return;
+      } else {
+        throw new Error('No response data received from backend.');
+      }
+    } catch (e: any) {
+      console.log('e', e);
+
+      Toast.show(e?.response?.data?.message, Toast.LONG);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+export const getReportPdf =
+  (data?: any, onSuccess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+
+      const response = await API.homeApi.myReport_Coupon_List(data || {});
+
+      const resData = response?.data || response;
+
+      if (resData) {
+        onSuccess && onSuccess(resData);
+      } else {
+        throw new Error('No PDF data');
+      }
+    } catch (e: any) {
+      console.log('PDF API Error =>', e);
+
+      Toast.show(
+        e?.response?.data?.message || 'Something went wrong',
+        Toast.LONG,
+      );
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };

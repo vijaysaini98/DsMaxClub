@@ -38,6 +38,7 @@ const ReportCard = ({ item }: any) => {
 
       <AppText style={styles.text} type={TWELVE}>
         {item?.short_desc}
+        {/* {'jhgsdfsghsgfsgsvgvgdsvgsdvdsvhjdsvgjafgajhaghjfagjhsgvhjasgjhvsvhjsgvjhsvgshjvsgjcvhsgvjhsvgjdhsvvgshjvvshjvshjvvdhjdsvghjshjdgvjh'} */}
       </AppText>
 
       <View
@@ -46,8 +47,13 @@ const ReportCard = ({ item }: any) => {
         <AppText weight={BOLD} type={FOURTEEN}>
           Redeemed Date:
         </AppText>
-        <AppText style={styles.value} type={FOURTEEN}>
+        {/* <AppText style={styles.value} type={FOURTEEN}>
           {item?.redeem_date?.split(' ')[0]}
+        </AppText> */}
+        <AppText style={styles.value} type={FOURTEEN}>
+          {item?.redeem_date
+            ? new Date(item.redeem_date).toLocaleDateString('en-GB')
+            : ''}
         </AppText>
       </View>
 

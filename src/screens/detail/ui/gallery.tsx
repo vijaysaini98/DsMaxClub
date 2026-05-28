@@ -37,11 +37,9 @@ const Gallery = ({ id, scrollY,from }:any) => {
       tabname: "Gallery"
     };
      if (from == "ComboBooklet") {
-      console.log(data,'value from  booklet details api call');
       
           dispatch(getComboBookletDetail(data));
         } else{
-          console.log(data,'data from details screen');
           
           dispatch(getBookletDetail(data)).finally(() => setRefreshing(false));
         }

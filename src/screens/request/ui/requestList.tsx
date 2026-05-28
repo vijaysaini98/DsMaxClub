@@ -25,6 +25,12 @@ const RequestList = ({ value }) => {
     executiveRequestRejectList,
     isBtnLoading}=useAppSelector((state)=>state?.executiveRequest)
 
+      const { userData } = useAppSelector(state => state?.auth);
+
+      console.log(userData,'userData==>');
+      
+
+    
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
@@ -69,18 +75,20 @@ const RequestList = ({ value }) => {
                 : defaultBookletImage
             }
             name={`${item?.name} (${item?.unique_code})`}
-            price={item.price}
+            // price={item.price}
             address={item?.locations?.[0]?.location ?? '---'}
-            cardDisabled={true}
+            // cardDisabled={true}
+            cardDisabled={userData?.user_type !== '1' ? true : false}
+
             // cardDisabled={item?.status !== 'pending'}
-            // handleCardOnPress={() => {
-            //   // if (item?.status === 'reject') {
-            //   //   Toast.show('Booklet has been Expired', Toast.LONG);
-            //   // }
-            //   //  else {
-            //     handleOnPress(item);
-            //   // }
-            // }}
+            handleCardOnPress={() => {
+              // if (item?.status === 'reject') {
+              //   Toast.show('Booklet has been Expired', Toast.LONG);
+              // }
+              //  else {
+                handleOnPress(item);
+              // }
+            }}
             status={item?.status}
 
             purchaseDate={item?.requested_date}
