@@ -1,14 +1,16 @@
 import axios from 'axios';
-import { getAccessToken } from './storage';
+import { getAccessToken, removeAccessToken } from './storage';
 import { BaseUrlConfig } from '@config/config';
 import config, { BASE_URL } from './config';
+import NavigationService from '@navigations/NavigationService';
+import * as routes from '@navigations/routes';
 
 // Axios instance
 const apiClient = axios.create({
   baseURL: BaseUrlConfig?.WEBSITE_URL,
   timeout: 60000,
 });
-
+let logOutref=0
 console.log('API Base URL:', BASE_URL);
 
 // Request Interceptor (adds token + logs)
@@ -47,11 +49,18 @@ apiClient.interceptors.response.use(
     //   status: response.status,
     //   data: response.data,
     // });
-
+logOutref=0
     return response.data;
   },
   async error => {
     const originalRequest = error.config;
+    if(error.response?.status === 401 && logOutref==0){
+       removeAccessToken();
+            logOutref++
+              NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
+
+    }
+console.log(error.response,'error===>');
 
     // console.log('❌ API Error →', {
     //   url: originalRequest?.url,

@@ -174,13 +174,13 @@ const Home: React.FC = () => {
             onPressBanner={(item, index) => handleBannerPress(item, index)}
           />
 
-          {/* <CategoriesComponent
+          <CategoriesComponent
             data={categoryListData}
             handleSeeAll={() => {
               dispatch(setCategoriListData());
               NavigationService.navigate(routes?.CATEGORIES_SCCREEN);
             }}
-          /> */}
+          />
           {/* {comboBookletDeals?.category?.length > 0 && (
             <View>
               <View style={styles.trendingContainer}>
