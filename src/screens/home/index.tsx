@@ -36,7 +36,7 @@ import { Loader } from '@components/Spinner';
 import AddCityModal from '@components/AddCityModal';
 import HomeShimmerLoader from '@components/ShimerLoader/homeShimerLoader';
 import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomSheet';
-import { setCartList } from '@actions/cart/cartSlice';
+import { addToCart, setCartList } from '@actions/cart/cartSlice';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -136,15 +136,20 @@ const Home: React.FC = () => {
     }
   };
 
+  // const handleAddToCardOnPress = (booklet: any) => {
+  //   dispatch(setCartList(booklet));
+  //   setAddToCartBookletId(booklet?.uuid);
+  //   setIsAddToCart(!isAddToCart);
+  //   NavigationService.navigate(routes.CART_SCREEN, {
+  //     data: booklet,
+  //     from: 'Home',
+  //   });
+  // };
   const handleAddToCardOnPress = (booklet: any) => {
-    dispatch(setCartList(booklet));
-    setAddToCartBookletId(booklet?.uuid);
-    setIsAddToCart(!isAddToCart);
-    NavigationService.navigate(routes.CART_SCREEN, {
-      data: booklet,
-      from: 'Home',
-    });
-  };
+  dispatch(addToCart(booklet));
+
+  NavigationService.navigate('CART_SCREEN');
+};
 
   
 
@@ -168,19 +173,20 @@ const Home: React.FC = () => {
             />
           }
         >
-          <Header userName={userData?.name} />
+          <Header userName={userData?.name}  showCart={true}/>
+
           <BanerComponent
             data={bannerList}
             onPressBanner={(item, index) => handleBannerPress(item, index)}
           />
 
-          {/* <CategoriesComponent
+          <CategoriesComponent
             data={categoryListData}
             handleSeeAll={() => {
               dispatch(setCategoriListData());
               NavigationService.navigate(routes?.CATEGORIES_SCCREEN);
             }}
-          /> */}
+          />
           {/* {comboBookletDeals?.category?.length > 0 && (
             <View>
               <View style={styles.trendingContainer}>
@@ -277,6 +283,7 @@ const Home: React.FC = () => {
                         >
                           <Card
                             index={i}
+                            addtoCart={true}
                             isCompleteLocation={true}
                             item={booklet}
                             mobile={booklet?.client?.mobile}
@@ -311,6 +318,8 @@ const Home: React.FC = () => {
                                 ? booklet?.location[0]?.location
                                 : '---'
                             }
+                              handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                        isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                             // shortDesc={booklet?.client?.short_desc}
                           />
                         </View>
@@ -375,7 +384,7 @@ const Home: React.FC = () => {
                       <Card
                         index={i}
                         isCompleteLocation={true}
-                        // addtoCart={true}
+                        addtoCart={true}
                         item={booklet}
                         cardContainerStyle={
                           comboBookletDeals?.category?.length < 2 &&
@@ -410,8 +419,8 @@ const Home: React.FC = () => {
                             ? booklet?.location[0]?.location
                             : '---'
                         }
-                        // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
+                        handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                        isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                       />
                     </View>
                   );

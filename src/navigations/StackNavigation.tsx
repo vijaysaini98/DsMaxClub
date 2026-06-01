@@ -35,6 +35,7 @@ import RequestSuccessfull from "@screens/detail/ui/requestSuccessful";
 import ReportScreen from "@screens/report";
 import ComboDetailList from "@screens/home/comboDetailList";
 import MyCardComboOfferList from "@screens/myCard/myCardComboOfferList";
+import Checkout from "@screens/checkout";
 
 const Stack = createStackNavigator();
 
@@ -87,6 +88,9 @@ export const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.TRAVEL_BOOKING} component={TravelBooking} />
     <Stack.Screen name={routes.CART_SCREEN} component={Cart} />
   <Stack.Screen name={routes.REQUEST_SUCCESSFUL_SCREEN} component={RequestSuccessfull} />
+    <Stack.Screen name={routes.CHECKOUT_SCREEN} component={Checkout} />
+
+
   </Stack.Navigator>
 );
 

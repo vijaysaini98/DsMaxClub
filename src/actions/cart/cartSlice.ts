@@ -21,9 +21,24 @@ export const cartSlice = createSlice({
     //        setCartList: (state, { payload }) => {
     //   state.cartList = payload;
     // },
-    setCartList: (state, { payload }) => {
-      state.cartList = Array.isArray(payload) ? payload : [payload];
-    },
+    // setCartList: (state, { payload }) => {
+    //   state.cartList = Array.isArray(payload) ? payload : [payload];
+    // },
+
+addToCart: (state, action) => {
+  const exists = state.cartList.find(
+    item => item.id === action.payload.id,
+  );
+
+  if (exists) {
+    exists.quantity = (exists.quantity || 1) + 1;
+  } else {
+    state.cartList.push({
+      ...action.payload,
+      quantity: 1,
+    });
+  }
+},
 
  removeCartItem: (
   state,
@@ -57,6 +72,25 @@ export const cartSlice = createSlice({
         return item;
       });
     },
+     incrementQuantity: (state, action) => {
+      const item = state.cartList.find(
+        item => item.id === action.payload,
+      );
+
+      if (item) {
+        item.quantity += 1;
+      }
+    },
+
+    decrementQuantity: (state, action) => {
+      const item = state.cartList.find(
+        item => item.id === action.payload,
+      );
+
+      if (item && item.quantity > 1) {
+        item.quantity -= 1;
+      }
+    },
   },
 });
 export const {
@@ -66,5 +100,9 @@ export const {
   removeCartItem,
   updateCartQtyLocal,
   clearCart,
+  removeFromCart,
+  addToCart,
+   incrementQuantity,
+  decrementQuantity,
 }: any = cartSlice.actions;
 export const cartReducer = cartSlice.reducer;

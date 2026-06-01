@@ -139,3 +139,5 @@ export const deleteCartItem =
       dispatch(setBtnLoading(false));
     }
   };
+
+  
