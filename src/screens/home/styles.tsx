@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: ms(10)
   },
   cardContainerStyle: { width: "100%" },
+
  
 
 });

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  BackHandler,
   Image,
   Platform,
   RefreshControl,
@@ -37,6 +38,7 @@ import AddCityModal from '@components/AddCityModal';
 import HomeShimmerLoader from '@components/ShimerLoader/homeShimerLoader';
 import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomSheet';
 import { setCartList } from '@actions/cart/cartSlice';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -74,6 +76,8 @@ const Home: React.FC = () => {
     // }
   };
 
+  
+
   useEffect(() => {
     fetchData();
   }, [userData?.current_city_name]);
@@ -94,6 +98,37 @@ const Home: React.FC = () => {
       return () => clearTimeout(alertTimeout);
     }
   }, [userData]);
+
+useFocusEffect(
+  React.useCallback(() => {
+    const backAction = () => {
+      Alert.alert(
+        'Exit App',
+        'Are you sure you want to exit?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => null,
+          },
+          {
+            text: 'OK',
+            onPress: () => BackHandler.exitApp(),
+          },
+        ],
+      );
+
+      return true;
+    };
+
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => subscription.remove(); 
+  }, []),
+);
 
   const onRefresh = async () => {
     setRefreshing(true);

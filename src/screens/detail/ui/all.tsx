@@ -27,7 +27,7 @@ interface CardItem {
   // Add other properties as needed
 }
 
-const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
+const All: React.FC = ({ id, from, scrollY, handleViewPress, venderId,booklet_id }: any) => {
   const dispatch = useAppDispatch();
   const { bookletDetailAllDeals, isLoading } = useAppSelector(
     state => state?.home,
@@ -58,11 +58,13 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     let data = {
-      booklet_id: id,
+      booklet_id: from == 'ComboBooklet' ? booklet_id : id,
       tabname: 'All Deals',
+      vendor_id: venderId,
     };
-    if (from == 'ComboBooklet') {
 
+    console.log('REFRESH API DATA', data);
+    if (from == 'ComboBooklet') {
       dispatch(getComboBookletDetail(data)).finally(() => setRefreshing(false));
     } else {
       dispatch(getBookletDetail(data)).finally(() => setRefreshing(false));
@@ -72,8 +74,6 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
   const renderItem = useMemo(
     () =>
       ({ item }: { item: CardItem }) => {
-        
-
         return (
           <CommonCard
             couponCount={item?.no_of_coupons}
@@ -97,21 +97,18 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress }: any) => {
             //   setIsPhoneDialerModalVisible(true);
             // }}
             onContactPress={
-  item?.vendor?.short_desc?.trim()
-    ? () => {
-        setSelectedVendor(item);
-        setIsPhoneDialerModalVisible(true);
-      }
-    : null
-}
-            
+              item?.vendor?.short_desc?.trim()
+                ? () => {
+                    setSelectedVendor(item);
+                    setIsPhoneDialerModalVisible(true);
+                  }
+                : null
+            }
             showContactLocationRow={true}
             showLocationIconOnly={true}
             showLocationText={false}
           />
-          // <View>
-          //   <AppText>sghg</AppText>
-          // </View>
+          
         );
       },
     [onViewPress],
