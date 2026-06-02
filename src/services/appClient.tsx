@@ -4,7 +4,7 @@ import { BaseUrlConfig } from '@config/config';
 import config, { BASE_URL } from './config';
 import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
-
+import Toast from 'react-native-simple-toast';
 // Axios instance
 const apiClient = axios.create({
   baseURL: BaseUrlConfig?.WEBSITE_URL,
@@ -53,47 +53,30 @@ logOutref=0
     return response.data;
   },
   async error => {
-    const originalRequest = error.config;
-    if(error.response?.status === 401 && logOutref==0){
-       removeAccessToken();
-            logOutref++
-              NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
+    // const originalRequest = error.config;
+    // if(error.response?.status === 401 && logOutref==0){
+    //    removeAccessToken();
+    //         logOutref++
+    //           NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
+    if (
+      error.response?.status === 401 &&
+      error.response?.data?.message === 'Unauthenticated.' &&
+      logOutref === 0
+    ) {
+      logOutref++;
 
+      Toast.show(
+        'Your session has expired. Please log in again.',
+        Toast.LONG,
+      );
+
+      await removeAccessToken();
+
+      NavigationService.reset(routes.NAVIGATION_AUTH_STACK);
     }
-console.log(error.response,'error===>');
 
-    // console.log('❌ API Error →', {
-    //   url: originalRequest?.url,
-    //   method: originalRequest?.method,
-    //   status: error?.response?.status,
-    //   message: error?.message,
-    //   data: error?.response?.data,
-    // });
+    
 
-    // Optional: Token refresh logic
-    // if (error.response?.status === 403 && !originalRequest._retry) {
-    //   originalRequest._retry = true;
-    //   const refreshToken = await getRefreshToken();
-
-    //   if (!refreshToken) {
-    //     console.warn('🔐 No refresh token found.');
-    //     return Promise.reject(error);
-    //   }
-
-    //   try {
-    //     const tokenRes = await axios.post(`${BASE_URL}/user/refresh`, {
-    //       refreshToken,
-    //     });
-
-    //     const newAccessToken = tokenRes?.data?.accessToken;
-    //     setAccessToken(newAccessToken);
-    //     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-    //     return axios(originalRequest);
-    //   } catch (refreshError) {
-    //     console.error('🔁 Token refresh failed:', refreshError);
-    //     return Promise.reject(refreshError);
-    //   }
-    // }
 
     return Promise.reject(error);
   },

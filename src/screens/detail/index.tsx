@@ -87,7 +87,7 @@ const routes = [
 
 const Details = ({ route }: any) => {
   const { data, from, noApiCall,booklet_id } = route?.params ?? '';
-
+const [hasError, setHasError] = useState(false);
 console.log(data,'data===>');
 
   const dispatch = useAppDispatch();
@@ -400,14 +400,16 @@ console.log(data,'data===>');
     ? data.gallery.split(',').map(img => IMGE_URL + img.trim())
     : [];
 
-  const headerImage =
-    bookletDetailAllDeals?.booklet_type === 'Combo'
-      ? galleryImages.length > 0
-        ? { uri: galleryImages[0] }
-        : defaultBookletImage
-      : data?.booklet
-      ? { uri: IMGE_URL + data?.booklet }
-      : defaultBookletImage;
+
+  const headerImage = hasError
+  ? defaultBookletImage
+  : bookletDetailAllDeals?.booklet_type === 'Combo'
+  ? galleryImages.length > 0
+    ? { uri: galleryImages[0] }
+    : defaultBookletImage
+  : data?.booklet
+  ? { uri: IMGE_URL + data?.booklet }
+  : defaultBookletImage;
 
   const status = bookletDetailAllDeals?.request_status;
 
@@ -510,6 +512,7 @@ console.log(data,'data===>');
           source={headerImage}
           style={styles.coverImageStyle}
           resizeMode="cover"
+          onError={() => setHasError(true)}
         >
           <View style={styles.headerContainer}>
             <TouchableOpacityView

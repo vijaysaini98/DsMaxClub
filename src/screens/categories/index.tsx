@@ -12,7 +12,7 @@ import { commonStyles } from '@theme/commonStyles';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { getCategoryList } from '@actions/home/homeAction';
 import { Loader } from '@components/Spinner';
-import { categaoriesIcon } from '@helper/imagesAssets';
+import { categaoriesIcon, defaultBookletImage } from '@helper/imagesAssets';
 import { getCategoryDetails } from '@utils/index';
 import { SvgImageFromUri } from '@screens/home/ui/categoriesComponent';
 import CategoriesShimmer from '@components/ShimerLoader/categoriesShimerLoader';
@@ -21,6 +21,7 @@ const Categories: React.FC = () => {
   const dispatch = useAppDispatch();
   const { categoryListData, isLoading } = useAppSelector((state) => state.home);
   // const isFocused = useIsFocused();
+  const [hasError, setHasError] = React.useState(false);
 
   useEffect(() => {
     dispatch(getCategoryList());
@@ -35,29 +36,35 @@ const Categories: React.FC = () => {
       const { borderColor } = getCategoryDetails(item?.name);
       const iconUri = item?.icon ? categoryListData?.baseurl + item?.icon : null;
       return (
-        <TouchableOpacityView
-          key={item?.uuid ?? index}
-          style={styles.cateCardStyle(colors.borderColor)}
-          onPress={() => handleCategoryPress(item)}
-        >
-          {item?.icon?.includes('.svg') ? (
-            <SvgImageFromUri uri={iconUri} />
-          ) : (
-            <Image
-              source={iconUri ? { uri: iconUri } : categaoriesIcon}
-              style={styles.cateLogoImage}
-              resizeMode="cover"
-            />
-          )}
-          <AppText
-            numberOfLines={2}
-            type={FOURTEEN}
-            weight={MEDIUM}
-            style={styles.cateText}
-          >
-            {item?.name}
-          </AppText>
-        </TouchableOpacityView>
+       <TouchableOpacityView
+  key={item?.uuid ?? index}
+  style={styles.cateCardStyle(colors.borderColor)}
+  onPress={() => handleCategoryPress(item)}
+>
+  {item?.icon?.includes('.svg') ? (
+    <SvgImageFromUri uri={iconUri} />
+  ) : (
+    <Image
+      source={
+        hasError || !iconUri
+          ? defaultBookletImage
+          : { uri: iconUri }
+      }
+      style={styles.cateLogoImage}
+      resizeMode="cover"
+      onError={() => setHasError(true)}
+    />
+  )}
+
+  <AppText
+    numberOfLines={2}
+    type={FOURTEEN}
+    weight={MEDIUM}
+    style={styles.cateText}
+  >
+    {item?.name}
+  </AppText>
+</TouchableOpacityView>
       );
     },
     [categoryListData?.baseurl, handleCategoryPress]

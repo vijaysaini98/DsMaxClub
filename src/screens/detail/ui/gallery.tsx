@@ -17,6 +17,7 @@ import ImageViewModal from './imageViewModal';
 import { width } from '@utils/index';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import GalleryShimmer from '@components/ShimerLoader/GalleryShimerLoader';
+import { defaultBookletImage } from '@helper/imagesAssets';
 
 const ITEM_WIDTH = (width - 30) / 2; // 16px padding each side + 16px between
 
@@ -29,6 +30,7 @@ const Gallery = ({ id, scrollY,from }:any) => {
   const [refreshing, setRefreshing] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [hasError, setHasError] = React.useState(false);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -45,29 +47,36 @@ const Gallery = ({ id, scrollY,from }:any) => {
         }
   }, [dispatch, id]);
 
-  const renderItem = useCallback(
-    ({ item, index }: { item: string; index: number }) => (
-      <TouchableOpacityView
-        onPress={() => {
-          setActiveIndex(index);
-          setModalVisible(true);
+
+
+const renderItem = ({ item, index }: { item: string; index: number }) => (
+  <TouchableOpacityView
+    onPress={() => {
+      setActiveIndex(index);
+      setModalVisible(true);
+    }}
+    style={{ width: s(ITEM_WIDTH - 32) }}
+  >
+    <View style={styles.imageWrapper}>
+      <FastImage
+        source={
+          hasError
+            ? defaultBookletImage
+            : {
+                uri: IMGE_URL + item,
+                priority: FastImage.priority.high,
+              }
+        }
+        style={styles.image}
+        resizeMode={FastImage.resizeMode.contain}
+        onError={() => {
+          console.log('Image Error');
+          setHasError(true);
         }}
-        style={{width:s(ITEM_WIDTH-32)}}
-        >
-        <View style={styles.imageWrapper}>
-          <FastImage
-            source={{
-              uri: IMGE_URL + item,
-              priority: FastImage.priority.high,
-            }}
-            style={styles.image}
-            resizeMode={FastImage.resizeMode.contain}
-          />
-        </View>
-      </TouchableOpacityView>
-    ),
-    []
-  );
+      />
+    </View>
+  </TouchableOpacityView>
+);
 
   return (
     <View style={commonStyles.screenSize}>

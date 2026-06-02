@@ -692,6 +692,8 @@ const Card: React.FC<CardProps> = ({
     setActiveDropdown(type);
   };
 
+  const [hasError, setHasError] = React.useState(false);
+
   const closeDropdown = () => {
     setActiveDropdown(null);
   };
@@ -730,9 +732,10 @@ const Card: React.FC<CardProps> = ({
       >
         {/* IMAGE */}
         <FastImage
-          source={source}
+          source={hasError ? defaultBookletImage : source}
           style={[styles.bannerImage, imageStyle]}
           resizeMode="cover"
+          onError={()=>setHasError(true)}
         />
 
         {/* CART */}
