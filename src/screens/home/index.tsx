@@ -37,14 +37,9 @@ import { Loader } from '@components/Spinner';
 import AddCityModal from '@components/AddCityModal';
 import HomeShimmerLoader from '@components/ShimerLoader/homeShimerLoader';
 import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomSheet';
-<<<<<<< HEAD
-import { addToCart, setCartList } from '@actions/cart/cartSlice';
-import { addToCartAction } from '@actions/cart/cartActions';
-=======
 import { setCartList } from '@actions/cart/cartSlice';
 import { useFocusEffect } from '@react-navigation/native';
 import { addToCartAction } from '@actions/cart/cartActions';
->>>>>>> 4b34e72acdfdcf13bde95bec4d9e45925d0bd7ff
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
