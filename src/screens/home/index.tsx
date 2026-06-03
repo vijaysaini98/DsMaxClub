@@ -39,6 +39,7 @@ import HomeShimmerLoader from '@components/ShimerLoader/homeShimerLoader';
 import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomSheet';
 import { setCartList } from '@actions/cart/cartSlice';
 import { useFocusEffect } from '@react-navigation/native';
+import { addToCartAction } from '@actions/cart/cartActions';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -172,14 +173,30 @@ useFocusEffect(
   };
 
   const handleAddToCardOnPress = (booklet: any) => {
-    dispatch(setCartList(booklet));
-    setAddToCartBookletId(booklet?.uuid);
-    setIsAddToCart(!isAddToCart);
-    NavigationService.navigate(routes.CART_SCREEN, {
-      data: booklet,
-      from: 'Home',
-    });
+  const payload = {
+    booklet_id: booklet?.uuid,
+    quantity: 1,
   };
+
+  dispatch(
+    addToCartAction(
+      payload,
+      booklet,
+      () => {
+        setAddToCartBookletId(booklet?.uuid);
+        setIsAddToCart(true);
+
+        NavigationService.navigate(
+          routes.CART_SCREEN,
+          {
+            data: booklet,
+            from: 'Home',
+          },
+        );
+      },
+    ),
+  );
+};
 
   
 
@@ -313,6 +330,7 @@ useFocusEffect(
                           <Card
                             index={i}
                             isCompleteLocation={true}
+                            addtoCart={true}
                             item={booklet}
                             mobile={booklet?.client?.mobile}
                             cardContainerStyle={
@@ -346,6 +364,8 @@ useFocusEffect(
                                 ? booklet?.location[0]?.location
                                 : '---'
                             }
+                            handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                        isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                             // shortDesc={booklet?.client?.short_desc}
                           />
                         </View>
@@ -410,7 +430,7 @@ useFocusEffect(
                       <Card
                         index={i}
                         isCompleteLocation={true}
-                        // addtoCart={true}
+                        addtoCart={true}
                         item={booklet}
                         cardContainerStyle={
                           comboBookletDeals?.category?.length < 2 &&
@@ -445,8 +465,8 @@ useFocusEffect(
                             ? booklet?.location[0]?.location
                             : '---'
                         }
-                        // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
+                        handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                        isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                       />
                     </View>
                   );

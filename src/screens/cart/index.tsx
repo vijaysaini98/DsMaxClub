@@ -265,7 +265,7 @@ const Cart = () => {
 
             <TouchableOpacity style={styles.placeOrderBtn}>
               <AppText type={FOURTEEN} color={WHITE} weight={MEDIUM}>
-                BUY NOW
+                CHECKOUT
               </AppText>
             </TouchableOpacity>
           </View>

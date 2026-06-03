@@ -15,12 +15,6 @@ export const cartSlice = createSlice({
     setBtnLoading: (state, { payload }) => {
       state.isBtnLoading = payload;
     },
-    // setCartList: (state, { payload }) => {
-    //     state.cartList = [...state.cartList, payload];
-    // },
-    //        setCartList: (state, { payload }) => {
-    //   state.cartList = payload;
-    // },
     setCartList: (state, { payload }) => {
       state.cartList = Array.isArray(payload) ? payload : [payload];
     },
