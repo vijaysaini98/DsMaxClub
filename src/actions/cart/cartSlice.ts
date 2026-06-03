@@ -15,30 +15,9 @@ export const cartSlice = createSlice({
     setBtnLoading: (state, { payload }) => {
       state.isBtnLoading = payload;
     },
-    // setCartList: (state, { payload }) => {
-    //     state.cartList = [...state.cartList, payload];
-    // },
-    //        setCartList: (state, { payload }) => {
-    //   state.cartList = payload;
-    // },
-    // setCartList: (state, { payload }) => {
-    //   state.cartList = Array.isArray(payload) ? payload : [payload];
-    // },
-
-addToCart: (state, action) => {
-  const exists = state.cartList.find(
-    item => item.id === action.payload.id,
-  );
-
-  if (exists) {
-    exists.quantity = (exists.quantity || 1) + 1;
-  } else {
-    state.cartList.push({
-      ...action.payload,
-      quantity: 1,
-    });
-  }
-},
+    setCartList: (state, { payload }) => {
+      state.cartList = Array.isArray(payload) ? payload : [payload];
+    },
 
  removeCartItem: (
   state,

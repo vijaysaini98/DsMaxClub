@@ -119,4 +119,5 @@ export const reportIcon  = require('@assets/images/report.png')
 export const contactIcon  = require('@assets/images/phone.png')
 export const pdfIcon  = require('@assets/images/pdf.png')
 export const resetIcon  = require('@assets/images/undo.png')
+export const appIconNew  = require('@assets/images/appIconNew.png')
 

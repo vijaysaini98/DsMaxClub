@@ -66,6 +66,7 @@ import ViewDetailsBottomSheet from './ui/viewDetailsBottomSheet';
 import { commonStyles } from '@theme/commonStyles';
 import {
   CART_SCREEN,
+  HOME_SCREEN,
   MY_REQUEST_SCREEN,
   REDEEM_SUCCESSFULL_SCREEN,
   REQUEST_SUCCESSFUL_SCREEN,
@@ -85,9 +86,9 @@ const routes = [
 ];
 
 const Details = ({ route }: any) => {
-  const { data, from, noApiCall } = route?.params ?? '';
-
-  // console.log(data?.gallery, 'data?.gallery');
+  const { data, from, noApiCall,booklet_id } = route?.params ?? '';
+const [hasError, setHasError] = useState(false);
+console.log(data,'data===>');
 
   const dispatch = useAppDispatch();
 
@@ -114,7 +115,7 @@ const Details = ({ route }: any) => {
 
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 200, 400], // scroll range
-    outputRange: [250, 100, 0], // image height collapses
+    outputRange: [250, 100, 0], 
     extrapolate: 'clamp',
   });
 
@@ -129,6 +130,19 @@ const Details = ({ route }: any) => {
     outputRange: [0, 0.5, 1], // fade in
     extrapolate: 'clamp',
   });
+
+  
+ useEffect(() => {
+  if (bookletDetailAllDeals?.booklet_vendor_status === 0) {
+    Toast.show('This booklet is not available', Toast.LONG);
+
+    const timer = setTimeout(() => {
+      NavigationService.navigate(HOME_SCREEN); 
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }
+}, [bookletDetailAllDeals?.booklet_vendor_status]);
 
   useEffect(() => {
     if (!data?.uuid) return;
@@ -210,6 +224,8 @@ const Details = ({ route }: any) => {
     }, 200);
   };
 
+
+
   const renderScene = useMemo(
     () =>
       SceneMap({
@@ -219,8 +235,11 @@ const Details = ({ route }: any) => {
             from={from}
             scrollY={scrollY}
             handleViewPress={handleViewPress}
+            booklet_id={booklet_id}
+            venderId={data?.id}
           />
         ),
+      
         about: () => <About from={from} scrollY={scrollY} />,
         tc: () => <Terms_Condition from={from} scrollY={scrollY} />,
         redeemHelp: () => (
@@ -381,14 +400,16 @@ const Details = ({ route }: any) => {
     ? data.gallery.split(',').map(img => IMGE_URL + img.trim())
     : [];
 
-  const headerImage =
-    bookletDetailAllDeals?.booklet_type === 'Combo'
-      ? galleryImages.length > 0
-        ? { uri: galleryImages[0] }
-        : defaultBookletImage
-      : data?.booklet
-      ? { uri: IMGE_URL + data?.booklet }
-      : defaultBookletImage;
+
+  const headerImage = hasError
+  ? defaultBookletImage
+  : bookletDetailAllDeals?.booklet_type === 'Combo'
+  ? galleryImages.length > 0
+    ? { uri: galleryImages[0] }
+    : defaultBookletImage
+  : data?.booklet
+  ? { uri: IMGE_URL + data?.booklet }
+  : defaultBookletImage;
 
   const status = bookletDetailAllDeals?.request_status;
 
@@ -491,6 +512,7 @@ const Details = ({ route }: any) => {
           source={headerImage}
           style={styles.coverImageStyle}
           resizeMode="cover"
+          onError={() => setHasError(true)}
         >
           <View style={styles.headerContainer}>
             <TouchableOpacityView
@@ -805,35 +827,7 @@ const Details = ({ route }: any) => {
             } */}
 
             {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
-              //               <TouchableOpacityView
-              //                 onPress={handleOnPress}
-              //                 style={styles.buyBtnStyle(
-              //                   bookletDetailAllDeals?.request_status === 'Pending' ||
-              //                     bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-              //                     !bookletDetailAllDeals?.request_status ||
-              //                     isExpired,
-              //                 )}
-              //                 loader={isBtnLoading}
-              //                 disabled={
-              //                   bookletDetailAllDeals?.request_status === 'Pending' ||
-              //                   // bookletDetailAllDeals?.request_status === 'Rejected' ||
-              //                    bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-              //                   // !bookletDetailAllDeals?.request_status ||
-              //                   isExpired
-              //                 }
-              //               >
-              //              <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-              //   {bookletDetailAllDeals?.request_status === 'Out of Stock'
-              //     ? 'Out Of Stock'
-              //     : bookletDetailAllDeals?.request_status === 'Pending'
-              //     ? 'REQUEST IN PENDING'
-              //     : bookletDetailAllDeals?.request_status === null ||
-              //       bookletDetailAllDeals?.request_status === undefined ||
-              //       bookletDetailAllDeals?.request_status === ''
-              //     ? 'REQUEST'
-              //     : 'REQUEST'}
-              // </AppText>
-              //               </TouchableOpacityView>
+              
 
               <TouchableOpacityView
                 onPress={handleOnPress}

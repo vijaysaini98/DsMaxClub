@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   FlatList,
   Keyboard,
@@ -51,14 +52,15 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import moment from 'moment';
 import { setBookletDetailAllDeals } from '@actions/home/homeSlice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { setLoading } from '@actions/myCard/myCardSlice';
 
 const ComboDetailList = ({ route }: any) => {
   const insets = useSafeAreaInsets();
   const { isLoading, isRefresh, isBtnLoading, comboOfferList } = useAppSelector(
     state => state?.myCard,
   );
+  const [loadingCardId, setLoadingCardId] = useState<string | null>(null);
 
-  console.log(comboOfferList,'comboOfferList===>');
   
 
   const { userData } = useAppSelector(state => state?.auth);
@@ -87,35 +89,65 @@ const ComboDetailList = ({ route }: any) => {
     dispatch(getComboOffersList({ booklet_uuid: data?.uuid }));
   }, [isRefresh]);
 
-  const onHandlePress = (item: any, index: number) => {
+//   const onHandlePress = (item: any, index: number) => {
+// setLoadingCardId(item?.id);
+//     let value = {
+//       // booklet_id: data?.uuid,
+//       booklet_id: data?.uuid,
+//       tabname: 'All Deals',
+//       vendor_id: String(item?.id),
+//     };
 
+//     // switch (index) {
+//     //   case 0:
+//     //     value.tabname = 'All Deals';
+//     //     break;
+//     //   case 1:
+//     //     value.tabname = 'About';
+//     //     break;
+//     //   case 2:
+//     //     value.tabname = 'Termscondition';
+//     //     break;
+//     //   case 3:
+//     //     value.tabname = 'Gallery';
+//     //     break;
+//     //   default:
+//     //     value.tabname = 'All Deals';
+//     // }
+
+
+//     // dispatch(getComboBookletDetail(value, () => handleComboSuccess(item)));
+//      dispatch(
+//     getComboBookletDetail(value, (success?: boolean) => {
+//       setLoadingCardId(null); // 👈 STOP LOADER
+
+//       if (success) {
+//         handleComboSuccess(item);
+//       }
+//     }),
+//   )
+//   };
+const onHandlePress = (item: any, index: number) => {
+  setLoadingCardId(item?.id);
+
+  setTimeout(() => {
     let value = {
-      // booklet_id: data?.uuid,
       booklet_id: data?.uuid,
       tabname: 'All Deals',
       vendor_id: String(item?.id),
     };
 
-    // switch (index) {
-    //   case 0:
-    //     value.tabname = 'All Deals';
-    //     break;
-    //   case 1:
-    //     value.tabname = 'About';
-    //     break;
-    //   case 2:
-    //     value.tabname = 'Termscondition';
-    //     break;
-    //   case 3:
-    //     value.tabname = 'Gallery';
-    //     break;
-    //   default:
-    //     value.tabname = 'All Deals';
-    // }
+    dispatch(
+      getComboBookletDetail(value, (success?: boolean) => {
+        setLoadingCardId(null);
 
-
-    dispatch(getComboBookletDetail(value, () => handleComboSuccess(item)));
-  };
+        if (success) {
+          handleComboSuccess(item);
+        }
+      }),
+    );
+  }, 100); // 👈 IMPORTANT (lets loader render)
+};
 
   const handleComboSuccess = (item: any) => {
     // dispatch(setBookletDetailAllDeals({}))
@@ -123,7 +155,9 @@ const ComboDetailList = ({ route }: any) => {
     NavigationService.navigate(routes.DETAILS_SCREEN, {
       data: item,
       from: 'ComboBooklet',
-      noApiCall: true, // ✅ NEW FLAG TO AVOID API CALL IN DETAILS SCREEN
+      noApiCall: true, // ✅ NEW FLAG TO AVOID API CALL IN DETAILS SCREEN,
+      booklet_id: data?.uuid,
+
     });
   };
 
@@ -212,38 +246,94 @@ const ComboDetailList = ({ route }: any) => {
   };
 
   const isExpired = moment(data?.end_date, 'YYYY-MM-DD').isBefore(moment());
-  const renderItem = ({ item, index }: any) => {
-    // console.log(item, 'item in render===>');
+//   const renderItem = ({ item, index }: any) => {
+//     // console.log(item, 'item in render===>');
+//  const loading = isLoading;
+//     return (
+//       // <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
+//       //   <Card
+//       //     item={item}
+//       //     isCompleteLocation={true}
+//       //     showArrow={true}
+//       //     cardContainerStyle={{ width: '100%' }}
+//       //     imageStyle={styles.imageStyle}
+//       //     //   imageUrl={
+//       //     //     item?.profile_image
+//       //     //       ? { uri: IMGE_URL + item?.profile_image }
+//       //     //       : defaultBookletImage
+//       //     //   }
+//       //     imageUrl={getVendorImage(item)}
+//       //     price={item.price}
+//       //     address={item?.locations?.[0]?.location}
+//       //     status={item?.tab_status}
+//       //     shortDesc={item?.short_desc}
+//       //     handleCardOnPress={() => onHandlePress(item, index)}
+//       //     // ✅ NEW PROPS (CLEAN)
+//       //     startDate={item?.start_date}
+//       //     validityMonths={item?.validity_months}
+//       //     location={item?.locations}
+//       //     // showDateSection={true}
+//       //     cardDisabled={item?.tab_status === 'Expired'}
+//       //   />
+//       // </View>
+//        <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
+//       {isLoading ? (
+//         <View style={styles.loaderBox}>
+//           <ActivityIndicator size="small" color={colors.buttonBg} />
+//         </View>
+//       ) : (
+//         <Card
+//           item={item}
+//           isCompleteLocation={true}
+//           showArrow={true}
+//           cardContainerStyle={{ width: '100%' }}
+//           imageStyle={styles.imageStyle}
+//           imageUrl={getVendorImage(item)}
+//           price={item.price}
+//           address={item?.locations?.[0]?.location}
+//           status={item?.tab_status}
+//           shortDesc={item?.short_desc}
+//           handleCardOnPress={() => onHandlePress(item, index)}
+//           startDate={item?.start_date}
+//           validityMonths={item?.validity_months}
+//           location={item?.locations}
+//           cardDisabled={item?.tab_status === 'Expired'}
+//         />
+//       )}
+//     </View>
+//     );
+//   };
+const renderItem = ({ item, index }: any) => {
+  const isCardLoading = loadingCardId === item?.id;
 
-    return (
-      <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
+  return (
+    <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
+      {isCardLoading ? (
+        <View style={styles.loaderBox}>
+          <ActivityIndicator size="small" color={colors.buttonBg} />
+        </View>
+      ) : (
         <Card
           item={item}
           isCompleteLocation={true}
           showArrow={true}
           cardContainerStyle={{ width: '100%' }}
           imageStyle={styles.imageStyle}
-          //   imageUrl={
-          //     item?.profile_image
-          //       ? { uri: IMGE_URL + item?.profile_image }
-          //       : defaultBookletImage
-          //   }
           imageUrl={getVendorImage(item)}
           price={item.price}
           address={item?.locations?.[0]?.location}
           status={item?.tab_status}
           shortDesc={item?.short_desc}
           handleCardOnPress={() => onHandlePress(item, index)}
-          // ✅ NEW PROPS (CLEAN)
           startDate={item?.start_date}
           validityMonths={item?.validity_months}
           location={item?.locations}
-          // showDateSection={true}
           cardDisabled={item?.tab_status === 'Expired'}
         />
-      </View>
-    );
-  };
+      )}
+    </View>
+  );
+};
   return (
     <View style={styles.mainContainer}>
       <ToolBar isLeftIcon title={data?.name} mainContainerStyle={{marginTop:30}}/>
@@ -398,4 +488,10 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
     // paddingTop: vs(20),
   },
+  loaderBox: {
+  height: 220,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'rgba(0,0,0,0.05)', // 👈 IMPORTANT
+},
 });

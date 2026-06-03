@@ -13,7 +13,6 @@ import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { getMyCardBookletList } from '@actions/myCard/myCardAction'
 import { SpinnerSecond } from '@components/Spinner'
 
-// ✅ Make sure route keys match those in renderScene
 const routes = [
   { key: 'allCards', title: 'All Cards' },
   { key: 'active', title: 'Active' },

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  BackHandler,
   Image,
   Platform,
   RefreshControl,
@@ -36,7 +37,14 @@ import { Loader } from '@components/Spinner';
 import AddCityModal from '@components/AddCityModal';
 import HomeShimmerLoader from '@components/ShimerLoader/homeShimerLoader';
 import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomSheet';
+<<<<<<< HEAD
 import { addToCart, setCartList } from '@actions/cart/cartSlice';
+import { addToCartAction } from '@actions/cart/cartActions';
+=======
+import { setCartList } from '@actions/cart/cartSlice';
+import { useFocusEffect } from '@react-navigation/native';
+import { addToCartAction } from '@actions/cart/cartActions';
+>>>>>>> 4b34e72acdfdcf13bde95bec4d9e45925d0bd7ff
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -74,6 +82,8 @@ const Home: React.FC = () => {
     // }
   };
 
+  
+
   useEffect(() => {
     fetchData();
   }, [userData?.current_city_name]);
@@ -94,6 +104,37 @@ const Home: React.FC = () => {
       return () => clearTimeout(alertTimeout);
     }
   }, [userData]);
+
+useFocusEffect(
+  React.useCallback(() => {
+    const backAction = () => {
+      Alert.alert(
+        'Exit App',
+        'Are you sure you want to exit?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => null,
+          },
+          {
+            text: 'OK',
+            onPress: () => BackHandler.exitApp(),
+          },
+        ],
+      );
+
+      return true;
+    };
+
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => subscription.remove(); 
+  }, []),
+);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -146,9 +187,29 @@ const Home: React.FC = () => {
   //   });
   // };
   const handleAddToCardOnPress = (booklet: any) => {
-  dispatch(addToCart(booklet));
+  const payload = {
+    booklet_id: booklet?.uuid,
+    quantity: 1,
+  };
 
-  NavigationService.navigate('CART_SCREEN');
+  dispatch(
+    addToCartAction(
+      payload,
+      booklet,
+      () => {
+        setAddToCartBookletId(booklet?.uuid);
+        setIsAddToCart(true);
+
+        NavigationService.navigate(
+          routes.CART_SCREEN,
+          {
+            data: booklet,
+            from: 'Home',
+          },
+        );
+      },
+    ),
+  );
 };
 
   
@@ -285,6 +346,7 @@ const Home: React.FC = () => {
                             index={i}
                             addtoCart={true}
                             isCompleteLocation={true}
+                            addtoCart={true}
                             item={booklet}
                             mobile={booklet?.client?.mobile}
                             cardContainerStyle={
@@ -318,7 +380,7 @@ const Home: React.FC = () => {
                                 ? booklet?.location[0]?.location
                                 : '---'
                             }
-                              handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                            handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
                         isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                             // shortDesc={booklet?.client?.short_desc}
                           />
