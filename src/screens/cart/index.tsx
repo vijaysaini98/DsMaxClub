@@ -19,6 +19,8 @@ import { IMGE_URL } from '@services/config';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 
 import { deleteIcon, defaultBookletImage } from '@helper/imagesAssets';
+import * as routes from '@navigations/routes';
+
 
 import {
   deleteCartItem,
@@ -27,6 +29,7 @@ import {
 } from '@actions/cart/cartActions';
 import NavigationService from '@navigations/NavigationService';
 import Header from '@components/Header';
+import { CHECKOUT_SCREEN } from '@navigations/routes';
 
 const dispatch = useAppDispatch();
 
@@ -112,7 +115,7 @@ const CartItem = memo(({ item, onIncrement, onDecrement }: any) => {
 const Cart = () => {
   const dispatch = useAppDispatch();
   const onCheckoutPress = () => {
-    NavigationService.navigate('CHECKOUT_SCREEN');
+    NavigationService.navigate(CHECKOUT_SCREEN)
   };
   const { cartList } = useAppSelector(state => state.cart);
 

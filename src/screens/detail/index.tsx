@@ -97,6 +97,7 @@ console.log(data,'data===>');
   );
 
   const { userData } = useAppSelector(state => state?.auth);
+console.log(userData,'userData in details');
 
   const [index, setIndex] = React.useState(0);
   const [acceptContent, setAcceptContent] = useState(false);
@@ -835,9 +836,19 @@ console.log(data,'data===>');
                 loader={isBtnLoading}
                 disabled={isDisabled}
               >
-                <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-                  {buttonText}
-                </AppText>
+                
+                {
+                  userData?.user_type == '1' ? (
+                    <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                      {buttonText}
+                    </AppText>
+                  ) : (
+                    <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                     {'ADD TO CART'}
+                    </AppText>
+                  )
+                }
+               
               </TouchableOpacityView>
             )}
           </>
