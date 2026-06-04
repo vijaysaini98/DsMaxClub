@@ -47,7 +47,9 @@ const Checkout = () => {
       0,
     );
   }, [cartList]);
-const renderItem = ({ item }) => {
+const renderItem = ({ item }:any) => {
+  console.log(item,'item in checkout');
+  
   const quantity = item?.quantity || 1;
   const price = Number(item?.price || 0);
   const total = price * quantity;
@@ -64,14 +66,14 @@ const renderItem = ({ item }) => {
           type={FOURTEEN}
           weight={SEMI_BOLD}
           numberOfLines={2}>
-          {item?.name}
+          {item?.booklet_name}
         </AppText>
 
-        <View style={styles.typeBadge}>
+        {/* <View style={styles.typeBadge}>
           <AppText style={styles.typeBadgeText}>
             Digital Booklet
           </AppText>
-        </View>
+        </View> */}
 
         <View style={styles.priceRow}>
           <AppText style={styles.qtyText}>

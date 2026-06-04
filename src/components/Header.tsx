@@ -412,8 +412,8 @@ const styles = StyleSheet.create({
   },
 
   cartIcon: {
-    width: 28,
-    height: 28,
+    width: 22,
+    height: 22,
   },
 
   badge: {

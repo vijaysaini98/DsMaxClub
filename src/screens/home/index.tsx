@@ -172,15 +172,7 @@ useFocusEffect(
     }
   };
 
-  // const handleAddToCardOnPress = (booklet: any) => {
-  //   dispatch(setCartList(booklet));
-  //   setAddToCartBookletId(booklet?.uuid);
-  //   setIsAddToCart(!isAddToCart);
-  //   NavigationService.navigate(routes.CART_SCREEN, {
-  //     data: booklet,
-  //     from: 'Home',
-  //   });
-  // };
+
   const handleAddToCardOnPress = (booklet: any) => {
   const payload = {
     booklet_id: booklet?.uuid,
@@ -243,61 +235,7 @@ useFocusEffect(
               NavigationService.navigate(routes?.CATEGORIES_SCCREEN);
             }}
           />
-          {/* {comboBookletDeals?.category?.length > 0 && (
-            <View>
-              <View style={styles.trendingContainer}>
-                <AppText
-                  type={TWENTY_TWO}
-                  weight={SEMI_BOLD}
-                  style={styles.titleStyle}
-                >
-                  {"Combo Deals"}
-                </AppText>
-              </View>
-              <ScrollView
-                horizontal={comboBookletDeals?.category?.length > 1}
-                scrollEnabled={comboBookletDeals?.category?.length > 1}
-                showsHorizontalScrollIndicator={false}
-                // scrollEnabled={comboBookletDeals?.category?.length<1}
-                contentContainerStyle={styles.listStyle}
-              >
-                {comboBookletDeals?.category?.map((booklet, i) => {
-// console.log(booklet,'booklet=====>');
-
-                  return (
-                    <View key={booklet?.id || i} style={comboBookletDeals?.category?.length < 2 ? styles.categoryBookletContainer2 :
-                      styles.categoryBookletContainer}>
-                      <Card
-                        index={i}
-                        isCompleteLocation={true}
-                        // addtoCart={true}
-                        item={booklet}
-                        cardContainerStyle={comboBookletDeals?.category?.length < 2 && styles.cardContainerStyle}
-                        imageBaseUrl={comboBookletDeals?.baseurl}
-                        imageStyle={comboBookletDeals?.category?.length < 2 && styles.cardImageStyle}
-                        // handleCardOnPress={() => {
-                        //   NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "ComboBooklet" });
-                        // }}
-                        handleCardOnPress={() => {
-                          NavigationService.navigate(routes.COMBO_OFFER_LIST_SCREEN,{ data: booklet, from: "ComboBooklet" });
-                        }}
-                        imageUrl={
-                          booklet?.booklet
-                            ? { uri: comboBookletDeals?.baseurl + booklet?.booklet }
-                            : defaultBookletImage
-                        }
-                        name={booklet?.name}
-                        price={booklet?.price}
-                        address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
-                        // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
-                      />
-                    </View>
-                  )
-                })}
-              </ScrollView>
-            </View>
-          )} */}
+         
 
           {isLoading ? (
             <Loader />
@@ -339,9 +277,9 @@ useFocusEffect(
                         >
                           <Card
                             index={i}
-                            addtoCart={true}
+                            // addtoCart={true}
                             isCompleteLocation={true}
-                            addtoCart={true}
+                            // addtoCart={true}
                             item={booklet}
                             mobile={booklet?.client?.mobile}
                             cardContainerStyle={
@@ -375,8 +313,8 @@ useFocusEffect(
                                 ? booklet?.location[0]?.location
                                 : '---'
                             }
-                            handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
+                        //     handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                             // shortDesc={booklet?.client?.short_desc}
                           />
                         </View>
@@ -441,7 +379,7 @@ useFocusEffect(
                       <Card
                         index={i}
                         isCompleteLocation={true}
-                        addtoCart={true}
+                        // addtoCart={true}
                         item={booklet}
                         cardContainerStyle={
                           comboBookletDeals?.category?.length < 2 &&
@@ -476,8 +414,8 @@ useFocusEffect(
                             ? booklet?.location[0]?.location
                             : '---'
                         }
-                        handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
+                        // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                       />
                     </View>
                   );
