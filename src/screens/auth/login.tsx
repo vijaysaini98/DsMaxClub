@@ -41,7 +41,7 @@ import { FCM_TOKEN_KEY } from '@helper/Constants';
 const Login = ({ route }) => {
   const { userType } = route?.params || '';
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector(state => state.auth);
+  const { isLoading,maintenanceInfo } = useAppSelector(state => state.auth);
   const sheetRef = useRef(null);
 
   const passwordInputRef = React.useRef(null);
@@ -151,7 +151,9 @@ const Login = ({ route }) => {
             }}
           >
             <FastImage
-              source={logoImage}
+              // source={logoImage}
+              source={{uri:maintenanceInfo.logo}}
+
               style={{ height: vs(100), width: ms(100), alignSelf: 'center' }}
               resizeMode={FastImage.resizeMode.contain}
             />
