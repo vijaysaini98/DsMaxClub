@@ -14,7 +14,8 @@ const REST_PASSWORD: string = `${BASE_URL}reset-password`;
 const CUSTOMER_SEND_OTP_VERIFY: string = `${BASE_URL}send-customer-email-otp`;
 const DELETE_ACCOUNT: string = `${BASE_URL}delete-customer-account`;
 const APP_VERSION: string = `${BASE_URL}get-userapp-version`;
-const MAINTENANCE_STATUS: string = `${BASE_URL}maintenance/status`;
+// const MAINTENANCE_STATUS: string = `${BASE_URL}maintenance/status`;
+const MAINTENANCE_STATUS: string = `${BASE_URL}app-settings`;
 
 // userApi
 const USER_PROFILE: string = `${BASE_URL}edit-profile`;
