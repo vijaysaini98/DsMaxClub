@@ -12,6 +12,7 @@ import { defaultBookletImage } from '@helper/imagesAssets';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
 import { getExecutiveRequestList } from '@actions/executiveRequest.tsx/executiveRequestAction';
 import moment from 'moment';
+import { IMGE_URL } from '@services/config';
 
 const RequestList = ({ value }) => {
   const dispatch = useAppDispatch();
@@ -71,7 +72,7 @@ const RequestList = ({ value }) => {
             imageStyle={styles.imageStyle}
             imageUrl={
               item?.booklet
-                ? { uri: item?.baseurl + item?.booklet }
+                ? { uri: IMGE_URL + item?.booklet }
                 : defaultBookletImage
             }
             name={`${item?.name} (${item?.unique_code})`}

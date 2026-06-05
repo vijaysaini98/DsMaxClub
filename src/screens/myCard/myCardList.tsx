@@ -21,6 +21,7 @@ import {
 import Toast from 'react-native-simple-toast';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
 import moment from 'moment';
+import { IMGE_URL } from '@services/config';
 
 const MyCardList = ({ value }: any) => {
   const dispatch = useAppDispatch();
@@ -144,7 +145,7 @@ const MyCardList = ({ value }: any) => {
             imageStyle={styles.imageStyle}
             imageUrl={
               item?.booklet
-                ? { uri: item?.baseurl + item?.booklet }
+                ? { uri: IMGE_URL + item?.booklet }
                 : defaultBookletImage
             }
             // name={`${item?.name} (${item?.booklet_uniquecode})`}

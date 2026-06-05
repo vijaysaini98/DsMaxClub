@@ -40,6 +40,7 @@ import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomShe
 import { setCartList } from '@actions/cart/cartSlice';
 import { useFocusEffect } from '@react-navigation/native';
 import { addToCartAction } from '@actions/cart/cartActions';
+import { IMGE_URL } from '@services/config';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -51,6 +52,7 @@ const Home: React.FC = () => {
     bannerList,
     comboBookletDeals,
   } = useAppSelector(state => state?.home);
+  
 
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -265,6 +267,7 @@ useFocusEffect(
                     contentContainerStyle={styles.listStyle}
                   >
                     {item.booklets.map((booklet: any, i: number) => {
+                      
                       return (
                         <View
                           key={booklet.id || i}
@@ -300,7 +303,7 @@ useFocusEffect(
                               booklet?.booklet
                                 ? {
                                     uri:
-                                      categoryBookletData?.baseurl +
+                                      IMGE_URL +
                                       booklet?.booklet,
                                   }
                                 : defaultBookletImage
@@ -403,7 +406,7 @@ useFocusEffect(
                           booklet?.booklet
                             ? {
                                 uri:
-                                  comboBookletDeals?.baseurl + booklet?.booklet,
+                                  IMGE_URL + booklet?.booklet,
                               }
                             : defaultBookletImage
                         }
