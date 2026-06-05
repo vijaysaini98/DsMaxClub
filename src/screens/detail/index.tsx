@@ -836,8 +836,11 @@ console.log(userData,'userData in details');
                 loader={isBtnLoading}
                 disabled={isDisabled}
               >
+                 <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                      {buttonText}
+                    </AppText>
                 
-                {
+                {/* {
                   userData?.user_type == '1' ? (
                     <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
                       {buttonText}
@@ -847,7 +850,7 @@ console.log(userData,'userData in details');
                      {'ADD TO CART'}
                     </AppText>
                   )
-                }
+                } */}
                
               </TouchableOpacityView>
             )}
