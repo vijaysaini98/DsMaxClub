@@ -40,6 +40,7 @@ import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomShe
 import { setCartList } from '@actions/cart/cartSlice';
 import { useFocusEffect } from '@react-navigation/native';
 import { addToCartAction } from '@actions/cart/cartActions';
+import { IMGE_URL } from '@services/config';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -51,6 +52,7 @@ const Home: React.FC = () => {
     bannerList,
     comboBookletDeals,
   } = useAppSelector(state => state?.home);
+  
 
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -233,61 +235,7 @@ useFocusEffect(
               NavigationService.navigate(routes?.CATEGORIES_SCCREEN);
             }}
           />
-          {/* {comboBookletDeals?.category?.length > 0 && (
-            <View>
-              <View style={styles.trendingContainer}>
-                <AppText
-                  type={TWENTY_TWO}
-                  weight={SEMI_BOLD}
-                  style={styles.titleStyle}
-                >
-                  {"Combo Deals"}
-                </AppText>
-              </View>
-              <ScrollView
-                horizontal={comboBookletDeals?.category?.length > 1}
-                scrollEnabled={comboBookletDeals?.category?.length > 1}
-                showsHorizontalScrollIndicator={false}
-                // scrollEnabled={comboBookletDeals?.category?.length<1}
-                contentContainerStyle={styles.listStyle}
-              >
-                {comboBookletDeals?.category?.map((booklet, i) => {
-// console.log(booklet,'booklet=====>');
-
-                  return (
-                    <View key={booklet?.id || i} style={comboBookletDeals?.category?.length < 2 ? styles.categoryBookletContainer2 :
-                      styles.categoryBookletContainer}>
-                      <Card
-                        index={i}
-                        isCompleteLocation={true}
-                        // addtoCart={true}
-                        item={booklet}
-                        cardContainerStyle={comboBookletDeals?.category?.length < 2 && styles.cardContainerStyle}
-                        imageBaseUrl={comboBookletDeals?.baseurl}
-                        imageStyle={comboBookletDeals?.category?.length < 2 && styles.cardImageStyle}
-                        // handleCardOnPress={() => {
-                        //   NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "ComboBooklet" });
-                        // }}
-                        handleCardOnPress={() => {
-                          NavigationService.navigate(routes.COMBO_OFFER_LIST_SCREEN,{ data: booklet, from: "ComboBooklet" });
-                        }}
-                        imageUrl={
-                          booklet?.booklet
-                            ? { uri: comboBookletDeals?.baseurl + booklet?.booklet }
-                            : defaultBookletImage
-                        }
-                        name={booklet?.name}
-                        price={booklet?.price}
-                        address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
-                        // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
-                      />
-                    </View>
-                  )
-                })}
-              </ScrollView>
-            </View>
-          )} */}
+         
 
           {isLoading ? (
             <Loader />
@@ -317,6 +265,7 @@ useFocusEffect(
                     contentContainerStyle={styles.listStyle}
                   >
                     {item.booklets.map((booklet: any, i: number) => {
+                      
                       return (
                         <View
                           key={booklet.id || i}
@@ -351,7 +300,7 @@ useFocusEffect(
                               booklet?.booklet
                                 ? {
                                     uri:
-                                      categoryBookletData?.baseurl +
+                                      IMGE_URL +
                                       booklet?.booklet,
                                   }
                                 : defaultBookletImage
@@ -454,7 +403,7 @@ useFocusEffect(
                           booklet?.booklet
                             ? {
                                 uri:
-                                  comboBookletDeals?.baseurl + booklet?.booklet,
+                                  IMGE_URL + booklet?.booklet,
                               }
                             : defaultBookletImage
                         }

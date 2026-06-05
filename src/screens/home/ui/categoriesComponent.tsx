@@ -8,6 +8,7 @@ import NavigationService from '@navigations/NavigationService'
 import { CATEGORIES_LIST_SCCREEN } from '@navigations/routes'
 import { SvgXml } from 'react-native-svg'
 import { ms, s, vs } from 'react-native-size-matters/extend'
+import { IMGE_URL } from '@services/config'
 
 export const SvgImageFromUri = ({ uri, height, width }: { uri: string, height?: string, width?: string }) => {
   const [svgXml, setSvgXml] = useState<string | null>(null)
@@ -27,8 +28,12 @@ export const SvgImageFromUri = ({ uri, height, width }: { uri: string, height?: 
   return <SvgXml xml={svgXml} width={width ?? "60"} height={height ?? "60"} />
 }
 
+
+console.log(IMGE_URL,'IMGE_URL===>');
+
 const CategoriesComponent = ({ data, handleSeeAll }: { data: any, handleSeeAll: () => void }) => {
-   const [hasError, setHasError] = React.useState(false);
+   const [imageErrors, setImageErrors] = useState<{ [key: string]: boolean }>({});
+   
   return (
     <View style={styles.categoriesMainContainer}>
       <View style={styles.categoriesHeaderContainer}>
@@ -48,6 +53,8 @@ const CategoriesComponent = ({ data, handleSeeAll }: { data: any, handleSeeAll: 
         contentContainerStyle={styles.categoriesContainer}
       >
         {data?.category?.map((item: any, index: number) => {
+          console.log(item,'item?.icon===>');
+          
           const { borderColor } = getCategoryDetails(item?.name)
           return (
             <TouchableOpacityView
@@ -61,20 +68,36 @@ const CategoriesComponent = ({ data, handleSeeAll }: { data: any, handleSeeAll: 
       <SvgImageFromUri
         height="20"
         width="20"
-        uri={data?.baseurl + item?.icon}
+        uri={IMGE_URL + item?.icon}
       />
     </View>
   ) : (
+    // <Image
+    //   source={
+    //     hasError || !item?.icon
+    //       ? appIconNew
+    //       : { uri: IMGE_URL + item?.icon }
+    //   }
+    //   style={styles.cateLogoImage}
+    //   resizeMode="cover"
+    //   // onError={() => setHasError(true)}
+    // />
     <Image
-      source={
-        hasError || !item?.icon
-          ? appIconNew
-          : { uri: data?.baseurl + item?.icon }
-      }
-      style={styles.cateLogoImage}
-      resizeMode="cover"
-      onError={() => setHasError(true)}
-    />
+  source={
+    imageErrors[item?.uuid] || !item?.icon
+      ? appIconNew
+      : { uri: IMGE_URL + item?.icon }
+  }
+  style={styles.cateLogoImage}
+  resizeMode="cover"
+  onError={() => {
+    setImageErrors(prev => ({
+      ...prev,
+      [item?.uuid]: true,
+    }));
+  }}
+/>
+  
   )}
 </View>
               <AppText

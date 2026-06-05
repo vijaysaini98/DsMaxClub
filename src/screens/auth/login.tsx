@@ -152,7 +152,7 @@ const Login = ({ route }) => {
           >
             <FastImage
               // source={logoImage}
-              source={{uri:maintenanceInfo.logo}}
+              source={{uri:maintenanceInfo?.logo}}
 
               style={{ height: vs(100), width: ms(100), alignSelf: 'center' }}
               resizeMode={FastImage.resizeMode.contain}
