@@ -167,15 +167,7 @@ export default function BottomNavigation() {
           ),
         }}
       />
-       {/* <Tab.Screen
-        name={'MyCard'}
-        component={Cart}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} icon={myCardIcon} title="MY BOOKLETS" />
-          ),
-        }}
-      /> */}
+       
       <Tab.Screen
         name="Profile"
         component={Profile}

@@ -1,8 +1,10 @@
 import { colors } from '@theme/colors';
 
 import { StyleSheet } from 'react-native';
+import { vs } from 'react-native-size-matters';
 
 const styles = StyleSheet.create({
+  
   itemCard: {
     marginHorizontal: 12,
     marginTop: 12,
@@ -25,12 +27,9 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 110,
+    width: 130,
     height: 110,
-
-    borderRadius: 10,
-
-    backgroundColor: colors.white,
+    borderRadius: 8,
   },
 
   rightContainer: {
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
   name: {
     flex: 1,
 
-    fontSize: 16,
+    // fontSize: 16,
 
     color: colors.black,
 
@@ -64,47 +63,6 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
   },
-
-  qtyContainer: {
-    flexDirection: 'row',
-
-    alignItems: 'center',
-
-    marginTop: 15,
-  },
-
-  qtyBtn: {
-    width: 30,
-    height: 30,
-
-    borderWidth: 1,
-    borderColor: colors.borderColor,
-
-    justifyContent: 'center',
-
-    alignItems: 'center',
-
-    borderRadius: 6,
-  },
-
-  qtyText: {
-    marginHorizontal: 15,
-
-    fontSize: 16,
-
-    color: colors.black,
-  },
-
-  price: {
-    fontSize: 17,
-
-    fontWeight: '700',
-
-    color: colors.black,
-
-    marginTop: 15,
-  },
-
   emptyContainer: {
     flex: 1,
 
@@ -168,6 +126,104 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
   },
+  checkoutBtn: {
+    backgroundColor: colors.buttonBg,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 12,
+  },
+  bottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  price: {
+    color: colors.buttonBg,
+  },
+  qtyContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    height: 36,
+    // backgroundColor:'red'
+    alignSelf: 'flex-start',
+  },
+
+  qtyBtn: {
+    width: 28,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  qtyTextContainer: {
+    width: 38,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: '#E5E5E5',
+  },
+
+  qtyText: {
+    color: '#0D2436',
+  },
+summaryContainer: {
+  backgroundColor: colors.white,
+
+  paddingHorizontal: 16,
+  paddingTop: 20,
+  paddingBottom: 10,
+
+  borderTopLeftRadius: 20,
+  borderTopRightRadius: 20,
+
+  borderTopWidth: 1,
+  borderTopColor: '#E5E5E5',
+
+  elevation: 8, // Android
+
+  shadowColor: '#000', // iOS
+  shadowOffset: {
+    width: 0,
+    height: -3,
+  },
+  shadowOpacity: 0.08,
+  shadowRadius: 6,
+},
+
+summaryRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginVertical: 4,
+},
+divider: {
+  height: 1,
+  backgroundColor: '#E5E5E5',
+  marginVertical: 12,
+},
+
+checkoutBtnFull: {
+  marginTop: 30,
+  height: 56,
+  borderRadius: 28,
+  backgroundColor: colors.buttonBg,
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginHorizontal:16
+},
+acceptTermsConditionContainer: {
+  marginTop: 10,
+  marginBottom: 20,
+},
+acceptTermsConditionBtn: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
 });
 
 export default styles;

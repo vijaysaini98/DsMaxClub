@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  BackHandler,
   Image,
   Platform,
   RefreshControl,
@@ -37,6 +38,9 @@ import AddCityModal from '@components/AddCityModal';
 import HomeShimmerLoader from '@components/ShimerLoader/homeShimerLoader';
 import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomSheet';
 import { setCartList } from '@actions/cart/cartSlice';
+import { useFocusEffect } from '@react-navigation/native';
+import { addToCartAction } from '@actions/cart/cartActions';
+import { IMGE_URL } from '@services/config';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -48,6 +52,7 @@ const Home: React.FC = () => {
     bannerList,
     comboBookletDeals,
   } = useAppSelector(state => state?.home);
+  
 
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -74,6 +79,8 @@ const Home: React.FC = () => {
     // }
   };
 
+  
+
   useEffect(() => {
     fetchData();
   }, [userData?.current_city_name]);
@@ -94,6 +101,37 @@ const Home: React.FC = () => {
       return () => clearTimeout(alertTimeout);
     }
   }, [userData]);
+
+useFocusEffect(
+  React.useCallback(() => {
+    const backAction = () => {
+      Alert.alert(
+        'Exit App',
+        'Are you sure you want to exit?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => null,
+          },
+          {
+            text: 'OK',
+            onPress: () => BackHandler.exitApp(),
+          },
+        ],
+      );
+
+      return true;
+    };
+
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => subscription.remove(); 
+  }, []),
+);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -136,15 +174,32 @@ const Home: React.FC = () => {
     }
   };
 
+
   const handleAddToCardOnPress = (booklet: any) => {
-    dispatch(setCartList(booklet));
-    setAddToCartBookletId(booklet?.uuid);
-    setIsAddToCart(!isAddToCart);
-    NavigationService.navigate(routes.CART_SCREEN, {
-      data: booklet,
-      from: 'Home',
-    });
+  const payload = {
+    booklet_id: booklet?.uuid,
+    quantity: 1,
   };
+
+  dispatch(
+    addToCartAction(
+      payload,
+      booklet,
+      () => {
+        setAddToCartBookletId(booklet?.uuid);
+        setIsAddToCart(true);
+
+        NavigationService.navigate(
+          routes.CART_SCREEN,
+          {
+            data: booklet,
+            from: 'Home',
+          },
+        );
+      },
+    ),
+  );
+};
 
   
 
@@ -168,74 +223,21 @@ const Home: React.FC = () => {
             />
           }
         >
-          <Header userName={userData?.name} />
+          <Header userName={userData?.name}  showCart={true}/>
+
           <BanerComponent
             data={bannerList}
             onPressBanner={(item, index) => handleBannerPress(item, index)}
           />
 
-          {/* <CategoriesComponent
+          <CategoriesComponent
             data={categoryListData}
             handleSeeAll={() => {
               dispatch(setCategoriListData());
               NavigationService.navigate(routes?.CATEGORIES_SCCREEN);
             }}
-          /> */}
-          {/* {comboBookletDeals?.category?.length > 0 && (
-            <View>
-              <View style={styles.trendingContainer}>
-                <AppText
-                  type={TWENTY_TWO}
-                  weight={SEMI_BOLD}
-                  style={styles.titleStyle}
-                >
-                  {"Combo Deals"}
-                </AppText>
-              </View>
-              <ScrollView
-                horizontal={comboBookletDeals?.category?.length > 1}
-                scrollEnabled={comboBookletDeals?.category?.length > 1}
-                showsHorizontalScrollIndicator={false}
-                // scrollEnabled={comboBookletDeals?.category?.length<1}
-                contentContainerStyle={styles.listStyle}
-              >
-                {comboBookletDeals?.category?.map((booklet, i) => {
-// console.log(booklet,'booklet=====>');
-
-                  return (
-                    <View key={booklet?.id || i} style={comboBookletDeals?.category?.length < 2 ? styles.categoryBookletContainer2 :
-                      styles.categoryBookletContainer}>
-                      <Card
-                        index={i}
-                        isCompleteLocation={true}
-                        // addtoCart={true}
-                        item={booklet}
-                        cardContainerStyle={comboBookletDeals?.category?.length < 2 && styles.cardContainerStyle}
-                        imageBaseUrl={comboBookletDeals?.baseurl}
-                        imageStyle={comboBookletDeals?.category?.length < 2 && styles.cardImageStyle}
-                        // handleCardOnPress={() => {
-                        //   NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "ComboBooklet" });
-                        // }}
-                        handleCardOnPress={() => {
-                          NavigationService.navigate(routes.COMBO_OFFER_LIST_SCREEN,{ data: booklet, from: "ComboBooklet" });
-                        }}
-                        imageUrl={
-                          booklet?.booklet
-                            ? { uri: comboBookletDeals?.baseurl + booklet?.booklet }
-                            : defaultBookletImage
-                        }
-                        name={booklet?.name}
-                        price={booklet?.price}
-                        address={booklet?.location.length > 0 ? booklet?.location[0]?.location : "---"}
-                        // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
-                      />
-                    </View>
-                  )
-                })}
-              </ScrollView>
-            </View>
-          )} */}
+          />
+         
 
           {isLoading ? (
             <Loader />
@@ -265,6 +267,7 @@ const Home: React.FC = () => {
                     contentContainerStyle={styles.listStyle}
                   >
                     {item.booklets.map((booklet: any, i: number) => {
+                      
                       return (
                         <View
                           key={booklet.id || i}
@@ -277,7 +280,9 @@ const Home: React.FC = () => {
                         >
                           <Card
                             index={i}
+                            // addtoCart={true}
                             isCompleteLocation={true}
+                            // addtoCart={true}
                             item={booklet}
                             mobile={booklet?.client?.mobile}
                             cardContainerStyle={
@@ -298,7 +303,7 @@ const Home: React.FC = () => {
                               booklet?.booklet
                                 ? {
                                     uri:
-                                      categoryBookletData?.baseurl +
+                                      IMGE_URL +
                                       booklet?.booklet,
                                   }
                                 : defaultBookletImage
@@ -311,6 +316,8 @@ const Home: React.FC = () => {
                                 ? booklet?.location[0]?.location
                                 : '---'
                             }
+                        //     handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                             // shortDesc={booklet?.client?.short_desc}
                           />
                         </View>
@@ -399,7 +406,7 @@ const Home: React.FC = () => {
                           booklet?.booklet
                             ? {
                                 uri:
-                                  comboBookletDeals?.baseurl + booklet?.booklet,
+                                  IMGE_URL + booklet?.booklet,
                               }
                             : defaultBookletImage
                         }

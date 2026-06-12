@@ -14,6 +14,8 @@ interface Props {
 }
 
 const BanerComponent: React.FC<Props> = ({ data, onPressBanner }) => {
+  const [hasError, setHasError] = React.useState(false);
+  console.log(hasError, 'hasError in banner');
   return (
     <View style={styles.container}>
       <Swiper
@@ -35,12 +37,22 @@ const BanerComponent: React.FC<Props> = ({ data, onPressBanner }) => {
             >
               <View style={styles.imageWrapper}>
                 <FastImage
-                  source={{
-                    uri: IMGE_URL + item.banner,
-                    priority: FastImage.priority.normal,
+                  source={
+                    hasError
+                      ? defaultBanner
+                      : {
+                          uri: IMGE_URL + item.banner,
+                          priority: FastImage.priority.normal,
+                        }
+                  }
+                  // source={defaultBanner}
+
+                  style={{
+                    width: '100%',
+                    height: 250,
                   }}
-                  style={styles.imageStyle}
-                  resizeMode={FastImage.resizeMode.cover}
+                  resizeMode={FastImage.resizeMode.contain}
+                  onError={() => setHasError(true)}
                 />
               </View>
             </TouchableOpacity>
@@ -80,6 +92,8 @@ const styles = StyleSheet.create({
   imageWrapper: {
     borderRadius: ms(26),
     overflow: 'hidden',
+
+    flex: 1,
   },
   imageStyle: {
     width: s(width - 32), // keeping margin in mind
@@ -87,4 +101,3 @@ const styles = StyleSheet.create({
     borderRadius: ms(26),
   },
 });
-

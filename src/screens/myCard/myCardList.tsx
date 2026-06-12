@@ -21,6 +21,7 @@ import {
 import Toast from 'react-native-simple-toast';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
 import moment from 'moment';
+import { IMGE_URL } from '@services/config';
 
 const MyCardList = ({ value }: any) => {
   const dispatch = useAppDispatch();
@@ -108,34 +109,7 @@ const MyCardList = ({ value }: any) => {
 
       return (
         <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
-          {/* <Card
-            item={item}
-            index={index}
-            cardContainerStyle={{ width: '100%' }}
-            imageStyle={styles.imageStyle}
-            imageUrl={
-              item?.booklet
-                ? { uri: item?.baseurl + item?.booklet }
-                : defaultBookletImage
-            }
-            name={`${item?.name} (${item?.booklet_uniquecode})`}
-            price={item.price}
-            address={item?.locations?.[0]?.location ?? '---'}
-            handleCardOnPress={() => {
-              if (item?.tab_status === 'expired') {
-                Toast.show('Booklet has been Expired', Toast.LONG);
-              }
-              else {
-                handleOnPress(item);
-              }
-            }}
-            status={item?.tab_status}
-            shortDesc={item?.short_desc}
-            date={`Valid From: ${moment(item?.purchase_date).format("D-MMM-YYYY")} - ${item?.validity_months
-                ? `Up to ${item?.validity_months} months`
-                : `Up to ${moment(item?.end_date).format("D-MMM-YYYY")}`
-              }`}
-          /> */}
+          
           <Card
             item={item}
             index={index}
@@ -144,7 +118,7 @@ const MyCardList = ({ value }: any) => {
             imageStyle={styles.imageStyle}
             imageUrl={
               item?.booklet
-                ? { uri: item?.baseurl + item?.booklet }
+                ? { uri: IMGE_URL + item?.booklet }
                 : defaultBookletImage
             }
             // name={`${item?.name} (${item?.booklet_uniquecode})`}

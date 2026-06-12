@@ -1,14 +1,16 @@
 import axios from 'axios';
-import { getAccessToken } from './storage';
+import { getAccessToken, removeAccessToken } from './storage';
 import { BaseUrlConfig } from '@config/config';
 import config, { BASE_URL } from './config';
-
+import NavigationService from '@navigations/NavigationService';
+import * as routes from '@navigations/routes';
+import Toast from 'react-native-simple-toast';
 // Axios instance
 const apiClient = axios.create({
   baseURL: BaseUrlConfig?.WEBSITE_URL,
   timeout: 60000,
 });
-
+let logOutref=0
 console.log('API Base URL:', BASE_URL);
 
 // Request Interceptor (adds token + logs)
@@ -47,44 +49,34 @@ apiClient.interceptors.response.use(
     //   status: response.status,
     //   data: response.data,
     // });
-
+logOutref=0
     return response.data;
   },
   async error => {
-    const originalRequest = error.config;
+    // const originalRequest = error.config;
+    // if(error.response?.status === 401 && logOutref==0){
+    //    removeAccessToken();
+    //         logOutref++
+    //           NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
+    if (
+      error.response?.status === 401 &&
+      error.response?.data?.message === 'Unauthenticated.' &&
+      logOutref === 0
+    ) {
+      logOutref++;
 
-    // console.log('❌ API Error →', {
-    //   url: originalRequest?.url,
-    //   method: originalRequest?.method,
-    //   status: error?.response?.status,
-    //   message: error?.message,
-    //   data: error?.response?.data,
-    // });
+      Toast.show(
+        'Your session has expired. Please log in again.',
+        Toast.LONG,
+      );
 
-    // Optional: Token refresh logic
-    // if (error.response?.status === 403 && !originalRequest._retry) {
-    //   originalRequest._retry = true;
-    //   const refreshToken = await getRefreshToken();
+      await removeAccessToken();
 
-    //   if (!refreshToken) {
-    //     console.warn('🔐 No refresh token found.');
-    //     return Promise.reject(error);
-    //   }
+      NavigationService.reset(routes.NAVIGATION_AUTH_STACK);
+    }
 
-    //   try {
-    //     const tokenRes = await axios.post(`${BASE_URL}/user/refresh`, {
-    //       refreshToken,
-    //     });
+    
 
-    //     const newAccessToken = tokenRes?.data?.accessToken;
-    //     setAccessToken(newAccessToken);
-    //     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-    //     return axios(originalRequest);
-    //   } catch (refreshError) {
-    //     console.error('🔁 Token refresh failed:', refreshError);
-    //     return Promise.reject(refreshError);
-    //   }
-    // }
 
     return Promise.reject(error);
   },
@@ -208,5 +200,6 @@ export const API = {
       apiClient.post(config.UPDATE_CART_QUANTITY, data),
 
     remove_cart: (data: any) => apiClient.post(config.REMOVE_CART, data),
+    payment_initiate :(data: any) => apiClient.post(config.PHONEPE_INITIATE, data)
   },
 };

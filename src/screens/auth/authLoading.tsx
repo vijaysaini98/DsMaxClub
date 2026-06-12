@@ -1,5 +1,5 @@
 import NavigationService from '@navigations/NavigationService';
-import { useAppDispatch } from '@redux/hooks';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { Access_Token, getItem, PROFILE_COMPLETE, USER_ID, USER_TYPE, USER_VISITED } from '@services/storage';
 import { useEffect } from 'react';
 import * as routes from '@navigations/routes';
@@ -14,6 +14,7 @@ import { s, vs } from 'react-native-size-matters/extend';
 
 const AuthLoading = () => {
   const dispatch = useAppDispatch();
+   const {maintenanceInfo } = useAppSelector(state => state.auth);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

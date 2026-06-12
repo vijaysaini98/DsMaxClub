@@ -10,6 +10,7 @@ import { colors } from '@theme/colors';
 import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
 import { buildVersion } from '@utils/index';
+import { useAppSelector } from '@redux/hooks';
 
 const userType = [
   {
@@ -30,6 +31,9 @@ const userType = [
 ];
 
 const LoginType = () => {
+   const {maintenanceInfo } = useAppSelector(state => state.auth);
+   console.log(maintenanceInfo?.logo,'maintenanceInfo?.logo');
+   
   return (
     <AppSafeAreaView
       isSecond
@@ -39,7 +43,8 @@ const LoginType = () => {
       <View style={styles.centerContainer}>
         <View style={styles.logoWrapper}>
           <FastImage
-            source={logoImage}
+            // source={logoImage}
+            source={{uri:maintenanceInfo?.logo}}
             style={styles.logoImage}
             resizeMode={FastImage.resizeMode.contain}
           />

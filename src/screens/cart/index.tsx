@@ -1,89 +1,32 @@
-// import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
-// import React, { useMemo } from 'react';
-// import { AppSafeAreaView } from '@components/AppSafeAreaView';
-// import { useAppSelector } from '@redux/hooks';
-// import { commonStyles } from '@theme/commonStyles';
-// import { AppText, FOURTEEN, MEDIUM, WHITE } from '@components/AppText';
-// import styles from './styles';
-// import FastImage from 'react-native-fast-image';
-// import { IMGE_URL } from '@services/config';
-// import TouchableOpacityView from '@components/TouchableOpacityView';
-// import { deleteIcon } from '@helper/imagesAssets';
-
-// const Cart = () => {
-//   const { cartList } = useAppSelector((state) => state.cart);
-
-//   // ✅ Calculate total price
-//   const totalPrice = useMemo(() => {
-//     return cartList.reduce(
-//       (sum: number, item: any) => sum + Number(item?.price || 0),
-//       0
-//     );
-//   }, [cartList]);
-
-//   const renderItem = ({ item }: any) => {
-//     return (
-//       <View style={styles.itemCard}>
-//         <TouchableOpacityView>
-//             <FastImage
-//             source={deleteIcon}
-//             style={styles.deleteIcon}
-//             resizeMode={FastImage.resizeMode.contain}
-//             />
-//         </TouchableOpacityView>
-//         <FastImage
-//         source={{ uri: IMGE_URL+ item?.booklet }}
-//         style={{ width: '100%', height: 50, marginBottom: 10 }}
-//         resizeMode={FastImage.resizeMode.cover}
-//         />
-//         <View style={styles.detailContainer}>
-//         <AppText>{item?.name}</AppText>
-//         <AppText>₹ {item?.price}</AppText>
-//         </View>
-//       </View>
-//     );
-//   };
-
-//   return (
-//     <AppSafeAreaView style={commonStyles.mainContainer}>
-//       <FlatList
-//         data={cartList}
-//         numColumns={2}
-//         renderItem={renderItem}
-//         keyExtractor={(_, index) => index.toString()}
-//         contentContainerStyle={{ paddingBottom: 90 }} // space for sticky bar
-//       />
-
-//       {/* ✅ Sticky Bottom Bar */}
-//       <View style={styles.bottomBar}>
-//         <View>
-//           <AppText style={styles.totalText}>₹ {totalPrice}</AppText>
-//           <AppText style={styles.subText}>TOTAL</AppText>
-//         </View>
-
-//         <TouchableOpacity style={styles.placeOrderBtn}>
-//           <AppText type={FOURTEEN} color={WHITE} weight={MEDIUM}>BUY NOW</AppText>
-//         </TouchableOpacity>
-//       </View>
-//     </AppSafeAreaView>
-//   );
-// };
-
-// export default Cart;
-
 import React, { useEffect, useMemo, useCallback, memo, useState } from 'react';
-
-import { FlatList, View, TouchableOpacity } from 'react-native';
-
+import {
+  FlatList,
+  View,
+  TouchableOpacity,
+  Image,
+  Alert,
+  RefreshControl,
+  Pressable,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
-
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
-
 import { commonStyles } from '@theme/commonStyles';
-
-import { AppText, FOURTEEN, MEDIUM, WHITE } from '@components/AppText';
+import {
+  AppText,
+  BOLD,
+  BUTTON_BG,
+  ERROR_TEXT,
+  FOURTEEN,
+  MEDIUM,
+  SEMI_BOLD,
+  SIXTEEN,
+  TEN,
+  TWELVE,
+  TWENTY,
+  WHITE,
+} from '@components/AppText';
 
 import styles from './styles';
 
@@ -91,15 +34,30 @@ import { IMGE_URL } from '@services/config';
 
 import TouchableOpacityView from '@components/TouchableOpacityView';
 
-import { deleteIcon, defaultBookletImage } from '@helper/imagesAssets';
+import {
+  deleteIcon,
+  defaultBookletImage,
+  checkIcon,
+  unCheckIcon,
+} from '@helper/imagesAssets';
+import * as routes from '@navigations/routes';
 
 import {
   deleteCartItem,
   getCartList,
+  initiatePayment,
   updateCartQuantity,
 } from '@actions/cart/cartActions';
-
-const dispatch = useAppDispatch();
+import NavigationService from '@navigations/NavigationService';
+import Header from '@components/Header';
+import { CHECKOUT_SCREEN } from '@navigations/routes';
+import Input from '@components/Input';
+import { ms, s } from 'react-native-size-matters';
+import { colors } from '@theme/colors';
+import ToolBar from '@components/ToolBar';
+import { setIsRefresh } from '@actions/myCard/myCardSlice';
+import PhonePePaymentSDK from 'react-native-phonepe-pg';
+import { SHA256 } from 'crypto-js';
 
 const CartImage = memo(({ image, style }: any) => {
   const [failed, setFailed] = useState(false);
@@ -107,44 +65,30 @@ const CartImage = memo(({ image, style }: any) => {
   const imageUrl = image ? `${IMGE_URL}${image}` : null;
 
   return (
-    <FastImage
-      source={
-        !imageUrl || failed
-          ? defaultBookletImage
-          : {
-              uri: imageUrl,
-              priority: FastImage.priority.high,
-            }
-      }
+    <Image
+      source={!imageUrl || failed ? defaultBookletImage : { uri: imageUrl }}
       style={style}
-      resizeMode={FastImage.resizeMode.contain}
+      resizeMode="stretch"
       onError={() => setFailed(true)}
     />
   );
 });
 
-const CartItem = memo(({ item, onIncrement, onDecrement }: any) => {
+const CartItem = memo(({ item, onIncrement, onDecrement, onDelete }: any) => {
   return (
     <View style={styles.itemCard}>
       <View style={styles.rowContainer}>
-        {/* IMAGE */}
         <CartImage image={item?.image} style={styles.image} />
 
-        {/* RIGHT SIDE */}
         <View style={styles.rightContainer}>
-          {/* TOP */}
           <View style={styles.topRow}>
-            <AppText style={styles.name}>{item?.booklet_name}</AppText>
+            <AppText style={styles.name} numberOfLines={2}>
+              {item?.booklet_name}
+            </AppText>
 
             <TouchableOpacityView
               style={styles.deleteContainer}
-              onPress={() => {
-                dispatch(
-                  deleteCartItem({
-                    cart_id: item?.cart_id,
-                  }),
-                );
-              }}
+              onPress={onDelete}
             >
               <FastImage
                 source={deleteIcon}
@@ -154,24 +98,27 @@ const CartItem = memo(({ item, onIncrement, onDecrement }: any) => {
             </TouchableOpacityView>
           </View>
 
-          {/* QUANTITY */}
-          <View style={styles.qtyContainer}>
-            {/* MINUS */}
-            <TouchableOpacity style={styles.qtyBtn} onPress={onDecrement}>
-              <AppText>-</AppText>
-            </TouchableOpacity>
+          <View style={styles.bottomRow}>
+            <AppText style={styles.price} type={FOURTEEN} weight={BOLD}>
+              Rs. {item?.price}
+            </AppText>
 
-            {/* QTY */}
-            <AppText style={styles.qtyText}>{item?.quantity}</AppText>
+            <View style={styles.qtyContainer}>
+              <TouchableOpacity style={styles.qtyBtn} onPress={onDecrement}>
+                <AppText type={TWENTY}>-</AppText>
+              </TouchableOpacity>
 
-            {/* PLUS */}
-            <TouchableOpacity style={styles.qtyBtn} onPress={onIncrement}>
-              <AppText>+</AppText>
-            </TouchableOpacity>
+              <View style={styles.qtyTextContainer}>
+                <AppText style={styles.qtyText} type={FOURTEEN}>
+                  {item?.quantity}
+                </AppText>
+              </View>
+
+              <TouchableOpacity style={styles.qtyBtn} onPress={onIncrement}>
+                <AppText type={TWENTY}>+</AppText>
+              </TouchableOpacity>
+            </View>
           </View>
-
-          {/* PRICE */}
-          <AppText style={styles.price}>₹ {item?.total_price}</AppText>
         </View>
       </View>
     </View>
@@ -180,16 +127,99 @@ const CartItem = memo(({ item, onIncrement, onDecrement }: any) => {
 
 const Cart = () => {
   const dispatch = useAppDispatch();
+  const [state, setState] = useState({
+    bookletQty: '1',
+    executiveCode: '',
+  });
+  const [acceptContent, setAcceptContent] = useState(false);
+  const { cartList, isRefresh } = useAppSelector(state => state.cart);
+    console.log(cartList,'cartList==>');
 
-  const { cartList } = useAppSelector(state => state.cart);
+  const { userData } = useAppSelector(state => state?.auth);
+  const [message, setMessage] = useState<string>('Message: ');
 
+
+const initPhonePeSDK = async (paymentResponse: any) => {
+  const {
+    phonepe_merchant_id,
+    phonepe_merchant_key,
+    phonepe_key_index,
+    merchant_transaction_id,
+    redirect_url,
+    phonepe_callback_url,
+  } = paymentResponse;
+
+  // Extract token from redirect_url
+  const urlParams = new URL(redirect_url);
+  const token = urlParams.searchParams.get('token');
+
+  const flowId = merchant_transaction_id.replace(/[^a-zA-Z0-9]/g, '');
+
+  try {
+    // Step 1: Init
+    const result = await PhonePePaymentSDK.init(
+      'PRODUCTION',
+      phonepe_merchant_id,
+      flowId,
+      true,
+    );
+
+    // Step 2: Build request with correct keys
+    const request = JSON.stringify({
+      orderId: flowId,                  // alphanumeric cleaned transactionId
+      token: token,                     // extracted from redirect_url
+      paymentMode: 'PAY_PAGE',        // try this first
+      targetAppPackageName: '',
+    });
+
+    console.log('REQUEST ===>', request);
+const upiApps = await PhonePePaymentSDK.getUpiAppsForAndroid();
+console.log('UPI APPS ===>', JSON.stringify(upiApps));
+
+    // Step 3: Start transaction
+    const txnResult = await PhonePePaymentSDK.startTransaction(
+      request,
+      null,
+    );
+    console.log('TXN RESULT ===>', txnResult);
+
+  } catch (error) {
+    console.log('ERROR ===>', error);
+  }
+};
+  const onCheckoutPress = () => {
+    console.log('PAY NOW PRESSED');
+    if (!acceptContent) {
+      Alert.alert('Please accept Terms & Conditions');
+      return;
+    }
+
+    const data = {
+      gateway: 'phonepe',
+      phone: userData?.mobile,
+      executive_code: state?.executiveCode || '',
+    };
+
+    console.log('PAYMENT DATA ===>', data);
+    dispatch(
+      initiatePayment(data, (response: any) => {
+        console.log('CALLBACK HIT');
+        console.log('RESPONSE ===>', response);
+
+        initPhonePeSDK(response);
+      }),
+    );
+  };
   useEffect(() => {
     dispatch(getCartList());
   }, []);
+  const safeCartList = cartList?.items || [];
 
-  const safeCartList = Array.isArray(cartList) ? cartList : [];
 
-  // TOTAL PRICE
+  const onRefresh = useCallback(() => {
+    dispatch(getCartList());
+  }, [dispatch]);
+
   const totalPrice = useMemo(() => {
     return safeCartList.reduce(
       (sum: number, item: any) => sum + Number(item?.total_price || 0),
@@ -202,13 +232,18 @@ const Cart = () => {
       return (
         <CartItem
           item={item}
+          onDelete={() =>
+            dispatch(
+              deleteCartItem({
+                cart_id: item?.cart_id,
+              }),
+            )
+          }
           onIncrement={() => {
             dispatch(
               updateCartQuantity({
                 cart_id: item?.cart_id,
-
                 quantity: Number(item?.quantity) + 1,
-
                 action: 'increment',
               }),
             );
@@ -218,9 +253,7 @@ const Cart = () => {
               dispatch(
                 updateCartQuantity({
                   cart_id: item?.cart_id,
-
                   quantity: Number(item?.quantity) - 1,
-
                   action: 'decrement',
                 }),
               );
@@ -231,9 +264,13 @@ const Cart = () => {
     },
     [dispatch],
   );
-
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
+      <ToolBar
+        isLeftIcon
+        title="My Cart"
+        mainContainerStyle={{ marginHorizontal: 16, paddingVertical: 20 }}
+      />
       {/* EMPTY CART */}
       {safeCartList?.length === 0 ? (
         <View style={styles.emptyContainer}>
@@ -241,34 +278,112 @@ const Cart = () => {
         </View>
       ) : (
         <>
-          {/* CART LIST */}
           <FlatList
             data={safeCartList}
             renderItem={renderItem}
-            keyExtractor={(item: any, index: number) =>
-              item?.cart_id?.toString() || index.toString()
-            }
+            keyExtractor={item => item?.cart_id?.toString()}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               paddingBottom: 120,
             }}
-            removeClippedSubviews={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefresh}
+                onRefresh={onRefresh}
+                colors={[colors.buttonBg]}
+                tintColor={colors.buttonBg}
+              />
+            }
           />
+          <View style={styles.summaryContainer}>
+            {/* Executive Code */}
+            <Input
+              placeholder="Enter Executive Code (Optional)"
+              value={state?.executiveCode}
+              onChangeText={(text: string) =>
+                setState({ ...state, executiveCode: text.trim() })
+              }
+              inputContainerStyle={{
+                borderRadius: 10,
+              }}
+              inputStyle={{
+                fontSize: ms(12),
+              }}
+            />
 
-          {/* BOTTOM BAR */}
-          <View style={styles.bottomBar}>
-            <View>
-              <AppText style={styles.totalText}>₹ {totalPrice}</AppText>
+            {/* Terms & Conditions */}
+            <View style={styles.acceptTermsConditionContainer}>
+              <TouchableOpacityView
+                onPress={() => setAcceptContent(!acceptContent)}
+                style={styles.acceptTermsConditionBtn}
+              >
+                {acceptContent ? (
+                  <Image
+                    source={checkIcon}
+                    style={{ height: s(24), width: s(24) }}
+                    resizeMode="contain"
+                    tintColor={colors.buttonBg}
+                  />
+                ) : (
+                  <Image
+                    source={unCheckIcon}
+                    style={{ height: s(20), width: s(20) }}
+                    resizeMode="contain"
+                    tintColor={colors.buttonBg}
+                  />
+                )}
 
-              <AppText style={styles.subText}>TOTAL</AppText>
+                <AppText
+                  type={FOURTEEN}
+                  weight={SEMI_BOLD}
+                  style={{ marginLeft: 10 }}
+                >
+                  Accept Terms & Conditions
+                  <AppText type={TWELVE} color={ERROR_TEXT} weight={SEMI_BOLD}>
+                    *
+                  </AppText>
+                </AppText>
+              </TouchableOpacityView>
             </View>
 
-            <TouchableOpacity style={styles.placeOrderBtn}>
-              <AppText type={FOURTEEN} color={WHITE} weight={MEDIUM}>
-                BUY NOW
+            {/* Subtotal */}
+            <View style={styles.summaryRow}>
+              <AppText type={FOURTEEN}>Subtotal :</AppText>
+              <AppText type={FOURTEEN} weight={SEMI_BOLD}>
+                Rs. {cartList?.subtotal}
               </AppText>
-            </TouchableOpacity>
+            </View>
+
+            {/* Total Qty */}
+            <View style={styles.summaryRow}>
+              <AppText type={FOURTEEN}>Total Qty :</AppText>
+              <AppText type={FOURTEEN} weight={SEMI_BOLD}>
+                {cartList?.total_qty}
+              </AppText>
+            </View>
+
+            <View style={styles.divider} />
+
+            {/* Grand Total */}
+            <View style={styles.summaryRow}>
+              <AppText type={SIXTEEN} weight={BOLD} color={BUTTON_BG}>
+                Grand Total :
+              </AppText>
+
+              <AppText type={SIXTEEN} weight={BOLD} color={BUTTON_BG}>
+                Rs. {cartList?.total}
+              </AppText>
+            </View>
           </View>
+          {/* <TouchableOpacity
+            style={styles.checkoutBtnFull}
+            onPress={onCheckoutPress}
+            //  onPress={() => Alert.alert('Button Pressed')}
+          >
+            <AppText color={WHITE} weight={BOLD} type={SIXTEEN}>
+              PAY NOW
+            </AppText>
+          </TouchableOpacity> */}
         </>
       )}
     </AppSafeAreaView>

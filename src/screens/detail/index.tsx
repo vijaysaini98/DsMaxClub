@@ -18,12 +18,14 @@ import {
   AppText,
   BOLD,
   BUTTON_TEXT,
+  FOURTEEN,
   MEDIUM,
   PLACEHOLDER,
   SIXTEEN,
   TEN,
   THIRTEEN,
   TWELVE,
+  TWENTY,
   TWENTY_TWO,
   WHITE,
 } from '@components/AppText';
@@ -66,13 +68,14 @@ import ViewDetailsBottomSheet from './ui/viewDetailsBottomSheet';
 import { commonStyles } from '@theme/commonStyles';
 import {
   CART_SCREEN,
+  HOME_SCREEN,
   MY_REQUEST_SCREEN,
   REDEEM_SUCCESSFULL_SCREEN,
   REQUEST_SUCCESSFUL_SCREEN,
 } from '@navigations/routes';
 import { s, vs } from 'react-native-size-matters';
 import { logger } from 'react-native-reanimated/lib/typescript/logger';
-import { addToCartAction } from '@actions/cart/cartActions';
+import { addToCartAction, getCartList, updateCartQuantity } from '@actions/cart/cartActions';
 const initialLayout = { width: width };
 
 // ✅ Make sure route keys match those in renderScene
@@ -85,9 +88,9 @@ const routes = [
 ];
 
 const Details = ({ route }: any) => {
-  const { data, from, noApiCall } = route?.params ?? '';
-
-  // console.log(data?.gallery, 'data?.gallery');
+  const { data, from, noApiCall,booklet_id } = route?.params ?? '';
+const [hasError, setHasError] = useState(false);
+console.log(data,'data===>');
 
   const dispatch = useAppDispatch();
 
@@ -96,10 +99,17 @@ const Details = ({ route }: any) => {
   );
 
   const { userData } = useAppSelector(state => state?.auth);
+console.log(userData,'userData in details');
 
   const [index, setIndex] = React.useState(0);
   const [acceptContent, setAcceptContent] = useState(false);
   const [couponDetail, setCouponDetail] = useState<any>();
+   const [isAddToCart, setIsAddToCart] = useState(false);
+    const [addTocarBookletId, setAddToCartBookletId] = useState<number | string>(
+      '',
+    );
+
+  
 
   const sheetRef = useRef<BottomSheetModal>(null);
 
@@ -111,24 +121,40 @@ const Details = ({ route }: any) => {
 
   const snapPoints = useMemo(() => ['40%', '50%', '80%'], []);
   const executiveSnapPoints = useMemo(() => ['50%', '80%'], []);
+    const { cartList} = useAppSelector(state => state.cart);
+    
+  
 
   const headerHeight = scrollY.interpolate({
-    inputRange: [0, 200, 400], // scroll range
-    outputRange: [250, 100, 0], // image height collapses
+    inputRange: [0, 200, 400], 
+    outputRange: [250, 100, 0], 
     extrapolate: 'clamp',
   });
 
   const headerOpacity = scrollY.interpolate({
-    inputRange: [0, 150, 200], // scroll position in px
-    outputRange: [1, 0.5, 0], // opacity values
+    inputRange: [0, 150, 200], 
+    outputRange: [1, 0.5, 0],
     extrapolate: 'clamp',
   });
 
   const collapsedHeaderOpacity = scrollY.interpolate({
-    inputRange: [100, 180, 250], // adjust thresholds to your liking
-    outputRange: [0, 0.5, 1], // fade in
+    inputRange: [100, 180, 250], 
+    outputRange: [0, 0.5, 1], 
     extrapolate: 'clamp',
   });
+
+  
+ useEffect(() => {
+  if (bookletDetailAllDeals?.booklet_vendor_status === 0) {
+    Toast.show('This booklet is not available', Toast.LONG);
+
+    const timer = setTimeout(() => {
+      NavigationService.navigate(HOME_SCREEN); 
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }
+}, [bookletDetailAllDeals?.booklet_vendor_status]);
 
   useEffect(() => {
     if (!data?.uuid) return;
@@ -210,6 +236,11 @@ const Details = ({ route }: any) => {
     }, 200);
   };
 
+
+  useEffect(() => {
+  dispatch(getCartList());
+}, []);
+
   const renderScene = useMemo(
     () =>
       SceneMap({
@@ -219,8 +250,11 @@ const Details = ({ route }: any) => {
             from={from}
             scrollY={scrollY}
             handleViewPress={handleViewPress}
+            booklet_id={booklet_id}
+            venderId={data?.id}
           />
         ),
+      
         about: () => <About from={from} scrollY={scrollY} />,
         tc: () => <Terms_Condition from={from} scrollY={scrollY} />,
         redeemHelp: () => (
@@ -239,17 +273,45 @@ const Details = ({ route }: any) => {
     let apidata = {
       booklet_id: data.uuid,
     };
-    // if (!acceptContent) {
-    //   setIndex(2)
-    //   Toast.show("Accept the booklet Terms and Condition", Toast.LONG);
-    // }
+    
     if (userData?.user_type == '1') {
       executiveBottomSheetRef?.current?.expand();
-    } else {
-      bottomSheetRef.current?.expand();
-      // executiveBottomSheetRef?.current?.expand()
-      // dispatch(bookletRequest(apidata, handleSucess))
-    }
+   
+}
+else {
+  const payload = {
+    booklet_id: data?.uuid,
+    quantity: 1,
+  };
+
+  // dispatch(
+  //   addToCartAction(
+  //     payload,
+  //     data,
+  //     () => {
+  //       setAddToCartBookletId(data?.uuid);
+  //       setIsAddToCart(true);
+
+  //       NavigationService.navigate(CART_SCREEN, {
+  //         data,
+  //         from: 'Home',
+  //       });
+  //     },
+  //   ),
+  // );
+  dispatch(
+  addToCartAction(
+    payload,
+    data,
+    () => {
+      setAddToCartBookletId(data?.uuid);
+      setIsAddToCart(true);
+      setQuantity(1);
+      dispatch(getCartList());
+    },
+  ),
+);
+}
   };
 
   const handleSucess = () => {
@@ -305,44 +367,7 @@ const Details = ({ route }: any) => {
       dispatch(bookletRequest(apidata, handleSucess));
     }
   };
-//   const handleSubmit = (_data: any) => {
-//   Keyboard?.dismiss();
 
-//   if (!acceptContent) {
-//     Toast.show(
-//       'Accept the booklet Terms and Condition',
-//       Toast.LONG,
-//     );
-
-//     return;
-//   }
-
-//   // API PAYLOAD
-//   const apiData = {
-//     booklet_id: data?.uuid,
-//     quantity: _data?.bookletQty,
-//   };
-
-//   // LOCAL REDUX DATA
-//   const cartItem = {
-//     uuid: data?.uuid,
-//     booklet_id: data?.uuid,
-//     quantity: _data?.bookletQty,
-//     name: data?.name,
-//     price: data?.price,
-//     booklet: data?.booklet,
-//   };
-
-//   dispatch(
-//     addToCartAction(
-//       apiData,
-//       cartItem,
-//       () => {
-//         NavigationService.navigate(CART_SCREEN);
-//       },
-//     ),
-//   );
-// };
 
   const handleExecutiveSubmit = _data => {
     Keyboard?.dismiss();
@@ -365,9 +390,6 @@ const Details = ({ route }: any) => {
 
   const isCombo = bookletDetailAllDeals?.booklet_type === 'Combo';
 
-  // const locationList = isCombo
-  //   ? data?.locations
-  //   : data?.location;
   const locationList = isCombo
     ? Array.isArray(data?.locations)
       ? data.locations
@@ -381,14 +403,16 @@ const Details = ({ route }: any) => {
     ? data.gallery.split(',').map(img => IMGE_URL + img.trim())
     : [];
 
-  const headerImage =
-    bookletDetailAllDeals?.booklet_type === 'Combo'
-      ? galleryImages.length > 0
-        ? { uri: galleryImages[0] }
-        : defaultBookletImage
-      : data?.booklet
-      ? { uri: IMGE_URL + data?.booklet }
-      : defaultBookletImage;
+
+  const headerImage = hasError
+  ? defaultBookletImage
+  : bookletDetailAllDeals?.booklet_type === 'Combo'
+  ? galleryImages.length > 0
+    ? { uri: galleryImages[0] }
+    : defaultBookletImage
+  : data?.booklet
+  ? { uri: IMGE_URL + data?.booklet }
+  : defaultBookletImage;
 
   const status = bookletDetailAllDeals?.request_status;
 
@@ -412,20 +436,6 @@ const Details = ({ route }: any) => {
       ? data?.short_desc
       : data?.client?.short_desc || data?.clients?.[0]?.short_desc;
 
-  // const validityText =
-  //   data?.date_type == 1
-  //     ? data?.start_date
-  //       ? `${moment(data.start_date, 'YYYY-MM-DD').format(
-  //           'D MMM YYYY',
-  //         )} - Upto ${data?.validity_months || 'N/A'} months`
-  //       : null
-  //     : data?.start_date && data?.end_date
-  //     ? `${moment(data.start_date, 'YYYY-MM-DD').format(
-  //         'D MMM YYYY',
-  //       )} - ${moment(data.end_date, 'YYYY-MM-DD').format('D MMM YYYY')} ${
-  //         isExpired ? '(Expired)' : ''
-  //       }`
-  //     : null;
   const validityText = useMemo(() => {
     // ✅ SINGLE VENDOR
     if (
@@ -449,15 +459,7 @@ const Details = ({ route }: any) => {
 
       return 'N/A';
     }
-    // console.log(bookletDetailAllDeals,'dtata in validuty');
-
-    // ✅ COMBO (existing logic)
-    // if (bookletType === "combo" && resolvedData?.date_type === 1) {
-    //   return `Validity:  ${moment(resolvedData?.start_date).format(
-    //     "D MMM YYYY",
-    //   )} - Upto ${resolvedData?.validity_months || "N/A"} months`;
-    // }
-
+ 
     if (bookletDetailAllDeals?.date_type === 1) {
       const formattedStart = bookletDetailAllDeals?.start_date
         ? moment(bookletDetailAllDeals.start_date).format('D MMM YYYY')
@@ -479,6 +481,51 @@ const Details = ({ route }: any) => {
     return 'N/A';
   }, [bookletDetailAllDeals, data, isExpired]);
 
+  const [quantity, setQuantity] = useState(1);
+
+const cartItem = cartList?.items?.find(
+  item => item?.booklet_uuid === data?.uuid,
+);
+
+console.log('cartItem ===>', cartItem);
+
+const handleIncrement = () => {
+  const payload = {
+    // booklet_id: data?.uuid,
+    // quantity: quantity + 1,
+   cart_id: cartItem.cart_id,
+               quantity: cartItem.quantity + 1,
+                action: 'increment',
+  };
+  
+
+  dispatch(
+    updateCartQuantity(payload, () => {
+      setQuantity(prev => prev + 1);
+    }),
+  );
+};
+
+const handleDecrement = () => {
+  if (quantity <= 1) {
+    return;
+  }
+
+  const payload = {
+    // booklet_id: data?.uuid,
+    // quantity: quantity - 1,
+ cart_id: cartItem.cart_id,
+        quantity: cartItem.quantity - 1,
+                action: 'increment',
+  };
+
+  dispatch(
+    updateCartQuantity(payload, () => {
+      setQuantity(prev => prev - 1);
+    }),
+  );
+};
+
   return (
     <View style={styles.mainContainer}>
       <StatusBar
@@ -491,6 +538,7 @@ const Details = ({ route }: any) => {
           source={headerImage}
           style={styles.coverImageStyle}
           resizeMode="cover"
+          onError={() => setHasError(true)}
         >
           <View style={styles.headerContainer}>
             <TouchableOpacityView
@@ -504,17 +552,7 @@ const Details = ({ route }: any) => {
                 resizeMode="contain"
               />
             </TouchableOpacityView>
-            {/* <TouchableOpacityView
-              style={styles.backBtnStyle}
-              onPress={handleShareBtn}
-            >
-              <Image
-                source={shareIcon}
-                style={styles.iconsStyle}
-                tintColor={colors.disTextColor}
-                resizeMode='contain'
-              />
-            </TouchableOpacityView> */}
+            
           </View>
         </FastImage>
       </Animated.View>
@@ -546,17 +584,7 @@ const Details = ({ route }: any) => {
           >
             {data?.client?.name ? data?.client?.name : data?.name}
           </AppText>
-          {/* <TouchableOpacityView
-            style={styles.backBtnStyle}
-            onPress={handleShareBtn}
-          >
-            <Image
-              source={shareIcon}
-              style={styles.iconsStyle}
-              tintColor={colors.disTextColor}
-              resizeMode="contain"
-            />
-          </TouchableOpacityView> */}
+         
         </View>
       </Animated.View>
       <View style={styles.secondContainer}>
@@ -583,19 +611,6 @@ const Details = ({ route }: any) => {
           </AppText>
         </Animated.View>
 
-        {/* <AppText
-          type={SIXTEEN}
-          color={PLACEHOLDER}
-          weight={BOLD}
-          style={styles.disTextStyle}
-        >
-          {bookletDetailAllDeals?.booklet_type === 'Combo'
-            ? data?.short_desc
-            : data?.client?.short_desc
-            ? data?.client?.short_desc
-            : data?.client_short_desc}
-        </AppText> */}
-
         {phoneNumber && (
           <TouchableOpacityView onPress={() => openPhoneDialer(phoneNumber)}>
             <AppText
@@ -608,59 +623,7 @@ const Details = ({ route }: any) => {
             </AppText>
           </TouchableOpacityView>
         )}
-        {/* {data?.client?.mobile && (
-            <TouchableOpacityView
-            onPress={()=>openPhoneDialer(data?.client?.mobile)}
-            style={{flexDirection:'row',alignItems:'center',marginTop:vs(4),gap:5}}
-            >
-              <Image
-              source={helpLineIcon}
-              style={{width:s(16),height:s(16),tintColor:colors.buttonBg}}
-              resizeMode={"contain"}
-              />
-              <AppText type={TWELVE} weight={BOLD}>{data?.client?.mobile}</AppText>
-            </TouchableOpacityView>
-          )} */}
-
-        {/* {mobileNumber && (
-          <TouchableOpacityView
-            onPress={() => openPhoneDialer(mobileNumber)}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: vs(4),
-              gap: 5,
-            }}
-          >
-            <Image
-              source={helpLineIcon}
-              style={{
-                width: s(16),
-                height: s(16),
-                tintColor: colors.buttonBg,
-              }}
-              resizeMode={'contain'}
-            />
-
-            <AppText type={TWELVE} weight={BOLD}>
-              {mobileNumber}
-            </AppText>
-          </TouchableOpacityView>
-        )} */}
-
-        {/* <AppText type={THIRTEEN} color={isExpired ? BUTTON_TEXT : PLACEHOLDER} style={styles.disTextStyle}>
-          {`Validity: ${data?.date_type == 1
-            ? ` ${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - Upto ${data?.validity_months || "N/A"} months `
-            : data?.start_date && data?.end_date
-              ? `${moment(data.start_date, "YYYY-MM-DD").format("D MMM YYYY")} - ${moment(
-                data.end_date,
-                "YYYY-MM-DD"
-              ).format("D MMM YYYY")} ${isExpired ? "(Expired)" : ""}`
-              : "N/A"
-            }`}
-          
-        </AppText> */}
-
+       
         {validityText && (
           <AppText
             type={THIRTEEN}
@@ -671,12 +634,6 @@ const Details = ({ route }: any) => {
           </AppText>
         )}
 
-        {/* {data?.maximum_redeem && (
-          <AppText
-            type={THIRTEEN}
-            style={styles.disTextStyle}
-          >{`Free Gift Coupons Maximum Redeem: ${data?.maximum_redeem}`}</AppText>
-        )} */}
         <AppText type={THIRTEEN} style={styles.disTextStyle}>
           {`Free Gift Coupons Maximum Redeem: ${
             bookletDetailAllDeals?.booklet_type === 'Combo'
@@ -685,37 +642,7 @@ const Details = ({ route }: any) => {
           }`}
         </AppText>
 
-        {/* {data?.location?.length > 0 && (
-          <View style={styles.locationContainer}>
-            <TouchableOpacityView
-              onPress={() => handleRedirection(data?.location[0]?.location_url)}
-              style={styles.locationBtn}
-            >
-              <Image
-                source={locationIcon}
-                style={styles.locationIcon}
-                tintColor={colors.borderColor}
-                resizeMode="contain"
-              />
-              <AppText numberOfLines={2} type={THIRTEEN} color={BUTTON_TEXT}>
-                {data?.location[0]?.location}
-              </AppText>
-            </TouchableOpacityView>
-            {data?.location?.length > 1 && (
-              <TouchableOpacityView
-                onPress={() => sheetRef.current?.present()}
-                style={styles.downArrowBtnIcon}
-              >
-                <Image
-                  source={downArrowIcon}
-                  style={styles.locationIcon}
-                  resizeMode="contain"
-                />
-              </TouchableOpacityView>
-            )}
-          </View>
-        )} */}
-
+       
         {locationList?.length > 0 && (
           <View style={styles.locationContainer}>
             <TouchableOpacityView
@@ -778,74 +705,66 @@ const Details = ({ route }: any) => {
           </View>
         ) : (
           <>
-            {/* {
-              index == 2 && (
-                <View style={styles.acceptTermsConditionContainer}>
-                  <TouchableOpacityView
-                    onPress={() => setAcceptContent(!acceptContent)}
-                    style={styles.acceptTermsConditionBtn}>
-                    {acceptContent ?
-                      <Image
-                        source={checkIcon}
-                        style={{ height: s(24), width: s(24) }}
-                        resizeMode={"contain"}
-                        tintColor={colors.buttonBg}
-                      />
-                      : <Image
-                        source={unCheckIcon}
-                        style={{ height: s(20), width: s(20) }}
-                        resizeMode={"contain"}
-                        tintColor={colors.buttonBg}
-                      />
-                    }
-                    <AppText type={TWELVE} weight={MEDIUM} >{"Accept the Term&Conditions"}</AppText>
-                  </TouchableOpacityView>
-                </View>
-              )
-            } */}
+            
 
-            {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
-              //               <TouchableOpacityView
-              //                 onPress={handleOnPress}
-              //                 style={styles.buyBtnStyle(
-              //                   bookletDetailAllDeals?.request_status === 'Pending' ||
-              //                     bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-              //                     !bookletDetailAllDeals?.request_status ||
-              //                     isExpired,
-              //                 )}
-              //                 loader={isBtnLoading}
-              //                 disabled={
-              //                   bookletDetailAllDeals?.request_status === 'Pending' ||
-              //                   // bookletDetailAllDeals?.request_status === 'Rejected' ||
-              //                    bookletDetailAllDeals?.request_status === 'Out of Stock' ||
-              //                   // !bookletDetailAllDeals?.request_status ||
-              //                   isExpired
-              //                 }
-              //               >
-              //              <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-              //   {bookletDetailAllDeals?.request_status === 'Out of Stock'
-              //     ? 'Out Of Stock'
-              //     : bookletDetailAllDeals?.request_status === 'Pending'
-              //     ? 'REQUEST IN PENDING'
-              //     : bookletDetailAllDeals?.request_status === null ||
-              //       bookletDetailAllDeals?.request_status === undefined ||
-              //       bookletDetailAllDeals?.request_status === ''
-              //     ? 'REQUEST'
-              //     : 'REQUEST'}
-              // </AppText>
-              //               </TouchableOpacityView>
+        {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
+  <>
+    {userData?.user_type !== '1' &&
+    isAddToCart &&
+    addTocarBookletId === data?.uuid ? (
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          width: '100%',
+          justifyContent: 'space-between',
+        }}>
+        
+        <View style={styles.qtyContainer}>
+          <TouchableOpacityView
+  style={styles.qtyBtn}
+  onPress={handleDecrement}>
+  <AppText weight={BOLD} type={TWENTY}>-</AppText>
+</TouchableOpacityView>
 
-              <TouchableOpacityView
-                onPress={handleOnPress}
-                style={styles.buyBtnStyle(isDisabled)}
-                loader={isBtnLoading}
-                disabled={isDisabled}
-              >
-                <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-                  {buttonText}
-                </AppText>
-              </TouchableOpacityView>
-            )}
+<AppText style={styles.qtyText}>
+  {quantity}
+</AppText>
+
+<TouchableOpacityView
+  style={styles.qtyBtn}
+  onPress={handleIncrement}>
+  <AppText weight={BOLD} type={TWENTY} >+</AppText>
+</TouchableOpacityView>
+        </View>
+
+        <TouchableOpacityView
+          style={styles.viewCartBtn}
+          onPress={() =>
+            NavigationService.navigate(CART_SCREEN, {
+              from: 'Home',
+            })
+          }>
+          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+            VIEW CART
+          </AppText>
+        </TouchableOpacityView>
+      </View>
+    ) : (
+      <TouchableOpacityView
+        onPress={handleOnPress}
+        style={styles.buyBtnStyle(isDisabled)}
+        loader={isBtnLoading}
+        disabled={isDisabled}>
+        <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+          {userData?.user_type === '1'
+            ? buttonText
+            : 'ADD TO CART'}
+        </AppText>
+      </TouchableOpacityView>
+    )}
+  </>
+)}
           </>
         )}
       </View>

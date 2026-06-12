@@ -28,7 +28,7 @@ export const scanIcon = require('@assets/images/scanIcon.png');
 export const historyIcon = require('@assets/images/historyIcon.png');
 export const directionIcon=require('@assets/images/directionsIcon.png')
 
-export const logoImage=require('@assets/images/logoImage.png');
+export const logoImage=require('@assets/images/appIconNew.png');
 
 export const executiveIcon=require('@assets/images/executiveLogo.png');
 export const vendorIcon=require('@assets/images/vendorLogo.png');
@@ -119,4 +119,6 @@ export const reportIcon  = require('@assets/images/report.png')
 export const contactIcon  = require('@assets/images/phone.png')
 export const pdfIcon  = require('@assets/images/pdf.png')
 export const resetIcon  = require('@assets/images/undo.png')
+export const appIconNew  = require('@assets/images/appIconNew.png')
+export const termsIcon  = require('@assets/images/checkmark.png')
 
