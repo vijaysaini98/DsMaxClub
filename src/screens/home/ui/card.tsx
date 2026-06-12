@@ -1,600 +1,3 @@
-// import React from 'react';
-// import {
-//   Image,
-//   StyleSheet,
-//   View,
-//   ImageSourcePropType,
-//   ViewStyle,
-//   ImageStyle,
-//   TextStyle,
-// } from 'react-native';
-// import FastImage from 'react-native-fast-image';
-// import {
-//   AppText,
-//   BOLD,
-//   FOURTEEN,
-//   MEDIUM,
-//   TWELVE,
-//   WHITE,
-//   NORMAL,
-//   TEN,
-//   PLACEHOLDER,
-// } from '@components/AppText';
-// import { colors } from '@theme/colors';
-// import {
-//   addToCardIcon,
-//   defaultBookletImage,
-//   filledCartIcon,
-//   helpLineIcon,
-//   locationIcon,
-//   nearByIcon,
-//   restro2,
-// } from '@helper/imagesAssets';
-// import TouchableOpacityView from '@components/TouchableOpacityView';
-// import { ms, s, vs } from 'react-native-size-matters/extend';
-// import { openPhoneDialer } from '@utils/index';
-
-// export interface CardItem {
-//   id?: string | number;
-//   name?: string;
-//   booklet?: string;
-//   image?: ImageSourcePropType;
-//   stars?: number;
-//   [key: string]: any;
-// }
-
-// export interface CardProps {
-//   item: CardItem;
-//   index?: number;
-//   handleCardOnPress: (item: CardItem) => void;
-//   cardContainerStyle?: ViewStyle | ViewStyle[];
-//   imageStyle?: ImageStyle | ImageStyle[];
-//   imageUrl?: ImageSourcePropType;
-//   imageBaseUrl?: string;
-//   name?: string;
-//   price?: string | number;
-//   address?: string;
-//   status?: string;
-//   cardDisabled?: boolean;
-//   date?: string;
-//   mobile?: string;
-//   shortDesc?: string;
-//   handleAddToCardOnPress?: () => void;
-//   isAddedToCart?: boolean;
-//   addtoCart?: boolean;
-// }
-
-// const Card: React.FC<CardProps> = ({
-//   handleCardOnPress,
-//   item,
-//   index,
-//   cardContainerStyle,
-//   imageStyle,
-//   imageUrl,
-//   imageBaseUrl,
-//   name,
-//   price,
-//   address,
-//   status,
-//   cardDisabled,
-//   date,
-//   shortDesc,
-//   handleAddToCardOnPress,
-//   isAddedToCart,
-//   addtoCart
-//   // mobile,
-// }) => {
-//   const source: ImageSourcePropType =
-//     imageUrl ||
-//     item?.image ||
-//     (item?.booklet ? { uri: `${imageBaseUrl ?? ''}${item.booklet}` } : restro2) ||
-//     defaultBookletImage;
-
-//   const displayName = name ?? item?.name ?? '';
-//   const displayPrice = price !== undefined && price !== null ? `Rs. ${price}` : '';
-
-//   return (
-//     <TouchableOpacityView
-//       onPress={() => handleCardOnPress(item)}
-//       disabled={cardDisabled}
-//       style={[styles.cardInner, cardContainerStyle]}
-//     >
-//       <FastImage
-//         source={source}
-//         style={[styles.bannerImage, imageStyle]}
-//         resizeMode="cover" />
-//       {addtoCart && (
-//         <TouchableOpacityView
-//         onPress={handleAddToCardOnPress}
-//         style={{position:'absolute', top:10, right:10,backgroundColor:colors.white, padding:5, borderRadius:20}}
-//         >
-//         <FastImage
-//         style={{width:20, height:20}}
-//         source={isAddedToCart ? filledCartIcon : addToCardIcon}
-//         resizeMode="contain"
-//         />
-//         </TouchableOpacityView>
-//       )}
-
-//       <View style={styles.detailContainer}>
-//         <View style={styles.priceContainer}>
-//           <AppText type={FOURTEEN} weight={MEDIUM} style={styles.nameText}>
-//             {displayName}
-//           </AppText>
-
-//           {displayPrice ? (
-//             <AppText type={TWELVE} weight={BOLD} color={colors.buttonBg} style={styles.priceText}>
-//               {displayPrice}
-//             </AppText>
-//           ) : null}
-//         </View>
-
-//         {/* {mobile ? (
-//           <TouchableOpacityView onPress={() => openPhoneDialer(mobile)} style={styles.phoneContainerStyle}>
-//             <Image source={helpLineIcon} style={styles.phoneIconStyle} resizeMode="contain" />
-//             <AppText type={TWELVE} weight={NORMAL} style={styles.phoneText}>
-//               {mobile}
-//             </AppText>
-//           </TouchableOpacityView>
-//         ) : null} */}
-//         {
-//           shortDesc && (
-//             <AppText type={TEN} weight={MEDIUM} color={PLACEHOLDER}>{shortDesc}</AppText>
-//           )
-//         }
-//         {date ? (
-//           <AppText type={TWELVE} weight={MEDIUM} style={styles.dateText}>
-//             {date}
-//           </AppText>
-//         ) : null}
-//         <View style={styles.locationContainer}>
-//           <FastImage source={nearByIcon} style={styles.locationIconStyle} resizeMode="contain" />
-//           <AppText numberOfLines={2} type={TWELVE} weight={BOLD} style={styles.locationText}>
-//             {address}
-//           </AppText>
-//         </View>
-
-//       </View>
-
-//       {status ? (
-//         <View style={styles.statusContainer}>
-//           <AppText type={FOURTEEN} weight={MEDIUM} color={WHITE} style={styles.statusText}>
-//             {status}
-//           </AppText>
-//         </View>
-//       ) : null}
-//     </TouchableOpacityView>
-//   );
-// };
-
-// export default React.memo(Card);
-
-// const styles = StyleSheet.create({
-//   bannerImage: {
-//     height: vs(150),
-//     width: s(280),
-//   },
-//   cardInner: {
-//     borderRadius: ms(10),
-//     backgroundColor: colors.white,
-//     overflow: 'hidden',
-//     width: s(280),
-//   },
-//   detailContainer: {
-//     paddingHorizontal: s(12),
-//     paddingVertical: vs(10),
-//     backgroundColor: colors.white,
-//     width: '100%',
-//   },
-//   priceContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     justifyContent: 'space-between',
-//     marginTop: vs(5),
-//     gap: s(10),
-//   },
-//   nameText: {
-//     width: '70%',
-//   } as TextStyle,
-//   priceText: {
-//     textAlign: 'right',
-//   } as TextStyle,
-//   phoneContainerStyle: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     marginTop: vs(4),
-//     gap: s(5),
-//   },
-//   phoneIconStyle: {
-//     width: s(12),
-//     height: s(12),
-//     tintColor: colors.buttonBg,
-//     marginRight: s(6),
-//   },
-//   phoneText: {
-//     color: colors.disTextColor,
-//   } as TextStyle,
-//   locationContainer: {
-//     flexDirection: 'row',
-//     gap: s(5),
-//     marginTop: vs(5),
-//   },
-//   locationIconStyle: {
-//     marginTop: vs(2),
-//     width: s(15),
-//     height: s(15),
-//     tintColor: colors.disTextColor,
-//   },
-//   locationText: {
-//     color: colors.buttonBg,
-//     // color: colors.disTextColor,
-//     marginRight: s(5),
-//     flex: 1,
-//   },
-//   dateText: {
-//     marginTop: vs(5),
-//     color: colors.first,
-//   },
-//   statusContainer: {
-//     position: 'absolute',
-//     top: vs(10),
-//     right: s(10),
-//     alignItems: 'center',
-//     backgroundColor: colors.buttonBg,
-//     paddingVertical: vs(5),
-//     paddingHorizontal: s(8),
-//     borderRadius: ms(12),
-//   },
-//   statusText: {
-//     textTransform: 'capitalize',
-//   } as TextStyle,
-// });
-
-// import React from 'react';
-// import {
-//   StyleSheet,
-//   View,
-//   ImageSourcePropType,
-//   ViewStyle,
-//   ImageStyle,
-//   TextStyle,
-// } from 'react-native';
-// import FastImage from 'react-native-fast-image';
-// import {
-//   AppText,
-//   BOLD,
-//   FOURTEEN,
-//   MEDIUM,
-//   TWELVE,
-//   WHITE,
-// } from '@components/AppText';
-// import { colors } from '@theme/colors';
-// import {
-//   addToCardIcon,
-//   defaultBookletImage,
-//   filledCartIcon,
-//   locationIcon,
-//   contactIcon,
-//   restro2,
-//   helpLineIcon,
-//   nearByIcon,
-// } from '@helper/imagesAssets';
-// import TouchableOpacityView from '@components/TouchableOpacityView';
-// import { ms, s, vs } from 'react-native-size-matters/extend';
-// import { openPhoneDialer } from '@utils/index';
-// import moment from 'moment';
-
-// export interface CardProps {
-//   item: any;
-//   handleCardOnPress: (item: any) => void;
-//   cardContainerStyle?: ViewStyle | ViewStyle[];
-//   imageStyle?: ImageStyle | ImageStyle[];
-//   imageUrl?: ImageSourcePropType;
-//   name?: string;
-//   price?: string | number;
-//   address?: string;
-//   status?: string;
-//   cardDisabled?: boolean;
-//   isCompleteLocation?: boolean;
-
-//   // ✅ NEW CLEAN PROPS
-//   type?: 'booklet' | 'request';
-//   startDate?: string;
-//   purchaseDate?: string;
-//   validityMonths?: number;
-
-//   handleAddToCardOnPress?: () => void;
-//   isAddedToCart?: boolean;
-//   addtoCart?: boolean;
-// }
-
-// const Card: React.FC<CardProps> = ({
-//   handleCardOnPress,
-//   item,
-//   cardContainerStyle,
-//   imageStyle,
-//   imageUrl,
-//   name,
-//   price,
-//   address,
-//   status,
-//   cardDisabled,
-//   type = 'booklet',
-//   startDate,
-//   purchaseDate,
-//   validityMonths,
-//   handleAddToCardOnPress,
-//   isAddedToCart,
-//   addtoCart,
-//   isCompleteLocation,
-// }) => {
-//   const source: ImageSourcePropType =
-//     imageUrl || item?.image || restro2 || defaultBookletImage;
-
-//   const displayName = name ?? item?.name ?? '';
-//   const displayPrice =
-//     price !== undefined && price !== null ? `Rs. ${price}` : '';
-
-//   return (
-//     <TouchableOpacityView
-//       onPress={() => handleCardOnPress(item)}
-//       disabled={cardDisabled}
-//       style={[styles.cardInner, cardContainerStyle]}
-//     >
-//       {/* IMAGE */}
-//       <FastImage
-//         source={source}
-//         style={[styles.bannerImage, imageStyle]}
-//         resizeMode="cover"
-//       />
-
-//       {/* CART */}
-//       {addtoCart && (
-//         <TouchableOpacityView
-//           onPress={handleAddToCardOnPress}
-//           style={styles.cartBtn}
-//         >
-//           <FastImage
-//             style={styles.cartIcon}
-//             source={isAddedToCart ? filledCartIcon : addToCardIcon}
-//           />
-//         </TouchableOpacityView>
-//       )}
-
-//       {/* STATUS */}
-//       {status && (
-//         <View style={styles.statusContainer}>
-//           <AppText type={FOURTEEN} weight={MEDIUM} color={WHITE}>
-//             {status}
-//           </AppText>
-//         </View>
-//       )}
-
-//       {/* CONTENT */}
-//       <View style={styles.detailContainer}>
-//         {/* NAME + PRICE */}
-//         <View style={styles.priceContainer}>
-//           <AppText type={FOURTEEN} weight={MEDIUM} style={styles.nameText}>
-//             {displayName}
-//           </AppText>
-
-//           {displayPrice ? (
-//             <AppText type={TWELVE} weight={BOLD} color={colors.buttonBg}>
-//               {displayPrice}
-//             </AppText>
-//           ) : null}
-//         </View>
-
-//         {/* ================= BOOKLET UI ================= */}
-//         {/* ================= COMPLETE LOCATION UI ================= */}
-//         {isCompleteLocation ? (
-
-//           <View style={styles.locationContainer}>
-//             <FastImage source={nearByIcon} style={styles.locationIconStyle} resizeMode="contain" />
-//     <AppText
-//       type={TWELVE}
-//       weight={MEDIUM}
-//       style={styles.locationText}
-//       numberOfLines={2}
-//     >
-//       {address}
-//     </AppText>
-//   </View>
-//         ) : (
-//           <>
-//             {/* ================= BOOKLET UI ================= */}
-//             {type === 'booklet' && (
-//               <>
-//                 <View style={styles.rowBetween}>
-//                   <View>
-//                     <AppText type={TWELVE} weight={BOLD}>
-//                       Start Date
-//                     </AppText>
-//                     <AppText type={TWELVE}>
-//                       {startDate
-//                         ? moment(startDate).format('D MMM YYYY')
-//                         : '--'}
-//                     </AppText>
-//                   </View>
-
-//                   <View>
-//                     <AppText type={TWELVE} weight={BOLD}>
-//                       Expiry Date
-//                     </AppText>
-//                     <AppText type={TWELVE}>
-//                       {validityMonths ? `Upto ${validityMonths} months` : '--'}
-//                     </AppText>
-//                   </View>
-//                 </View>
-
-//                 <View style={styles.rowBetween}>
-//                   <View>
-//                     <AppText type={TWELVE} weight={BOLD}>
-//                       Booklet Code
-//                     </AppText>
-//                     <AppText type={FOURTEEN}>
-//                       {item?.booklet_uniquecode}
-//                     </AppText>
-//                   </View>
-
-//                   <View style={styles.iconRow}>
-//                     <TouchableOpacityView style={styles.circleBtn}>
-//                       <FastImage
-//                         source={locationIcon}
-//                         style={styles.circleIcon}
-//                         tintColor={colors.white}
-//                       />
-//                     </TouchableOpacityView>
-
-//                     <TouchableOpacityView
-//                       style={styles.circleBtn}
-//                       onPress={() =>
-//                         item?.mobile && openPhoneDialer(item.mobile)
-//                       }
-//                     >
-//                       <FastImage
-//                         source={helpLineIcon}
-//                         style={styles.circleIcon}
-//                         tintColor={colors.white}
-//                       />
-//                     </TouchableOpacityView>
-//                   </View>
-//                 </View>
-//               </>
-//             )}
-
-//             {/* ================= REQUEST UI ================= */}
-//             {type === 'request' && (
-//               <>
-//                 <View style={{ marginTop: vs(5) }}>
-//                   <AppText type={TWELVE} weight={BOLD}>
-//                     Requested Date
-//                   </AppText>
-//                   <AppText type={TWELVE}>
-//                     {purchaseDate
-//                       ? moment(purchaseDate).format('D MMM YYYY, hh:mm A')
-//                       : '--'}
-//                   </AppText>
-//                 </View>
-
-//                 <View style={styles.rowBetween}>
-//                   <View>
-//                     <AppText type={TWELVE} weight={BOLD}>
-//                       Booklet Code
-//                     </AppText>
-//                     <AppText type={FOURTEEN}>{item?.unique_code}</AppText>
-//                   </View>
-
-//                   <TouchableOpacityView style={styles.circleBtn}>
-//                     <FastImage
-//                       source={locationIcon}
-//                       style={styles.circleIcon}
-//                       tintColor={colors.white}
-//                     />
-//                   </TouchableOpacityView>
-//                 </View>
-//               </>
-//             )}
-//           </>
-//         )}
-//       </View>
-//     </TouchableOpacityView>
-//   );
-// };
-
-// export default React.memo(Card);
-
-// const styles = StyleSheet.create({
-//   cardInner: {
-//     borderRadius: ms(10),
-//     backgroundColor: colors.white,
-//     overflow: 'hidden',
-//     width: s(280),
-//   },
-//   bannerImage: {
-//     height: vs(150),
-//     width: '100%',
-//   },
-//   detailContainer: {
-//     padding: s(12),
-//   },
-//   priceContainer: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//   },
-//   nameText: {
-//     width: '70%',
-//   } as TextStyle,
-
-//   rowBetween: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     marginTop: vs(10),
-//     // backgroundColor:'red'
-//   },
-
-//   iconRow: {
-//     flexDirection: 'row',
-//     gap: s(10),
-//   },
-
-//   circleBtn: {
-//     width: 40,
-//     height: 40,
-//     borderRadius: 20,
-//     backgroundColor: colors.buttonBg,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-
-//   circleIcon: {
-//     width: 18,
-//     height: 18,
-//     // tintColor: colors.white,
-//   },
-
-//   statusContainer: {
-//     position: 'absolute',
-//     top: vs(10),
-//     right: s(10),
-//     backgroundColor: colors.buttonBg,
-//     paddingVertical: vs(5),
-//     paddingHorizontal: s(8),
-//     borderRadius: ms(12),
-//   },
-
-//   cartBtn: {
-//     position: 'absolute',
-//     top: 10,
-//     right: 10,
-//     backgroundColor: colors.white,
-//     padding: 5,
-//     borderRadius: 20,
-//   },
-
-//   cartIcon: {
-//     width: 20,
-//     height: 20,
-//   },
-//   locationContainer: {
-//     flexDirection: 'row',
-//     gap: s(5),
-//     marginTop: vs(5),
-//   },
-//   locationIconStyle: {
-//     marginTop: vs(2),
-//     width: s(15),
-//     height: s(15),
-//     tintColor: colors.disTextColor,
-//   },
-//   locationText: {
-//     color: colors.buttonBg,
-//     // color: colors.disTextColor,
-//     marginRight: s(5),
-//     flex: 1,
-//   },
-// });
-
 import React, { useRef } from 'react';
 import {
   StyleSheet,
@@ -605,6 +8,7 @@ import {
   TextStyle,
   Modal,
   Linking,
+  ScrollView,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {
@@ -625,12 +29,14 @@ import {
   helpLineIcon,
   nearByIcon,
   downArrowIcon,
+  termsCondIcon,
 } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import { ms, s, vs } from 'react-native-size-matters/extend';
-import { openPhoneDialer } from '@utils/index';
+import { openPhoneDialer, width } from '@utils/index';
 import moment from 'moment';
 import MultiLocationSheet from '@screens/detail/ui/multiLoctionSheet';
+import RenderHTML from 'react-native-render-html';
 
 export interface CardProps {
   item: any;
@@ -683,12 +89,12 @@ const Card: React.FC<CardProps> = ({
   data,
   showDateSection,
 }) => {
-  const [activeDropdown, setActiveDropdown] = React.useState<
-    'location' | 'contact' | null
-  >(null);
+const [activeDropdown, setActiveDropdown] = React.useState<
+  'location' | 'contact' | 'terms' | null
+>(null);
 
   const sheetRef = useRef<any>(null);
-  const openDropdown = (type: 'location' | 'contact') => {
+  const openDropdown = (type: 'location' | 'contact'|'terms') => {
     setActiveDropdown(type);
   };
 
@@ -751,14 +157,6 @@ const Card: React.FC<CardProps> = ({
           </TouchableOpacityView>
         )}
 
-        {/* STATUS */}
-        {/* {status && (
-          <View style={styles.statusContainer}>
-            <AppText type={FOURTEEN} weight={MEDIUM} color={WHITE}>
-  {status?.charAt(0).toUpperCase() + status?.slice(1)}
-</AppText>
-          </View>
-        )} */}
 
         {status && (
           <View
@@ -828,39 +226,7 @@ const Card: React.FC<CardProps> = ({
                   </View>
                 )}
 
-              {/* ✅ ALWAYS SHOW LOCATION */}
-              {/* {address && (
-                <TouchableOpacityView
-                  style={styles.locationContainer}
-                  onPress={openMap}
-                >
-                  <FastImage
-                    source={nearByIcon}
-                    style={styles.locationIconStyle}
-                  />
-                  <AppText
-                    type={TWELVE}
-                    weight={MEDIUM}
-                    style={styles.locationText}
-                    numberOfLines={2}
-                  >
-                    {address}
-                  </AppText>
-
-                  {showArrow && (
-                    <TouchableOpacityView
-                      onPress={() => sheetRef.current?.present()}
-                    >
-                      <FastImage
-                        source={downArrowIcon}
-                        style={styles.arrowIcon}
-                        resizeMode="contain"
-                      />
-                    </TouchableOpacityView>
-                  )}
-                </TouchableOpacityView>
-              )}
-               */}
+            
               {/* ✅ ALWAYS SHOW LOCATION */}
               {address && item?.booklet_type !== 2 && (
                 <TouchableOpacityView
@@ -910,21 +276,7 @@ const Card: React.FC<CardProps> = ({
                         </AppText>
                       </View>
                     )}
-                    {/* {(item?.validity_months || item?.end_date) && (
-                      <View>
-                        <AppText type={TWELVE} weight={BOLD}>
-                          Expiry Date
-                        </AppText>
-                       <AppText type={TWELVE}>
-
-
-      {
-        moment(item?.end_date).format('DD MMM YYYY')
-      }
-      
-</AppText>
-                      </View>
-                    )} */}
+                 
                     {item?.booklet_type === 1 &&
                       (item?.validity_months || item?.end_date) && (
                         <View>
@@ -940,91 +292,111 @@ const Card: React.FC<CardProps> = ({
                         </View>
                       )}
                   </View>
+{/* BOOKLET CODE STRIP */}
+<View style={styles.bookletCodeContainer}>
+  <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
+    Booklet Code
+  </AppText>
 
-                  <View style={styles.rowBetween}>
-                    <View>
-                      <AppText type={TWELVE} weight={BOLD}>
-                        Booklet Code
-                      </AppText>
-                      <AppText type={FOURTEEN}>
-                        {item?.booklet_uniquecode}
-                      </AppText>
-                    </View>
+  <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
+    {item?.booklet_uniquecode}
+  </AppText>
+</View>
 
-                    <View style={styles.iconRow}>
-                      {/* LOCATION */}
-                      <TouchableOpacityView
-                        style={styles.circleBtn}
-                        onPress={() => openDropdown('location')}
-                      >
-                        <FastImage
-                          source={locationIcon}
-                          style={styles.circleIcon}
-                          tintColor={colors.white}
-                        />
-                      </TouchableOpacityView>
+{/* BOTTOM ICONS */}
+<View style={styles.bottomIconRow}>
+  {/* LEFT */}
+  <TouchableOpacityView
+    style={styles.circleBtn}
+    onPress={() => openDropdown('terms')}
+  >
+    <FastImage
+      source={termsCondIcon} 
+      style={styles.circleIcon}
+      tintColor={colors.white}
+      resizeMode='contain'
+    />
+  </TouchableOpacityView>
 
-                      {/* CONTACT */}
-                      <TouchableOpacityView
-                        style={styles.circleBtn}
-                        onPress={() => openDropdown('contact')}
-                      >
-                        <FastImage
-                          source={helpLineIcon}
-                          style={styles.circleIcon}
-                          tintColor={colors.white}
-                        />
-                      </TouchableOpacityView>
-                    </View>
-                  </View>
+  {/* RIGHT */}
+  <View style={styles.rightIcons}>
+    <TouchableOpacityView
+      style={styles.circleBtn}
+      onPress={() => openDropdown('location')}
+    >
+      <FastImage
+        source={locationIcon}
+        style={styles.circleIcon}
+        tintColor={colors.white}
+      resizeMode='contain'
+
+      />
+    </TouchableOpacityView>
+
+    <TouchableOpacityView
+      style={styles.circleBtn}
+      onPress={() => openDropdown('contact')}
+    >
+      <FastImage
+        source={helpLineIcon}
+        style={styles.circleIcon}
+        tintColor={colors.white}
+      resizeMode='contain'
+
+      />
+    </TouchableOpacityView>
+  </View>
+</View>
                 </>
               )}
 
               {/* ================= REQUEST ================= */}
               {type === 'request' && (
-                <>
-                  {purchaseDate && (
-                    <View style={{ marginTop: vs(20) }}>
-                      <AppText type={TWELVE} weight={BOLD}>
-                        Requested Date
-                      </AppText>
-                      {/* <AppText type={TWELVE}>
-                      {purchaseDate
-                        ? moment(purchaseDate).format('DD MMMM YYYY, HH:mm ')
-                        : '--'}
-                    </AppText> */}
-                      <AppText type={TWELVE}>
-                        {purchaseDate &&
-                          moment(
-                            purchaseDate,
-                            'DD MMMM YYYY, HH:mm',
-                            true,
-                          ).format('DD MMM YYYY, hh:mm ')}
-                      </AppText>
-                    </View>
-                  )}
+  <>
+    {/* REQUESTED DATE */}
+    {purchaseDate && (
+      <View style={{ marginTop: vs(16) }}>
+        <AppText type={TWELVE} weight={BOLD}>
+          Requested Date
+        </AppText>
 
-                  <View style={styles.rowBetween}>
-                    <View>
-                      <AppText type={TWELVE} weight={BOLD}>
-                        Booklet Code
-                      </AppText>
-                      <AppText type={FOURTEEN}>{item?.unique_code}</AppText>
-                    </View>
+        <AppText type={TWELVE}>
+          {moment(
+            purchaseDate,
+            'DD MMMM YYYY, HH:mm',
+            true,
+          ).format('DD MMM YYYY, hh:mm')}
+        </AppText>
+      </View>
+    )}
 
-                    <TouchableOpacityView
-                      style={styles.circleBtn}
-                      onPress={() => openDropdown('location')}
-                    >
-                      <FastImage
-                        source={locationIcon}
-                        style={styles.circleIcon}
-                        tintColor={colors.white}
-                      />
-                    </TouchableOpacityView>
-                  </View>
-                </>
-              )}
+    {/* BOOKLET CODE STRIP */}
+    <View style={styles.bookletCodeContainer}>
+      <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
+        Booklet Code
+      </AppText>
+
+      <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
+        {item?.unique_code}
+      </AppText>
+    </View>
+
+    {/* LOCATION ICON */}
+    <View style={styles.requestIconContainer}>
+      <TouchableOpacityView
+        style={styles.circleBtn}
+        onPress={() => openDropdown('location')}
+      >
+        <FastImage
+          source={locationIcon}
+          style={styles.circleIcon}
+          tintColor={colors.white}
+          resizeMode='contain'
+        />
+      </TouchableOpacityView>
+    </View>
+  </>
+)}
               {type === 'combo' && (
                 <>
                   {/* ✅ DATE ROW */}
@@ -1116,7 +488,13 @@ const Card: React.FC<CardProps> = ({
             <View style={styles.sheetHeader}>
               <View style={styles.dragHandle} />
               <AppText type={FOURTEEN} weight={BOLD}>
-                {activeDropdown === 'location' ? 'Select Location' : 'Contact'}
+               {activeDropdown === 'location'
+  ? 'Select Location'
+  : activeDropdown === 'contact'
+  ? 'Contact'
+  : item?.booklet_uniquecode
+  ? `Terms & Conditions (${item.booklet_uniquecode})`
+  : 'Terms & Conditions'}
               </AppText>
             </View>
 
@@ -1142,22 +520,7 @@ const Card: React.FC<CardProps> = ({
                   </TouchableOpacityView>
                 ))}
 
-              {/* CONTACT */}
-              {/* {activeDropdown === 'contact' &&
-                item?.short_description?.map((num: string, index: number) => (
-                  <TouchableOpacityView
-                    key={index}
-                    style={styles.sheetItem}
-                    onPress={() => {
-                      closeDropdown();
-                      openPhoneDialer(num);
-                    }}
-                  >
-                    <FastImage source={helpLineIcon} style={styles.sheetIcon} />
-                    <AppText style={styles.sheetText}>{num}</AppText>
-                  </TouchableOpacityView>
-                ))} */}
-              {/* CONTACT */}
+            
               {activeDropdown === 'contact' &&
                 (() => {
                   let contactList: string[] = [];
@@ -1201,7 +564,35 @@ const Card: React.FC<CardProps> = ({
                   });
                 })()}
             </View>
+             {activeDropdown === 'terms' ? (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      // style={{ maxHeight: vs(350) }}
+      contentContainerStyle={{
+      paddingHorizontal: s(16),
+    }}
+      style={{
+    maxHeight: vs(350),
+    backgroundColor: colors.white,
+  }}
+    >
+      <RenderHTML
+        contentWidth={width - 30}
+        source={{
+          html:
+            item?.terms_condition ||
+            '<p>No Terms & Conditions Available</p>',
+        }}
+      />
+    </ScrollView>
+  ) : (
+    <View style={{ marginTop: vs(10) }}>
+      {/* Location / Contact List */}
+    </View>
+  )}
           </View>
+         
+
         </View>
       </Modal>
 
@@ -1247,20 +638,6 @@ const styles = StyleSheet.create({
   iconRow: {
     flexDirection: 'row',
     gap: s(10),
-  },
-
-  circleBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.buttonBg,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  circleIcon: {
-    width: 18,
-    height: 18,
   },
 
   statusContainer: {
@@ -1330,15 +707,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
 
-  bottomSheet: {
-    backgroundColor: colors.white,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingBottom: vs(20),
-    paddingHorizontal: s(15),
-    paddingTop: vs(10),
-  },
-
   sheetHeader: {
     alignItems: 'center',
     marginBottom: vs(10),
@@ -1381,4 +749,55 @@ const styles = StyleSheet.create({
     gap: s(10),
     marginTop: vs(12),
   },
+  bookletCodeContainer: {
+  backgroundColor: colors.buttonBg,
+  borderRadius: ms(8),
+  marginTop: vs(18),
+  paddingVertical: vs(12),
+  paddingHorizontal: s(16),
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+},
+
+bottomIconRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginTop: vs(18),
+},
+
+circleBtn: {
+  width: 42,
+  height: 42,
+  borderRadius: 21,
+  backgroundColor: colors.buttonBg,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+circleIcon: {
+  width: 18,
+  height: 18,
+},
+rightIcons: {
+  flexDirection: 'row',
+  gap: s(12),
+},
+requestIconContainer: {
+  marginTop: vs(18),
+  alignItems: 'flex-end',
+},
+bottomSheet: {
+  backgroundColor: colors.white,
+  borderTopLeftRadius: 20,
+  borderTopRightRadius: 20,
+  paddingHorizontal: s(15),
+  paddingTop: vs(10),
+
+  // remove fixed paddingBottom
+  // paddingBottom: vs(20),
+
+  minHeight: vs(120),
+},
 });

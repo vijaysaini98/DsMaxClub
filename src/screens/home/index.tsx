@@ -282,7 +282,7 @@ useFocusEffect(
                             index={i}
                             // addtoCart={true}
                             isCompleteLocation={true}
-                            addtoCart={true}
+                            // addtoCart={true}
                             item={booklet}
                             mobile={booklet?.client?.mobile}
                             cardContainerStyle={
@@ -316,8 +316,8 @@ useFocusEffect(
                                 ? booklet?.location[0]?.location
                                 : '---'
                             }
-                            handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
+                        //     handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                             // shortDesc={booklet?.client?.short_desc}
                           />
                         </View>
@@ -382,7 +382,7 @@ useFocusEffect(
                       <Card
                         index={i}
                         isCompleteLocation={true}
-                        addtoCart={true}
+                        // addtoCart={true}
                         item={booklet}
                         cardContainerStyle={
                           comboBookletDeals?.category?.length < 2 &&
@@ -417,8 +417,8 @@ useFocusEffect(
                             ? booklet?.location[0]?.location
                             : '---'
                         }
-                        handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
+                        // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
+                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
                       />
                     </View>
                   );

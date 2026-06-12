@@ -4,12 +4,13 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 import Header from '@components/Header';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
-import { useAppSelector } from '@redux/hooks';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
 
 import {
   AppText,
@@ -24,9 +25,12 @@ import {
 import { defaultBookletImage } from '@helper/imagesAssets';
 import styles from './styles';
 import { commonStyles } from '@theme/commonStyles';
+import { initiatePayment } from '@actions/cart/cartActions';
 
 const Checkout = () => {
   const { cartList } = useAppSelector(state => state.cart);
+    const dispatch = useAppDispatch();
+  
 
   const [selectedPayment, setSelectedPayment] =
     useState('phonepe');
@@ -100,12 +104,21 @@ const renderItem = ({ item }:any) => {
     </View>
   );
 };
-  const onPayNow = () => {
-    console.log('Selected Payment:', selectedPayment);
-    console.log('Total Amount:', totalPrice);
+const onPayNow = () => {
+  console.log('PAY NOW CLICKED');
 
-    // Call PhonePe / Razorpay API here
+  const data = {
+    amount: totalPrice,
   };
+
+  console.log('PAYLOAD ===>', data);
+
+  dispatch(
+    initiatePayment(data),
+  );
+
+  Alert.alert('Clicked');
+};
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>

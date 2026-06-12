@@ -191,7 +191,46 @@ const styles = StyleSheet.create({
     borderRadius: ms(5),
     borderColor: colors.borderColor,
     backgroundColor: acceptContent ? colors?.buttonBg : colors.white
-  })
+  }),
+  cartContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  width: '100%',
+},
+
+qtyContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: '#D6D6D6',
+  borderRadius: 24,
+  overflow: 'hidden',
+  height: 40,
+},
+
+qtyBtn: {
+  width: 38,
+  height: 40,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+qtyText: {
+  width: 38,
+  textAlign: 'center',
+  fontWeight: '700',
+},
+
+viewCartBtn: {
+  flex: 1,
+  marginLeft: 16,
+  height: 48,
+  borderRadius: 24,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#8E221A', // image wala maroon color
+},
 });
 
 export default styles;

@@ -109,34 +109,7 @@ const MyCardList = ({ value }: any) => {
 
       return (
         <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
-          {/* <Card
-            item={item}
-            index={index}
-            cardContainerStyle={{ width: '100%' }}
-            imageStyle={styles.imageStyle}
-            imageUrl={
-              item?.booklet
-                ? { uri: item?.baseurl + item?.booklet }
-                : defaultBookletImage
-            }
-            name={`${item?.name} (${item?.booklet_uniquecode})`}
-            price={item.price}
-            address={item?.locations?.[0]?.location ?? '---'}
-            handleCardOnPress={() => {
-              if (item?.tab_status === 'expired') {
-                Toast.show('Booklet has been Expired', Toast.LONG);
-              }
-              else {
-                handleOnPress(item);
-              }
-            }}
-            status={item?.tab_status}
-            shortDesc={item?.short_desc}
-            date={`Valid From: ${moment(item?.purchase_date).format("D-MMM-YYYY")} - ${item?.validity_months
-                ? `Up to ${item?.validity_months} months`
-                : `Up to ${moment(item?.end_date).format("D-MMM-YYYY")}`
-              }`}
-          /> */}
+          
           <Card
             item={item}
             index={index}

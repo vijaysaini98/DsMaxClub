@@ -8,15 +8,32 @@ buildscript {
         kotlinVersion = "2.1.20"
         androidXCore = "1.0.2"
     }
+
     repositories {
         google()
         mavenCentral()
+
+        maven {
+            url "https://phonepe.mycloudrepo.io/public/repositories/phonepe-intentsdk-android"
+        }
     }
+
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
-        classpath 'com.google.gms:google-services:4.3.15'
+        classpath("com.google.gms:google-services:4.3.15")
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+
+        maven {
+            url "https://phonepe.mycloudrepo.io/public/repositories/phonepe-intentsdk-android"
+        }
     }
 }
 

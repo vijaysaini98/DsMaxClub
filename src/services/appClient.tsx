@@ -200,5 +200,6 @@ export const API = {
       apiClient.post(config.UPDATE_CART_QUANTITY, data),
 
     remove_cart: (data: any) => apiClient.post(config.REMOVE_CART, data),
+    payment_initiate :(data: any) => apiClient.post(config.PHONEPE_INITIATE, data)
   },
 };
