@@ -7,6 +7,8 @@ import {
   Alert,
   RefreshControl,
   Pressable,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
@@ -58,6 +60,8 @@ import ToolBar from '@components/ToolBar';
 import { setIsRefresh } from '@actions/myCard/myCardSlice';
 import PhonePePaymentSDK from 'react-native-phonepe-pg';
 import { SHA256 } from 'crypto-js';
+import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
+import DeleteConfirmationModal from '@components/DeleteConfirmationModal';
 
 const CartImage = memo(({ image, style }: any) => {
   const [failed, setFailed] = useState(false);
@@ -137,6 +141,9 @@ const Cart = () => {
 
   const { userData } = useAppSelector(state => state?.auth);
   const [message, setMessage] = useState<string>('Message: ');
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+const [selectedCartId, setSelectedCartId] = useState<number | null>(null);
+
 
 
 const initPhonePeSDK = async (paymentResponse: any) => {
@@ -227,51 +234,54 @@ console.log('UPI APPS ===>', JSON.stringify(upiApps));
     );
   }, [safeCartList]);
 
-  const renderItem = useCallback(
-    ({ item }: any) => {
-      return (
-        <CartItem
-          item={item}
-          onDelete={() =>
-            dispatch(
-              deleteCartItem({
-                cart_id: item?.cart_id,
-              }),
-            )
-          }
-          onIncrement={() => {
+const renderItem = useCallback(
+  ({ item }: any) => {
+    return (
+      <CartItem
+        item={item}
+        onDelete={() => {
+          setSelectedCartId(item?.cart_id);
+          setDeleteModalVisible(true);
+        }}
+        onIncrement={() => {
+          dispatch(
+            updateCartQuantity({
+              cart_id: item?.cart_id,
+              quantity: Number(item?.quantity) + 1,
+              action: 'increment',
+            }),
+          );
+        }}
+        onDecrement={() => {
+          if (Number(item?.quantity) > 1) {
             dispatch(
               updateCartQuantity({
                 cart_id: item?.cart_id,
-                quantity: Number(item?.quantity) + 1,
-                action: 'increment',
+                quantity: Number(item?.quantity) - 1,
+                action: 'decrement',
               }),
             );
-          }}
-          onDecrement={() => {
-            if (Number(item?.quantity) > 1) {
-              dispatch(
-                updateCartQuantity({
-                  cart_id: item?.cart_id,
-                  quantity: Number(item?.quantity) - 1,
-                  action: 'decrement',
-                }),
-              );
-            }
-          }}
-        />
-      );
-    },
-    [dispatch],
-  );
-  return (
-    <AppSafeAreaView style={commonStyles.mainContainer}>
+          }
+        }}
+      />
+    );
+  },
+  [dispatch],
+);
+
+return (
+  <AppSafeAreaView style={commonStyles.mainContainer}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={80}
+    >
       <ToolBar
         isLeftIcon
         title="My Cart"
         mainContainerStyle={{ marginHorizontal: 16, paddingVertical: 20 }}
       />
-      {/* EMPTY CART */}
+
       {safeCartList?.length === 0 ? (
         <View style={styles.emptyContainer}>
           <AppText>Cart is Empty</AppText>
@@ -284,7 +294,7 @@ console.log('UPI APPS ===>', JSON.stringify(upiApps));
             keyExtractor={item => item?.cart_id?.toString()}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
-              paddingBottom: 120,
+              paddingBottom: 320, // summary container ki height ke hisab se
             }}
             refreshControl={
               <RefreshControl
@@ -295,13 +305,16 @@ console.log('UPI APPS ===>', JSON.stringify(upiApps));
               />
             }
           />
+
           <View style={styles.summaryContainer}>
-            {/* Executive Code */}
             <Input
               placeholder="Enter Executive Code (Optional)"
               value={state?.executiveCode}
               onChangeText={(text: string) =>
-                setState({ ...state, executiveCode: text.trim() })
+                setState({
+                  ...state,
+                  executiveCode: text.trim(),
+                })
               }
               inputContainerStyle={{
                 borderRadius: 10,
@@ -311,7 +324,6 @@ console.log('UPI APPS ===>', JSON.stringify(upiApps));
               }}
             />
 
-            {/* Terms & Conditions */}
             <View style={styles.acceptTermsConditionContainer}>
               <TouchableOpacityView
                 onPress={() => setAcceptContent(!acceptContent)}
@@ -339,14 +351,17 @@ console.log('UPI APPS ===>', JSON.stringify(upiApps));
                   style={{ marginLeft: 10 }}
                 >
                   Accept Terms & Conditions
-                  <AppText type={TWELVE} color={ERROR_TEXT} weight={SEMI_BOLD}>
+                  <AppText
+                    type={TWELVE}
+                    color={ERROR_TEXT}
+                    weight={SEMI_BOLD}
+                  >
                     *
                   </AppText>
                 </AppText>
               </TouchableOpacityView>
             </View>
 
-            {/* Subtotal */}
             <View style={styles.summaryRow}>
               <AppText type={FOURTEEN}>Subtotal :</AppText>
               <AppText type={FOURTEEN} weight={SEMI_BOLD}>
@@ -354,7 +369,6 @@ console.log('UPI APPS ===>', JSON.stringify(upiApps));
               </AppText>
             </View>
 
-            {/* Total Qty */}
             <View style={styles.summaryRow}>
               <AppText type={FOURTEEN}>Total Qty :</AppText>
               <AppText type={FOURTEEN} weight={SEMI_BOLD}>
@@ -364,30 +378,58 @@ console.log('UPI APPS ===>', JSON.stringify(upiApps));
 
             <View style={styles.divider} />
 
-            {/* Grand Total */}
             <View style={styles.summaryRow}>
-              <AppText type={SIXTEEN} weight={BOLD} color={BUTTON_BG}>
+              <AppText
+                type={SIXTEEN}
+                weight={BOLD}
+                color={BUTTON_BG}
+              >
                 Grand Total :
               </AppText>
 
-              <AppText type={SIXTEEN} weight={BOLD} color={BUTTON_BG}>
+              <AppText
+                type={SIXTEEN}
+                weight={BOLD}
+                color={BUTTON_BG}
+              >
                 Rs. {cartList?.total}
               </AppText>
             </View>
           </View>
-          {/* <TouchableOpacity
-            style={styles.checkoutBtnFull}
-            onPress={onCheckoutPress}
-            //  onPress={() => Alert.alert('Button Pressed')}
-          >
-            <AppText color={WHITE} weight={BOLD} type={SIXTEEN}>
-              PAY NOW
-            </AppText>
-          </TouchableOpacity> */}
         </>
       )}
-    </AppSafeAreaView>
-  );
+       
+    </KeyboardAvoidingView>
+
+   {safeCartList?.length > 0 && (
+  <TouchableOpacity
+    style={styles.checkoutBtnFull}
+    onPress={onCheckoutPress}
+  >
+    <AppText color={WHITE} weight={BOLD} type={SIXTEEN}>
+      PAY NOW
+    </AppText>
+  </TouchableOpacity>
+)}
+          <DeleteConfirmationModal
+  visible={deleteModalVisible}
+  onCancel={() => {
+    setDeleteModalVisible(false);
+    setSelectedCartId(null);
+  }}
+  onConfirm={() => {
+    dispatch(
+      deleteCartItem({
+        cart_id: selectedCartId,
+      }),
+    );
+
+    setDeleteModalVisible(false);
+    setSelectedCartId(null);
+  }}
+/>
+  </AppSafeAreaView>
+);
 };
 
 export default Cart;

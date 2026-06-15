@@ -16,7 +16,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Loader } from '@components/Spinner';
+import { Loader, SpinnerSecond } from '@components/Spinner';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { AppText, BOLD, SIXTEEN, TWENTY, WHITE } from '@components/AppText';
@@ -54,13 +54,13 @@ import { setBookletDetailAllDeals } from '@actions/home/homeSlice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { setLoading } from '@actions/myCard/myCardSlice';
 import { addToCartAction, getCartList, updateCartQuantity } from '@actions/cart/cartActions';
+import CategoriesShimmer from '@components/ShimerLoader/categoriesShimerLoader';
 
 const ComboDetailList = ({ route }: any) => {
   const insets = useSafeAreaInsets();
   const { isLoading, isRefresh, isBtnLoading, comboOfferList } = useAppSelector(
     state => state?.myCard,
   );
-  const [loadingCardId, setLoadingCardId] = useState<string | null>(null);
 
   
 
@@ -73,7 +73,6 @@ const ComboDetailList = ({ route }: any) => {
         '',
       );
  
-  const [refreshing, setRefreshing] = useState(false);
   const { data, from } = route?.params ?? '';
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -82,10 +81,12 @@ const ComboDetailList = ({ route }: any) => {
   const executiveSnapPoints = useMemo(() => ['50%', '80%'], []);
   const [quantity,setQuantity] = useState(1)
   const { cartList } = useAppSelector(state => state.cart);
-  const cartItem = cartList?.items?.find(
+    
+    const cartItem = cartList?.items?.find(
   item => item?.booklet_uuid === data?.uuid,
 );
 
+const isInCart = !!cartItem;
 
   useEffect(() => {
   dispatch(getCartList());
@@ -138,7 +139,7 @@ const handleDecrement = () => {
 
 
 const onHandlePress = (item: any, index: number) => {
-  setLoadingCardId(item?.id);
+  dispatch(setLoading(true));
 
   setTimeout(() => {
     let value = {
@@ -149,7 +150,7 @@ const onHandlePress = (item: any, index: number) => {
 
     dispatch(
       getComboBookletDetail(value, (success?: boolean) => {
-        setLoadingCardId(null);
+         dispatch(setLoading(false));
 
         if (success) {
           handleComboSuccess(item);
@@ -262,9 +263,6 @@ const onHandlePress = (item: any, index: number) => {
       }
     }
 
-    // if (vendor?.profile_image) {
-    //   return { uri: IMGE_URL + vendor.profile_image };
-    // }
 
     return defaultBookletImage; // ✅ use imported local image
   };
@@ -272,15 +270,10 @@ const onHandlePress = (item: any, index: number) => {
   const isExpired = moment(data?.end_date, 'YYYY-MM-DD').isBefore(moment());
 
 const renderItem = ({ item, index }: any) => {
-  const isCardLoading = loadingCardId === item?.id;
 
   return (
     <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
-      {isCardLoading ? (
-        <View style={styles.loaderBox}>
-          <ActivityIndicator size="small" color={colors.buttonBg} />
-        </View>
-      ) : (
+     
         <Card
           item={item}
           isCompleteLocation={true}
@@ -298,7 +291,7 @@ const renderItem = ({ item, index }: any) => {
           location={item?.locations}
           cardDisabled={item?.tab_status === 'Expired'}
         />
-      )}
+  
     </View>
   );
 };
@@ -308,7 +301,8 @@ const renderItem = ({ item, index }: any) => {
 
       <View style={styles.containerStyle}>
         {/* LIST */}
-        <FlatList
+      
+<FlatList
           data={comboOfferList}
           renderItem={renderItem}
           contentContainerStyle={styles.listContainerStyle}
@@ -325,7 +319,7 @@ const renderItem = ({ item, index }: any) => {
             />
           }
         />
-
+        
         {/* FIXED BOTTOM BUTTON */}
         <View style={styles.bottomBtnContainer}>
           {isLoading ? (
@@ -339,9 +333,10 @@ const renderItem = ({ item, index }: any) => {
             <>
               {bookletDetailAllDeals !== null && (
   <>
-    {userData?.user_type !== '1' &&
-    isAddToCart &&
-    addTocarBookletId === data?.uuid ? (
+    {/* {userData?.user_type !== '1' &&
+    isInCart &&
+    addTocarBookletId === data?.uuid ? ( */}
+    {userData?.user_type !== '1' && isInCart ? (
       <View
         style={{
           flexDirection: 'row',
@@ -471,7 +466,9 @@ const renderItem = ({ item, index }: any) => {
           executiveBottomSheetRef.current?.close();
         }}
       />
+      {isLoading && <SpinnerSecond />}
     </View>
+    
   );
 };
 

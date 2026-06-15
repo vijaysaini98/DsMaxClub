@@ -123,7 +123,11 @@ console.log(userData,'userData in details');
   const executiveSnapPoints = useMemo(() => ['50%', '80%'], []);
     const { cartList} = useAppSelector(state => state.cart);
     
-  
+    const cartItem = cartList?.items?.find(
+  item => item?.booklet_uuid === data?.uuid,
+);
+
+const isInCart = !!cartItem;
 
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 200, 400], 
@@ -284,21 +288,6 @@ else {
     quantity: 1,
   };
 
-  // dispatch(
-  //   addToCartAction(
-  //     payload,
-  //     data,
-  //     () => {
-  //       setAddToCartBookletId(data?.uuid);
-  //       setIsAddToCart(true);
-
-  //       NavigationService.navigate(CART_SCREEN, {
-  //         data,
-  //         from: 'Home',
-  //       });
-  //     },
-  //   ),
-  // );
   dispatch(
   addToCartAction(
     payload,
@@ -483,9 +472,7 @@ else {
 
   const [quantity, setQuantity] = useState(1);
 
-const cartItem = cartList?.items?.find(
-  item => item?.booklet_uuid === data?.uuid,
-);
+
 
 console.log('cartItem ===>', cartItem);
 
@@ -537,7 +524,7 @@ const handleDecrement = () => {
         <FastImage
           source={headerImage}
           style={styles.coverImageStyle}
-          resizeMode="cover"
+          resizeMode='stretch'
           onError={() => setHasError(true)}
         >
           <View style={styles.headerContainer}>
@@ -707,7 +694,7 @@ const handleDecrement = () => {
           <>
             
 
-        {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
+        {/* {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
   <>
     {userData?.user_type !== '1' &&
     isAddToCart &&
@@ -736,6 +723,60 @@ const handleDecrement = () => {
   onPress={handleIncrement}>
   <AppText weight={BOLD} type={TWENTY} >+</AppText>
 </TouchableOpacityView>
+        </View>
+
+        <TouchableOpacityView
+          style={styles.viewCartBtn}
+          onPress={() =>
+            NavigationService.navigate(CART_SCREEN, {
+              from: 'Home',
+            })
+          }>
+          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+            VIEW CART
+          </AppText>
+        </TouchableOpacityView>
+      </View>
+    ) : (
+      <TouchableOpacityView
+        onPress={handleOnPress}
+        style={styles.buyBtnStyle(isDisabled)}
+        loader={isBtnLoading}
+        disabled={isDisabled}>
+        <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+          {userData?.user_type === '1'
+            ? buttonText
+            : 'ADD TO CART'}
+        </AppText>
+      </TouchableOpacityView>
+      
+    )}
+  </>
+)} */}
+{bookletDetailAllDeals?.booklet_type !== 'Combo' && (
+  <>
+    {userData?.user_type !== '1' && isInCart ? (
+      <View style={styles.cartActionContainer}>
+        <View style={styles.qtyContainer}>
+          <TouchableOpacityView
+            style={styles.qtyBtn}
+            onPress={handleDecrement}>
+            <AppText weight={BOLD} type={TWENTY}>
+              -
+            </AppText>
+          </TouchableOpacityView>
+
+          <AppText style={styles.qtyText}>
+            {cartItem?.quantity ?? quantity}
+          </AppText>
+
+          <TouchableOpacityView
+            style={styles.qtyBtn}
+            onPress={handleIncrement}>
+            <AppText weight={BOLD} type={TWENTY}>
+              +
+            </AppText>
+          </TouchableOpacityView>
         </View>
 
         <TouchableOpacityView

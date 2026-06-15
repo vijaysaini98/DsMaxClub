@@ -80,6 +80,7 @@ const Home: React.FC = () => {
   };
 
   
+  console.log(categoryBookletData,'categoryBookletData===> ')
 
   useEffect(() => {
     fetchData();
@@ -175,32 +176,7 @@ useFocusEffect(
   };
 
 
-  const handleAddToCardOnPress = (booklet: any) => {
-  const payload = {
-    booklet_id: booklet?.uuid,
-    quantity: 1,
-  };
-
-  dispatch(
-    addToCartAction(
-      payload,
-      booklet,
-      () => {
-        setAddToCartBookletId(booklet?.uuid);
-        setIsAddToCart(true);
-
-        NavigationService.navigate(
-          routes.CART_SCREEN,
-          {
-            data: booklet,
-            from: 'Home',
-          },
-        );
-      },
-    ),
-  );
-};
-
+  console.log(comboBookletDeals?.category,'comboBookletDeals?.category');
   
 
   return (
@@ -316,9 +292,7 @@ useFocusEffect(
                                 ? booklet?.location[0]?.location
                                 : '---'
                             }
-                        //     handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
-                            // shortDesc={booklet?.client?.short_desc}
+                      
                           />
                         </View>
                       );
@@ -366,7 +340,6 @@ useFocusEffect(
                 horizontal={comboBookletDeals?.category?.length > 1}
                 scrollEnabled={comboBookletDeals?.category?.length > 1}
                 showsHorizontalScrollIndicator={false}
-                // scrollEnabled={comboBookletDeals?.category?.length<1}
                 contentContainerStyle={styles.listStyle}
               >
                 {comboBookletDeals?.category?.map((booklet, i) => {
@@ -393,9 +366,7 @@ useFocusEffect(
                           comboBookletDeals?.category?.length < 2 &&
                           styles.cardImageStyle
                         }
-                        // handleCardOnPress={() => {
-                        //   NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "ComboBooklet" });
-                        // }}
+                        
                         handleCardOnPress={() => {
                           NavigationService.navigate(
                             routes.COMBO_OFFER_LIST_SCREEN,
@@ -417,8 +388,7 @@ useFocusEffect(
                             ? booklet?.location[0]?.location
                             : '---'
                         }
-                        // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
+                       
                       />
                     </View>
                   );

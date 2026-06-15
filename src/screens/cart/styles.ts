@@ -171,28 +171,17 @@ const styles = StyleSheet.create({
   qtyText: {
     color: '#0D2436',
   },
+
 summaryContainer: {
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
   backgroundColor: colors.white,
-
-  paddingHorizontal: 16,
-  paddingTop: 20,
-  paddingBottom: 10,
-
-  borderTopLeftRadius: 20,
-  borderTopRightRadius: 20,
-
+  padding: 16,
   borderTopWidth: 1,
-  borderTopColor: '#E5E5E5',
-
-  elevation: 8, // Android
-
-  shadowColor: '#000', // iOS
-  shadowOffset: {
-    width: 0,
-    height: -3,
-  },
-  shadowOpacity: 0.08,
-  shadowRadius: 6,
+  borderTopColor: '#EAEAEA',
+  height:220
 },
 
 summaryRow: {

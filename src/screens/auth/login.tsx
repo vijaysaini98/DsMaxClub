@@ -37,6 +37,7 @@ import { ms, vs, s } from 'react-native-size-matters/extend';
 import ToolBar from '@components/ToolBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FCM_TOKEN_KEY } from '@helper/Constants';
+import { SvgUri } from 'react-native-svg';
 
 const Login = ({ route }) => {
   const { userType } = route?.params || '';
@@ -125,6 +126,7 @@ const Login = ({ route }) => {
       }
     }
   };
+   const isSvg = maintenanceInfo?.logo?.endsWith('.svg');
 
   return (
     <AppSafeAreaView isSecond bgImage={authBg} style={styles.mainContainer}>
@@ -134,11 +136,7 @@ const Login = ({ route }) => {
       />
       <KeyBoardAware style={styles.container}>
         <View style={styles.heading}>
-          {/* <FastImage
-                        source={logoImage}
-                        style={{ height: vs(100), width: ms(100), alignSelf: 'center' }}
-                        resizeMode='contain'
-                    /> */}
+       
           <View
             style={{
               height: vs(100),
@@ -150,13 +148,19 @@ const Login = ({ route }) => {
               justifyContent: 'center',
             }}
           >
-            <FastImage
-              // source={logoImage}
-              source={{uri:maintenanceInfo?.logo}}
-
-              style={{ height: vs(100), width: ms(100), alignSelf: 'center' }}
-              resizeMode={FastImage.resizeMode.contain}
-            />
+            {isSvg ? (
+    <SvgUri
+      uri={maintenanceInfo?.logo}
+      width="100%"
+      height="100%"
+    />
+  ) : (
+    <FastImage
+      source={{ uri: maintenanceInfo?.logo }}
+      style={styles.logoImage}
+      resizeMode={FastImage.resizeMode.contain}
+    />
+  )}
           </View>
           {/* <AppText type={TWENTY_EIGHT} weight={BOLD}>WELCOME BACK</AppText> */}
           <AppText type={TWENTY_EIGHT} weight={BOLD}>
@@ -379,5 +383,10 @@ const styles = StyleSheet.create({
     marginBottom: vs(10),
     borderWidth: 0.5,
     borderColor: colors.borderColor3,
+  },
+    logoImage: {
+    height: vs(100),
+    width: ms(100),
+    alignSelf: 'center',
   },
 });
