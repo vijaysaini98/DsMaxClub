@@ -28,7 +28,6 @@ const RequestList = ({ value }) => {
 
       const { userData } = useAppSelector(state => state?.auth);
 
-      console.log(userData,'userData==>');
       
 
     
@@ -58,8 +57,7 @@ const RequestList = ({ value }) => {
 
   const renderItem = useCallback(
     ({ item, index }:any) => {
-      // console.log(item,'item in requestList====>');
-      // console.log(item?.requested_date,'item?.requested_date');
+
       
       
       return (

@@ -17,7 +17,6 @@ export const addToCartAction =
       dispatch(setBtnLoading(true));
 
       const response = await API.cartApi.add_to_cart(data);
-      console.log(response, 'response of cart -===>');
 
       if (response?.status == 200) {
         // save in local redux cart
@@ -50,7 +49,6 @@ export const getCartList =
 
       const response = await API.cartApi.cart_list();
  
-      console.log(response, 'response of cartlist===>');
 
       if (response?.status == 200) {
         dispatch(setCartList(response?.data));
@@ -161,6 +159,60 @@ export const initiatePayment =
     } catch (e: any) {
       console.log('PAYMENT ERROR ===>', e);
       console.log('PAYMENT ERROR DATA ===>', e?.response?.data);
+    } finally {
+      dispatch(setBtnLoading(false));
+    }
+  };
+
+  export const getPaymentStatus =
+  (
+    merchantTransactionId: string,
+    onSuccess?: any,
+  ) =>
+  async (dispatch: AppDispatch) => {
+    try {
+      console.log('PAYMENT STATUS START');
+      console.log(
+        'MERCHANT TRANSACTION ID ===>',
+        merchantTransactionId,
+      );
+
+      dispatch(setBtnLoading(true));
+
+      const response =
+        await API.cartApi.payment_status(
+          merchantTransactionId,
+        );
+
+      console.log(
+        'PAYMENT STATUS RESPONSE ===>',
+        JSON.stringify(response),
+      );
+      console.log(response,'status response ===>');
+      
+
+      if (response?.status === 200) {
+        console.log('PAYMENT STATUS SUCCESS');
+
+        onSuccess?.(response?.data);
+
+        return;
+      } else {
+        Toast.show(
+          response?.message ||
+            'Payment status failed',
+          Toast.LONG,
+        );
+      }
+    } catch (e: any) {
+      console.log(
+        'PAYMENT STATUS ERROR ===>',
+        e,
+      );
+      console.log(
+        'PAYMENT STATUS ERROR DATA ===>',
+        e?.response?.data,
+      );
     } finally {
       dispatch(setBtnLoading(false));
     }

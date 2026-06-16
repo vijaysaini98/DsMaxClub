@@ -39,11 +39,9 @@ const MyCardComboOfferList = ({ route }: any) => {
   );
 
 
-  // console.log(myCardComboOfferList,'myCardComboOfferList in my card list dataaaataa===>');
-  // console.log(myCardComboOfferList?.[0]?.user_booklet_uuid,'myCardComboOfferList?.user_booklet_uuid===>');
+
 
   const { data, from } = route?.params ?? '';
-  // console.log(data?.uuid,'data?.uuid==>');
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -76,7 +74,6 @@ const MyCardComboOfferList = ({ route }: any) => {
   };
 
   const onSuccess = item => {
-    // console.log(item,'item on success===>');
 
     NavigationService.navigate(routes.MY_CARD_COUPON_LIST_SCREEN, {
       title: item?.name,

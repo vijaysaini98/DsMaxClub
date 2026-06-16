@@ -52,7 +52,6 @@ const Checkout = () => {
     );
   }, [cartList]);
 const renderItem = ({ item }:any) => {
-  console.log(item,'item in checkout');
   
   const quantity = item?.quantity || 1;
   const price = Number(item?.price || 0);
@@ -105,13 +104,11 @@ const renderItem = ({ item }:any) => {
   );
 };
 const onPayNow = () => {
-  console.log('PAY NOW CLICKED');
 
   const data = {
     amount: totalPrice,
   };
 
-  console.log('PAYLOAD ===>', data);
 
   dispatch(
     initiatePayment(data),

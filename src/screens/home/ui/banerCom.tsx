@@ -15,7 +15,6 @@ interface Props {
 
 const BanerComponent: React.FC<Props> = ({ data, onPressBanner }) => {
   const [hasError, setHasError] = React.useState(false);
-  console.log(hasError, 'hasError in banner');
   return (
     <View style={styles.container}>
       <Swiper

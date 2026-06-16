@@ -49,19 +49,24 @@ import {
   getCartList,
   initiatePayment,
   updateCartQuantity,
+  getPaymentStatus,
 } from '@actions/cart/cartActions';
-import NavigationService from '@navigations/NavigationService';
-import Header from '@components/Header';
-import { CHECKOUT_SCREEN } from '@navigations/routes';
+
 import Input from '@components/Input';
 import { ms, s } from 'react-native-size-matters';
 import { colors } from '@theme/colors';
 import ToolBar from '@components/ToolBar';
-import { setIsRefresh } from '@actions/myCard/myCardSlice';
 import PhonePePaymentSDK from 'react-native-phonepe-pg';
-import { SHA256 } from 'crypto-js';
-import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
+
 import DeleteConfirmationModal from '@components/DeleteConfirmationModal';
+import DeviceInfo from 'react-native-device-info';
+import NavigationService from '@navigations/NavigationService';
+
+
+
+
+
+
 
 const CartImage = memo(({ image, style }: any) => {
   const [failed, setFailed] = useState(false);
@@ -137,81 +142,122 @@ const Cart = () => {
   });
   const [acceptContent, setAcceptContent] = useState(false);
   const { cartList, isRefresh } = useAppSelector(state => state.cart);
-    console.log(cartList,'cartList==>');
 
   const { userData } = useAppSelector(state => state?.auth);
-  const [message, setMessage] = useState<string>('Message: ');
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 const [selectedCartId, setSelectedCartId] = useState<number | null>(null);
 
+const paymentApiCall = (
+  merchantTransactionId: string,
+) => {
+  dispatch(
+    getPaymentStatus(
+      merchantTransactionId,
+      (statusResponse: any) => {
+        console.log(
+          'PAYMENT STATUS RESPONSE ===>',
+          statusResponse,
+        );
+if (statusResponse?.status === 'success') {
+  Alert.alert(
+    'Payment Successful',
+    'Payment completed successfully',
+  );
 
+  dispatch(getCartList());
+} else {
+  Alert.alert(
+    'Payment Failed',
+    'Something went wrong',
+  );
+}
+       
+      },
+    ),
+  );
+};
 
 const initPhonePeSDK = async (paymentResponse: any) => {
-  const {
-    phonepe_merchant_id,
-    phonepe_merchant_key,
-    phonepe_key_index,
-    merchant_transaction_id,
-    redirect_url,
-    phonepe_callback_url,
-  } = paymentResponse;
+  const { redirect_url, merchant_transaction_id } = paymentResponse;
 
-  // Extract token from redirect_url
   const urlParams = new URL(redirect_url);
   const token = urlParams.searchParams.get('token');
 
-  const flowId = merchant_transaction_id.replace(/[^a-zA-Z0-9]/g, '');
+  const tokenPayload = JSON.parse(atob(token!.split('.')[1]));
+  const orderId = tokenPayload.merchantOrderId;
+  const merchantId = tokenPayload.merchantId;
+
+  const flowId = merchant_transaction_id.replace(
+    /[^a-zA-Z0-9]/g,
+    '',
+  );
 
   try {
-    // Step 1: Init
     const result = await PhonePePaymentSDK.init(
-      'PRODUCTION',
-      phonepe_merchant_id,
+      'SANDBOX',
+      merchantId,
       flowId,
       true,
     );
 
-    // Step 2: Build request with correct keys
+    console.log('SDK INIT ===>', result);
+
     const request = JSON.stringify({
-      orderId: flowId,                  // alphanumeric cleaned transactionId
-      token: token,                     // extracted from redirect_url
-      paymentMode: 'PAY_PAGE',        // try this first
-      targetAppPackageName: '',
+      orderId,
+      merchantId,
+      token,
+      paymentMode: {
+        type: 'PAY_PAGE',
+      },
     });
 
-    console.log('REQUEST ===>', request);
-const upiApps = await PhonePePaymentSDK.getUpiAppsForAndroid();
-console.log('UPI APPS ===>', JSON.stringify(upiApps));
 
-    // Step 3: Start transaction
-    const txnResult = await PhonePePaymentSDK.startTransaction(
-      request,
-      null,
-    );
-    console.log('TXN RESULT ===>', txnResult);
+  const txnResult =
+  await PhonePePaymentSDK.startTransaction(
+    request,
+    null,
+  );
 
+
+ paymentApiCall(merchant_transaction_id)
   } catch (error) {
     console.log('ERROR ===>', error);
+  
+paymentApiCall(merchant_transaction_id)
   }
-};
-  const onCheckoutPress = () => {
-    console.log('PAY NOW PRESSED');
+}
+
+
+const onCheckoutPress = async () => {
     if (!acceptContent) {
       Alert.alert('Please accept Terms & Conditions');
       return;
     }
+    const deviceInfo = {
+  unique_id: await DeviceInfo.getUniqueId(),
+  brand: DeviceInfo.getBrand(),
+  model: DeviceInfo.getModel(),
+  system_name: DeviceInfo.getSystemName(),
+  system_version: DeviceInfo.getSystemVersion(),
+  app_version: DeviceInfo.getVersion(),
+};
 
+
+    
     const data = {
       gateway: 'phonepe',
       phone: userData?.mobile,
       executive_code: state?.executiveCode || '',
+      device_info: JSON.stringify(deviceInfo),
     };
-
-    console.log('PAYMENT DATA ===>', data);
+console.log(
+    'PAYMENT DATA ===>',
+    JSON.stringify(data, null, 2),
+  );
+    
+    
     dispatch(
       initiatePayment(data, (response: any) => {
-        console.log('CALLBACK HIT');
-        console.log('RESPONSE ===>', response);
 
         initPhonePeSDK(response);
       }),
@@ -227,12 +273,6 @@ console.log('UPI APPS ===>', JSON.stringify(upiApps));
     dispatch(getCartList());
   }, [dispatch]);
 
-  const totalPrice = useMemo(() => {
-    return safeCartList.reduce(
-      (sum: number, item: any) => sum + Number(item?.total_price || 0),
-      0,
-    );
-  }, [safeCartList]);
 
 const renderItem = useCallback(
   ({ item }: any) => {
@@ -294,7 +334,7 @@ return (
             keyExtractor={item => item?.cart_id?.toString()}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
-              paddingBottom: 320, // summary container ki height ke hisab se
+              paddingBottom: 320, 
             }}
             refreshControl={
               <RefreshControl

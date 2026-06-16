@@ -67,7 +67,6 @@ const CouponList = ({ data, route }:any) => {
   const renderItem = useMemo(
     () =>
       ({ item, index }: { item: CardItem; index: number }) => {
-        console.log(item?.coupon_type_id, 'item?.coupon_type_id');
 
         return (
           <CommonCard

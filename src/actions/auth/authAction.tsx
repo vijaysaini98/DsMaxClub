@@ -432,10 +432,7 @@ export const getMaintenanceStatus =
       const response: any =
         await API.authApi.maintenance_status();
 
-      console.log(
-        'Maintenance Response',
-        response,
-      );
+
 
       if (response?.success) {
         dispatch(

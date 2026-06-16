@@ -57,11 +57,7 @@ const Home: React.FC = () => {
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isAddCityModal, setIsAddCityModal] = useState(false);
-  const [isAddToCart, setIsAddToCart] = useState(false);
-  const [addTocarBookletId, setAddToCartBookletId] = useState<number | string>(
-    '',
-  );
-
+ 
   const sheetRef = useRef(null);
 
   const fetchData = async () => {
@@ -70,17 +66,10 @@ const Home: React.FC = () => {
     await dispatch(getComboBookletDeals());
     await dispatch(getCategoryBooklet());
     await dispatch(getBannerList({ screen_name: '1' }));
-    // if (userData && userData?.otp_verified == 0) {
-    //   setTimeout(() => {
-    //     sheetRef?.current?.open();
-    //   }, 300)
-
-    //   dispatch(sendOtp({ email: userData?.email }))
-    // }
+  
   };
 
   
-  console.log(categoryBookletData,'categoryBookletData===> ')
 
   useEffect(() => {
     fetchData();
@@ -176,7 +165,6 @@ useFocusEffect(
   };
 
 
-  console.log(comboBookletDeals?.category,'comboBookletDeals?.category');
   
 
   return (

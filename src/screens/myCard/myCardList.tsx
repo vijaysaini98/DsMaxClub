@@ -104,7 +104,6 @@ const MyCardList = ({ value }: any) => {
 
   const renderItem = useCallback(
     ({ item, index }: any) => {
-      console.log('booklet itemsssssss===>', item);
       // booklet_type
 
       return (

@@ -63,7 +63,6 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress, venderId,booklet_id
       vendor_id: venderId,
     };
 
-    console.log('REFRESH API DATA', data);
     if (from == 'ComboBooklet') {
       dispatch(getComboBookletDetail(data)).finally(() => setRefreshing(false));
     } else {

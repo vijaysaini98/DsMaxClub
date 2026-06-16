@@ -66,6 +66,8 @@ const CART_LIST: string = `${BASE_URL}cart`;
 const UPDATE_CART_QUANTITY: string = `${BASE_URL}cart/update-quantity`;
 const REMOVE_CART: string = `${BASE_URL}cart/remove`;
 const PHONEPE_INITIATE: string = `${BASE_URL}payment/initiate`;
+const PAYMENT_STATUS: string = `${BASE_URL}payment/status`;
+
 
 const config = {
   BASE_URL,
@@ -131,6 +133,7 @@ const config = {
   UPDATE_CART_QUANTITY,
   REMOVE_CART,
   PHONEPE_INITIATE,
+  PAYMENT_STATUS,
 };
 
 export default config;

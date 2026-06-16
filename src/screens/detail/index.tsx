@@ -18,6 +18,7 @@ import {
   AppText,
   BOLD,
   BUTTON_TEXT,
+  EIGHTEEN,
   FOURTEEN,
   MEDIUM,
   PLACEHOLDER,
@@ -26,6 +27,7 @@ import {
   THIRTEEN,
   TWELVE,
   TWENTY,
+  TWENTY_FOUR,
   TWENTY_TWO,
   WHITE,
 } from '@components/AppText';
@@ -90,7 +92,6 @@ const routes = [
 const Details = ({ route }: any) => {
   const { data, from, noApiCall,booklet_id } = route?.params ?? '';
 const [hasError, setHasError] = useState(false);
-console.log(data,'data===>');
 
   const dispatch = useAppDispatch();
 
@@ -99,7 +100,6 @@ console.log(data,'data===>');
   );
 
   const { userData } = useAppSelector(state => state?.auth);
-console.log(userData,'userData in details');
 
   const [index, setIndex] = React.useState(0);
   const [acceptContent, setAcceptContent] = useState(false);
@@ -188,7 +188,6 @@ const isInCart = !!cartItem;
       return;
     }
     if (from === 'ComboBooklet') {
-      console.log(value, 'value from combo booklet details api call');
       dispatch(getComboBookletDetail(value));
     } else {
       dispatch(getBookletDetail(value));
@@ -474,7 +473,6 @@ else {
 
 
 
-console.log('cartItem ===>', cartItem);
 
 const handleIncrement = () => {
   const payload = {
@@ -692,67 +690,7 @@ const handleDecrement = () => {
           </View>
         ) : (
           <>
-            
 
-        {/* {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
-  <>
-    {userData?.user_type !== '1' &&
-    isAddToCart &&
-    addTocarBookletId === data?.uuid ? (
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          width: '100%',
-          justifyContent: 'space-between',
-        }}>
-        
-        <View style={styles.qtyContainer}>
-          <TouchableOpacityView
-  style={styles.qtyBtn}
-  onPress={handleDecrement}>
-  <AppText weight={BOLD} type={TWENTY}>-</AppText>
-</TouchableOpacityView>
-
-<AppText style={styles.qtyText}>
-  {quantity}
-</AppText>
-
-<TouchableOpacityView
-  style={styles.qtyBtn}
-  onPress={handleIncrement}>
-  <AppText weight={BOLD} type={TWENTY} >+</AppText>
-</TouchableOpacityView>
-        </View>
-
-        <TouchableOpacityView
-          style={styles.viewCartBtn}
-          onPress={() =>
-            NavigationService.navigate(CART_SCREEN, {
-              from: 'Home',
-            })
-          }>
-          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-            VIEW CART
-          </AppText>
-        </TouchableOpacityView>
-      </View>
-    ) : (
-      <TouchableOpacityView
-        onPress={handleOnPress}
-        style={styles.buyBtnStyle(isDisabled)}
-        loader={isBtnLoading}
-        disabled={isDisabled}>
-        <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-          {userData?.user_type === '1'
-            ? buttonText
-            : 'ADD TO CART'}
-        </AppText>
-      </TouchableOpacityView>
-      
-    )}
-  </>
-)} */}
 {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
   <>
     {userData?.user_type !== '1' && isInCart ? (
@@ -761,19 +699,19 @@ const handleDecrement = () => {
           <TouchableOpacityView
             style={styles.qtyBtn}
             onPress={handleDecrement}>
-            <AppText weight={BOLD} type={TWENTY}>
+            <AppText weight={BOLD} type={TWENTY_FOUR}>
               -
             </AppText>
           </TouchableOpacityView>
 
-          <AppText style={styles.qtyText}>
+          <AppText style={styles.qtyText}weight={BOLD} type={EIGHTEEN}>
             {cartItem?.quantity ?? quantity}
           </AppText>
 
           <TouchableOpacityView
             style={styles.qtyBtn}
             onPress={handleIncrement}>
-            <AppText weight={BOLD} type={TWENTY}>
+            <AppText weight={BOLD} type={TWENTY_FOUR}>
               +
             </AppText>
           </TouchableOpacityView>

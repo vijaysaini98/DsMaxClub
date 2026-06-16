@@ -198,7 +198,7 @@ divider: {
 
 checkoutBtnFull: {
   marginTop: 30,
-  height: 56,
+  height: 50,
   borderRadius: 28,
   backgroundColor: colors.buttonBg,
   justifyContent: 'center',

@@ -11,7 +11,6 @@ const apiClient = axios.create({
   timeout: 60000,
 });
 let logOutref=0
-console.log('API Base URL:', BASE_URL);
 
 // Request Interceptor (adds token + logs)
 apiClient.interceptors.request.use(
@@ -200,6 +199,11 @@ export const API = {
       apiClient.post(config.UPDATE_CART_QUANTITY, data),
 
     remove_cart: (data: any) => apiClient.post(config.REMOVE_CART, data),
-    payment_initiate :(data: any) => apiClient.post(config.PHONEPE_INITIATE, data)
+    payment_initiate :(data: any) => apiClient.post(config.PHONEPE_INITIATE, data),
+    payment_status: (merchantTransactionId: string) =>
+  apiClient.get(
+    `${config.PAYMENT_STATUS}/${merchantTransactionId}`,
+  ),
+
   },
 };
