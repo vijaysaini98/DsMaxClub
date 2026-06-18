@@ -121,4 +121,8 @@ export const pdfIcon  = require('@assets/images/pdf.png')
 export const resetIcon  = require('@assets/images/undo.png')
 export const appIconNew  = require('@assets/images/appIconNew.png')
 export const termsIcon  = require('@assets/images/checkmark.png')
+export const EmptyCartImage  = require('@assets/images/emptyCart.png')
+
+
+
 

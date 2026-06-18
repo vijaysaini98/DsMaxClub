@@ -91,7 +91,7 @@ const MyCardList = ({ value }: any) => {
     myCardExpiredBookletList,
   ]);
 
-  const onSuccess = item => {
+  const onSuccess = (item:any) => {
     // console.log(item,'iteemmmm in coupon list');
 
     NavigationService.navigate(MY_CARD_COUPON_LIST_SCREEN, {

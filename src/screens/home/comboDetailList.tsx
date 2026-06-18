@@ -19,7 +19,16 @@ import React, {
 import { Loader, SpinnerSecond } from '@components/Spinner';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
-import { AppText, BOLD, SIXTEEN, TWENTY, WHITE } from '@components/AppText';
+import {
+  AppText,
+  BOLD,
+  EIGHTEEN,
+  SIXTEEN,
+  TWENTY,
+  TWENTY_FOUR,
+  TWENTY_TWO,
+  WHITE,
+} from '@components/AppText';
 import { commonStyles } from '@theme/commonStyles';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import ToolBar from '@components/ToolBar';
@@ -53,7 +62,11 @@ import moment from 'moment';
 import { setBookletDetailAllDeals } from '@actions/home/homeSlice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { setLoading } from '@actions/myCard/myCardSlice';
-import { addToCartAction, getCartList, updateCartQuantity } from '@actions/cart/cartActions';
+import {
+  addToCartAction,
+  getCartList,
+  updateCartQuantity,
+} from '@actions/cart/cartActions';
 import CategoriesShimmer from '@components/ShimerLoader/categoriesShimerLoader';
 
 const ComboDetailList = ({ route }: any) => {
@@ -62,67 +75,73 @@ const ComboDetailList = ({ route }: any) => {
     state => state?.myCard,
   );
 
-  
-
   const { userData } = useAppSelector(state => state?.auth);
   const [acceptContent, setAcceptContent] = useState(false);
 
   const { bookletDetailAllDeals } = useAppSelector(state => state?.home);
-     const [isAddToCart, setIsAddToCart] = useState(false);
-      const [addTocarBookletId, setAddToCartBookletId] = useState<number | string>(
-        '',
-      );
- 
+  const [isAddToCart, setIsAddToCart] = useState(false);
+  const [addTocarBookletId, setAddToCartBookletId] = useState<number | string>(
+    '',
+  );
+  const [qtyLoading, setQtyLoading] = useState(false);
   const { data, from } = route?.params ?? '';
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const executiveBottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['40%', '50%', '80%'], []);
   const executiveSnapPoints = useMemo(() => ['50%', '80%'], []);
-  const [quantity,setQuantity] = useState(1)
+  const [quantity, setQuantity] = useState(1);
   const { cartList } = useAppSelector(state => state.cart);
-    
-    const cartItem = cartList?.items?.find(
-  item => item?.booklet_uuid === data?.uuid,
-);
 
-const isInCart = !!cartItem;
+  const cartItem = cartList?.items?.find(
+    item => item?.booklet_uuid === data?.uuid,
+  );
+
+  const isInCart = !!cartItem;
 
   useEffect(() => {
-  dispatch(getCartList());
-}, []);
+    dispatch(getCartList());
+  }, []);
 
-const handleIncrement = () => {
-  if (!cartItem?.cart_id) return;
+  const handleIncrement = () => {
+    const maxQty = Number(cartList?.max_quantity);
 
-  const payload = {
-    cart_id: cartItem?.cart_id,
-    quantity: Number(cartItem?.quantity) + 1,
-    action: 'increment',
+    if (Number(cartItem?.quantity) >= maxQty) {
+      return;
+    }
+
+    const payload = {
+      cart_id: cartItem?.cart_id,
+      quantity: Number(cartItem?.quantity) + 1,
+      action: 'increment',
+    };
+    setQtyLoading(true);
+    dispatch(
+      updateCartQuantity(payload, () => {
+        setQtyLoading(false);
+        setQuantity(prev => prev + 1);
+      }),
+    );
   };
 
-  dispatch(
-    updateCartQuantity(payload, () => {
-      setQuantity(prev => prev + 1);
-    }),
-  );
-};
+  const handleDecrement = () => {
+    if (Number(cartItem?.quantity) <= 1) {
+      return;
+    }
 
-const handleDecrement = () => {
-  if (!cartItem?.cart_id || quantity <= 1) return;
-
-  const payload = {
-    cart_id: cartItem?.cart_id,
-    quantity: Number(cartItem?.quantity) - 1,
-    action: 'decrement',
+    const payload = {
+      cart_id: cartItem?.cart_id,
+      quantity: Number(cartItem?.quantity) - 1,
+      action: 'decrement',
+    };
+    setQtyLoading(true);
+    dispatch(
+      updateCartQuantity(payload, () => {
+        setQtyLoading(false);
+        setQuantity(prev => prev - 1);
+      }),
+    );
   };
-
-  dispatch(
-    updateCartQuantity(payload, () => {
-      setQuantity(prev => prev - 1);
-    }),
-  );
-};
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -137,28 +156,27 @@ const handleDecrement = () => {
     dispatch(getComboOffersList({ booklet_uuid: data?.uuid }));
   }, [isRefresh]);
 
+  const onHandlePress = (item: any, index: number) => {
+    dispatch(setLoading(true));
 
-const onHandlePress = (item: any, index: number) => {
-  dispatch(setLoading(true));
+    setTimeout(() => {
+      let value = {
+        booklet_id: data?.uuid,
+        tabname: 'All Deals',
+        vendor_id: String(item?.id),
+      };
 
-  setTimeout(() => {
-    let value = {
-      booklet_id: data?.uuid,
-      tabname: 'All Deals',
-      vendor_id: String(item?.id),
-    };
+      dispatch(
+        getComboBookletDetail(value, (success?: boolean) => {
+          dispatch(setLoading(false));
 
-    dispatch(
-      getComboBookletDetail(value, (success?: boolean) => {
-         dispatch(setLoading(false));
-
-        if (success) {
-          handleComboSuccess(item);
-        }
-      }),
-    );
-  }, 100); // 👈 IMPORTANT (lets loader render)
-};
+          if (success) {
+            handleComboSuccess(item);
+          }
+        }),
+      );
+    }, 100); 
+  };
 
   const handleComboSuccess = (item: any) => {
     // dispatch(setBookletDetailAllDeals({}))
@@ -166,9 +184,8 @@ const onHandlePress = (item: any, index: number) => {
     NavigationService.navigate(routes.DETAILS_SCREEN, {
       data: item,
       from: 'ComboBooklet',
-      noApiCall: true, // ✅ NEW FLAG TO AVOID API CALL IN DETAILS SCREEN,
+      noApiCall: true, 
       booklet_id: data?.uuid,
-
     });
   };
 
@@ -176,34 +193,27 @@ const onHandlePress = (item: any, index: number) => {
     let apidata = {
       booklet_id: data.uuid,
     };
-   
+
     if (userData?.user_type == '1') {
       executiveBottomSheetRef?.current?.expand();
-    }
-   
-    else {
+    } else {
       const payload = {
         booklet_id: data?.uuid,
         quantity: 1,
       };
-    
-      dispatch(
-  addToCartAction(
-    payload,
-    data,
-    () => {
-      setAddToCartBookletId(data?.uuid);
-      setIsAddToCart(true);
-      setQuantity(1);
 
-      dispatch(getCartList());
-    },
-  ),
-);
+      dispatch(
+        addToCartAction(payload, data, () => {
+          setAddToCartBookletId(data?.uuid);
+          setIsAddToCart(true);
+          setQuantity(1);
+
+          dispatch(getCartList());
+        }),
+      );
     }
   };
   const handleSubmit = (_data: any) => {
-
     Keyboard?.dismiss();
     let apidata = {
       booklet_id: data.uuid,
@@ -263,17 +273,14 @@ const onHandlePress = (item: any, index: number) => {
       }
     }
 
-
-    return defaultBookletImage; // ✅ use imported local image
+    return defaultBookletImage; 
   };
 
   const isExpired = moment(data?.end_date, 'YYYY-MM-DD').isBefore(moment());
 
-const renderItem = ({ item, index }: any) => {
-
-  return (
-    <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
-     
+  const renderItem = ({ item, index }: any) => {
+    return (
+      <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
         <Card
           item={item}
           isCompleteLocation={true}
@@ -291,18 +298,43 @@ const renderItem = ({ item, index }: any) => {
           location={item?.locations}
           cardDisabled={item?.tab_status === 'Expired'}
         />
-  
-    </View>
-  );
-};
+      </View>
+    );
+  };
+
+  const status = comboOfferList?.[0]?.request_status;
+
+const isDisabled =
+  status === 'Pending' ||
+  status === 'Out of Stock' ||
+  isExpired;
+
+const buttonText =
+  status === 'Out of Stock'
+    ? 'OUT OF STOCK'
+    : status === 'Pending'
+    ? 'REQUEST IN PENDING'
+    : isExpired
+    ? 'EXPIRED'
+    : 'REQUEST';
+
+const displayButtonText = isDisabled
+  ? buttonText
+  : userData?.user_type === '1'
+  ? 'REQUEST'
+  : 'ADD TO CART';
   return (
     <View style={styles.mainContainer}>
-      <ToolBar isLeftIcon title={data?.name} mainContainerStyle={{marginTop:30}}/>
+      <ToolBar
+        isLeftIcon
+        title={data?.name}
+        mainContainerStyle={{ marginTop: 30 }}
+      />
 
       <View style={styles.containerStyle}>
         {/* LIST */}
-      
-<FlatList
+
+        <FlatList
           data={comboOfferList}
           renderItem={renderItem}
           contentContainerStyle={styles.listContainerStyle}
@@ -319,7 +351,7 @@ const renderItem = ({ item, index }: any) => {
             />
           }
         />
-        
+
         {/* FIXED BOTTOM BUTTON */}
         <View style={styles.bottomBtnContainer}>
           {isLoading ? (
@@ -330,21 +362,144 @@ const renderItem = ({ item, index }: any) => {
               />
             </View>
           ) : (
-            <>
-              {bookletDetailAllDeals !== null && (
+    //         <>
+    //           {bookletDetailAllDeals !== null && (
+    //             <>
+    //               {/* {userData?.user_type !== '1' &&
+    // isInCart &&
+    // addTocarBookletId === data?.uuid ? ( */}
+    //               {userData?.user_type !== '1' && isInCart ? (
+    //                 <View
+    //                   style={{
+    //                     flexDirection: 'row',
+    //                     alignItems: 'center',
+    //                     justifyContent: 'space-between',
+    //                     width: '100%',
+    //                   }}
+    //                 >
+    //                   <View
+    //                     style={{
+    //                       flexDirection: 'row',
+    //                       alignItems: 'center',
+    //                       borderWidth: 1,
+    //                       borderColor: '#D9D9D9',
+    //                       borderRadius: 22,
+    //                       overflow: 'hidden',
+    //                       height: 42,
+    //                       width: 120,
+    //                     }}
+    //                   >
+    //                     <TouchableOpacityView
+    //                       style={{
+    //                         width: 40,
+    //                         height: 42,
+    //                         justifyContent: 'center',
+    //                         alignItems: 'center',
+    //                       }}
+    //                       onPress={handleDecrement}
+    //                     >
+    //                       <AppText weight={BOLD} type={TWENTY_FOUR}>
+    //                         -
+    //                       </AppText>
+    //                     </TouchableOpacityView>
+
+    //                     <View
+    //                       style={{
+    //                         width: 40,
+    //                         alignItems: 'center',
+    //                       }}
+    //                     >
+    //                       <AppText weight={BOLD} type={EIGHTEEN}>
+    //                         {cartItem?.quantity ?? quantity}
+    //                       </AppText>
+    //                     </View>
+
+    //                     <TouchableOpacityView
+    //                       style={[
+    //                         styles.qtyButton,
+    //                         Number(cartItem?.quantity) >=
+    //                           Number(cartList?.max_quantity) && {
+    //                           opacity: 0.2,
+    //                         },
+    //                       ]}
+    //                       onPress={handleIncrement}
+    //                       disabled={
+    //                         Number(cartItem?.quantity) >=
+    //                         Number(cartList?.max_quantity)
+    //                       }
+    //                     >
+    //                       <AppText weight={BOLD} type={TWENTY_FOUR}>
+    //                         +
+    //                       </AppText>
+    //                     </TouchableOpacityView>
+    //                   </View>
+
+    //                   <TouchableOpacityView
+    //                     style={{
+    //                       flex: 1,
+    //                       marginLeft: 15,
+    //                       height: 48,
+    //                       borderRadius: 24,
+    //                       backgroundColor: colors.buttonBg,
+    //                       justifyContent: 'center',
+    //                       alignItems: 'center',
+    //                     }}
+    //                     onPress={() =>
+    //                       NavigationService.navigate(routes.CART_SCREEN)
+    //                     }
+    //                   >
+    //                     <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+    //                       VIEW CART
+    //                     </AppText>
+    //                   </TouchableOpacityView>
+    //                 </View>
+    //               ) : (
+    //                 <TouchableOpacityView
+    //                   onPress={handleOnPress}
+    //                   style={styles.buyBtnStyle(
+    //                     comboOfferList?.[0]?.request_status === 'Pending' ||
+    //                       comboOfferList?.[0]?.request_status ===
+    //                         'Out of Stock' ||
+    //                       isExpired,
+    //                   )}
+    //                   loader={isBtnLoading}
+    //                   disabled={
+    //                     comboOfferList?.[0]?.request_status === 'Pending' ||
+    //                     comboOfferList?.[0]?.request_status ===
+    //                       'Out of Stock' ||
+    //                     isExpired
+    //                   }
+    //                 >
+    //                   <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+    //                     {userData?.user_type == '1'
+    //                       ? comboOfferList?.[0]?.request_status ===
+    //                         'Out of Stock'
+    //                         ? 'OUT OF STOCK'
+    //                         : comboOfferList?.[0]?.request_status === 'Pending'
+    //                         ? 'REQUEST IN PENDING'
+    //                         : isExpired
+    //                         ? 'EXPIRED'
+    //                         : 'REQUEST'
+    //                       : 'ADD TO CART'}
+    //                   </AppText>
+    //                 </TouchableOpacityView>
+    //               )}
+    //             </>
+    //           )}
+    //         </>
+    <>
+
+    {bookletDetailAllDeals !== null && (
   <>
-    {/* {userData?.user_type !== '1' &&
-    isInCart &&
-    addTocarBookletId === data?.uuid ? ( */}
-    {userData?.user_type !== '1' && isInCart ? (
+    {userData?.user_type !== '1' && isInCart && !isDisabled ? (
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
           width: '100%',
-        }}>
-        
+        }}
+      >
         <View
           style={{
             flexDirection: 'row',
@@ -355,8 +510,8 @@ const renderItem = ({ item, index }: any) => {
             overflow: 'hidden',
             height: 42,
             width: 120,
-          }}>
-          
+          }}
+        >
           <TouchableOpacityView
             style={{
               width: 40,
@@ -364,29 +519,41 @@ const renderItem = ({ item, index }: any) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}
-            onPress={handleDecrement}>
-            <AppText weight={BOLD} type ={TWENTY}>-</AppText>
+            onPress={handleDecrement}
+          >
+            <AppText weight={BOLD} type={TWENTY_FOUR}>
+              -
+            </AppText>
           </TouchableOpacityView>
 
           <View
             style={{
               width: 40,
               alignItems: 'center',
-            }}>
-            <AppText weight={BOLD} >
+            }}
+          >
+            <AppText weight={BOLD} type={EIGHTEEN}>
               {cartItem?.quantity ?? quantity}
             </AppText>
           </View>
 
           <TouchableOpacityView
-            style={{
-              width: 40,
-              height: 42,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            onPress={handleIncrement}>
-            <AppText weight={BOLD}  type ={TWENTY}>+</AppText>
+            style={[
+              styles.qtyButton,
+              Number(cartItem?.quantity) >=
+                Number(cartList?.max_quantity) && {
+                opacity: 0.2,
+              },
+            ]}
+            onPress={handleIncrement}
+            disabled={
+              Number(cartItem?.quantity) >=
+              Number(cartList?.max_quantity)
+            }
+          >
+            <AppText weight={BOLD} type={TWENTY_FOUR}>
+              +
+            </AppText>
           </TouchableOpacityView>
         </View>
 
@@ -402,7 +569,8 @@ const renderItem = ({ item, index }: any) => {
           }}
           onPress={() =>
             NavigationService.navigate(routes.CART_SCREEN)
-          }>
+          }
+        >
           <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
             VIEW CART
           </AppText>
@@ -411,33 +579,18 @@ const renderItem = ({ item, index }: any) => {
     ) : (
       <TouchableOpacityView
         onPress={handleOnPress}
-        style={styles.buyBtnStyle(
-          comboOfferList?.[0]?.request_status === 'Pending' ||
-            comboOfferList?.[0]?.request_status === 'Out of Stock' ||
-            isExpired,
-        )}
+        style={styles.buyBtnStyle(isDisabled)}
         loader={isBtnLoading}
-        disabled={
-          comboOfferList?.[0]?.request_status === 'Pending' ||
-          comboOfferList?.[0]?.request_status === 'Out of Stock' ||
-          isExpired
-        }>
+        disabled={isDisabled}
+      >
         <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-          {userData?.user_type == '1'
-            ? comboOfferList?.[0]?.request_status === 'Out of Stock'
-              ? 'OUT OF STOCK'
-              : comboOfferList?.[0]?.request_status === 'Pending'
-              ? 'REQUEST IN PENDING'
-              : isExpired
-              ? 'EXPIRED'
-              : 'REQUEST'
-            : 'ADD TO CART'}
+          {displayButtonText}
         </AppText>
       </TouchableOpacityView>
     )}
   </>
 )}
-            </>
+    </>
           )}
         </View>
       </View>
@@ -466,9 +619,8 @@ const renderItem = ({ item, index }: any) => {
           executiveBottomSheetRef.current?.close();
         }}
       />
-      {isLoading && <SpinnerSecond />}
+      {(isLoading || qtyLoading) && <SpinnerSecond />}
     </View>
-    
   );
 };
 
@@ -479,7 +631,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: s(16),
     backgroundColor: colors.white,
-
   },
   containerStyle: {
     flex: 1,
@@ -533,9 +684,15 @@ const styles = StyleSheet.create({
     // paddingTop: vs(20),
   },
   loaderBox: {
-  height: 220,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: 'rgba(0,0,0,0.05)', // 👈 IMPORTANT
-},
+    height: 220,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.05)', // 👈 IMPORTANT
+  },
+  qtyButton: {
+    width: 40,
+    height: 42,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

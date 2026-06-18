@@ -39,7 +39,7 @@ import HomeShimmerLoader from '@components/ShimerLoader/homeShimerLoader';
 import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomSheet';
 import { setCartList } from '@actions/cart/cartSlice';
 import { useFocusEffect } from '@react-navigation/native';
-import { addToCartAction } from '@actions/cart/cartActions';
+import { addToCartAction, getCartList } from '@actions/cart/cartActions';
 import { IMGE_URL } from '@services/config';
 
 const Home: React.FC = () => {
@@ -69,7 +69,11 @@ const Home: React.FC = () => {
   
   };
 
-  
+  useFocusEffect(
+  React.useCallback(() => {
+    dispatch(getCartList());
+  }, []),
+);
 
   useEffect(() => {
     fetchData();

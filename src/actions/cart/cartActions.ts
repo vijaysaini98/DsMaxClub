@@ -21,10 +21,8 @@ export const addToCartAction =
       if (response?.status == 200) {
         // save in local redux cart
         dispatch(setCartList(localItem));
-
-        Toast.show(response?.message || 'Added to cart', Toast.LONG);
-
         onSucess && onSucess(response?.data);
+        Toast.show(response?.message || 'Added to cart', Toast.LONG);
 
         return;
       } else {
@@ -48,7 +46,6 @@ export const getCartList =
       dispatch(setLoading(true));
 
       const response = await API.cartApi.cart_list();
- 
 
       if (response?.status == 200) {
         dispatch(setCartList(response?.data));
@@ -74,30 +71,35 @@ export const getCartList =
 export const updateCartQuantity =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
     try {
-      dispatch(setBtnLoading(true));
+dispatch(setLoading(true));
 
       const response = await API.cartApi.update_cart_quantity(data);
 
-      if (response?.status == 200) {
-        // Refresh complete cart
-        dispatch(getCartList());
 
-        onSucess && onSucess(response?.data);
-      } else {
-        Toast.show(response?.message, Toast.LONG);
-      }
+      dispatch(getCartList());
+
+      onSucess && onSucess(response?.data);
     } catch (e: any) {
-      console.log('e', e);
+      console.log('UPDATE CART ERROR ===>', e?.response);
+
+      if (e?.response?.status === 400) {
+        Toast.show(
+          e?.response?.data?.message?.message || 'Maximum quantity reached',
+          Toast.LONG,
+        );
+
+        dispatch(getCartList());
+        return;
+      }
 
       Toast.show(
-        e?.response?.data?.message || 'Something went wrong',
+        e?.response?.data?.message?.message || 'Something went wrong',
         Toast.LONG,
       );
     } finally {
-      dispatch(setBtnLoading(false));
+      dispatch(setLoading(false));
     }
   };
-
 
 export const deleteCartItem =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
@@ -117,7 +119,7 @@ export const deleteCartItem =
         Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      console.log('e', e);
+      console.log('e1726', e);
 
       Toast.show(
         e?.response?.data?.message || 'Something went wrong',
@@ -128,10 +130,8 @@ export const deleteCartItem =
     }
   };
 
-
 export const initiatePayment =
-  (data?: any, onSuccess?: any) =>
-  async (dispatch: AppDispatch) => {
+  (data?: any, onSuccess?: any) => async (dispatch: AppDispatch) => {
     try {
       console.log('PAYMENT ACTION START');
       console.log('REQUEST ===>', data);
@@ -151,10 +151,7 @@ export const initiatePayment =
       } else {
         console.log('STATUS NOT 200 ===>', response?.status);
 
-        Toast.show(
-          response?.message || 'Payment failed',
-          Toast.LONG,
-        );
+        Toast.show(response?.message || 'Payment failed', Toast.LONG);
       }
     } catch (e: any) {
       console.log('PAYMENT ERROR ===>', e);
@@ -164,57 +161,32 @@ export const initiatePayment =
     }
   };
 
-  export const getPaymentStatus =
-  (
-    merchantTransactionId: string,
-    onSuccess?: any,
-  ) =>
+export const getPaymentStatus =
+  (merchantTransactionId: string, onSuccess?: any) =>
   async (dispatch: AppDispatch) => {
     try {
       console.log('PAYMENT STATUS START');
-      console.log(
-        'MERCHANT TRANSACTION ID ===>',
-        merchantTransactionId,
-      );
+      console.log('MERCHANT TRANSACTION ID ===>', merchantTransactionId);
 
       dispatch(setBtnLoading(true));
 
-      const response =
-        await API.cartApi.payment_status(
-          merchantTransactionId,
-        );
+      const response = await API.cartApi.payment_status(merchantTransactionId);
 
-      console.log(
-        'PAYMENT STATUS RESPONSE ===>',
-        JSON.stringify(response),
-      );
-      console.log(response,'status response ===>');
-      
+      console.log('PAYMENT STATUS RESPONSE ===>', JSON.stringify(response));
+      console.log(response, 'status response ===>');
 
       if (response?.status === 200) {
-        console.log('PAYMENT STATUS SUCCESS');
 
         onSuccess?.(response?.data);
 
         return;
       } else {
-        Toast.show(
-          response?.message ||
-            'Payment status failed',
-          Toast.LONG,
-        );
+        Toast.show(response?.message || 'Payment status failed', Toast.LONG);
       }
     } catch (e: any) {
-      console.log(
-        'PAYMENT STATUS ERROR ===>',
-        e,
-      );
-      console.log(
-        'PAYMENT STATUS ERROR DATA ===>',
-        e?.response?.data,
-      );
+      console.log('PAYMENT STATUS ERROR ===>', e);
+      console.log('PAYMENT STATUS ERROR DATA ===>', e?.response?.data);
     } finally {
       dispatch(setBtnLoading(false));
     }
   };
-  

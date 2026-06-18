@@ -17,9 +17,12 @@ import bottomNavigationStyles from './bottomNavigationStyles';
 import MyCard from '@screens/myCard';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import Cart from '@screens/cart';
+import { useEffect } from 'react';
 
 const Tab = createBottomTabNavigator();
+
 
 export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
   return (
@@ -51,10 +54,8 @@ export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
       {!isHighlight && (
         <AppText
           weight={BOLD}
-          // color={focused ? colors.white : colors.black}
           color={focused ? BUTTON_BG : colors.black}
-          // color={focused ? colors.buttonBg : colors.black}
-          // color={WHITE}
+    
           type={TEN}
           style={bottomNavigationStyles.tabTitleStyle}
         >
@@ -116,10 +117,23 @@ export const TabIcon = ({ focused, icon, title, isHighlight }: any) => {
 //   );
 // };
 
-export default function BottomNavigation() {
+
+export default function BottomNavigation({
+  route,
+}: any) {
   const insets = useSafeAreaInsets();
+   const navigation = useNavigation();
   const bottomPadding =
     Platform.OS === 'android' || insets.bottom > 0 ? insets.bottom : 10;
+useEffect(() => {
+    const targetTab = route?.params?.targetTab;
+
+    if (targetTab) {
+      navigation.navigate(targetTab as never);
+    }
+  }, [route?.params?.targetTab, navigation]);
+
+  
   return (
     <Tab.Navigator
       initialRouteName="Home"

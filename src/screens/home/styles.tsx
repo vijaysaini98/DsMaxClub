@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   cardContainerStyle: { width: "100%" },
 
- 
+
 
 });
 
