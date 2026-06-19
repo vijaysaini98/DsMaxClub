@@ -8,41 +8,59 @@ interface Props {
   visible: boolean;
   onCancel: () => void;
   onConfirm: () => void;
+
+  title?: string;
+  message?: string;
+  confirmText?: string;
+  cancelText?: string;
 }
 
 const DeleteConfirmationModal = ({
   visible,
   onCancel,
   onConfirm,
+  title,
+  message,
+  confirmText,
+  cancelText,
 }: Props) => {
   return (
     <Modal
       visible={visible}
       transparent
       animationType="fade"
-      onRequestClose={onCancel}>
+      onRequestClose={onCancel}
+    >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <AppText type={SIXTEEN} weight={BOLD} style={styles.title}>
-            Delete Item
+          <AppText
+            type={SIXTEEN}
+            weight={BOLD}
+            style={styles.title}
+          >
+            {title}
           </AppText>
 
           <AppText style={styles.message}>
-            Are you sure you want to delete this item from cart?
+            {message}
           </AppText>
 
           <View style={styles.buttonRow}>
             <TouchableOpacityView
               style={[styles.button, styles.cancelBtn]}
-              onPress={onCancel}>
-              <AppText weight={BOLD}>Cancel</AppText>
+              onPress={onCancel}
+            >
+              <AppText weight={BOLD}>
+                {cancelText}
+              </AppText>
             </TouchableOpacityView>
 
             <TouchableOpacityView
-              style={[styles.button, styles.deleteBtn]}
-              onPress={onConfirm}>
+              style={[styles.button, styles.confirmBtn]}
+              onPress={onConfirm}
+            >
               <AppText color={WHITE} weight={BOLD}>
-                Delete
+                {confirmText}
               </AppText>
             </TouchableOpacityView>
           </View>
@@ -62,23 +80,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
   },
+
   container: {
     width: '100%',
     backgroundColor: colors.white,
     borderRadius: 16,
     padding: 20,
   },
+
   title: {
     textAlign: 'center',
     marginBottom: 10,
   },
+
   message: {
     textAlign: 'center',
     marginBottom: 20,
   },
+
   buttonRow: {
     flexDirection: 'row',
   },
+
   button: {
     flex: 1,
     height: 45,
@@ -86,11 +109,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
   },
+
   cancelBtn: {
-   backgroundColor: colors.sixth,
+    backgroundColor: colors.sixth,
     marginRight: 8,
   },
-  deleteBtn: {
+
+  confirmBtn: {
     backgroundColor: colors.buttonBg,
     marginLeft: 8,
   },

@@ -41,6 +41,7 @@ import { setCartList } from '@actions/cart/cartSlice';
 import { useFocusEffect } from '@react-navigation/native';
 import { addToCartAction, getCartList } from '@actions/cart/cartActions';
 import { IMGE_URL } from '@services/config';
+import DeleteConfirmationModal from '@components/DeleteConfirmationModal';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -57,6 +58,7 @@ const Home: React.FC = () => {
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isAddCityModal, setIsAddCityModal] = useState(false);
+  const [exitModalVisible, setExitModalVisible] = useState(false);
  
   const sheetRef = useRef(null);
 
@@ -99,23 +101,8 @@ const Home: React.FC = () => {
 useFocusEffect(
   React.useCallback(() => {
     const backAction = () => {
-      Alert.alert(
-        'Exit App',
-        'Are you sure you want to exit?',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-            onPress: () => null,
-          },
-          {
-            text: 'OK',
-            onPress: () => BackHandler.exitApp(),
-          },
-        ],
-      );
-
-      return true;
+      setExitModalVisible(true);
+      return true; // default back prevent
     };
 
     const subscription = BackHandler.addEventListener(
@@ -123,7 +110,7 @@ useFocusEffect(
       backAction,
     );
 
-    return () => subscription.remove(); 
+    return () => subscription.remove();
   }, []),
 );
 
@@ -399,6 +386,18 @@ useFocusEffect(
         }}
       />
       {/* <CodeVerificationBottomSheet ref={sheetRef} onVerify={handleVerify} /> */}
+      <DeleteConfirmationModal
+  visible={exitModalVisible}
+  title="Exit App"
+  message="Are you sure you want to exit the app?"
+  confirmText="Exit"
+  cancelText="Stay"
+  onCancel={() => setExitModalVisible(false)}
+  onConfirm={() => {
+    setExitModalVisible(false);
+    BackHandler.exitApp();
+  }}
+/>
     </AppSafeAreaView>
   );
 };

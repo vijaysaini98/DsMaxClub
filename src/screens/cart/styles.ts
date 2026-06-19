@@ -213,6 +213,41 @@ acceptTermsConditionBtn: {
   flexDirection: 'row',
   alignItems: 'center',
 },
+modalOverlay: {
+  flex: 1,
+  backgroundColor: 'rgba(0,0,0,0.5)',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+paymentModal: {
+  width: '85%',
+  backgroundColor: '#fff',
+  borderRadius: 20,
+  padding: 20,
+  alignItems: 'center',
+  elevation: 10,
+},
+
+cancelBtn: {
+  flex: 1,
+  borderWidth: 1,
+  borderColor: colors.buttonBg,
+  borderRadius: 12,
+  paddingVertical: 12,
+  alignItems: 'center',
+  marginRight: 8,
+},
+
+proceedBtn: {
+  // flex: 1,
+  backgroundColor: colors.buttonBg,
+  borderRadius: 12,
+  paddingVertical: 12,
+  paddingHorizontal:25,
+  alignItems: 'center',
+  marginLeft: 8,
+},
 });
 
 export default styles;

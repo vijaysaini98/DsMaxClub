@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
@@ -64,6 +65,9 @@ import DeleteConfirmationModal from '@components/DeleteConfirmationModal';
 import DeviceInfo from 'react-native-device-info';
 import NavigationService from '@navigations/NavigationService';
 import MyCard from '@screens/myCard';
+import Toast from "react-native-simple-toast";
+import { SpinnerSecond } from '@components/Spinner';
+
 
 const CartImage = memo(({ image, style }: any) => {
   const [failed, setFailed] = useState(false);
@@ -140,6 +144,7 @@ const CartItem = memo(
   },
 );
 
+
 const Cart = () => {
   const dispatch = useAppDispatch();
   const [state, setState] = useState({
@@ -154,77 +159,88 @@ const Cart = () => {
   const { userData } = useAppSelector(state => state?.auth);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [selectedCartId, setSelectedCartId] = useState<number | null>(null);
+  const [paymentModalVisible, setPaymentModalVisible] = useState(false);
+  const [paymentStatusModal, setPaymentStatusModal] = useState({
+  visible: false,
+  type: '', // success | failed
+  message: '',
+});
+const [paymentLoading, setPaymentLoading] = useState(false);
 
-  const paymentApiCall = (merchantTransactionId: string) => {
-    dispatch(
-      getPaymentStatus(merchantTransactionId, (statusResponse: any) => {
-        console.log('PAYMENT STATUS RESPONSE ===>', statusResponse);
-        if (statusResponse?.status === 'success') {
-          Alert.alert('Payment Successful', 'Payment completed successfully', [
-            {
-              text: 'OK',
-              onPress: () => {
-                dispatch(getCartList());
+const paymentApiCall = (merchantTransactionId: string) => {
+  dispatch(
+    getPaymentStatus(merchantTransactionId, (statusResponse: any) => {
+      console.log('PAYMENT STATUS RESPONSE ===>', statusResponse);
 
-                NavigationService.navigate(routes.BOTTOM_TAB_NAVIGATOR, {
-                  targetTab: 'MyCard',
-                });
-              },
-            },
-          ]);
-        } else {
-          Alert.alert('Payment Failed', 'Something went wrong');
-        }
-      }),
+      // Loader band karo jab response aa jaye
+      setPaymentLoading(false);
+
+      if (statusResponse?.status === 'success') {
+        setPaymentStatusModal({
+          visible: true,
+          type: 'success',
+          message: 'Payment completed successfully',
+        });
+      } else {
+        setPaymentStatusModal({
+          visible: true,
+          type: 'failed',
+          message: 'Something went wrong',
+        });
+      }
+    }),
+  );
+};
+
+const initPhonePeSDK = async (paymentResponse: any) => {
+  const { redirect_url, merchant_transaction_id } = paymentResponse;
+
+  const urlParams = new URL(redirect_url);
+  const token = urlParams.searchParams.get('token');
+
+  const tokenPayload = JSON.parse(atob(token!.split('.')[1]));
+  const orderId = tokenPayload.merchantOrderId;
+  const merchantId = tokenPayload.merchantId;
+
+  const flowId = merchant_transaction_id.replace(/[^a-zA-Z0-9]/g, '');
+
+  try {
+    const result = await PhonePePaymentSDK.init(
+      'SANDBOX',
+      merchantId,
+      flowId,
+      true,
     );
-  };
 
-  const initPhonePeSDK = async (paymentResponse: any) => {
-    const { redirect_url, merchant_transaction_id } = paymentResponse;
+    console.log('SDK INIT ===>', result);
 
-    const urlParams = new URL(redirect_url);
-    const token = urlParams.searchParams.get('token');
+    const request = JSON.stringify({
+      orderId,
+      merchantId,
+      token,
+      paymentMode: {
+        type: 'PAY_PAGE',
+      },
+    });
 
-    const tokenPayload = JSON.parse(atob(token!.split('.')[1]));
-    const orderId = tokenPayload.merchantOrderId;
-    const merchantId = tokenPayload.merchantId;
+    await PhonePePaymentSDK.startTransaction(request, null);
 
-    const flowId = merchant_transaction_id.replace(/[^a-zA-Z0-9]/g, '');
+    // Payment status check start
+    setPaymentLoading(true);
 
-    try {
-      const result = await PhonePePaymentSDK.init(
-        'SANDBOX',
-        merchantId,
-        flowId,
-        true,
-      );
+    paymentApiCall(merchant_transaction_id);
+  } catch (error) {
+    console.log('ERROR ===>', error);
 
-      console.log('SDK INIT ===>', result);
+    
+    setPaymentLoading(true);
 
-      const request = JSON.stringify({
-        orderId,
-        merchantId,
-        token,
-        paymentMode: {
-          type: 'PAY_PAGE',
-        },
-      });
-
-      const txnResult = await PhonePePaymentSDK.startTransaction(request, null);
-
-      paymentApiCall(merchant_transaction_id);
-    } catch (error) {
-      console.log('ERROR ===>', error);
-
-      paymentApiCall(merchant_transaction_id);
-    }
-  };
+    paymentApiCall(merchant_transaction_id);
+  }
+};
 
   const onCheckoutPress = async () => {
-    if (!acceptContent) {
-      Alert.alert('Please accept Terms & Conditions');
-      return;
-    }
+   
     const deviceInfo = {
       unique_id: await DeviceInfo.getUniqueId(),
       brand: DeviceInfo.getBrand(),
@@ -308,6 +324,7 @@ const Cart = () => {
     },
     [dispatch],
   );
+
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
@@ -434,56 +451,116 @@ const Cart = () => {
       </KeyboardAvoidingView>
 
       {safeCartList?.length > 0 && (
+        
         <TouchableOpacity
-          style={styles.checkoutBtnFull}
-          onPress={onCheckoutPress}
-        >
-          <AppText color={WHITE} weight={BOLD} type={SIXTEEN}>
-            PAY NOW
-          </AppText>
-        </TouchableOpacity>
+  style={styles.checkoutBtnFull}
+  onPress={() => {
+    if (!acceptContent) {
+      Toast.show('Please accept Terms & Conditions');
+      return;
+    }
+
+    setPaymentModalVisible(true);
+  }}
+>
+  <AppText color={WHITE} weight={BOLD} type={SIXTEEN}>
+    PAY NOW
+  </AppText>
+</TouchableOpacity>
       )}
+  <DeleteConfirmationModal
+  visible={deleteModalVisible}
+  title="Delete Item"
+  message="Are you sure you want to delete this item from cart?"
+  confirmText="Delete"
+  cancelText="Cancel"
+  onCancel={() => {
+    setDeleteModalVisible(false);
+    setSelectedCartId(null);
+  }}
+  onConfirm={() => {
+    setQtyLoading(true);
+
+    dispatch(
+      deleteCartItem(
+        {
+          cart_id: selectedCartId,
+        },
+        () => {
+          setQtyLoading(false);
+        },
+      ),
+    );
+
+    setDeleteModalVisible(false);
+    setSelectedCartId(null);
+  }}
+/>
+      {(qtyLoading || paymentLoading) && <SpinnerSecond />}
       <DeleteConfirmationModal
-        visible={deleteModalVisible}
-        onCancel={() => {
-          setDeleteModalVisible(false);
-          setSelectedCartId(null);
-        }}
-        onConfirm={() => {
-          setQtyLoading(true);
+  visible={paymentModalVisible}
+  title="Confirm Payment"
+  message="Are you sure you want to proceed with payment?"
+  confirmText="Proceed"
+  cancelText="Cancel"
+  onCancel={() => setPaymentModalVisible(false)}
+  onConfirm={() => {
+    setPaymentModalVisible(false);
+    onCheckoutPress();
+  }}
+/>
+<Modal
+  visible={paymentStatusModal.visible}
+  transparent
+  animationType="fade"
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.paymentModal}>
+      
+      <AppText
+        type={TWENTY}
+        weight={BOLD}
+        style={{ marginBottom: 15 }}
+      >
+        {paymentStatusModal.type === 'success'
+          ? '✅ Payment Successful'
+          : '❌ Payment Failed'}
+      </AppText>
 
-          dispatch(
-            deleteCartItem(
-              {
-                cart_id: selectedCartId,
-              },
-              () => {
-                setQtyLoading(false);
-              },
-            ),
-          );
-
-          setDeleteModalVisible(false);
-          setSelectedCartId(null);
+      <AppText
+        type={FOURTEEN}
+        style={{
+          textAlign: 'center',
+          marginBottom: 25,
         }}
-      />
-      {qtyLoading && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.3)',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 9999,
-          }}
-        >
-          <ActivityIndicator size="large" color={colors.buttonBg} />
-        </View>
-      )}
+      >
+        {paymentStatusModal.message}
+      </AppText>
+
+      <TouchableOpacity
+        style={styles.proceedBtn}
+        onPress={() => {
+          setPaymentStatusModal({
+            visible: false,
+            type: '',
+            message: '',
+          });
+
+          if (paymentStatusModal.type === 'success') {
+            dispatch(getCartList());
+
+           NavigationService.navigate(routes.MY_CARD_SCREEN);
+          }
+        }}
+      >
+        <AppText color={WHITE} weight={BOLD}>
+          OK
+        </AppText>
+      </TouchableOpacity>
+
+    </View>
+  </View>
+</Modal>
     </AppSafeAreaView>
   );
 };
