@@ -13,6 +13,7 @@ import {
   backIcon,
   defaultBookletImage,
   downArrowIcon,
+  eyeOpenIcon,
   helpLineIcon,
   locationIcon,
 } from '@helper/imagesAssets';
@@ -527,6 +528,8 @@ const Details = ({ route }: any) => {
                 source={backIcon}
                 style={styles.backIconStyle}
                 resizeMode="contain"
+                tintColor={"black"}
+                
               />
             </TouchableOpacityView>
           </View>

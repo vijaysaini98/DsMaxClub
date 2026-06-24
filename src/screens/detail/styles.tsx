@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   },
   backIconStyle: {
     height: vs(20),
-    width: s(20)
+    width: s(20),
   },
   shimmerBtnStyle: {
     height: vs(50),

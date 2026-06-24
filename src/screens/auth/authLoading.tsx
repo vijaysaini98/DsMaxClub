@@ -32,6 +32,9 @@ const AuthLoading = () => {
       const userVisited = await getItem(USER_VISITED);
       const profileComplete = await getItem(PROFILE_COMPLETE);
 
+      console.log(userType,'userType===>');
+      
+
       if (customerToken) {
         dispatch(userProfile({ userid: userId }));
         dispatch(getBannerList({ screen: '1' }))

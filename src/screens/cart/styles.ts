@@ -181,7 +181,7 @@ summaryContainer: {
   padding: 16,
   borderTopWidth: 1,
   borderTopColor: '#EAEAEA',
-  height:220
+  height:250
 },
 
 summaryRow: {
