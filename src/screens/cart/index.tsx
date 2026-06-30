@@ -53,6 +53,7 @@ import {
   initiatePayment,
   updateCartQuantity,
   getPaymentStatus,
+  executiveCartRequestSend,
 } from '@actions/cart/cartActions';
 
 import Input from '@components/Input';
@@ -148,11 +149,12 @@ const Cart = () => {
   const [state, setState] = useState({
     bookletQty: '1',
     executiveCode: '',
+    mobileNumber: '',
   });
   const [acceptContent, setAcceptContent] = useState(false);
-  const { cartList, isRefresh } = useAppSelector(state => state.cart);
-  console.log(cartList,'cartList==>');
-  
+  const { cartList, isRefresh, isBtnLoading } = useAppSelector(
+    state => state.cart,
+  );
 
   const [qtyLoading, setQtyLoading] = useState(false);
 
@@ -167,34 +169,6 @@ const Cart = () => {
   });
   const [paymentLoading, setPaymentLoading] = useState(false);
 
-  // const paymentApiCall = (merchantTransactionId: string) => {
-  //   dispatch(
-  //     getPaymentStatus(merchantTransactionId, (statusResponse: any) => {
-  //       console.log('PAYMENT STATUS RESPONSE ===>', statusResponse);
-
-  //       // Loader band karo jab response aa jaye
-  //       setPaymentLoading(false);
-
-  //       if (statusResponse?.status === 'success') {
-  //         setPaymentStatusModal({
-  //           visible: true,
-  //           type: 'success',
-  //           message: 'Payment completed successfully',
-  //         });
-  //       } else {
-  //         setPaymentStatusModal({
-  //           visible: true,
-  //           type: 'failed',
-  //           message: 'Something went wrong',
-  //         });
-  //       }
-  //     }),
-  //   );
-  // };
-
-  const TEST_PAYMENT_STATUS = 'FAILED';
-  // SUCCESS | PENDING | FAILED
-
   const paymentApiCall = (merchantTransactionId: string) => {
     dispatch(
       getPaymentStatus(merchantTransactionId, (statusResponse: any) => {
@@ -202,66 +176,44 @@ const Cart = () => {
 
         setPaymentLoading(false);
 
-        // API ko ignore karke manual testing
-        const status = TEST_PAYMENT_STATUS.toLowerCase();
-
-        // switch (status) {
-        //   case 'success':
-        //     setPaymentStatusModal({
-        //       visible: true,
-        //       type: 'success',
-        //       message: 'Payment completed successfully',
-        //     });
-        //     break;
-
-        //   case 'pending':
-        //     setPaymentStatusModal({
-        //       visible: true,
-        //       type: 'pending',
-        //       message: 'Payment is pending. Please wait...',
-        //     });
-        //     break;
-
-        //   case 'failed':
-        //     setPaymentStatusModal({
-        //       visible: true,
-        //       type: 'failed',
-        //       message: 'Payment failed',
-        //     });
-        //     break;
-
-        //   default:
-
-        // }
-        setPaymentStatusModal({
-          visible: true,
-          type: 'failed',
-          message: 'Unable to verify payment status',
-        });
+        if (statusResponse?.status === 'success') {
+          setPaymentStatusModal({
+            visible: true,
+            type: 'success',
+            message: 'Payment completed successfully',
+          });
+        } else {
+          setPaymentStatusModal({
+            visible: true,
+            type: 'failed',
+            message: 'Something went wrong',
+          });
+        }
       }),
     );
   };
 
   const initPhonePeSDK = async (paymentResponse: any) => {
-    const { redirect_url, merchant_transaction_id } = paymentResponse;
+    const {
+      merchant_transaction_id,
+      phonepe_order_id,
+      merchant_id,
+      token,
+    } = paymentResponse;
 
-    const urlParams = new URL(redirect_url);
-    const token = urlParams.searchParams.get('token');
+    console.log('TOKEN ===>', token);
 
-    const tokenPayload = JSON.parse(atob(token!.split('.')[1]));
-    const orderId = tokenPayload.merchantOrderId;
-    const merchantId = tokenPayload.merchantId;
-
-    const flowId = merchant_transaction_id.replace(/[^a-zA-Z0-9]/g, '');
+    const orderId = phonepe_order_id;
+    const merchantId = merchant_id;
+    const flowId = merchant_transaction_id;
 
     try {
       const result = await PhonePePaymentSDK.init(
-        'SANDBOX',
+        'PRODUCTION',
         merchantId,
         flowId,
-        true,
+        false,
       );
-
       console.log('SDK INIT ===>', result);
 
       const request = JSON.stringify({
@@ -273,18 +225,25 @@ const Cart = () => {
         },
       });
 
-      await PhonePePaymentSDK.startTransaction(request, null);
+      console.log('REQUEST ===>', request);
 
-      // Payment status check start
-      setPaymentLoading(true);
-
-      paymentApiCall(merchant_transaction_id);
-    } catch (error) {
-      console.log('ERROR ===>', error);
+      const txnResult = await PhonePePaymentSDK.startTransaction(request, null);
 
       setPaymentLoading(true);
 
-      paymentApiCall(merchant_transaction_id);
+      if (txnResult?.status === 'CANCELLED') {
+        setPaymentLoading(false);
+        setPaymentStatusModal({
+          visible: true,
+          type: 'failed',
+          message: 'Payment cancelled by user',
+        });
+      } else {
+        paymentApiCall(merchant_transaction_id);
+      }
+    } catch (error: any) {
+      console.log('ERROR ===>', JSON.stringify(error));
+      setPaymentLoading(false);
     }
   };
 
@@ -304,7 +263,6 @@ const Cart = () => {
       executive_code: state?.executiveCode || '',
       device_info: JSON.stringify(deviceInfo),
     };
-    console.log('PAYMENT DATA ===>', JSON.stringify(data, null, 2));
 
     dispatch(
       initiatePayment(data, (response: any) => {
@@ -331,7 +289,7 @@ const Cart = () => {
             setDeleteModalVisible(true);
           }}
           isIncrementDisabled={
-            Number(item?.quantity) >= Number(cartList?.max_quantity || 5)
+            Number(item?.quantity) >= Number(cartList?.max_quantity)
           }
           onIncrement={() => {
             setQtyLoading(true);
@@ -372,6 +330,42 @@ const Cart = () => {
     },
     [dispatch],
   );
+
+  const sendExecutiveCartRequest = async () => {
+    const deviceInfo = {
+      unique_id: await DeviceInfo.getUniqueId(),
+      brand: DeviceInfo.getBrand(),
+      model: DeviceInfo.getModel(),
+      system_name: DeviceInfo.getSystemName(),
+      system_version: DeviceInfo.getSystemVersion(),
+      app_version: DeviceInfo.getVersion(),
+    };
+
+    const data = {
+      mobile: state?.mobileNumber,
+      device_info: JSON.stringify(deviceInfo),
+    };
+    dispatch(
+      executiveCartRequestSend(data, (response: any) => {
+        console.log(
+          'EXECUTIVE CART REQUEST RESPONSE ===>',
+          JSON.stringify(response, null, 2),
+        );
+
+        const errors = response?.data?.errors;
+
+        if (errors?.length > 0) {
+          Toast.show(errors[0], Toast.LONG);
+          return;
+        }
+
+        Toast.show(response?.message || 'Requests were sent.', Toast.LONG);
+
+        dispatch(getCartList());
+        NavigationService.navigate(routes.MY_REQUEST_SCREEN);
+      }),
+    );
+  };
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
@@ -416,12 +410,22 @@ const Cart = () => {
 
             <View style={styles.summaryContainer}>
               <Input
-                placeholder="Enter Executive Code (Optional)"
-                value={state?.executiveCode}
+                placeholder={
+                  userData?.user_type === '1'
+                    ? 'Enter Mobile Number'
+                    : 'Enter Executive Code (Optional)'
+                }
+                value={
+                  userData?.user_type === '1'
+                    ? state?.mobileNumber
+                    : state?.executiveCode
+                }
                 onChangeText={(text: string) =>
                   setState({
                     ...state,
-                    executiveCode: text.trim(),
+                    [userData?.user_type === '1'
+                      ? 'mobileNumber'
+                      : 'executiveCode']: text.trim(),
                   })
                 }
                 inputContainerStyle={{
@@ -430,6 +434,9 @@ const Cart = () => {
                 inputStyle={{
                   fontSize: ms(12),
                 }}
+                keyboardType={
+                  userData?.user_type === '1' ? 'number-pad' : 'default'
+                }
               />
 
               <View style={styles.acceptTermsConditionContainer}>
@@ -485,8 +492,9 @@ const Cart = () => {
               </View>
 
               <View style={styles.summaryRow}>
-                <AppText type={FOURTEEN} weight={SEMI_BOLD}>Tax (Inclusive GST)</AppText>
-                
+                <AppText type={FOURTEEN} weight={SEMI_BOLD}>
+                  Tax (Inclusive GST)
+                </AppText>
               </View>
 
               <View style={styles.divider} />
@@ -514,17 +522,31 @@ const Cart = () => {
               return;
             }
 
+            if (userData?.user_type === '1') {
+              const mobile = state?.mobileNumber?.trim();
+
+              if (!mobile) {
+                Toast.show('Please enter mobile number');
+                return;
+              }
+
+              if (mobile.length !== 10) {
+                Toast.show('Please enter a valid mobile number');
+                return;
+              }
+            }
+
             setPaymentModalVisible(true);
           }}
         >
           <AppText color={WHITE} weight={BOLD} type={SIXTEEN}>
-            PAY NOW
+            {userData?.user_type === '1' ? 'REQUEST' : 'PAY NOW'}
           </AppText>
         </TouchableOpacity>
       )}
       <DeleteConfirmationModal
         visible={deleteModalVisible}
-        title="Delete Item"
+        title="Delete Booklet"
         message="Are you sure you want to delete this booklet from cart?"
         confirmText="Delete"
         cancelText="Cancel"
@@ -553,14 +575,25 @@ const Cart = () => {
       {(qtyLoading || paymentLoading) && <SpinnerSecond />}
       <DeleteConfirmationModal
         visible={paymentModalVisible}
-        title="Confirm Payment"
-        message="Are you sure you want to proceed with payment?"
+        title={
+          userData?.user_type === '1' ? 'Confirm Request' : 'Confirm Payment'
+        }
+        message={
+          userData?.user_type === '1'
+            ? 'Are you sure you want to request?'
+            : 'Are you sure you want to proceed with payment?'
+        }
         confirmText="Proceed"
         cancelText="Cancel"
         onCancel={() => setPaymentModalVisible(false)}
         onConfirm={() => {
           setPaymentModalVisible(false);
-          onCheckoutPress();
+
+          if (userData?.user_type === '1') {
+            sendExecutiveCartRequest();
+          } else {
+            onCheckoutPress();
+          }
         }}
       />
       <Modal

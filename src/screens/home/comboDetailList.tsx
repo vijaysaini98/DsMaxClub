@@ -190,13 +190,11 @@ const ComboDetailList = ({ route }: any) => {
   };
 
   const handleOnPress = () => {
-    let apidata = {
-      booklet_id: data.uuid,
-    };
 
-    if (userData?.user_type == '1') {
-      executiveBottomSheetRef?.current?.expand();
-    } else {
+
+    // if (userData?.user_type == '1') {
+    //   executiveBottomSheetRef?.current?.expand();
+    // } else {
       const payload = {
         booklet_id: data?.uuid,
         quantity: 1,
@@ -211,7 +209,7 @@ const ComboDetailList = ({ route }: any) => {
           dispatch(getCartList());
         }),
       );
-    }
+    // }
   };
   const handleSubmit = (_data: any) => {
     Keyboard?.dismiss();
@@ -320,8 +318,8 @@ const buttonText =
 
 const displayButtonText = isDisabled
   ? buttonText
-  : userData?.user_type === '1'
-  ? 'REQUEST'
+  // : userData?.user_type === '1'
+  // ? 'REQUEST'
   : 'ADD TO CART';
   return (
     <View style={styles.mainContainer}>
@@ -491,7 +489,8 @@ const displayButtonText = isDisabled
 
     {bookletDetailAllDeals !== null && (
   <>
-    {userData?.user_type !== '1' && isInCart && !isDisabled ? (
+    {/* {userData?.user_type !== '1' && isInCart && !isDisabled ? ( */}
+    { isInCart && !isDisabled ? (
       <View
         style={{
           flexDirection: 'row',

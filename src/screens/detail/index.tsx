@@ -6,6 +6,7 @@ import {
   Keyboard,
   Linking,
   StatusBar,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -83,9 +84,9 @@ import {
   updateCartQuantity,
 } from '@actions/cart/cartActions';
 import { SpinnerSecond } from '@components/Spinner';
+import { setBtnLoading } from '@actions/cart/cartSlice';
 const initialLayout = { width: width };
 
-// ✅ Make sure route keys match those in renderScene
 const routes = [
   { key: 'allDeals', title: 'All Deals' },
   { key: 'about', title: 'About' },
@@ -100,9 +101,8 @@ const Details = ({ route }: any) => {
 
   const dispatch = useAppDispatch();
 
-  const { isLoading, isBtnLoading, bookletDetailAllDeals } = useAppSelector(
-    state => state.home,
-  );
+  const { bookletDetailAllDeals } = useAppSelector(state => state.home);
+  const { isLoading, isBtnLoading } = useAppSelector(state => state.cart);
 
   const { userData } = useAppSelector(state => state?.auth);
 
@@ -126,11 +126,11 @@ const Details = ({ route }: any) => {
   const snapPoints = useMemo(() => ['40%', '50%', '80%'], []);
   const executiveSnapPoints = useMemo(() => ['50%', '80%'], []);
   const { cartList } = useAppSelector(state => state.cart);
+  const [viewCartLoading, setViewCartLoading] = useState(false);
 
   const cartItem = cartList?.items?.find(
     item => item?.booklet_uuid === data?.uuid,
   );
-
 
   const isInCart = !!cartItem;
 
@@ -271,27 +271,24 @@ const Details = ({ route }: any) => {
     [data?.uuid, from, scrollY, index], // dependencies
   );
 
-
-
   const handleOnPress = () => {
+    // if (userData?.user_type == '1') {
+    //   executiveBottomSheetRef?.current?.expand();
+    // } else {
+    const payload = {
+      booklet_id: data?.uuid,
+      quantity: 1,
+    };
 
-    if (userData?.user_type == '1') {
-      executiveBottomSheetRef?.current?.expand();
-    } else {
-      const payload = {
-        booklet_id: data?.uuid,
-        quantity: 1,
-      };
-
-      dispatch(
-        addToCartAction(payload, data, () => {
-          setAddToCartBookletId(data?.uuid);
-          setIsAddToCart(true);
-          setQuantity(1);
-          dispatch(getCartList());
-        }),
-      );
-    }
+    dispatch(
+      addToCartAction(payload, data, () => {
+        setAddToCartBookletId(data?.uuid);
+        setIsAddToCart(true);
+        setQuantity(1);
+        dispatch(getCartList());
+      }),
+    );
+    // }
   };
 
   const handleSucess = () => {
@@ -362,6 +359,17 @@ const Details = ({ route }: any) => {
       dispatch(executiveBookletRequest(apiData, handleSucess));
     }
   };
+  const handleViewCart = () => {
+    setViewCartLoading(true);
+
+    setTimeout(() => {
+      NavigationService.navigate(CART_SCREEN, {
+        from: 'Home',
+      });
+
+      setViewCartLoading(false);
+    }, 300);
+  };
 
   const isExpired = moment(data?.end_date, 'YYYY-MM-DD').isBefore(moment());
 
@@ -395,8 +403,6 @@ const Details = ({ route }: any) => {
   let buttonText = 'REQUEST';
   let isDisabled = false;
 
-  
-
   // ❌ Disabled cases
   if (status === 'Out of Stock') {
     buttonText = 'Out Of Stock';
@@ -408,8 +414,6 @@ const Details = ({ route }: any) => {
     buttonText = 'EXPIRED';
     isDisabled = true;
   }
-  console.log(isDisabled,'isDisabled==>');
-  
 
   const phoneNumber =
     bookletDetailAllDeals?.booklet_type === 'Combo'
@@ -464,13 +468,12 @@ const Details = ({ route }: any) => {
   const [quantity, setQuantity] = useState(1);
 
   const handleIncrement = () => {
-    const maxQty = Number(cartList?.max_quantity );
+    const maxQty = Number(cartList?.max_quantity);
 
     if (Number(cartItem?.quantity) >= maxQty) {
       return;
     }
     const payload = {
-     
       cart_id: cartItem.cart_id,
       quantity: cartItem.quantity + 1,
       action: 'increment',
@@ -528,8 +531,7 @@ const Details = ({ route }: any) => {
                 source={backIcon}
                 style={styles.backIconStyle}
                 resizeMode="contain"
-                tintColor={"black"}
-                
+                tintColor={'black'}
               />
             </TouchableOpacityView>
           </View>
@@ -684,7 +686,8 @@ const Details = ({ route }: any) => {
           <>
             {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
               <>
-                {userData?.user_type !== '1' && isInCart ? (
+                {/* {userData?.user_type !== '1' && isInCart ? ( */}
+                {isInCart ? (
                   <View style={styles.cartActionContainer}>
                     <View style={styles.qtyContainer}>
                       <TouchableOpacityView
@@ -709,14 +712,14 @@ const Details = ({ route }: any) => {
                         style={[
                           styles.qtyBtn,
                           Number(cartItem?.quantity) >=
-                            Number(cartList?.max_quantity ) && {
+                            Number(cartList?.max_quantity) && {
                             opacity: 0.2,
                           },
                         ]}
                         onPress={handleIncrement}
                         disabled={
                           Number(cartItem?.quantity) >=
-                          Number(cartList?.max_quantity )
+                          Number(cartList?.max_quantity)
                         }
                       >
                         <AppText weight={BOLD} type={TWENTY_FOUR}>
@@ -727,35 +730,49 @@ const Details = ({ route }: any) => {
 
                     <TouchableOpacityView
                       style={styles.viewCartBtn}
-                      onPress={() =>
-                        NavigationService.navigate(CART_SCREEN, {
-                          from: 'Home',
-                        })
-                      }
+                      onPress={handleViewCart}
+                      disabled={viewCartLoading}
                     >
+                      {/* {viewCartLoading ? (
+    <ActivityIndicator size="small" color="#fff" />
+  ) : ( */}
                       <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
                         VIEW CART
                       </AppText>
+                      {/* )} */}
                     </TouchableOpacityView>
                   </View>
                 ) : (
                   <TouchableOpacityView
                     onPress={handleOnPress}
-                    style={styles.buyBtnStyle(isDisabled)}
-                    loader={isBtnLoading}
                     disabled={isDisabled}
+                    style={styles.buyBtnStyle(isDisabled)}
                   >
+                    {/* {isBtnLoading ? (
+    <ActivityIndicator size="small" color="#fff" />
+  ) : ( */}
                     <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-                      {/* {userData?.user_type === '1' ? buttonText : 'ADD TO CART'} */}
-                      <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-  {isDisabled
-    ? buttonText
-    : userData?.user_type === '1'
-    ? buttonText
-    : 'ADD TO CART'}
-</AppText>
+                      {isDisabled ? buttonText : 'ADD TO CART'}
                     </AppText>
+                    {/* )} */}
                   </TouchableOpacityView>
+                  //                   <TouchableOpacityView
+                  //                     onPress={handleOnPress}
+                  //                     style={styles.buyBtnStyle(isDisabled)}
+                  //                     loader={isBtnLoading}
+                  //                     disabled={isDisabled}
+                  //                   >
+                  //                     <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                  //                       {/* {userData?.user_type === '1' ? buttonText : 'ADD TO CART'} */}
+                  //                       <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                  //   {isDisabled
+                  //     ? buttonText
+                  //     // : userData?.user_type === '1'
+                  //     // ? buttonText
+                  //     : 'ADD TO CART'}
+                  // </AppText>
+                  //                     </AppText>
+                  //                   </TouchableOpacityView>
                 )}
               </>
             )}
@@ -799,7 +816,9 @@ const Details = ({ route }: any) => {
           viewDetailsBottomSheetRef.current?.close();
         }}
       />
-     {qtyLoading&& <SpinnerSecond />}
+      {qtyLoading && <SpinnerSecond />}
+      {isBtnLoading && <SpinnerSecond />}
+      {viewCartLoading && <SpinnerSecond />}
     </View>
   );
 };

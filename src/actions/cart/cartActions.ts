@@ -163,10 +163,12 @@ export const initiatePayment =
 
 export const getPaymentStatus =
   (merchantTransactionId: string, onSuccess?: any) =>
+    
   async (dispatch: AppDispatch) => {
-    try {
       console.log('PAYMENT STATUS START');
-      console.log('MERCHANT TRANSACTION ID ===>', merchantTransactionId);
+      console.log('merchabbbbt', merchantTransactionId);
+    try {
+    
 
       dispatch(setBtnLoading(true));
 
@@ -186,6 +188,58 @@ export const getPaymentStatus =
     } catch (e: any) {
       console.log('PAYMENT STATUS ERROR ===>', e);
       console.log('PAYMENT STATUS ERROR DATA ===>', e?.response?.data);
+    } finally {
+      dispatch(setBtnLoading(false));
+    }
+  };
+
+export const executiveCartRequestSend =
+  (data?: any, onSuccess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setBtnLoading(true));
+
+      const response =
+        await API.cartApi.executive_cart_request_send(data);
+
+      console.log(
+        'FULL RESPONSE ===>',
+        JSON.stringify(response, null, 2),
+      );
+      console.log('responsew  w', response);
+console.log('response.data', response?.data);
+console.log('response.data.data', response?.data?.data);
+
+
+      if (response?.status === 200) {
+        console.log('STATUS 200 HIT');
+
+        // Send complete response to callback
+        onSuccess?.(response);
+
+        return;
+      }
+
+      Toast.show(
+        response?.message || 'Request failed',
+        Toast.LONG,
+      );
+    } catch (e: any) {
+      console.log(
+        'EXECUTIVE CART REQUEST ERROR ===>',
+        e,
+      );
+
+      console.log(
+        'EXECUTIVE CART REQUEST ERROR DATA ===>',
+        e?.response?.data,
+      );
+
+      Toast.show(
+        e?.response?.data?.message ||
+          e?.message ||
+          'Something went wrong',
+        Toast.LONG,
+      );
     } finally {
       dispatch(setBtnLoading(false));
     }

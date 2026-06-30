@@ -89,12 +89,12 @@ const Card: React.FC<CardProps> = ({
   data,
   showDateSection,
 }) => {
-const [activeDropdown, setActiveDropdown] = React.useState<
-  'location' | 'contact' | 'terms' | null
->(null);
+  const [activeDropdown, setActiveDropdown] = React.useState<
+    'location' | 'contact' | 'terms' | null
+  >(null);
 
   const sheetRef = useRef<any>(null);
-  const openDropdown = (type: 'location' | 'contact'|'terms') => {
+  const openDropdown = (type: 'location' | 'contact' | 'terms') => {
     setActiveDropdown(type);
   };
 
@@ -141,7 +141,7 @@ const [activeDropdown, setActiveDropdown] = React.useState<
           source={hasError ? defaultBookletImage : source}
           style={[styles.bannerImage, imageStyle]}
           resizeMode="cover"
-          onError={()=>setHasError(true)}
+          onError={() => setHasError(true)}
         />
 
         {/* CART */}
@@ -156,7 +156,6 @@ const [activeDropdown, setActiveDropdown] = React.useState<
             />
           </TouchableOpacityView>
         )}
-
 
         {status && (
           <View
@@ -226,7 +225,6 @@ const [activeDropdown, setActiveDropdown] = React.useState<
                   </View>
                 )}
 
-            
               {/* ✅ ALWAYS SHOW LOCATION */}
               {address && item?.booklet_type !== 2 && (
                 <TouchableOpacityView
@@ -276,7 +274,7 @@ const [activeDropdown, setActiveDropdown] = React.useState<
                         </AppText>
                       </View>
                     )}
-                 
+
                     {item?.booklet_type === 1 &&
                       (item?.validity_months || item?.end_date) && (
                         <View>
@@ -292,111 +290,120 @@ const [activeDropdown, setActiveDropdown] = React.useState<
                         </View>
                       )}
                   </View>
-{/* BOOKLET CODE STRIP */}
-<View style={styles.bookletCodeContainer}>
-  <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
-    Booklet Code
-  </AppText>
+                  {/* BOOKLET CODE STRIP */}
+                  <View style={styles.bookletCodeContainer}>
+                    <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
+                      Booklet Code
+                    </AppText>
 
-  <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
-    {item?.booklet_uniquecode}
-  </AppText>
-</View>
+                    <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
+                      {item?.booklet_uniquecode}
+                    </AppText>
+                  </View>
 
-{/* BOTTOM ICONS */}
-<View style={styles.bottomIconRow}>
-  {/* LEFT */}
-  <TouchableOpacityView
-    style={styles.circleBtn}
-    onPress={() => openDropdown('terms')}
-  >
-    <FastImage
-      source={termsCondIcon} 
-      style={styles.circleIcon}
-      tintColor={colors.white}
-      resizeMode='contain'
-    />
-  </TouchableOpacityView>
+                  {/* BOTTOM ICONS */}
+                  <View style={styles.bottomIconRow}>
+                    {/* LEFT */}
+                    <TouchableOpacityView
+                      style={styles.circleBtn}
+                      onPress={() => openDropdown('terms')}
+                    >
+                      <FastImage
+                        source={termsCondIcon}
+                        style={styles.circleIcon}
+                        tintColor={colors.white}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacityView>
 
-  {/* RIGHT */}
-  <View style={styles.rightIcons}>
-    <TouchableOpacityView
-      style={styles.circleBtn}
-      onPress={() => openDropdown('location')}
-    >
-      <FastImage
-        source={locationIcon}
-        style={styles.circleIcon}
-        tintColor={colors.white}
-      resizeMode='contain'
+                    {/* RIGHT */}
+                    <View style={styles.rightIcons}>
+                      <TouchableOpacityView
+                        style={styles.circleBtn}
+                        onPress={() => openDropdown('location')}
+                      >
+                        <FastImage
+                          source={locationIcon}
+                          style={styles.circleIcon}
+                          tintColor={colors.white}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacityView>
 
-      />
-    </TouchableOpacityView>
-
-    <TouchableOpacityView
-      style={styles.circleBtn}
-      onPress={() => openDropdown('contact')}
-    >
-      <FastImage
-        source={helpLineIcon}
-        style={styles.circleIcon}
-        tintColor={colors.white}
-      resizeMode='contain'
-
-      />
-    </TouchableOpacityView>
-  </View>
-</View>
+                      <TouchableOpacityView
+                        style={styles.circleBtn}
+                        onPress={() => openDropdown('contact')}
+                      >
+                        <FastImage
+                          source={helpLineIcon}
+                          style={styles.circleIcon}
+                          tintColor={colors.white}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacityView>
+                    </View>
+                  </View>
                 </>
               )}
 
               {/* ================= REQUEST ================= */}
               {type === 'request' && (
-  <>
-    {/* REQUESTED DATE */}
-    {purchaseDate && (
-      <View style={{ marginTop: vs(16) }}>
-        <AppText type={TWELVE} weight={BOLD}>
-          Requested Date
-        </AppText>
+                <>
+                  {/* REQUESTED DATE */}
+                  {purchaseDate && (
+                    <View
+                      style={{
+                        marginTop: vs(16),
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                     
+                      }}
+                    >
+                      <View>
+                        <AppText type={TWELVE} weight={BOLD}>
+                          Requested Date
+                        </AppText>
 
-        <AppText type={TWELVE}>
-          {moment(
-            purchaseDate,
-            'DD MMMM YYYY, HH:mm',
-            true,
-          ).format('DD MMM YYYY, hh:mm')}
-        </AppText>
-      </View>
-    )}
+                        <AppText type={TWELVE}>
+                          {moment(
+                            purchaseDate,
+                            'DD MMMM YYYY, HH:mm',
+                            true,
+                          ).format('DD MMM YYYY, hh:mm')}
+                        </AppText>
+                      </View>
 
-    {/* BOOKLET CODE STRIP */}
-    <View style={styles.bookletCodeContainer}>
-      <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
-        Booklet Code
-      </AppText>
+                      <View style={styles.requestIconContainer}>
+                        <TouchableOpacityView
+                          style={styles.circleBtn}
+                          onPress={() => openDropdown('location')}
+                        >
+                          <FastImage
+                            source={locationIcon}
+                            style={styles.circleIcon}
+                            tintColor={colors.white}
+                            resizeMode="contain"
+                          />
+                        </TouchableOpacityView>
+                      </View>
+                    </View>
+                  )}
 
-      <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
-        {item?.unique_code}
-      </AppText>
-    </View>
+                  {/* BOOKLET CODE STRIP */}
+                  <View style={styles.bookletCodeContainer}>
+                    <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
+                      Booklet Code
+                    </AppText>
 
-    {/* LOCATION ICON */}
-    <View style={styles.requestIconContainer}>
-      <TouchableOpacityView
-        style={styles.circleBtn}
-        onPress={() => openDropdown('location')}
-      >
-        <FastImage
-          source={locationIcon}
-          style={styles.circleIcon}
-          tintColor={colors.white}
-          resizeMode='contain'
-        />
-      </TouchableOpacityView>
-    </View>
-  </>
-)}
+                    <AppText type={FOURTEEN} weight={BOLD} color={WHITE}>
+                      {item?.unique_code}
+                    </AppText>
+                  </View>
+
+                  {/* LOCATION ICON */}
+                </>
+              )}
               {type === 'combo' && (
                 <>
                   {/* ✅ DATE ROW */}
@@ -488,13 +495,13 @@ const [activeDropdown, setActiveDropdown] = React.useState<
             <View style={styles.sheetHeader}>
               <View style={styles.dragHandle} />
               <AppText type={FOURTEEN} weight={BOLD}>
-               {activeDropdown === 'location'
-  ? 'Select Location'
-  : activeDropdown === 'contact'
-  ? 'Contact'
-  : item?.booklet_uniquecode
-  ? `Terms & Conditions (${item.booklet_uniquecode})`
-  : 'Terms & Conditions'}
+                {activeDropdown === 'location'
+                  ? 'Select Location'
+                  : activeDropdown === 'contact'
+                  ? 'Contact'
+                  : item?.booklet_uniquecode
+                  ? `Terms & Conditions (${item.booklet_uniquecode})`
+                  : 'Terms & Conditions'}
               </AppText>
             </View>
 
@@ -520,7 +527,6 @@ const [activeDropdown, setActiveDropdown] = React.useState<
                   </TouchableOpacityView>
                 ))}
 
-            
               {activeDropdown === 'contact' &&
                 (() => {
                   let contactList: string[] = [];
@@ -564,35 +570,33 @@ const [activeDropdown, setActiveDropdown] = React.useState<
                   });
                 })()}
             </View>
-             {activeDropdown === 'terms' ? (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      // style={{ maxHeight: vs(350) }}
-      contentContainerStyle={{
-      paddingHorizontal: s(16),
-    }}
-      style={{
-    maxHeight: vs(350),
-    backgroundColor: colors.white,
-  }}
-    >
-      <RenderHTML
-        contentWidth={width - 30}
-        source={{
-          html:
-            item?.terms_condition ||
-            '<p>No Terms & Conditions Available</p>',
-        }}
-      />
-    </ScrollView>
-  ) : (
-    <View style={{ marginTop: vs(10) }}>
-      {/* Location / Contact List */}
-    </View>
-  )}
+            {activeDropdown === 'terms' ? (
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                // style={{ maxHeight: vs(350) }}
+                contentContainerStyle={{
+                  paddingHorizontal: s(16),
+                }}
+                style={{
+                  maxHeight: vs(350),
+                  backgroundColor: colors.white,
+                }}
+              >
+                <RenderHTML
+                  contentWidth={width - 30}
+                  source={{
+                    html:
+                      item?.terms_condition ||
+                      '<p>No Terms & Conditions Available</p>',
+                  }}
+                />
+              </ScrollView>
+            ) : (
+              <View style={{ marginTop: vs(10) }}>
+                {/* Location / Contact List */}
+              </View>
+            )}
           </View>
-         
-
         </View>
       </Modal>
 
@@ -750,54 +754,54 @@ const styles = StyleSheet.create({
     marginTop: vs(12),
   },
   bookletCodeContainer: {
-  backgroundColor: colors.buttonBg,
-  borderRadius: ms(8),
-  marginTop: vs(18),
-  paddingVertical: vs(12),
-  paddingHorizontal: s(16),
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-},
+    backgroundColor: colors.buttonBg,
+    borderRadius: ms(8),
+    marginTop: vs(18),
+    paddingVertical: vs(12),
+    paddingHorizontal: s(16),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
 
-bottomIconRow: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginTop: vs(18),
-},
+  bottomIconRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: vs(18),
+  },
 
-circleBtn: {
-  width: 42,
-  height: 42,
-  borderRadius: 21,
-  backgroundColor: colors.buttonBg,
-  justifyContent: 'center',
-  alignItems: 'center',
-},
+  circleBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.buttonBg,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
-circleIcon: {
-  width: 18,
-  height: 18,
-},
-rightIcons: {
-  flexDirection: 'row',
-  gap: s(12),
-},
-requestIconContainer: {
-  marginTop: vs(18),
-  alignItems: 'flex-end',
-},
-bottomSheet: {
-  backgroundColor: colors.white,
-  borderTopLeftRadius: 20,
-  borderTopRightRadius: 20,
-  paddingHorizontal: s(15),
-  paddingTop: vs(10),
+  circleIcon: {
+    width: 18,
+    height: 18,
+  },
+  rightIcons: {
+    flexDirection: 'row',
+    gap: s(12),
+  },
+  requestIconContainer: {
+    // marginTop: vs(18),
+    alignItems: 'flex-end',
+  },
+  bottomSheet: {
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingHorizontal: s(15),
+    paddingTop: vs(10),
 
-  // remove fixed paddingBottom
-  // paddingBottom: vs(20),
+    // remove fixed paddingBottom
+    // paddingBottom: vs(20),
 
-  minHeight: vs(120),
-},
+    minHeight: vs(120),
+  },
 });

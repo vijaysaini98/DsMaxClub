@@ -205,6 +205,12 @@ export const API = {
   apiClient.get(
     `${config.PAYMENT_STATUS}/${merchantTransactionId}`,
   ),
+  executive_cart_request_send: (data: any) =>
+  apiClient.post(
+    config.EXECUTIVE_CART_REQUEST_SEND,
+    data,
+  ),
+
 
   },
 };
