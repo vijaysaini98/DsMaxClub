@@ -248,6 +248,8 @@ const Cart = () => {
   };
 
   const onCheckoutPress = async () => {
+    console.log('hii priyanka');
+    
     const deviceInfo = {
       unique_id: await DeviceInfo.getUniqueId(),
       brand: DeviceInfo.getBrand(),
@@ -262,6 +264,7 @@ const Cart = () => {
       phone: userData?.mobile,
       executive_code: state?.executiveCode || '',
       device_info: JSON.stringify(deviceInfo),
+      type:'app'
     };
 
     dispatch(
