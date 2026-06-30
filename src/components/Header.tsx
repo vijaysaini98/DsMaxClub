@@ -273,6 +273,8 @@ const Header: React.FC<HeaderProps> = ({
       ? 'Executive'
       : 'Vendor';
 
+      
+
   return (
     <>
       <View style={styles.headerContainer}>
@@ -340,13 +342,13 @@ const Header: React.FC<HeaderProps> = ({
       resizeMode="contain"
     />
 
-    {cartList?.length > 0 && (
-      <View style={styles.badge}>
-        <AppText style={styles.badgeText}>
-          {cartList.length}
-        </AppText>
-      </View>
-    )}
+{cartList?.items?.length > 0 && (
+  <View style={styles.badge}>
+    <AppText style={styles.badgeText}>
+      {cartList?.total_qty || cartList?.items?.length}
+    </AppText>
+  </View>
+)}
   </TouchableOpacityView>
 )}
         </View>

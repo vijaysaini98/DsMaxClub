@@ -11,6 +11,7 @@ import NavigationService from '@navigations/NavigationService';
 import * as routes from '@navigations/routes';
 import { buildVersion } from '@utils/index';
 import { useAppSelector } from '@redux/hooks';
+import { SvgUri } from 'react-native-svg';
 
 const userType = [
   {
@@ -32,8 +33,7 @@ const userType = [
 
 const LoginType = () => {
    const {maintenanceInfo } = useAppSelector(state => state.auth);
-   console.log(maintenanceInfo?.logo,'maintenanceInfo?.logo');
-   
+   const isSvg = maintenanceInfo?.logo?.endsWith('.svg');
   return (
     <AppSafeAreaView
       isSecond
@@ -42,12 +42,19 @@ const LoginType = () => {
     >
       <View style={styles.centerContainer}>
         <View style={styles.logoWrapper}>
-          <FastImage
-            // source={logoImage}
-            source={{uri:maintenanceInfo?.logo}}
-            style={styles.logoImage}
-            resizeMode={FastImage.resizeMode.contain}
-          />
+          {isSvg ? (
+    <SvgUri
+      uri={maintenanceInfo?.logo}
+      width="100%"
+      height="100%"
+    />
+  ) : (
+    <FastImage
+      source={{ uri: maintenanceInfo?.logo }}
+      style={styles.logoImage}
+      resizeMode={FastImage.resizeMode.contain}
+    />
+  )}
         </View>
         <AppText type={TWENTY_EIGHT} weight={BOLD}>WELCOME BACK</AppText>
         <AppText type={FOURTEEN} weight={MEDIUM} >Please Choose Your User Type</AppText>
@@ -104,7 +111,7 @@ const styles = StyleSheet.create({
     marginTop: vs(50),
   },
   logoWrapper: {
-    height: vs(100),
+    height: vs(110),
     width: ms(110),
     backgroundColor: colors.white,
     borderRadius: ms(8),

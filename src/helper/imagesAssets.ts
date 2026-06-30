@@ -2,7 +2,7 @@ export const getStartBg1 = require('@assets/images/getStartBg1.png');
 export const getStartBg2 = require('@assets/images/getStartBg2.png');
 export const getStartBg3 = require('@assets/images/getStartBg3.png');
 export const getStartBg4 = require('@assets/images/getStartBg4.png');
-export const backIcon = require('@assets/images/backIcon.png');
+export const backIcon = require('@assets/images/back.png');
 export const eyeOpenIcon = require('@assets/images/eyeOpenIcon.png');
 export const eyeCloseIcon = require('@assets/images/eyeCloseIcon.png');
 export const emailIcon = require('@assets/images/emailIcon.png');
@@ -121,4 +121,8 @@ export const pdfIcon  = require('@assets/images/pdf.png')
 export const resetIcon  = require('@assets/images/undo.png')
 export const appIconNew  = require('@assets/images/appIconNew.png')
 export const termsIcon  = require('@assets/images/checkmark.png')
+export const EmptyCartImage  = require('@assets/images/emptyCart.png')
+
+
+
 

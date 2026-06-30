@@ -147,7 +147,7 @@ const RequestApprove = ({ route }) => {
                 textWeight={SEMI_BOLD}
                 mainContainerStyle={styles.toolBarContainer} />
             {renderUserCard()}
-            {executiveRequestUserDetails?.tabstatus === 'Pending' && (
+            {/* {executiveRequestUserDetails?.tabstatus === 'Pending' && (
                 <View style={styles.bottomContainer}>
                     <View style={styles.requestBtnWrapper}>
                         <TouchableOpacityView
@@ -159,7 +159,7 @@ const RequestApprove = ({ route }) => {
                             </AppText>
                         </TouchableOpacityView>
                     </View>
-                </View>)}
+                </View>)} */}
 
             <RequestApproveBottomSheet
                 bottomSheetRef={executiveBottomSheetRef}

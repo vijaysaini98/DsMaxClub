@@ -39,8 +39,9 @@ import HomeShimmerLoader from '@components/ShimerLoader/homeShimerLoader';
 import CodeVerificationBottomSheet from '@screens/auth/codeVerificationBottomSheet';
 import { setCartList } from '@actions/cart/cartSlice';
 import { useFocusEffect } from '@react-navigation/native';
-import { addToCartAction } from '@actions/cart/cartActions';
+import { addToCartAction, getCartList } from '@actions/cart/cartActions';
 import { IMGE_URL } from '@services/config';
+import DeleteConfirmationModal from '@components/DeleteConfirmationModal';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -57,11 +58,8 @@ const Home: React.FC = () => {
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isAddCityModal, setIsAddCityModal] = useState(false);
-  const [isAddToCart, setIsAddToCart] = useState(false);
-  const [addTocarBookletId, setAddToCartBookletId] = useState<number | string>(
-    '',
-  );
-
+  const [exitModalVisible, setExitModalVisible] = useState(false);
+ 
   const sheetRef = useRef(null);
 
   const fetchData = async () => {
@@ -70,16 +68,14 @@ const Home: React.FC = () => {
     await dispatch(getComboBookletDeals());
     await dispatch(getCategoryBooklet());
     await dispatch(getBannerList({ screen_name: '1' }));
-    // if (userData && userData?.otp_verified == 0) {
-    //   setTimeout(() => {
-    //     sheetRef?.current?.open();
-    //   }, 300)
-
-    //   dispatch(sendOtp({ email: userData?.email }))
-    // }
+  
   };
 
-  
+  useFocusEffect(
+  React.useCallback(() => {
+    dispatch(getCartList());
+  }, []),
+);
 
   useEffect(() => {
     fetchData();
@@ -105,23 +101,8 @@ const Home: React.FC = () => {
 useFocusEffect(
   React.useCallback(() => {
     const backAction = () => {
-      Alert.alert(
-        'Exit App',
-        'Are you sure you want to exit?',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-            onPress: () => null,
-          },
-          {
-            text: 'OK',
-            onPress: () => BackHandler.exitApp(),
-          },
-        ],
-      );
-
-      return true;
+      setExitModalVisible(true);
+      return true; // default back prevent
     };
 
     const subscription = BackHandler.addEventListener(
@@ -129,7 +110,7 @@ useFocusEffect(
       backAction,
     );
 
-    return () => subscription.remove(); 
+    return () => subscription.remove();
   }, []),
 );
 
@@ -174,32 +155,6 @@ useFocusEffect(
     }
   };
 
-
-  const handleAddToCardOnPress = (booklet: any) => {
-  const payload = {
-    booklet_id: booklet?.uuid,
-    quantity: 1,
-  };
-
-  dispatch(
-    addToCartAction(
-      payload,
-      booklet,
-      () => {
-        setAddToCartBookletId(booklet?.uuid);
-        setIsAddToCart(true);
-
-        NavigationService.navigate(
-          routes.CART_SCREEN,
-          {
-            data: booklet,
-            from: 'Home',
-          },
-        );
-      },
-    ),
-  );
-};
 
   
 
@@ -316,9 +271,7 @@ useFocusEffect(
                                 ? booklet?.location[0]?.location
                                 : '---'
                             }
-                        //     handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
-                            // shortDesc={booklet?.client?.short_desc}
+                      
                           />
                         </View>
                       );
@@ -366,7 +319,6 @@ useFocusEffect(
                 horizontal={comboBookletDeals?.category?.length > 1}
                 scrollEnabled={comboBookletDeals?.category?.length > 1}
                 showsHorizontalScrollIndicator={false}
-                // scrollEnabled={comboBookletDeals?.category?.length<1}
                 contentContainerStyle={styles.listStyle}
               >
                 {comboBookletDeals?.category?.map((booklet, i) => {
@@ -393,9 +345,7 @@ useFocusEffect(
                           comboBookletDeals?.category?.length < 2 &&
                           styles.cardImageStyle
                         }
-                        // handleCardOnPress={() => {
-                        //   NavigationService.navigate(routes.DETAILS_SCREEN, { data: booklet, from: "ComboBooklet" });
-                        // }}
+                        
                         handleCardOnPress={() => {
                           NavigationService.navigate(
                             routes.COMBO_OFFER_LIST_SCREEN,
@@ -417,8 +367,7 @@ useFocusEffect(
                             ? booklet?.location[0]?.location
                             : '---'
                         }
-                        // handleAddToCardOnPress={()=>handleAddToCardOnPress(booklet)}
-                        // isAddedToCart={isAddToCart && addTocarBookletId == booklet?.id ? true : false}
+                       
                       />
                     </View>
                   );
@@ -437,6 +386,18 @@ useFocusEffect(
         }}
       />
       {/* <CodeVerificationBottomSheet ref={sheetRef} onVerify={handleVerify} /> */}
+      <DeleteConfirmationModal
+  visible={exitModalVisible}
+  title="Exit App"
+  message="Are you sure you want to exit the app?"
+  confirmText="Exit"
+  cancelText="Stay"
+  onCancel={() => setExitModalVisible(false)}
+  onConfirm={() => {
+    setExitModalVisible(false);
+    BackHandler.exitApp();
+  }}
+/>
     </AppSafeAreaView>
   );
 };

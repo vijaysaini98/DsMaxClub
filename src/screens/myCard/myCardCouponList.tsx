@@ -15,7 +15,7 @@ import { Loader } from '@components/Spinner'
 import CommonCard from '@components/CommonCard'
 import ViewDetailsBottomSheet from '@screens/home/ui/viewDetailsBottomSheet'
 
-const MyCardCouponList = ({ route }) => {
+const MyCardCouponList = ({ route }:any) => {
   const dispatch = useAppDispatch()
   const { myCardCouponList, isLoading } = useAppSelector((state) => state?.myCard)
   
@@ -25,7 +25,7 @@ const MyCardCouponList = ({ route }) => {
   const [viewData, setViewData] = useState()
   const [refreshing, setRefreshing] = useState(false)
 
-  // ✅ Track which coupon button is loading
+  
   const [loadingCouponId, setLoadingCouponId] = useState<string | null>(null)
 
   const onRefresh = useCallback(() => {
@@ -59,10 +59,7 @@ const MyCardCouponList = ({ route }) => {
   // }
 
   const handleViewBtn = (item) => {
-  // console.log(item, 'item in coupon list====>');
-  // console.log(item?.coupon_uuid, 'coupon_uuid');
-  // console.log(item?.user_bookletid, 'user_bookletid');
-  // console.log(item?.tab_status, 'item tab_status');
+
 
   if (item?.tab_status?.toLowerCase() === 'active') {
     setLoadingCouponId(item?.coupon_uuid);

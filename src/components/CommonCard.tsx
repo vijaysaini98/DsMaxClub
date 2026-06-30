@@ -675,7 +675,7 @@ showCouponLocationIcon,
     
     {/* Coupon Count */}
     <View style={styles.couponCountContainer}>
-      <AppText type={TEN} weight={BOLD} style={{ color: colors.placeholder2 }}>
+      <AppText type={TEN} weight={BOLD} style={{ color: colors.white }}>
         {`No of Coupons: ${couponCount}`}
       </AppText>
     </View>
@@ -1009,10 +1009,10 @@ const styles = StyleSheet.create({
 },
 
   couponCountContainer: {
-    borderWidth: 0.5,
-    borderStyle: 'dashed',
+    // borderWidth: 0.5, 
+    // borderStyle: 'dashed',
     borderRadius: ms(6),
-    backgroundColor: colors.tabBg,
+    backgroundColor: colors.buttonBg,
     // maxWidth: s(120),
     padding: ms(10),
     marginTop: vs(10),

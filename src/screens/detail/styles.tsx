@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   },
   backIconStyle: {
     height: vs(20),
-    width: s(20)
+    width: s(20),
   },
   shimmerBtnStyle: {
     height: vs(50),
@@ -229,7 +229,13 @@ viewCartBtn: {
   borderRadius: 24,
   justifyContent: 'center',
   alignItems: 'center',
-  backgroundColor: '#8E221A', // image wala maroon color
+  backgroundColor: colors.buttonBg, 
+},
+cartActionContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  width: '100%',
 },
 });
 

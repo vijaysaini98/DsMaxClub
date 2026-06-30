@@ -171,28 +171,17 @@ const styles = StyleSheet.create({
   qtyText: {
     color: '#0D2436',
   },
+
 summaryContainer: {
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
   backgroundColor: colors.white,
-
-  paddingHorizontal: 16,
-  paddingTop: 20,
-  paddingBottom: 10,
-
-  borderTopLeftRadius: 20,
-  borderTopRightRadius: 20,
-
+  padding: 16,
   borderTopWidth: 1,
-  borderTopColor: '#E5E5E5',
-
-  elevation: 8, // Android
-
-  shadowColor: '#000', // iOS
-  shadowOffset: {
-    width: 0,
-    height: -3,
-  },
-  shadowOpacity: 0.08,
-  shadowRadius: 6,
+  borderTopColor: '#EAEAEA',
+  height:250
 },
 
 summaryRow: {
@@ -209,7 +198,7 @@ divider: {
 
 checkoutBtnFull: {
   marginTop: 30,
-  height: 56,
+  height: 50,
   borderRadius: 28,
   backgroundColor: colors.buttonBg,
   justifyContent: 'center',
@@ -223,6 +212,41 @@ acceptTermsConditionContainer: {
 acceptTermsConditionBtn: {
   flexDirection: 'row',
   alignItems: 'center',
+},
+modalOverlay: {
+  flex: 1,
+  backgroundColor: 'rgba(0,0,0,0.5)',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+paymentModal: {
+  width: '85%',
+  backgroundColor: '#fff',
+  borderRadius: 20,
+  padding: 20,
+  alignItems: 'center',
+  elevation: 10,
+},
+
+cancelBtn: {
+  flex: 1,
+  borderWidth: 1,
+  borderColor: colors.buttonBg,
+  borderRadius: 12,
+  paddingVertical: 12,
+  alignItems: 'center',
+  marginRight: 8,
+},
+
+proceedBtn: {
+  // flex: 1,
+  backgroundColor: colors.buttonBg,
+  borderRadius: 12,
+  paddingVertical: 12,
+  paddingHorizontal:25,
+  alignItems: 'center',
+  marginLeft: 8,
 },
 });
 

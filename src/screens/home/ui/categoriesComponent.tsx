@@ -29,7 +29,6 @@ export const SvgImageFromUri = ({ uri, height, width }: { uri: string, height?: 
 }
 
 
-console.log(IMGE_URL,'IMGE_URL===>');
 
 const CategoriesComponent = ({ data, handleSeeAll }: { data: any, handleSeeAll: () => void }) => {
    const [imageErrors, setImageErrors] = useState<{ [key: string]: boolean }>({});
@@ -53,7 +52,6 @@ const CategoriesComponent = ({ data, handleSeeAll }: { data: any, handleSeeAll: 
         contentContainerStyle={styles.categoriesContainer}
       >
         {data?.category?.map((item: any, index: number) => {
-          console.log(item,'item?.icon===>');
           
           const { borderColor } = getCategoryDetails(item?.name)
           return (

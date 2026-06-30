@@ -22,6 +22,7 @@ export const login =
       const response = await API.authApi.login(data);
 
       if (response?.status == 200) {
+        console.log(response,'response')
         if (response?.data?.user?.otp_verified !== 0) {
           setAccessToken(response?.data?.user?.remember_token);
           setItem(USER_ID, response?.data?.user?.uuid);
@@ -55,6 +56,9 @@ export const login =
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_EXECUTIVE)
         }
         else {
+            setAccessToken(response?.data?.user?.remember_token);
+       setItem(USER_ID, response?.data?.user?.uuid);
+          setItem(USER_TYPE, response?.data?.user?.user_type);
           onSucess && onSucess();
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
         }
@@ -80,6 +84,8 @@ export const userLogin =
       dispatch(setLoading(true));
       const response = await API.authApi.userLogin(data);
       if (response?.status == 200) {
+          setAccessToken(response?.data?.user?.remember_token);
+
         // setAccessToken(response?.data?.remember_token);
         // setItem(USER_ID, response?.data?.uuid);
         // setItem(USER_TYPE, response?.data?.user_type);
@@ -298,6 +304,7 @@ export const userProfile =
   (data?: any, onSucess?: any, isFirstTime?: boolean) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
+      console.log(data,'dataaaa')
       const response = await API.userApi.user_profile(data);
       if (response?.status == 200) {
         dispatch(setUserData(response?.data));
@@ -432,10 +439,7 @@ export const getMaintenanceStatus =
       const response: any =
         await API.authApi.maintenance_status();
 
-      console.log(
-        'Maintenance Response',
-        response,
-      );
+
 
       if (response?.success) {
         dispatch(

@@ -11,7 +11,6 @@ const apiClient = axios.create({
   timeout: 60000,
 });
 let logOutref=0
-console.log('API Base URL:', BASE_URL);
 
 // Request Interceptor (adds token + logs)
 apiClient.interceptors.request.use(
@@ -64,6 +63,7 @@ logOutref=0
       logOutref === 0
     ) {
       logOutref++;
+console.log(error,config.url,'error==>');
 
       Toast.show(
         'Your session has expired. Please log in again.',
@@ -200,6 +200,17 @@ export const API = {
       apiClient.post(config.UPDATE_CART_QUANTITY, data),
 
     remove_cart: (data: any) => apiClient.post(config.REMOVE_CART, data),
-    payment_initiate :(data: any) => apiClient.post(config.PHONEPE_INITIATE, data)
+    payment_initiate :(data: any) => apiClient.post(config.PHONEPE_INITIATE, data),
+    payment_status: (merchantTransactionId: string) =>
+  apiClient.get(
+    `${config.PAYMENT_STATUS}/${merchantTransactionId}`,
+  ),
+  executive_cart_request_send: (data: any) =>
+  apiClient.post(
+    config.EXECUTIVE_CART_REQUEST_SEND,
+    data,
+  ),
+
+
   },
 };

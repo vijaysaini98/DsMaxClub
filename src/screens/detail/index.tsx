@@ -1,9 +1,12 @@
 import {
+  ActivityIndicator,
+  Alert,
   Animated,
   Image,
   Keyboard,
   Linking,
   StatusBar,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -11,6 +14,7 @@ import {
   backIcon,
   defaultBookletImage,
   downArrowIcon,
+  eyeOpenIcon,
   helpLineIcon,
   locationIcon,
 } from '@helper/imagesAssets';
@@ -18,6 +22,7 @@ import {
   AppText,
   BOLD,
   BUTTON_TEXT,
+  EIGHTEEN,
   FOURTEEN,
   MEDIUM,
   PLACEHOLDER,
@@ -26,6 +31,7 @@ import {
   THIRTEEN,
   TWELVE,
   TWENTY,
+  TWENTY_FOUR,
   TWENTY_TWO,
   WHITE,
 } from '@components/AppText';
@@ -69,16 +75,18 @@ import { commonStyles } from '@theme/commonStyles';
 import {
   CART_SCREEN,
   HOME_SCREEN,
-  MY_REQUEST_SCREEN,
-  REDEEM_SUCCESSFULL_SCREEN,
   REQUEST_SUCCESSFUL_SCREEN,
 } from '@navigations/routes';
-import { s, vs } from 'react-native-size-matters';
-import { logger } from 'react-native-reanimated/lib/typescript/logger';
-import { addToCartAction, getCartList, updateCartQuantity } from '@actions/cart/cartActions';
+
+import {
+  addToCartAction,
+  getCartList,
+  updateCartQuantity,
+} from '@actions/cart/cartActions';
+import { SpinnerSecond } from '@components/Spinner';
+import { setBtnLoading } from '@actions/cart/cartSlice';
 const initialLayout = { width: width };
 
-// ✅ Make sure route keys match those in renderScene
 const routes = [
   { key: 'allDeals', title: 'All Deals' },
   { key: 'about', title: 'About' },
@@ -88,29 +96,25 @@ const routes = [
 ];
 
 const Details = ({ route }: any) => {
-  const { data, from, noApiCall,booklet_id } = route?.params ?? '';
-const [hasError, setHasError] = useState(false);
-console.log(data,'data===>');
+  const { data, from, noApiCall, booklet_id } = route?.params ?? '';
+  const [hasError, setHasError] = useState(false);
 
   const dispatch = useAppDispatch();
 
-  const { isLoading, isBtnLoading, bookletDetailAllDeals } = useAppSelector(
-    state => state.home,
-  );
+  const { bookletDetailAllDeals } = useAppSelector(state => state.home);
+  const { isLoading, isBtnLoading } = useAppSelector(state => state.cart);
 
   const { userData } = useAppSelector(state => state?.auth);
-console.log(userData,'userData in details');
 
   const [index, setIndex] = React.useState(0);
   const [acceptContent, setAcceptContent] = useState(false);
   const [couponDetail, setCouponDetail] = useState<any>();
-   const [isAddToCart, setIsAddToCart] = useState(false);
-    const [addTocarBookletId, setAddToCartBookletId] = useState<number | string>(
-      '',
-    );
+  const [isAddToCart, setIsAddToCart] = useState(false);
+  const [addTocarBookletId, setAddToCartBookletId] = useState<number | string>(
+    '',
+  );
 
-  
-
+  const [qtyLoading, setQtyLoading] = useState(false);
   const sheetRef = useRef<BottomSheetModal>(null);
 
   const scrollY = useRef(new Animated.Value(0)).current; // ✅
@@ -121,40 +125,44 @@ console.log(userData,'userData in details');
 
   const snapPoints = useMemo(() => ['40%', '50%', '80%'], []);
   const executiveSnapPoints = useMemo(() => ['50%', '80%'], []);
-    const { cartList} = useAppSelector(state => state.cart);
-    
-  
+  const { cartList } = useAppSelector(state => state.cart);
+  const [viewCartLoading, setViewCartLoading] = useState(false);
+
+  const cartItem = cartList?.items?.find(
+    item => item?.booklet_uuid === data?.uuid,
+  );
+
+  const isInCart = !!cartItem;
 
   const headerHeight = scrollY.interpolate({
-    inputRange: [0, 200, 400], 
-    outputRange: [250, 100, 0], 
+    inputRange: [0, 200, 400],
+    outputRange: [250, 100, 0],
     extrapolate: 'clamp',
   });
 
   const headerOpacity = scrollY.interpolate({
-    inputRange: [0, 150, 200], 
+    inputRange: [0, 150, 200],
     outputRange: [1, 0.5, 0],
     extrapolate: 'clamp',
   });
 
   const collapsedHeaderOpacity = scrollY.interpolate({
-    inputRange: [100, 180, 250], 
-    outputRange: [0, 0.5, 1], 
+    inputRange: [100, 180, 250],
+    outputRange: [0, 0.5, 1],
     extrapolate: 'clamp',
   });
 
-  
- useEffect(() => {
-  if (bookletDetailAllDeals?.booklet_vendor_status === 0) {
-    Toast.show('This booklet is not available', Toast.LONG);
+  useEffect(() => {
+    if (bookletDetailAllDeals?.booklet_vendor_status === 0) {
+      Toast.show('This booklet is not available', Toast.LONG);
 
-    const timer = setTimeout(() => {
-      NavigationService.navigate(HOME_SCREEN); 
-    }, 1000);
+      const timer = setTimeout(() => {
+        NavigationService.navigate(HOME_SCREEN);
+      }, 1000);
 
-    return () => clearTimeout(timer);
-  }
-}, [bookletDetailAllDeals?.booklet_vendor_status]);
+      return () => clearTimeout(timer);
+    }
+  }, [bookletDetailAllDeals?.booklet_vendor_status]);
 
   useEffect(() => {
     if (!data?.uuid) return;
@@ -184,7 +192,6 @@ console.log(userData,'userData in details');
       return;
     }
     if (from === 'ComboBooklet') {
-      console.log(value, 'value from combo booklet details api call');
       dispatch(getComboBookletDetail(value));
     } else {
       dispatch(getBookletDetail(value));
@@ -236,10 +243,9 @@ console.log(userData,'userData in details');
     }, 200);
   };
 
-
   useEffect(() => {
-  dispatch(getCartList());
-}, []);
+    dispatch(getCartList());
+  }, []);
 
   const renderScene = useMemo(
     () =>
@@ -254,7 +260,7 @@ console.log(userData,'userData in details');
             venderId={data?.id}
           />
         ),
-      
+
         about: () => <About from={from} scrollY={scrollY} />,
         tc: () => <Terms_Condition from={from} scrollY={scrollY} />,
         redeemHelp: () => (
@@ -265,53 +271,24 @@ console.log(userData,'userData in details');
     [data?.uuid, from, scrollY, index], // dependencies
   );
 
-  const handleShareBtn = () => {
-    shareToAny('hello');
-  };
-
   const handleOnPress = () => {
-    let apidata = {
-      booklet_id: data.uuid,
+    // if (userData?.user_type == '1') {
+    //   executiveBottomSheetRef?.current?.expand();
+    // } else {
+    const payload = {
+      booklet_id: data?.uuid,
+      quantity: 1,
     };
-    
-    if (userData?.user_type == '1') {
-      executiveBottomSheetRef?.current?.expand();
-   
-}
-else {
-  const payload = {
-    booklet_id: data?.uuid,
-    quantity: 1,
-  };
 
-  // dispatch(
-  //   addToCartAction(
-  //     payload,
-  //     data,
-  //     () => {
-  //       setAddToCartBookletId(data?.uuid);
-  //       setIsAddToCart(true);
-
-  //       NavigationService.navigate(CART_SCREEN, {
-  //         data,
-  //         from: 'Home',
-  //       });
-  //     },
-  //   ),
-  // );
-  dispatch(
-  addToCartAction(
-    payload,
-    data,
-    () => {
-      setAddToCartBookletId(data?.uuid);
-      setIsAddToCart(true);
-      setQuantity(1);
-      dispatch(getCartList());
-    },
-  ),
-);
-}
+    dispatch(
+      addToCartAction(payload, data, () => {
+        setAddToCartBookletId(data?.uuid);
+        setIsAddToCart(true);
+        setQuantity(1);
+        dispatch(getCartList());
+      }),
+    );
+    // }
   };
 
   const handleSucess = () => {
@@ -330,7 +307,6 @@ else {
     } else {
       setAcceptContent(!acceptContent);
       bottomSheetRef.current?.close();
-      // NavigationService.navigate(MY_REQUEST_SCREEN,{tabIndex:1})
       NavigationService.navigate(REQUEST_SUCCESSFUL_SCREEN);
     }
   };
@@ -345,7 +321,6 @@ else {
         label: data?.client?.name || 'Location',
       });
     } else {
-      // If lat/lng not found, open the raw URL in Google Maps
       Linking.openURL(location_url).catch(() => {
         Toast.show("Can't open this location", Toast.LONG);
       });
@@ -368,7 +343,6 @@ else {
     }
   };
 
-
   const handleExecutiveSubmit = _data => {
     Keyboard?.dismiss();
     let apiData = {
@@ -384,6 +358,17 @@ else {
     } else {
       dispatch(executiveBookletRequest(apiData, handleSucess));
     }
+  };
+  const handleViewCart = () => {
+    setViewCartLoading(true);
+
+    setTimeout(() => {
+      NavigationService.navigate(CART_SCREEN, {
+        from: 'Home',
+      });
+
+      setViewCartLoading(false);
+    }, 300);
   };
 
   const isExpired = moment(data?.end_date, 'YYYY-MM-DD').isBefore(moment());
@@ -403,16 +388,15 @@ else {
     ? data.gallery.split(',').map(img => IMGE_URL + img.trim())
     : [];
 
-
   const headerImage = hasError
-  ? defaultBookletImage
-  : bookletDetailAllDeals?.booklet_type === 'Combo'
-  ? galleryImages.length > 0
-    ? { uri: galleryImages[0] }
-    : defaultBookletImage
-  : data?.booklet
-  ? { uri: IMGE_URL + data?.booklet }
-  : defaultBookletImage;
+    ? defaultBookletImage
+    : bookletDetailAllDeals?.booklet_type === 'Combo'
+    ? galleryImages.length > 0
+      ? { uri: galleryImages[0] }
+      : defaultBookletImage
+    : data?.booklet
+    ? { uri: IMGE_URL + data?.booklet }
+    : defaultBookletImage;
 
   const status = bookletDetailAllDeals?.request_status;
 
@@ -459,7 +443,7 @@ else {
 
       return 'N/A';
     }
- 
+
     if (bookletDetailAllDeals?.date_type === 1) {
       const formattedStart = bookletDetailAllDeals?.start_date
         ? moment(bookletDetailAllDeals.start_date).format('D MMM YYYY')
@@ -483,48 +467,45 @@ else {
 
   const [quantity, setQuantity] = useState(1);
 
-const cartItem = cartList?.items?.find(
-  item => item?.booklet_uuid === data?.uuid,
-);
+  const handleIncrement = () => {
+    const maxQty = Number(cartList?.max_quantity);
 
-console.log('cartItem ===>', cartItem);
+    if (Number(cartItem?.quantity) >= maxQty) {
+      return;
+    }
+    const payload = {
+      cart_id: cartItem.cart_id,
+      quantity: cartItem.quantity + 1,
+      action: 'increment',
+    };
+    setQtyLoading(true);
 
-const handleIncrement = () => {
-  const payload = {
-    // booklet_id: data?.uuid,
-    // quantity: quantity + 1,
-   cart_id: cartItem.cart_id,
-               quantity: cartItem.quantity + 1,
-                action: 'increment',
-  };
-  
-
-  dispatch(
-    updateCartQuantity(payload, () => {
-      setQuantity(prev => prev + 1);
-    }),
-  );
-};
-
-const handleDecrement = () => {
-  if (quantity <= 1) {
-    return;
-  }
-
-  const payload = {
-    // booklet_id: data?.uuid,
-    // quantity: quantity - 1,
- cart_id: cartItem.cart_id,
-        quantity: cartItem.quantity - 1,
-                action: 'increment',
+    dispatch(
+      updateCartQuantity(payload, () => {
+        setQtyLoading(false);
+        setQuantity(prev => prev + 1);
+      }),
+    );
   };
 
-  dispatch(
-    updateCartQuantity(payload, () => {
-      setQuantity(prev => prev - 1);
-    }),
-  );
-};
+  const handleDecrement = () => {
+    if (Number(cartItem?.quantity) <= 1) {
+      return;
+    }
+
+    const payload = {
+      cart_id: cartItem.cart_id,
+      quantity: cartItem.quantity - 1,
+      action: 'decrement',
+    };
+    setQtyLoading(true);
+    dispatch(
+      updateCartQuantity(payload, () => {
+        setQtyLoading(false);
+        setQuantity(prev => prev - 1);
+      }),
+    );
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -537,7 +518,7 @@ const handleDecrement = () => {
         <FastImage
           source={headerImage}
           style={styles.coverImageStyle}
-          resizeMode="cover"
+          resizeMode="stretch"
           onError={() => setHasError(true)}
         >
           <View style={styles.headerContainer}>
@@ -550,9 +531,9 @@ const handleDecrement = () => {
                 source={backIcon}
                 style={styles.backIconStyle}
                 resizeMode="contain"
+                tintColor={'black'}
               />
             </TouchableOpacityView>
-            
           </View>
         </FastImage>
       </Animated.View>
@@ -584,7 +565,6 @@ const handleDecrement = () => {
           >
             {data?.client?.name ? data?.client?.name : data?.name}
           </AppText>
-         
         </View>
       </Animated.View>
       <View style={styles.secondContainer}>
@@ -623,7 +603,7 @@ const handleDecrement = () => {
             </AppText>
           </TouchableOpacityView>
         )}
-       
+
         {validityText && (
           <AppText
             type={THIRTEEN}
@@ -642,7 +622,6 @@ const handleDecrement = () => {
           }`}
         </AppText>
 
-       
         {locationList?.length > 0 && (
           <View style={styles.locationContainer}>
             <TouchableOpacityView
@@ -705,66 +684,98 @@ const handleDecrement = () => {
           </View>
         ) : (
           <>
-            
+            {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
+              <>
+                {/* {userData?.user_type !== '1' && isInCart ? ( */}
+                {isInCart ? (
+                  <View style={styles.cartActionContainer}>
+                    <View style={styles.qtyContainer}>
+                      <TouchableOpacityView
+                        style={styles.qtyBtn}
+                        onPress={handleDecrement}
+                        // onPress={()=>Alert.alert('hsgg')}
+                      >
+                        <AppText weight={BOLD} type={TWENTY_FOUR}>
+                          -
+                        </AppText>
+                      </TouchableOpacityView>
 
-        {bookletDetailAllDeals?.booklet_type !== 'Combo' && (
-  <>
-    {userData?.user_type !== '1' &&
-    isAddToCart &&
-    addTocarBookletId === data?.uuid ? (
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          width: '100%',
-          justifyContent: 'space-between',
-        }}>
-        
-        <View style={styles.qtyContainer}>
-          <TouchableOpacityView
-  style={styles.qtyBtn}
-  onPress={handleDecrement}>
-  <AppText weight={BOLD} type={TWENTY}>-</AppText>
-</TouchableOpacityView>
+                      <AppText
+                        style={styles.qtyText}
+                        weight={BOLD}
+                        type={EIGHTEEN}
+                      >
+                        {cartItem?.quantity ?? quantity}
+                      </AppText>
 
-<AppText style={styles.qtyText}>
-  {quantity}
-</AppText>
+                      <TouchableOpacityView
+                        style={[
+                          styles.qtyBtn,
+                          Number(cartItem?.quantity) >=
+                            Number(cartList?.max_quantity) && {
+                            opacity: 0.2,
+                          },
+                        ]}
+                        onPress={handleIncrement}
+                        disabled={
+                          Number(cartItem?.quantity) >=
+                          Number(cartList?.max_quantity)
+                        }
+                      >
+                        <AppText weight={BOLD} type={TWENTY_FOUR}>
+                          +
+                        </AppText>
+                      </TouchableOpacityView>
+                    </View>
 
-<TouchableOpacityView
-  style={styles.qtyBtn}
-  onPress={handleIncrement}>
-  <AppText weight={BOLD} type={TWENTY} >+</AppText>
-</TouchableOpacityView>
-        </View>
-
-        <TouchableOpacityView
-          style={styles.viewCartBtn}
-          onPress={() =>
-            NavigationService.navigate(CART_SCREEN, {
-              from: 'Home',
-            })
-          }>
-          <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-            VIEW CART
-          </AppText>
-        </TouchableOpacityView>
-      </View>
-    ) : (
-      <TouchableOpacityView
-        onPress={handleOnPress}
-        style={styles.buyBtnStyle(isDisabled)}
-        loader={isBtnLoading}
-        disabled={isDisabled}>
-        <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
-          {userData?.user_type === '1'
-            ? buttonText
-            : 'ADD TO CART'}
-        </AppText>
-      </TouchableOpacityView>
-    )}
-  </>
-)}
+                    <TouchableOpacityView
+                      style={styles.viewCartBtn}
+                      onPress={handleViewCart}
+                      disabled={viewCartLoading}
+                    >
+                      {/* {viewCartLoading ? (
+    <ActivityIndicator size="small" color="#fff" />
+  ) : ( */}
+                      <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                        VIEW CART
+                      </AppText>
+                      {/* )} */}
+                    </TouchableOpacityView>
+                  </View>
+                ) : (
+                  <TouchableOpacityView
+                    onPress={handleOnPress}
+                    disabled={isDisabled}
+                    style={styles.buyBtnStyle(isDisabled)}
+                  >
+                    {/* {isBtnLoading ? (
+    <ActivityIndicator size="small" color="#fff" />
+  ) : ( */}
+                    <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                      {isDisabled ? buttonText : 'ADD TO CART'}
+                    </AppText>
+                    {/* )} */}
+                  </TouchableOpacityView>
+                  //                   <TouchableOpacityView
+                  //                     onPress={handleOnPress}
+                  //                     style={styles.buyBtnStyle(isDisabled)}
+                  //                     loader={isBtnLoading}
+                  //                     disabled={isDisabled}
+                  //                   >
+                  //                     <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                  //                       {/* {userData?.user_type === '1' ? buttonText : 'ADD TO CART'} */}
+                  //                       <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
+                  //   {isDisabled
+                  //     ? buttonText
+                  //     // : userData?.user_type === '1'
+                  //     // ? buttonText
+                  //     : 'ADD TO CART'}
+                  // </AppText>
+                  //                     </AppText>
+                  //                   </TouchableOpacityView>
+                )}
+              </>
+            )}
           </>
         )}
       </View>
@@ -805,6 +816,9 @@ const handleDecrement = () => {
           viewDetailsBottomSheetRef.current?.close();
         }}
       />
+      {qtyLoading && <SpinnerSecond />}
+      {isBtnLoading && <SpinnerSecond />}
+      {viewCartLoading && <SpinnerSecond />}
     </View>
   );
 };

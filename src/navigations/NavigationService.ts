@@ -44,6 +44,27 @@ function closeDrawer() {
 function replace(routeName: string, params?: object) {
   navigator.dispatch(StackActions.replace(routeName, params));
 }
+function resetToMyCard() {
+  navigator.dispatch(
+    CommonActions.reset({
+      index: 0,
+      routes: [
+        {
+          name: 'BottomTabNavigator', // actual route name
+          state: {
+            index: 2,
+            routes: [
+              { name: 'Home' },
+              { name: 'HelpLine' },
+              { name: 'MyCard' },
+              { name: 'Profile' },
+            ],
+          },
+        },
+      ],
+    }),
+  );
+}
 // add other navigation functions that you need and export them
 
 export default {
@@ -56,4 +77,5 @@ export default {
   reset,
   push,
   replace,
+  resetToMyCard
 };
