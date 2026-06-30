@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View, StyleSheet } from 'react-native';
+import { Modal, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import { AppText, BOLD, SIXTEEN, WHITE } from '@components/AppText';
 import { colors } from '@theme/colors';
@@ -33,36 +33,30 @@ const DeleteConfirmationModal = ({
     >
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <AppText
-            type={SIXTEEN}
-            weight={BOLD}
-            style={styles.title}
-          >
+          <AppText type={SIXTEEN} weight={BOLD} style={styles.title}>
             {title}
           </AppText>
 
-          <AppText style={styles.message}>
-            {message}
-          </AppText>
+          <AppText style={styles.message}>{message}</AppText>
 
           <View style={styles.buttonRow}>
-            <TouchableOpacityView
+            <TouchableOpacity
               style={[styles.button, styles.cancelBtn]}
               onPress={onCancel}
             >
-              <AppText weight={BOLD}>
-                {cancelText}
-              </AppText>
-            </TouchableOpacityView>
+              <AppText weight={BOLD}>{cancelText}</AppText>
+            </TouchableOpacity>
 
-            <TouchableOpacityView
+            <TouchableOpacity
               style={[styles.button, styles.confirmBtn]}
-              onPress={onConfirm}
+              onPress={() => {
+                onConfirm?.();
+              }}
             >
               <AppText color={WHITE} weight={BOLD}>
                 {confirmText}
               </AppText>
-            </TouchableOpacityView>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
