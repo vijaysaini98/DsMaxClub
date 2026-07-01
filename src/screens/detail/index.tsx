@@ -816,9 +816,7 @@ const Details = ({ route }: any) => {
           viewDetailsBottomSheetRef.current?.close();
         }}
       />
-      {qtyLoading && <SpinnerSecond />}
-      {isBtnLoading && <SpinnerSecond />}
-      {viewCartLoading && <SpinnerSecond />}
+    {(qtyLoading || isBtnLoading || viewCartLoading) && <SpinnerSecond />}
     </View>
   );
 };

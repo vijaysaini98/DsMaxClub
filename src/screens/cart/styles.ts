@@ -247,6 +247,7 @@ proceedBtn: {
   paddingHorizontal:25,
   alignItems: 'center',
   marginLeft: 8,
+  marginTop:20
 },
 });
 

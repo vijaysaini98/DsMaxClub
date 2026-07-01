@@ -179,11 +179,11 @@ export const getPaymentStatus =
 
       if (response?.status === 200) {
 
-        onSuccess?.(response?.data);
+        onSuccess?.(response);
 
         return;
       } else {
-        Toast.show(response?.message || 'Payment status failed', Toast.LONG);
+        Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
       console.log('PAYMENT STATUS ERROR ===>', e);
