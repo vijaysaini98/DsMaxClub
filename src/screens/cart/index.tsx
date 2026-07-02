@@ -164,63 +164,37 @@ const Cart = () => {
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [paymentStatusModal, setPaymentStatusModal] = useState({
     visible: false,
-    type: '', // success | failed
+    type: '', 
     message: '',
   });
   const [paymentLoading, setPaymentLoading] = useState(false);
 
-  // const paymentApiCall = (merchantTransactionId: string) => {
-  //   dispatch(
-  //     getPaymentStatus(merchantTransactionId, (statusResponse: any) => {
-  //       console.log('PAYMENT STATUS RESPONSE ===>', statusResponse);
-
-  //       setPaymentLoading(false);
-
-  //       if (statusResponse?.status === 'success') {
-  //         setPaymentStatusModal({
-  //           visible: true,
-  //           type: 'success',
-  //           message: 'Payment completed successfully',
-  //         });
-  //       } else {
-  //         setPaymentStatusModal({
-  //           visible: true,
-  //           type: 'failed',
-  //           message: 'Something went wrong',
-  //         });
-  //       }
-  //     }),
-  //   );
-  // };
+ 
 
   const paymentApiCall = (merchantTransactionId: string) => {
-  dispatch(
-    getPaymentStatus(merchantTransactionId, (statusResponse: any) => {
-      console.log('PAYMENT STATUS RESPONSE ===>', statusResponse);
+    dispatch(
+      getPaymentStatus(merchantTransactionId, (statusResponse: any) => {
+        console.log('PAYMENT STATUS RESPONSE ===>', statusResponse);
 
-      setPaymentLoading(false);
+        setPaymentLoading(false);
 
-      const paymentStatus = statusResponse?.data?.status?.toLowerCase();
-      console.log("FULL RESPONSE", JSON.stringify(statusResponse, null, 2));
-console.log("DATA", statusResponse.data);
-console.log("STATUS", statusResponse.data?.status);
+        const paymentStatus = statusResponse?.data?.status?.toLowerCase();
+        console.log('FULL RESPONSE', JSON.stringify(statusResponse, null, 2));
+        console.log('DATA', statusResponse.data);
+        console.log('STATUS', statusResponse.data?.status);
 
-      setPaymentStatusModal({
-        visible: true,
-        type: paymentStatus, // success | pending | failed
-        message: statusResponse?.message,
-      });
-    }),
-  );
-};
+        setPaymentStatusModal({
+          visible: true,
+          type: paymentStatus,
+          message: statusResponse?.message,
+        });
+      }),
+    );
+  };
 
   const initPhonePeSDK = async (paymentResponse: any) => {
-    const {
-      merchant_transaction_id,
-      phonepe_order_id,
-      merchant_id,
-      token,
-    } = paymentResponse;
+    const { merchant_transaction_id, phonepe_order_id, merchant_id, token } =
+      paymentResponse;
 
     console.log('TOKEN ===>', token);
 
@@ -269,8 +243,7 @@ console.log("STATUS", statusResponse.data?.status);
   };
 
   const onCheckoutPress = async () => {
-    console.log('hii priyanka');
-    
+
     const deviceInfo = {
       unique_id: await DeviceInfo.getUniqueId(),
       brand: DeviceInfo.getBrand(),
@@ -285,7 +258,7 @@ console.log("STATUS", statusResponse.data?.status);
       phone: userData?.mobile,
       executive_code: state?.executiveCode || '',
       device_info: JSON.stringify(deviceInfo),
-      type:'app'
+      type: 'app',
     };
 
     dispatch(
@@ -541,8 +514,6 @@ console.log("STATUS", statusResponse.data?.status);
         <TouchableOpacity
           style={styles.checkoutBtnFull}
           onPress={() => {
-            
-
             if (userData?.user_type === '1') {
               const mobile = state?.mobileNumber?.trim();
 
@@ -556,14 +527,13 @@ console.log("STATUS", statusResponse.data?.status);
                 return;
               }
             }
-if (!acceptContent) {
+            if (!acceptContent) {
               Toast.show('Please accept Terms & Conditions');
               return;
             }
             setPaymentModalVisible(true);
           }}
         >
-         
           <AppText color={WHITE} weight={BOLD} type={SIXTEEN}>
             {userData?.user_type === '1' ? 'REQUEST' : 'PAY NOW'}
           </AppText>
@@ -597,7 +567,7 @@ if (!acceptContent) {
           setSelectedCartId(null);
         }}
       />
-      {(qtyLoading || paymentLoading|| isBtnLoading) && <SpinnerSecond />}
+      {(qtyLoading || paymentLoading || isBtnLoading) && <SpinnerSecond />}
       <DeleteConfirmationModal
         visible={paymentModalVisible}
         title={
@@ -629,15 +599,14 @@ if (!acceptContent) {
         <View style={styles.modalOverlay}>
           <View style={styles.paymentModal}>
             <AppText type={TWENTY} weight={BOLD}>
-  {paymentStatusModal.type === 'success'
-    ? '✅ Payment Successful'
-    : paymentStatusModal.type === 'pending'
-    ? '⏳ Payment Pending'
-    : paymentStatusModal.type === 'failed'
-    ? '❌ Payment Failed'
-    : 'Payment Status'}
-</AppText>
-
+              {paymentStatusModal.type === 'success'
+                ? '✅ Payment Successful'
+                : paymentStatusModal.type === 'pending'
+                ? '⏳ Payment Pending'
+                : paymentStatusModal.type === 'failed'
+                ? '❌ Payment Failed'
+                : 'Payment Status'}
+            </AppText>
 
             <TouchableOpacity
               style={styles.proceedBtn}
@@ -648,9 +617,8 @@ if (!acceptContent) {
                   message: '',
                 });
 
+                dispatch(getCartList());
                 if (paymentStatusModal.type === 'success') {
-                  dispatch(getCartList());
-
                   NavigationService.navigate(routes.MY_CARD_SCREEN);
                 }
               }}

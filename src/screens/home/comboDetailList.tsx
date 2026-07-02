@@ -71,9 +71,14 @@ import CategoriesShimmer from '@components/ShimerLoader/categoriesShimerLoader';
 
 const ComboDetailList = ({ route }: any) => {
   const insets = useSafeAreaInsets();
-  const { isLoading, isRefresh, isBtnLoading, comboOfferList } = useAppSelector(
+  const { isRefresh,comboOfferList } = useAppSelector(
     state => state?.myCard,
   );
+
+   const { isLoading,isBtnLoading } = useAppSelector(
+    state => state?.cart,
+  );
+  
 
   const { userData } = useAppSelector(state => state?.auth);
   const [acceptContent, setAcceptContent] = useState(false);
@@ -569,6 +574,7 @@ const displayButtonText = isDisabled
           onPress={() =>
             NavigationService.navigate(routes.CART_SCREEN)
           }
+          loader={isBtnLoading}
         >
           <AppText type={SIXTEEN} color={WHITE} weight={BOLD}>
             VIEW CART
@@ -618,7 +624,7 @@ const displayButtonText = isDisabled
           executiveBottomSheetRef.current?.close();
         }}
       />
-      {(isLoading || qtyLoading) && <SpinnerSecond />}
+      {(isLoading || qtyLoading || isBtnLoading) && <SpinnerSecond />}
     </View>
   );
 };
