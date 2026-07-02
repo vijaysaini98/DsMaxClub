@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   noInternet: {
     flex: 1,
     height: 40,
-    backgroundColor: "red",
+    backgroundColor: colors.buttonBg,
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",

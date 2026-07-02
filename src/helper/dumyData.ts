@@ -1,15 +1,9 @@
 import {
   automobile,
   banerImages,
-  beachImage,
   cinemahall,
   gameZone,
-  gImg1,
-  gImg2,
-  gImg3,
-  gImg4,
-  gImg5,
-  gImg6,
+
   healthCare,
   hotelsDeals,
   resort,
@@ -40,45 +34,45 @@ export const categoryList = [
   { id: '9', title: 'Automobiles', icon: automobile, borderColor: '#1E90FF' },
 ];
 
-export const trendingData = [
-  {
-    id: '1',
-    title: 'Mauritius Beach',
-    location: 'Bel Ombre',
-    rating: 4.2,
-    tag: 'Guest Favourite',
-    description: 'Excellent',
-    reviews: 552,
-    price: 'Rs. 11,700',
-    stars: 4,
-    image: beachImage,
-  },
-  {
-    id: '2',
-    title: 'Hilltop Resort',
-    location: 'Shimla',
-    rating: 4.5,
-    tag: 'Top Rated',
-    description: 'Outstanding',
-    reviews: 312,
-    price: 'Rs. 9,200',
-    stars: 5,
-    image: beachImage,
-  },
-  {
-    id: '3',
-    title: 'Hilltop Resort',
-    location: 'Shimla',
-    rating: 4.5,
-    tag: 'Top Rated',
-    description: 'Outstanding',
-    reviews: 312,
-    price: 'Rs. 9,200',
-    stars: 5,
-    image: beachImage,
-  },
-  // add more if needed
-];
+// export const trendingData = [
+//   {
+//     id: '1',
+//     title: 'Mauritius Beach',
+//     location: 'Bel Ombre',
+//     rating: 4.2,
+//     tag: 'Guest Favourite',
+//     description: 'Excellent',
+//     reviews: 552,
+//     price: 'Rs. 11,700',
+//     stars: 4,
+//     image: beachImage,
+//   },
+//   {
+//     id: '2',
+//     title: 'Hilltop Resort',
+//     location: 'Shimla',
+//     rating: 4.5,
+//     tag: 'Top Rated',
+//     description: 'Outstanding',
+//     reviews: 312,
+//     price: 'Rs. 9,200',
+//     stars: 5,
+//     image: beachImage,
+//   },
+//   {
+//     id: '3',
+//     title: 'Hilltop Resort',
+//     location: 'Shimla',
+//     rating: 4.5,
+//     tag: 'Top Rated',
+//     description: 'Outstanding',
+//     reviews: 312,
+//     price: 'Rs. 9,200',
+//     stars: 5,
+//     image: beachImage,
+//   },
+//   // add more if needed
+// ];
 
 export const cardDummyData = [
   {
@@ -151,14 +145,14 @@ export const historyViewDealsDummyData = [
   },
 ];
 
-export const galleryData = [
-  { id: 1, image: gImg1 },
-  { id: 2, image: gImg2 },
-  { id: 3, image: gImg3 },
-  { id: 4, image: gImg4 },
-  { id: 5, image: gImg5 },
-  { id: 6, image: gImg6 },
-];
+// export const galleryData = [
+//   { id: 1, image: gImg1 },
+//   { id: 2, image: gImg2 },
+//   { id: 3, image: gImg3 },
+//   { id: 4, image: gImg4 },
+//   { id: 5, image: gImg5 },
+//   { id: 6, image: gImg6 },
+// ];
 
 
 export const userListData = [
