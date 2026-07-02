@@ -10,21 +10,16 @@ export const authBg = require('@assets/images/authBg.png');
 export const userIcon = require('@assets/images/userIcon.png');
 export const phoneIcon = require('@assets/images/phoneIcon.png');
 export const homeIcon = require('@assets/images/homeIcon.png');
-// export const homeIcon = require('@assets/images/home.png');
 export const helpLineIcon = require('@assets/images/helpLineIcon.png');
-// export const helpLineIcon = require('@assets/images/helpline.png');
 export const nearByIcon = require('@assets/images/nearByIcon.png');
 export const proflieIcon = require('@assets/images/profileIcon.png');
-// export const proflieIcon = require('@assets/images/profile.png');
 export const locationIcon = require('@assets/images/locationIcon.png');
 export const downArrowIcon = require('@assets/images/downIcon.png');
 export const searchIcon = require('@assets/images/searchIcon.png');
 export const starIcon = require('@assets/images/starIcon.png');
 export const checkReedemIcon = require('@assets/images/checkRedeemIcon.png');
 export const dealIcon = require('@assets/images/dealIcon.png');
-// export const dealIcon = require('@assets/images/home.png');
 export const scanIcon = require('@assets/images/scanIcon.png');
-// export const scanIcon = require('@assets/images/scan.png');
 export const historyIcon = require('@assets/images/historyIcon.png');
 export const directionIcon=require('@assets/images/directionsIcon.png')
 
@@ -38,9 +33,7 @@ export const userLogoIcon=require('@assets/images/userLogo.png');
 export const forwardIcon = require('@assets/images/forwardIcon.png');
 export const logOutIcon = require('@assets/images/logoutIcon.png');
 export const myCardIcon = require('@assets/images/myCardIcon.png');
-// export const myCardIcon = require('@assets/images/myBooklets.png');
 export const myRequestIcon = require('@assets/images/myRequestIcon.png');
-// export const myRequestIcon = require('@assets/images/request.png');
 export const privacyIcon = require('@assets/images/privacyIcon.png');
 export const shareIcon = require('@assets/images/shareIcon.png');
 export const termsCondIcon = require('@assets/images/terms&ConditionIcon.png');
@@ -50,7 +43,6 @@ export const deleteAccountIcon = require('@assets/images/delete.png')
 
 export const rightArrowIcon = require('@assets/images/rightarrowIcon.png');
 
-export const dummyUser = require('@assets/images/dummyUser.png');
 
 //categaories Image
 export const automobile = require('@assets/images/automobile.png');
@@ -66,25 +58,15 @@ export const hotelsDeals = require('@assets/images/hotel.png');
 export const restro2 = require('@assets/images/resturantimiage2.jpg');
 export const restro3 = require('@assets/images/restrurant3.jpg');
 
-export const categaoriesIcon = require('@assets/images/categoriesIcon.png');
 
 // trending images
-export const beachImage = require('@assets/images/beachImage.png');
 
 //banerImages
 export const banerImages = require('@assets/images/banerImage.png');
 export const defaultBanner = require('@assets/images/defaultBanner.png');
 
-export const detailsDummy = require('@assets/images/detailsDummyImage.png');
-export const unlikeIcon = require('@assets/images/unLikeIcon.png');
 
-//gallery Images
-export const gImg1 = require('@assets/images/gallery1.png');
-export const gImg2 = require('@assets/images/gallery2.png');
-export const gImg3 = require('@assets/images/gallery3.png');
-export const gImg4 = require('@assets/images/gallery4.png');
-export const gImg5 = require('@assets/images/gallery5.png');
-export const gImg6 = require('@assets/images/gallery6.png');
+
 
 export const giftIcon = require('@assets/images/giftImage.png');
 
