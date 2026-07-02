@@ -196,7 +196,6 @@ const Cart = () => {
     const { merchant_transaction_id, phonepe_order_id, merchant_id, token } =
       paymentResponse;
 
-    console.log('TOKEN ===>', token);
 
     const orderId = phonepe_order_id;
     const merchantId = merchant_id;

@@ -142,7 +142,7 @@ export default function BottomNavigationExecutive() {
             <Tab.Screen name={"Request"} component={Requests}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <TabIcon focused={focused} icon={myRequestIcon} title="REQUESTS" />
+                        <TabIcon focused={focused} icon={myRequestIcon} title="ORDERS" />
                     ),
                 }}
             />

@@ -105,7 +105,7 @@ const Profile = () => {
         {userData?.user_type == '2' && (
           <MoreTabButton
             leftIcon={myRequestIcon}
-            title={'My Request'}
+            title={'My Orders'}
             handleOnPress={() => {
               NavigationService.navigate(routes.MY_REQUEST_SCREEN);
             }}
