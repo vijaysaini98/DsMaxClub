@@ -151,15 +151,17 @@ export const initiatePayment =
       } else {
         console.log('STATUS NOT 200 ===>', response?.status);
 
-        Toast.show(response?.message || 'Payment failed', Toast.LONG);
+        Toast.show(response?.message, Toast.LONG);
       }
     } catch (e: any) {
-      console.log('PAYMENT ERROR ===>', e);
-      console.log('PAYMENT ERROR DATA ===>', e?.response?.data);
+
+    Toast.show(e?.response?.data?.message , Toast.LONG);
+      
     } finally {
       dispatch(setBtnLoading(false));
     }
   };
+
 
 export const getPaymentStatus =
   (merchantTransactionId: string, onSuccess?: any) =>
