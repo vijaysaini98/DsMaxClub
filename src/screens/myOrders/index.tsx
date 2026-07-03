@@ -6,12 +6,13 @@ import { AppText, EIGHTEEN, MEDIUM, NORMAL } from '@components/AppText'
 import ToolBar from '@components/ToolBar'
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
 import { colors } from '@theme/colors'
-import MyRequestList from './myRequestList'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { getMyRequestList } from '@actions/myRequest/myRequestAction'
 import { ms, s, vs } from 'react-native-size-matters/extend'
 import { useRoute } from '@react-navigation/native'
 import styles from './styles'
+import MyOrderList from './myOrderList'
+import { getMyorderList } from '@actions/myOrders/myOrderAction'
 // import { RenderTabBar } from '@components/RenderTabBar'
 
 
@@ -19,32 +20,17 @@ import styles from './styles'
 // ✅ Make sure route keys match those in renderScene
 const routes = [
   { key: 'all', title: 'All' },
+  { key: 'completed', title: 'Completed' },
   { key: 'pending', title: 'Pending' },
-  { key: 'approve', title: 'Approve' },
-  { key: 'reject', title: ' Reject' },
+  { key: 'rejected', title: 'Rejected / Cancel' },
 ];
-
-const RenderTabBar = (props) => {
+const RenderTabBar = (props:any) => {
   const { tabTextType } = props;
   return (
     <TabBar
       {...props}
       scrollEnabled
-      // renderLabel={({ route, focused }) => (
-      //   <AppText
-      //     type={EIGHTEEN}
-      //     weight={focused ? MEDIUM : NORMAL}
-      //     style={styles.tabTitleStyle(focused)}
-      //   >
-      //     {route.title}
-      //   </AppText>
-      // )}
-      // indicatorStyle={styles.tabIndocatorStyle}
-      // activeColor={colors.placeholder}
-      // inactiveColor={colors.disTextColor}
-      // style={styles.tabContainerStyle}
-      // tabStyle={styles.tabStyle}
-      // pressColor={colors.transparent}
+      
       indicatorStyle={{
         backgroundColor: colors.buttonBg,
         height: 1,
@@ -74,39 +60,76 @@ const RenderTabBar = (props) => {
 const MyOrders = () => {
   const dispatch = useAppDispatch()
   const {tabIndex}= useRoute().params as {tabIndex:number} || 0
-  const { myRequestApproveList, myRequestAllList, myRequestPendingList, myRequestRejectList } = useAppSelector((state) => state?.myRequest)
+  const {
+  myOrderAllList,
+  myOrderCompletedList,
+  myOrderPendingList,
+  myOrderRejectedList,
+} = useAppSelector(state => state.myOrder);
   const [index, setIndex] = useState(tabIndex ?? 0)
-  const renderScene = SceneMap({
-    all: () => <MyRequestList data={myRequestAllList} tabname={"all"} />,
-    pending: () => <MyRequestList data={myRequestPendingList} tabname={"pending"} />,
-    approve: () => <MyRequestList data={myRequestApproveList} tabname={"approve"} />,
-    reject: () => <MyRequestList data={myRequestRejectList} tabname={"reject"} />,
-  });
+const renderScene = ({ route }: any) => {
+  switch (route.key) {
+    case 'all':
+      return (
+        <MyOrderList
+          data={myOrderAllList}
+          tabname="All"
+        />
+      );
+
+    case 'completed':
+      return (
+        <MyOrderList
+          data={myOrderCompletedList}
+          tabname="Completed"
+        />
+      );
+
+    case 'pending':
+      return (
+        <MyOrderList
+          data={myOrderPendingList}
+          tabname="Pending"
+        />
+      );
+
+    case 'rejected':
+      return (
+        <MyOrderList
+          data={myOrderRejectedList}
+          tabname="Rejected/Canceled"
+        />
+      );
+
+    default:
+      return null;
+  }
+};
 
   useEffect(() => {
     const value =
       index === 0
         ? {
-          tabname: "all"
+          tabname: "All"
         }
         : index === 1
           ? {
-            tabname: "pending"
+            tabname: "Completed"
           }
           : index === 2
             ? {
-              tabname: "approve"
+              tabname: "Pending"
             }
             : {
-              tabname: "reject"
+              tabname: "Rejected/Canceled"
             }
 
-    dispatch(getMyRequestList(value));
+    dispatch(getMyorderList(value));
   }, [index]);
 
   return (
     <AppSafeAreaView style={[commonStyles.mainContainer, styles.mainContainer]}>
-      <ToolBar isLeftIcon title={"My Request"} />
+      <ToolBar isLeftIcon title={"My Orders"} />
       <View style={styles.containerStyle}>
         <TabView
           navigationState={{ index, routes }}

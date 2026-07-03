@@ -107,7 +107,7 @@ const Profile = () => {
             leftIcon={myRequestIcon}
             title={'My Orders'}
             handleOnPress={() => {
-              NavigationService.navigate(routes.MY_REQUEST_SCREEN);
+              NavigationService.navigate(routes.MY_ORDERS_SCREEN);
             }}
           />
         )}

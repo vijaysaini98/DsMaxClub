@@ -67,6 +67,7 @@ const UPDATE_CART_QUANTITY: string = `${BASE_URL}cart/update-quantity`;
 const REMOVE_CART: string = `${BASE_URL}cart/remove`;
 const PHONEPE_INITIATE: string = `${BASE_URL}payment/initiate`;
 const PAYMENT_STATUS: string = `${BASE_URL}payment/status`;
+const MY_ORDER_LIST: string = `${BASE_URL}myorder-list`;
 const EXECUTIVE_CART_REQUEST_SEND: string = `${BASE_URL}executive-cart-request-send`;
 
 
@@ -136,6 +137,7 @@ const config = {
   PHONEPE_INITIATE,
   PAYMENT_STATUS,
   EXECUTIVE_CART_REQUEST_SEND,
+  MY_ORDER_LIST,
 
 };
 

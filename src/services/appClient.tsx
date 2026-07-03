@@ -213,4 +213,8 @@ export const API = {
 
 
   },
+
+  orderApi:{
+    myOrder_List: (data: any) => apiClient.post(config.MY_ORDER_LIST, data),
+  }
 };
