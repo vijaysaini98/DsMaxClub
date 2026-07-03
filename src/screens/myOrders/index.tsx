@@ -7,13 +7,11 @@ import ToolBar from '@components/ToolBar'
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
 import { colors } from '@theme/colors'
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
-import { getMyRequestList } from '@actions/myRequest/myRequestAction'
-import { ms, s, vs } from 'react-native-size-matters/extend'
+
 import { useRoute } from '@react-navigation/native'
 import styles from './styles'
 import MyOrderList from './myOrderList'
 import { getMyorderList } from '@actions/myOrders/myOrderAction'
-// import { RenderTabBar } from '@components/RenderTabBar'
 
 
 
@@ -22,7 +20,7 @@ const routes = [
   { key: 'all', title: 'All' },
   { key: 'completed', title: 'Completed' },
   { key: 'pending', title: 'Pending' },
-  { key: 'rejected', title: 'Rejected / Cancel' },
+  { key: 'rejected', title: 'Expired' },
 ];
 const RenderTabBar = (props:any) => {
   const { tabTextType } = props;
@@ -97,7 +95,7 @@ const renderScene = ({ route }: any) => {
       return (
         <MyOrderList
           data={myOrderRejectedList}
-          tabname="Rejected/Canceled"
+          tabname="failed"
         />
       );
 
@@ -121,7 +119,7 @@ const renderScene = ({ route }: any) => {
               tabname: "Pending"
             }
             : {
-              tabname: "Rejected/Canceled"
+              tabname: "failed"
             }
 
     dispatch(getMyorderList(value));

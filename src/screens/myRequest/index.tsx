@@ -1,19 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { AppSafeAreaView } from '@components/AppSafeAreaView'
-import { commonStyles } from '@theme/commonStyles'
-import { AppText, EIGHTEEN, MEDIUM, NORMAL } from '@components/AppText'
-import ToolBar from '@components/ToolBar'
-import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
-import { colors } from '@theme/colors'
-import MyRequestList from './myRequestList'
-import { useAppDispatch, useAppSelector } from '@redux/hooks'
-import { getMyRequestList } from '@actions/myRequest/myRequestAction'
-import { ms, s, vs } from 'react-native-size-matters/extend'
-import { useRoute } from '@react-navigation/native'
-// import { RenderTabBar } from '@components/RenderTabBar'
-
-
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { AppSafeAreaView } from '@components/AppSafeAreaView';
+import { commonStyles } from '@theme/commonStyles';
+import { AppText, EIGHTEEN, MEDIUM, NORMAL } from '@components/AppText';
+import ToolBar from '@components/ToolBar';
+import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import { colors } from '@theme/colors';
+import MyRequestList from './myRequestList';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
+import { getMyRequestList } from '@actions/myRequest/myRequestAction';
+import { ms, s, vs } from 'react-native-size-matters/extend';
+import { useRoute } from '@react-navigation/native';
 
 // ✅ Make sure route keys match those in renderScene
 const routes = [
@@ -23,33 +20,18 @@ const routes = [
   { key: 'reject', title: ' Reject' },
 ];
 
-const RenderTabBar = (props) => {
+const RenderTabBar = props => {
   const { tabTextType } = props;
   return (
     <TabBar
       {...props}
       scrollEnabled
-      // renderLabel={({ route, focused }) => (
-      //   <AppText
-      //     type={EIGHTEEN}
-      //     weight={focused ? MEDIUM : NORMAL}
-      //     style={styles.tabTitleStyle(focused)}
-      //   >
-      //     {route.title}
-      //   </AppText>
-      // )}
-      // indicatorStyle={styles.tabIndocatorStyle}
-      // activeColor={colors.placeholder}
-      // inactiveColor={colors.disTextColor}
-      // style={styles.tabContainerStyle}
-      // tabStyle={styles.tabStyle}
-      // pressColor={colors.transparent}
       indicatorStyle={{
         backgroundColor: colors.buttonBg,
         height: 1,
         width: 100,
         borderRadius: 20,
-        bottom: -1
+        bottom: -1,
       }}
       activeColor={colors.placeholder}
       inactiveColor={colors.disTextColor}
@@ -71,64 +53,101 @@ const RenderTabBar = (props) => {
 };
 
 const MyRequest = () => {
-  const dispatch = useAppDispatch()
-  const {tabIndex}= useRoute().params as {tabIndex:number} || 0
-  const { myRequestApproveList, myRequestAllList, myRequestPendingList, myRequestRejectList } = useAppSelector((state) => state?.myRequest)
-  const [index, setIndex] = useState(tabIndex ?? 0)
+  const dispatch = useAppDispatch();
+  const { tabIndex, tabname, order_id } =
+    (useRoute().params as {
+      tabIndex: number;
+      tabname: string;
+      order_id: string;
+    }) || 0;
+
+  console.log(tabname, 'tabname');
+  console.log(order_id, 'order_id');
+
+  const getInitialIndex = () => {
+    switch (tabname) {
+      case 'pending':
+        return 1;
+      case 'approve':
+        return 2;
+      case 'reject':
+        return 3;
+      default:
+        return 0;
+    }
+  };
+
+  const [index, setIndex] = useState(getInitialIndex());
+
+  const {
+    myRequestAllList,
+    myRequestPendingList,
+    myRequestApproveList,
+    myRequestRejectList,
+  } = useAppSelector(state => state.myRequest);
+
   const renderScene = SceneMap({
-    all: () => <MyRequestList data={myRequestAllList} tabname={"all"} />,
-    pending: () => <MyRequestList data={myRequestPendingList} tabname={"pending"} />,
-    approve: () => <MyRequestList data={myRequestApproveList} tabname={"approve"} />,
-    reject: () => <MyRequestList data={myRequestRejectList} tabname={"reject"} />,
+    all: () => <MyRequestList data={myRequestAllList} tabname="all" />,
+    pending: () => (
+      <MyRequestList data={myRequestPendingList} tabname="pending" />
+    ),
+    approve: () => (
+      <MyRequestList data={myRequestApproveList} tabname="approve" />
+    ),
+    reject: () => <MyRequestList data={myRequestRejectList} tabname="reject" />,
   });
 
   useEffect(() => {
-    const value =
+    const currentTab =
       index === 0
-        ? {
-          tabname: "all"
-        }
+        ? 'all'
         : index === 1
-          ? {
-            tabname: "pending"
-          }
-          : index === 2
-            ? {
-              tabname: "approve"
-            }
-            : {
-              tabname: "reject"
-            }
+        ? 'pending'
+        : index === 2
+        ? 'approve'
+        : 'reject';
 
-    dispatch(getMyRequestList(value));
-  }, [index]);
+    const payload = {
+      tabname: currentTab,
+      order_id,
+    };
+
+    console.log('API Payload =>', payload);
+
+    dispatch(getMyRequestList(payload));
+  }, [index, order_id]);
 
   return (
     <AppSafeAreaView style={[commonStyles.mainContainer, styles.mainContainer]}>
-      <ToolBar isLeftIcon title={"My Request"} />
+      <ToolBar isLeftIcon title={'My Request'} />
       <View style={styles.containerStyle}>
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
-          renderTabBar={(props) => (
-            <RenderTabBar {...props} scrollEnabled={true} index={index} tabTextType={EIGHTEEN} />
+          renderTabBar={props => (
+            <RenderTabBar
+              {...props}
+              scrollEnabled={true}
+              index={index}
+              tabTextType={EIGHTEEN}
+            />
           )}
           onIndexChange={setIndex}
         />
       </View>
     </AppSafeAreaView>
-  )
-}
+  );
+};
 
-export default MyRequest
+export default MyRequest;
 
 const styles = StyleSheet.create({
   mainContainer: {
-    paddingHorizontal: s(16)
+    paddingHorizontal: s(16),
   },
   containerStyle: {
     flex: 1,
-    paddingTop: vs(25)
+    paddingTop: vs(25),
   },
   tabContainerStyle: {
     backgroundColor: 'transparent',
@@ -152,6 +171,5 @@ const styles = StyleSheet.create({
     color: focused ? colors.buttonBg : colors.disTextColor,
     textTransform: 'capitalize',
     paddingVertical: 0,
-  })
-
-})
+  }),
+});

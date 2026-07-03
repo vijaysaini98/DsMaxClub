@@ -8,6 +8,8 @@ export const getMyRequestList =
         try {
             dispatch(setLoading(true));
             const response = await API.myRequestApi.myRequest_List(data);
+            console.log(response,'response of my Request');
+            
             if (response?.status == 200) {
                 if (data?.tabname == "all") {
                     dispatch(setMyRequestAllList(response?.data))

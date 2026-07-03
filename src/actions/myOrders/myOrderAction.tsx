@@ -42,7 +42,7 @@ export const getMyorderList =
             dispatch(setMyOrderRejectedList([]));
             break;
 
-          case 'Rejected/Canceled':
+          case 'failed':
             dispatch(setMyOrderRejectedList(response.data));
             dispatch(setMyOrderAllList([]));
             dispatch(setMyOrderCompletedList([]));
