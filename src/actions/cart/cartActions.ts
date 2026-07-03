@@ -156,7 +156,8 @@ export const initiatePayment =
     } catch (e: any) {
 
     Toast.show(e?.response?.data?.message , Toast.LONG);
-      
+
+      dispatch(getCartList());
     } finally {
       dispatch(setBtnLoading(false));
     }
