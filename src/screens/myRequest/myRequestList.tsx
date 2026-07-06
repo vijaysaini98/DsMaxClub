@@ -15,15 +15,28 @@ import { getMyRequestList } from '@actions/myRequest/myRequestAction'
 import ListEmptyComponent from '@components/ListEmptyComponent'
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader'
 
-const MyRequestList = ({ data, tabname }: { data: any, tabname: string }) => {
+const MyRequestList = ({ data, tabname,order_id}: { data: any, tabname: string, order_id: string }) => {
     const dispatch = useAppDispatch()
     const { isLoading } = useAppSelector((state) => state.myRequest)
     const [refreshing, setRefreshing] = useState(false);
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        dispatch(getMyRequestList({ tabname: tabname })).finally(() => setRefreshing(false));
-    }, [dispatch]);
+const onRefresh = useCallback(() => {
+  setRefreshing(true);
+
+  const payload: any = {
+    tabname,
+  };
+
+  if (order_id) {
+    payload.order_id = order_id;
+  }
+
+  console.log('Refresh Payload =>', payload);
+
+  dispatch(getMyRequestList(payload)).finally(() => {
+    setRefreshing(false);
+  });
+}, [dispatch, tabname, order_id]);
 
     const renderItem = ({ item, index }: any) => {
         

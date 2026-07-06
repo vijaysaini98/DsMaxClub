@@ -21,6 +21,7 @@ export const getCategoryList =
     try {
       dispatch(setLoading(true));
       const response = await API.homeApi.categori_list(limit);
+console.log(response,'response of category list');
 
       if (response?.status == 200) {
         dispatch(setCategoriListData(response?.data));

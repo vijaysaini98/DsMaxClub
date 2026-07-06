@@ -45,18 +45,59 @@ const RequestList = ({ value }) => {
   })
   };
 
-  const data = useMemo(() => {
+//   const data = useMemo(() => {
 
-    if (value.tabname == "all") return executiveRequestAllList;
-    if (value.tabname == "pending") return executiveRequestPendingList;
-    if (value.tabname == "approve") return executiveRequestApproveList;
-    if (value.tabname == "reject") return executiveRequestRejectList;
-    return [];
-  }, [value.tabname, executiveRequestAllList, executiveRequestPendingList, executiveRequestApproveList,executiveRequestRejectList] // ✅ dependencies
-)
+//     if (value.tabname == "all") return executiveRequestAllList;
+//     if (value.tabname == "pending") return executiveRequestPendingList;
+//     if (value.tabname == "approve") return executiveRequestApproveList;
+//     if (value.tabname == "reject") return executiveRequestRejectList;
+//     return [];
+//   }, [value.tabname, executiveRequestAllList, executiveRequestPendingList, executiveRequestApproveList,executiveRequestRejectList] // ✅ dependencies
+// )
+const data = useMemo(() => {
+  let list: any[] = [];
 
+  switch (value?.tabname) {
+    case 'all':
+      list = executiveRequestAllList ?? [];
+      break;
+    case 'pending':
+      list = executiveRequestPendingList ?? [];
+      break;
+    case 'approve':
+      list = executiveRequestApproveList ?? [];
+      break;
+    case 'reject':
+      list = executiveRequestRejectList ?? [];
+      break;
+    default:
+      list = [];
+  }
+
+  const keyword = value?.search?.trim().toLowerCase();
+
+  if (!keyword) {
+    return list;
+  }
+
+  return list.filter(item => {
+    return (
+      (item?.name ?? '').toLowerCase().includes(keyword) ||
+      (item?.username ?? '').toLowerCase().includes(keyword) ||
+      (item?.unique_code ?? '').toLowerCase().includes(keyword)
+    );
+  });
+}, [
+  value?.tabname,
+  value?.search,
+  executiveRequestAllList,
+  executiveRequestPendingList,
+  executiveRequestApproveList,
+  executiveRequestRejectList,
+]);
   const renderItem = useCallback(
     ({ item, index }:any) => {
+console.log(item,'item in request list');
 
       
       

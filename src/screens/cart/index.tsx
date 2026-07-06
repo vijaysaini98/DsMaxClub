@@ -408,7 +408,7 @@ const Cart = () => {
               <Input
                 placeholder={
                   userData?.user_type === '1'
-                    ? 'Enter Mobile Number'
+                    ? 'Enter Customer Phone Number'
                     : 'Enter Executive Code (Optional)'
                 }
                 value={

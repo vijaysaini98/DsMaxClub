@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Keyboard, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import { commonStyles } from '@theme/commonStyles'
@@ -12,6 +12,7 @@ import { getMyCardBookletList } from '@actions/myCard/myCardAction'
 import { SpinnerSecond } from '@components/Spinner'
 import RequestList from './ui/requestList'
 import { getExecutiveRequestList } from '@actions/executiveRequest.tsx/executiveRequestAction'
+import styles from './styles'
 
 // ✅ Make sure route keys match those in renderScene
 const routes = [
@@ -77,6 +78,7 @@ const RenderTabBar = (props) => {
 const Requests = () => {
   const dispatch = useAppDispatch()
   const [index, setIndex] = useState(0)
+  const [search, setSearch] = useState('');
 
   const {
     isRefresh,
@@ -108,39 +110,67 @@ const Requests = () => {
     dispatch(getExecutiveRequestList(value));
   }, [index]);
 
-  const renderScene = useCallback(
-    SceneMap({
-      all: () => (
-        <RequestList
-          value={{
-            tabname: "all"
-          }}
-        />
-      ),
-      pending: () => (
-        <RequestList
-          value={{ tabname: "pending" }}
-        />
-      ),
-      approve: () => (
-        <RequestList
-          value={{ tabname: "approve" }}
-        />
-      ),
-      reject: () => (
-        <RequestList
-          value={{ tabname: "reject" }}
-        />
-      ),
-    }),
-    [isRefresh, executiveRequestAllList, executiveRequestPendingList, executiveRequestApproveList, executiveRequestRejectList] // ✅ dependencies
-  );
-
+  // const renderScene = useCallback(
+  //   SceneMap({
+  //     all: () => (
+  //       <RequestList
+  //         value={{
+  //           tabname: "all",
+  //           search,
+  //         }}
+  //       />
+  //     ),
+  //     pending: () => (
+  //       <RequestList
+  //         value={{ tabname: "pending",   search}}
+  //       />
+  //     ),
+  //     approve: () => (
+  //       <RequestList
+  //         value={{ tabname: "approve", search }}
+  //       />
+  //     ),
+  //     reject: () => (
+  //       <RequestList
+  //         value={{ tabname: "reject", search }}
+  //       />
+  //     ),
+  //   }),
+  //   [isRefresh,search, executiveRequestAllList, executiveRequestPendingList, executiveRequestApproveList, executiveRequestRejectList] // ✅ dependencies
+  // );
+const renderScene = useCallback(
+  ({ route }:any) => {
+    return (
+      <RequestList
+        value={{
+          tabname: route.key,
+          search,
+        }}
+      />
+    );
+  },
+  [search]
+);
 
   return (
     <AppSafeAreaView style={[commonStyles.mainContainer]}>
       <Header currentCity={true} />
       {isBtnLoading && <SpinnerSecond />}
+<View style={styles.searchContainer}>
+  <TextInput
+
+    placeholder="Search by Booklet or User..."
+    placeholderTextColor={colors.disTextColor}
+    value={search}
+    onChangeText={setSearch}
+    style={styles.searchInput}
+    returnKeyType="search"
+    clearButtonMode="while-editing"
+    onSubmitEditing={() => Keyboard.dismiss()}
+    
+  />
+</View>
+      
       <View style={{ flex: 1 }}>
         <TabView
           navigationState={{ index, routes }}

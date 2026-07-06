@@ -53,6 +53,8 @@ const Home: React.FC = () => {
     bannerList,
     comboBookletDeals,
   } = useAppSelector(state => state?.home);
+  console.log(userData?.name,'userData?.name');
+  
   
 
   const [show, setShow] = useState(false);

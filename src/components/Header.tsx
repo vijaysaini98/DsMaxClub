@@ -189,6 +189,8 @@ const Header: React.FC<HeaderProps> = ({
     state => state.auth,
   );
 
+  console.log(userData,'userData');
+  
   const { cartList } = useAppSelector(
     state => state.cart,
   );
@@ -273,7 +275,8 @@ const Header: React.FC<HeaderProps> = ({
       ? 'Executive'
       : 'Vendor';
 
-      
+  console.log(userType,'userType');
+  
 
   return (
     <>

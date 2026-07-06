@@ -87,14 +87,34 @@ const MyRequest = () => {
   } = useAppSelector(state => state.myRequest);
 
   const renderScene = SceneMap({
-    all: () => <MyRequestList data={myRequestAllList} tabname="all" />,
+    all: () => (
+      <MyRequestList
+        data={myRequestAllList}
+        tabname="all"
+        order_id={order_id}
+      />
+    ),
     pending: () => (
-      <MyRequestList data={myRequestPendingList} tabname="pending" />
+      <MyRequestList
+        data={myRequestPendingList}
+        tabname="pending"
+        order_id={order_id}
+      />
     ),
     approve: () => (
-      <MyRequestList data={myRequestApproveList} tabname="approve" />
+      <MyRequestList
+        data={myRequestApproveList}
+        tabname="approve"
+        order_id={order_id}
+      />
     ),
-    reject: () => <MyRequestList data={myRequestRejectList} tabname="reject" />,
+    reject: () => (
+      <MyRequestList
+        data={myRequestRejectList}
+        tabname="reject"
+        order_id={order_id}
+      />
+    ),
   });
 
   useEffect(() => {

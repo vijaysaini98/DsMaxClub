@@ -375,17 +375,16 @@ const Card: React.FC<CardProps> = ({
                       </View>
 
                       <View style={styles.requestIconContainer}>
-                        <TouchableOpacityView
-                          style={styles.circleBtn}
-                          onPress={() => openDropdown('location')}
-                        >
-                          <FastImage
-                            source={locationIcon}
-                            style={styles.circleIcon}
-                            tintColor={colors.white}
-                            resizeMode="contain"
-                          />
-                        </TouchableOpacityView>
+                        
+ <AppText type={TWELVE} weight={BOLD}>
+                          Requested for
+                        </AppText>
+
+                        <AppText type={TWELVE}>
+                         {item?.username ? item?.username : '--'}
+                        </AppText>
+
+
                       </View>
                     </View>
                   )}
@@ -402,6 +401,19 @@ const Card: React.FC<CardProps> = ({
                   </View>
 
                   {/* LOCATION ICON */}
+                  <View style={{alignItems:'flex-end'}}>
+                  <TouchableOpacityView
+                          style={styles.circleBtn}
+                          onPress={() => openDropdown('location')}
+                        >
+                          <FastImage
+                            source={locationIcon}
+                            style={styles.circleIcon}
+                            tintColor={colors.white}
+                            resizeMode="contain"
+                          />
+                        </TouchableOpacityView>
+                        </View>
                 </>
               )}
               {type === 'combo' && (
@@ -778,6 +790,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.buttonBg,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: vs(10),
+    
+
   },
 
   circleIcon: {

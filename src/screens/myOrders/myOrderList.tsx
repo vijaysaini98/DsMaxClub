@@ -117,7 +117,7 @@ const MyOrderList = ({ data, tabname }: { data: any; tabname: string }) => {
         />
         <View style={styles.detailRow}>
             <AppText weight={SEMI_BOLD} style={{marginTop: 10}}>
-              Rs. {Number(item.amount).toFixed(2)}
+              Rs. {Number(item?.amount).toFixed(2)}
             </AppText>
             <TouchableOpacityView style={styles.circle} onPress={onOrderPress}>
               <Image source={rightArrow} style={styles.rightArrow} />
