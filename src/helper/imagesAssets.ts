@@ -105,6 +105,8 @@ export const appIconNew  = require('@assets/images/appIconNew.png')
 export const termsIcon  = require('@assets/images/checkmark.png')
 export const EmptyCartImage  = require('@assets/images/emptyCart.png')
 export const rightArrow  = require('@assets/images/right-arrow.png')
+export const upArrow  = require('@assets/images/up-arrow.png')
+export const blackDownArrow  = require('@assets/images/downBlack.png')
 
 
 

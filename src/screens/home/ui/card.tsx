@@ -366,12 +366,14 @@ const Card: React.FC<CardProps> = ({
                         </AppText>
 
                         <AppText type={TWELVE}>
-                          {moment(
-                            purchaseDate,
-                            'DD MMMM YYYY, HH:mm',
-                            true,
-                          ).format('DD MMM YYYY, hh:mm')}
-                        </AppText>
+  {purchaseDate
+    ? moment(
+        purchaseDate,
+        'DD MMMM YYYY, hh:mm A',
+        true,
+      ).format('DD MMM YYYY, hh:mm A')
+    : '--'}
+</AppText>
                       </View>
 
                       <View style={styles.requestIconContainer}>

@@ -8,6 +8,8 @@ const initialState = {
   myOrderCompletedList: [],
   myOrderPendingList: [],
   myOrderRejectedList: [],
+  myOrderCancelledList: [],
+myOrderExpiredList: [],
 };
 
 const myOrderSlice = createSlice({
@@ -37,6 +39,13 @@ const myOrderSlice = createSlice({
     setMyOrderRejectedList: (state, { payload }) => {
       state.myOrderRejectedList = payload ?? [];
     },
+    setMyOrderCancelledList: (state, { payload }) => {
+  state.myOrderCancelledList = payload ?? [];
+},
+
+setMyOrderExpiredList: (state, { payload }) => {
+  state.myOrderExpiredList = payload ?? [];
+},
 
     resetMyOrder: () => initialState,
   },
@@ -49,6 +58,8 @@ export const {
   setMyOrderCompletedList,
   setMyOrderPendingList,
   setMyOrderRejectedList,
+   setMyOrderCancelledList,
+  setMyOrderExpiredList,
 } = myOrderSlice.actions;
 
 export const myOrderReducer = myOrderSlice.reducer;

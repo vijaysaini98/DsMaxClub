@@ -1,5 +1,5 @@
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
-import React, { useCallback, useMemo, useState } from 'react';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { EXECUTIVE_REQUEST_APPROVE } from '@navigations/routes';
 import { SpinnerSecond } from '@components/Spinner';
 import { ms, s, vs } from 'react-native-size-matters/extend';
@@ -28,14 +28,75 @@ const RequestList = ({ value }) => {
 
       const { userData } = useAppSelector(state => state?.auth);
 
+      console.log(executiveRequestAllList,'executiveRequestAllList');
       
 
     
   const [refreshing, setRefreshing] = useState(false);
+  const [offset, setOffset] = useState(0);
+const limit = 20;
+const [hasMore, setHasMore] = useState(true);
+const [loadingMore, setLoadingMore] = useState(false);
 
-  const onRefresh = useCallback(() => {
-    dispatch(getExecutiveRequestList(value, isRefresh));
-  }, [dispatch, value, isRefresh]);
+useEffect(() => {
+  setOffset(0);
+  setHasMore(true);
+
+  dispatch(
+    getExecutiveRequestList({
+      ...value,
+      offset: 0,
+      limit,
+    })
+  );
+}, [value.tabname]);
+
+const loadMore = () => {
+  if (loadingMore || !hasMore) {
+    return;
+  }
+
+  const newOffset = offset + limit;
+
+  setLoadingMore(true);
+
+  dispatch(
+    getExecutiveRequestList({
+      ...value,
+      offset: newOffset,
+      limit,
+    })
+  ).then((res: any) => {
+
+    const meta = res?.data?.meta;
+
+    setOffset(newOffset);
+
+    setHasMore(meta?.has_more ?? false);
+
+  }).finally(() => {
+    setLoadingMore(false);
+  });
+
+};
+
+  // const onRefresh = useCallback(() => {
+  //   dispatch(getExecutiveRequestList(value, isRefresh));
+  // }, [dispatch, value, isRefresh]);
+  const onRefresh = () => {
+
+  setOffset(0);
+  setHasMore(true);
+
+  dispatch(
+    getExecutiveRequestList({
+      ...value,
+      offset: 0,
+      limit,
+    })
+  );
+
+};
 
   const handleOnPress = (item) => {
    NavigationService.navigate(EXECUTIVE_REQUEST_APPROVE,{
@@ -99,6 +160,7 @@ const data = useMemo(() => {
     ({ item, index }:any) => {
 console.log(item,'item in request list');
 
+
       
       
       return (
@@ -154,6 +216,8 @@ console.log(item,'item in request list');
           keyExtractor={(item, index) => item?.user_booklet_uuid ?? index.toString()}
           contentContainerStyle={styles.listContainerStyle}
           showsVerticalScrollIndicator={false}
+            onEndReached={loadMore}
+  onEndReachedThreshold={0.4}
           ListEmptyComponent={() => <ListEmptyComponent title={'No Card Available'} />}
           refreshControl={
             <RefreshControl
@@ -163,6 +227,13 @@ console.log(item,'item in request list');
               tintColor={colors.buttonBg}
             />
           }
+          ListFooterComponent={
+    loadingMore ? (
+      <View style={{ paddingVertical: 20 }}>
+        <ActivityIndicator color={colors.buttonBg} />
+      </View>
+    ) : null
+  }
         />
       )}
     </View>

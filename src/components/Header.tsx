@@ -269,9 +269,9 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   const userType =
-    userData?.user_type === 2
+    userData?.user_type === '2'
       ? 'User'
-      : userData?.user_type === 1
+      : userData?.user_type === '1'
       ? 'Executive'
       : 'Vendor';
 

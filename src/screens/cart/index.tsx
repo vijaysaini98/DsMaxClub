@@ -258,6 +258,7 @@ const Cart = () => {
       executive_code: state?.executiveCode || '',
       device_info: JSON.stringify(deviceInfo),
       type: 'app',
+      user_type:userData?.user_type
     };
 
     dispatch(
@@ -340,6 +341,8 @@ const Cart = () => {
     const data = {
       mobile: state?.mobileNumber,
       device_info: JSON.stringify(deviceInfo),
+      type: 'app',
+      user_type:userData?.user_type
     };
     dispatch(
       executiveCartRequestSend(data, (response: any) => {
@@ -358,7 +361,7 @@ const Cart = () => {
         Toast.show(response?.message || 'Requests were sent.', Toast.LONG);
 
         dispatch(getCartList());
-        NavigationService.navigate(routes.MY_REQUEST_SCREEN);
+        NavigationService.navigate(routes.REQUEST_SCREEN);
       }),
     );
   };

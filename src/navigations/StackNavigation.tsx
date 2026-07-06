@@ -38,6 +38,7 @@ import MyCardComboOfferList from "@screens/myCard/myCardComboOfferList";
 import Checkout from "@screens/checkout";
 import MyCard from "@screens/myCard";
 import MyOrders from "@screens/myOrders";
+import Requests from "@screens/request";
 
 const Stack = createStackNavigator();
 
@@ -78,6 +79,7 @@ export const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.MY_CARD_COUPON_LIST_SCREEN} component={MyCardCouponList} />
     <Stack.Screen name={routes.COUPON_LIST_SCREEN} component={CouponList} />
     <Stack.Screen name={routes.MY_REQUEST_SCREEN} component={MyRequest} />
+    <Stack.Screen name={routes.REQUEST_SCREEN} component={Requests} />
     <Stack.Screen name={routes.REQUEST_COUPON_LIST_SCREEN} component={RequestCouponList} />
     <Stack.Screen name={routes.REDEEM_SUCCESSFULL_SCREEN_USER} component={UserRedeemSucessfull} />
     <Stack.Screen name={routes.REDEEM_SUCCESSFULL_SCREEN} component={RedeemSuccessfull} />

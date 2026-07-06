@@ -33,100 +33,127 @@ const MyOrderList = ({ data, tabname }: { data: any; tabname: string }) => {
   const { isLoading } = useAppSelector(state => state.myOrder);
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    dispatch(getMyorderList({ tabname: tabname })).finally(() =>
-      setRefreshing(false),
-    );
-  }, [dispatch]);
+const onRefresh = useCallback(() => {
+  setRefreshing(true);
+  dispatch(getMyorderList({ tabname })).finally(() => {
+    setRefreshing(false);
+  });
+}, [dispatch, tabname]);
+
 
   const renderItem = ({ item }: any) => {
-    const getStatusColor = (status: string) => {
-      switch (status?.toLowerCase()) {
-        case 'success':
-        case 'completed':
-          return {
-            bg: '#E7F8EC',
-            text: '#1E9E58',
-            label: 'Completed',
-          };
+const getStatusColor = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case 'success':
+    case 'completed':
+      return {
+        bg: '#E7F8EC',
+        text: '#1E9E58',
+        label: 'Completed',
+      };
 
-        case 'pending':
-          return {
-            bg: '#FFF3E6',
-            text: '#F39C12',
-            label: 'Pending',
-          };
+    case 'pending':
+      return {
+        bg: '#FFF3E6',
+        text: '#F39C12',
+        label: 'Pending',
+      };
 
-        case 'failed':
-        case 'cancelled':
-        case 'rejected':
-          return {
-            bg: '#FDECEC',
-            text: colors.buttonBg,
-            label: 'Failed',
-          };
+    case 'cancelled':
+      return {
+        bg: '#FDECEC',
+        text: 'colors.buttonBg',
+        label: 'Cancelled',
+      };
 
-        default:
-          return {
-            bg: '#EEEEEE',
-            text: '#666666',
-            label: status,
-          };
-      }
-    };
+    case 'expired':
+      return {
+        bg: '#F5F5F5',
+        text: '#7F8C8D',
+        label: 'Expired',
+      };
 
-    const statusStyle = getStatusColor(item.status);
-    const onOrderPress = () => {
-      NavigationService.navigate(MY_REQUEST_SCREEN, {
-        tabname: 'all',
-        order_id: item?.uuid,
-      });
-    };
-    return (
-      <View style={styles.card} >
-        <View style={styles.topRow}>
-          <View style={{ flex: 1 }}>
-         
+    case 'failed':
+      return {
+        bg: '#FDECEC',
+        text: colors.buttonBg,
+        label: 'Failed',
+      };
 
-            <AppText
-              style={styles.orderNumber}
-              color={BUTTON_TEXT}
-              weight={BOLD}
-            >
-              {item?.merchant_txn_id}
-            </AppText>
-            <AppText weight={SEMI_BOLD}>
-              {item.order_date}
-            </AppText>
-          </View>
+    default:
+      return {
+        bg: '#FDECEC',
+        text: colors.buttonBg,
+        label: status,
+      };
+  }
+};
 
-          <View
-            style={[
-              styles.statusContainer,
-              { backgroundColor: statusStyle.bg },
-            ]}
-          >
-            <AppText style={[styles.statusText, { color: statusStyle.text }]}>
-              {statusStyle.label}
-            </AppText>
-          </View>
-        </View>
-        <View
-          style={{ width: '100%', height: 1, backgroundColor: 'lightgray' }}
-        />
-        <View style={styles.detailRow}>
-            <AppText weight={SEMI_BOLD} style={{marginTop: 10}}>
-              Rs. {Number(item?.amount).toFixed(2)}
-            </AppText>
-            <TouchableOpacityView style={styles.circle} onPress={onOrderPress}>
-              <Image source={rightArrow} style={styles.rightArrow} />
-            </TouchableOpacityView>
-        </View>
-      </View>
-    );
+  const statusStyle = getStatusColor(item.status);
+
+  const onOrderPress = () => {
+    NavigationService.navigate(MY_REQUEST_SCREEN, {
+      tabname: 'all',
+      order_uuid: item?.uuid,
+
+    });
   };
 
+return (
+  <View style={styles.card}>
+    {/* Top Row */}
+    <View style={styles.row}>
+      <View style={{ flex: 1 }}>
+        <AppText color={BUTTON_TEXT} weight={BOLD}>
+          Order ID
+        </AppText>
+
+        <AppText weight={MEDIUM} style={styles.value}>
+          {item?.unique_orderid ? `# ${item.unique_orderid}` : '-'}
+        </AppText>
+      </View>
+
+      <View style={{ alignItems: 'flex-end' }}>
+        <AppText weight={BOLD} style={[styles.value, { color: colors.buttonBg }]}>
+          {item?.order_date || '-'}
+        </AppText>
+
+        <AppText
+          weight={BOLD}
+          style={[styles.value, { marginTop: 10, }]}
+        >
+         Rs. {Number(item?.amount || 0)}
+        </AppText>
+      </View>
+    </View>
+
+    <View style={styles.divider} />
+
+    {/* Bottom Row */}
+    <View style={styles.bottomRow}>
+      <View
+        style={[
+          styles.statusContainer,
+          { backgroundColor: statusStyle.bg },
+        ]}>
+        <AppText
+          style={[
+            styles.statusText,
+            { color: statusStyle.text },
+          ]}>
+          {statusStyle.label}
+        </AppText>
+      </View>
+
+      <TouchableOpacityView
+        style={styles.circle}
+        onPress={onOrderPress}>
+        <Image source={rightArrow} style={styles.rightArrow} />
+      </TouchableOpacityView>
+    </View>
+  </View>
+);
+};
   return (
     <View style={styles.mainContainer}>
       {isLoading && !refreshing ? (
@@ -159,6 +186,7 @@ const MyOrderList = ({ data, tabname }: { data: any; tabname: string }) => {
 export default MyOrderList;
 
 
+
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
@@ -172,9 +200,9 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: 16,
-    padding: 18,
+    padding: 16,
     marginBottom: 16,
 
     shadowColor: '#000',
@@ -185,26 +213,54 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 4,
+    height:135,
   },
 
-  topRow: {
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 18,
   },
 
-  orderNumber: {
+  leftContainer: {
+    flex: 1,
+  },
+
+  rightContainer: {
+    alignItems: 'flex-end',
+  },
+
+  title: {
+    color: '#8A8A8A',
+    marginBottom: 4,
+  },
+
+  value: {
     marginTop: 4,
-    width: '90%',
+  },
+
+  divider: {
+    height: 1,
+    backgroundColor: '#ECECEC',
+    marginVertical: 10,
+  },
+
+  amountContainer: {
+    marginBottom: 16,
+  },
+
+  bottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
   },
 
   statusContainer: {
+    marginTop: 6,
     paddingHorizontal: 14,
     paddingVertical: 7,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderRadius: 8,
+    alignSelf: 'flex-start',
   },
 
   statusText: {
@@ -212,51 +268,18 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // alignItems: 'center',
-    marginTop: 6,
-    // backgroundColor:'red'
-  },
-
-  detailItem: {
-    flex: 1,
-  },
-
-  label: {
-    marginBottom: 4,
-  },
-
-  divider: {
-    width: 1,
-    height: 36,
-    backgroundColor: '#ECECEC',
-    marginHorizontal: 18,
-  },
-
-  arrowContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+  circle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: colors.forth,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 12,
   },
-  rightArrow:{
-    width: 20,
+
+  rightArrow: {
+    width: 18,
     height: 10,
     resizeMode: 'contain',
   },
-  circle:{
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: colors.forth,
-    justifyContent:'center',
-    alignItems:'center'
-  }
-
 });
