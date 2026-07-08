@@ -1,55 +1,9 @@
 import { AppDispatch } from "@redux/store";
-import { setBtnLoading, setExecutiveApproveList, setExecutiveRequestAllList, setExecutiveRequestPendingList, setExecutiveRequestRejectList, setExecutiveRequestUserDetails, setImageLoading, setLoading } from "./executiveRequestSlice";
+import { setBtnLoading, setExecutiveApproveList, setExecutiveRequestAllList, setExecutiveRequestPendingList, setExecutiveRequestRejectList, setExecutiveRequestUserDetails, setImageLoading, setLoading, setPaginationLoading } from "./executiveRequestSlice";
 import { API } from "@services/appClient";
 import Toast from "react-native-simple-toast";
 import { setIsRefresh } from "@actions/myCard/myCardSlice";
 
-// export const getExecutiveRequestList =
-//     (data?: any,isRefresh?:boolean, onSucess?: any) => async (dispatch: AppDispatch) => {
-//         try {
-//             dispatch(setLoading(true));
-// isRefresh && dispatch(setIsRefresh(true))
-//             const response = await API.executiveRequestApi.executive_Request_List(data);
-//             console.log(response,'response in executive');
-            
-         
-//             if (response?.status == 200) {
-//                 if (data?.tabname == "all") {
-//                     dispatch(setExecutiveRequestAllList(response?.data?.data))
-//                     dispatch(setExecutiveRequestPendingList())
-//                     dispatch(setExecutiveApproveList())
-//                     dispatch(setExecutiveRequestRejectList())
-//                 } else if (data?.tabname == "pending") {
-//                     dispatch(setExecutiveRequestPendingList(response?.data?.data))
-//                     dispatch(setExecutiveRequestAllList())
-//                     dispatch(setExecutiveApproveList())
-//                     dispatch(setExecutiveRequestRejectList())
-//                 }
-//                 else if (data?.tabname == "approve") {
-//                     dispatch(setExecutiveApproveList(response?.data?.data))
-//                     dispatch(setExecutiveRequestPendingList())
-//                     dispatch(setExecutiveRequestAllList())
-//                     dispatch(setExecutiveRequestRejectList())
-//                 }
-//                 else if (data?.tabname == "reject") {
-//                     dispatch(setExecutiveRequestRejectList(response?.data?.data))
-//                     dispatch(setExecutiveApproveList())
-//                     dispatch(setExecutiveRequestPendingList())
-//                     dispatch(setExecutiveRequestAllList())
-//                 }
-//                 return;
-//             } else {
-//                 throw new Error('No response data received from backend.');
-//             }
-//         } catch (e: any) {
-//             console.log("e", e);
-
-//             Toast.show(e?.response?.data?.message, Toast.LONG);
-//         } finally {
-//             dispatch(setLoading(false))
-//             isRefresh && dispatch(setIsRefresh(true))
-//         }
-//     };
 export const getExecutiveRequestList =
   (
     data?: any,
@@ -59,8 +13,11 @@ export const getExecutiveRequestList =
   ) =>
   async (dispatch: AppDispatch, getState: any) => {
     try {
+      // Full screen loader only for first page
       if (!isLoadMore) {
         dispatch(setLoading(true));
+      } else {
+        dispatch(setPaginationLoading(true));
       }
 
       if (isRefresh) {
@@ -69,8 +26,6 @@ export const getExecutiveRequestList =
 
       const response =
         await API.executiveRequestApi.executive_Request_List(data);
-
-      console.log(response, 'response in executive');
 
       if (response?.status === 200) {
         const newData = response?.data?.data ?? [];
@@ -120,12 +75,12 @@ export const getExecutiveRequestList =
         }
 
         onSuccess?.({
-          hasMore: response?.data?.meta?.has_more,
-          offset: response?.data?.meta?.offset,
-          total: response?.data?.meta?.total,
+          hasMore: response?.data?.meta?.has_more ?? false,
+          offset: response?.data?.meta?.offset ?? 0,
+          total: response?.data?.meta?.total ?? 0,
         });
 
-        return;
+        return response;
       }
 
       throw new Error('No response data received from backend.');
@@ -137,7 +92,11 @@ export const getExecutiveRequestList =
         Toast.LONG,
       );
     } finally {
-      dispatch(setLoading(false));
+      if (!isLoadMore) {
+        dispatch(setLoading(false));
+      } else {
+        dispatch(setPaginationLoading(false));
+      }
 
       if (isRefresh) {
         dispatch(setIsRefresh(false));
@@ -146,7 +105,7 @@ export const getExecutiveRequestList =
   };
 export const getExecutiveRequestUserDetails = (data?: any, onSucess?: any, onFailed?: any) => async (dispatch: AppDispatch) => {
     try {
-        dispatch(setBtnLoading(true));
+     dispatch(setLoading(true));
         const response = await API.executiveRequestApi.execuitve_Request_User_Details(data);
         
         if (response?.status == 200) {
@@ -162,7 +121,7 @@ export const getExecutiveRequestUserDetails = (data?: any, onSucess?: any, onFai
         onFailed && onFailed()
         Toast.show(e?.response?.data?.message, Toast.LONG);
     } finally {
-        dispatch(setBtnLoading(false))
+        dispatch(setLoading(false))
     }
 };
 

@@ -21,9 +21,7 @@ const useFcm1 = (
   const getToken = async () => {
     try {
       const fcmToken = await messaging().getToken();
-      console.log('====================================');
       console.log('✅ FCM Token:', fcmToken);
-      console.log('====================================');
       if (fcmToken) {
         await setToken(fcmToken);
       }

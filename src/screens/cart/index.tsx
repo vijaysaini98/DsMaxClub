@@ -174,15 +174,11 @@ const Cart = () => {
   const paymentApiCall = (merchantTransactionId: string) => {
     dispatch(
       getPaymentStatus(merchantTransactionId, (statusResponse: any) => {
-        console.log('PAYMENT STATUS RESPONSE ===>', statusResponse);
 
         setPaymentLoading(false);
 
         const paymentStatus = statusResponse?.data?.status?.toLowerCase();
-        console.log('FULL RESPONSE', JSON.stringify(statusResponse, null, 2));
-        console.log('DATA', statusResponse.data);
-        console.log('STATUS', statusResponse.data?.status);
-
+     
         setPaymentStatusModal({
           visible: true,
           type: paymentStatus,

@@ -156,7 +156,8 @@ const RootComponent = ({ children }:any) => {
     dispatch(getMaintenanceStatus());
   }, [dispatch]);
 
- 
+const [announcementText, setAnnouncementText] = useState('');
+const [showAnnouncement, setShowAnnouncement] = useState(false);
 
 useEffect(() => {
   const subscription = AppState.addEventListener("change", state => {
@@ -199,11 +200,28 @@ useEffect(() => {
   /**
    * Maintenance Check
    */
+// useEffect(() => {
+//   if (maintenanceInfo) {
+//     setIsMaintainess(
+//       maintenanceInfo?.maintenance_mode === true,
+//     );
+//   }
+// }, [maintenanceInfo]);
 useEffect(() => {
   if (maintenanceInfo) {
+    // Existing Maintenance
     setIsMaintainess(
       maintenanceInfo?.maintenance_mode === true,
     );
+
+    // Announcement
+    if (
+      maintenanceInfo?.announcement &&
+      maintenanceInfo.announcement.trim() !== ''
+    ) {
+      setAnnouncementText(maintenanceInfo?.announcement);
+      setShowAnnouncement(true);
+    }
   }
 }, [maintenanceInfo]);
 
@@ -211,23 +229,30 @@ useEffect(() => {
    * Internet Check
    */
   useEffect(() => {
-    if (!netConnected) {
-      setVisible(true);
-    } else {
-      setVisible(false);
-    }
-  }, [netConnected]);
+  if (!maintenanceInfo) return;
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(
-      (state: any) => {
-        setNetConnected(state?.isConnected);
-      },
-    );
+  const isMaintenance =
+    maintenanceInfo?.maintenance_mode === true;
 
-    return unsubscribe;
-  }, [visible]);
+  setIsMaintainess(isMaintenance);
 
+  // If maintenance is ON, don't show announcement
+  if (isMaintenance) {
+    setShowAnnouncement(false);
+    return;
+  }
+
+  // Show announcement only when maintenance is OFF
+  if (
+    maintenanceInfo?.announcement &&
+    maintenanceInfo.announcement.trim() !== ''
+  ) {
+    setAnnouncementText(maintenanceInfo.announcement);
+    setShowAnnouncement(true);
+  } else {
+    setShowAnnouncement(false);
+  }
+}, [maintenanceInfo]);
   return (
     <BottomSheetModalProvider>
       <SafeAreaView
@@ -247,16 +272,27 @@ useEffect(() => {
             )
           }
         />
+   
+
 
         <ServerCheckComp
           visible={BaseUrlConfig.ENVIRONMENT}
         />
-
-        {isMaintainess && (
-          <MaintenanceModal
-            visible={isMaintainess}
-          />
-        )}
+{/* Maintenance has highest priority */}
+{isMaintainess ? (
+  <MaintenanceModal
+    visible={true}
+    imageUrl={maintenanceInfo?.image}
+  />
+) : showAnnouncement ? (
+  <MaintenanceModal
+    visible={true}
+    title="📢 Announcement"
+    message={announcementText}
+    showMessage={true}
+    onClose={() => setShowAnnouncement(false)}
+  />
+) : null}
 
         {isUpdate && (
           <UpdateModal isVisible={isUpdate} />

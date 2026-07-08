@@ -1,4 +1,10 @@
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from 'react-native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { EXECUTIVE_REQUEST_APPROVE } from '@navigations/routes';
 import { SpinnerSecond } from '@components/Spinner';
@@ -14,211 +20,209 @@ import { getExecutiveRequestList } from '@actions/executiveRequest.tsx/executive
 import moment from 'moment';
 import { IMGE_URL } from '@services/config';
 
-const RequestList = ({ value }) => {
+const RequestList = ({ value }: any) => {
   const dispatch = useAppDispatch();
-  // const { isLoading ,isBtnLoading} = useAppSelector((state) => state.myCard);
   const {
     isRefresh,
-    isLoading, 
+    isLoading,
+    isPaginationLoading,
     executiveRequestAllList,
     executiveRequestPendingList,
     executiveRequestApproveList,
     executiveRequestRejectList,
-    isBtnLoading}=useAppSelector((state)=>state?.executiveRequest)
+    isBtnLoading,
+  } = useAppSelector(state => state?.executiveRequest);
 
-      const { userData } = useAppSelector(state => state?.auth);
+  const { userData } = useAppSelector(state => state?.auth);
 
-      console.log(executiveRequestAllList,'executiveRequestAllList');
-      
-
-    
   const [refreshing, setRefreshing] = useState(false);
   const [offset, setOffset] = useState(0);
-const limit = 20;
-const [hasMore, setHasMore] = useState(true);
-const [loadingMore, setLoadingMore] = useState(false);
+  const limit = 20;
+  const [hasMore, setHasMore] = useState(true);
+  const [debouncedSearch, setDebouncedSearch] = useState(value?.search ?? '');
+  const [
+    onEndReachedCalledDuringMomentum,
+    setOnEndReachedCalledDuringMomentum,
+  ] = useState(false);
 
-useEffect(() => {
-  setOffset(0);
-  setHasMore(true);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(value?.search ?? '');
+    }, 500);
 
-  dispatch(
-    getExecutiveRequestList({
-      ...value,
-      offset: 0,
-      limit,
-    })
-  );
-}, [value.tabname]);
+    return () => clearTimeout(timer);
+  }, [value?.search]);
 
-const loadMore = () => {
-  if (loadingMore || !hasMore) {
-    return;
-  }
+  useEffect(() => {
+    setOffset(0);
+    setHasMore(true);
 
-  const newOffset = offset + limit;
+    dispatch(
+      getExecutiveRequestList(
+        {
+          ...value,
+          search: debouncedSearch,
+          offset: 0,
+          limit,
+        },
+        false,
+        false,
+        ({ hasMore }: any) => {
+          setHasMore(hasMore);
+        },
+      ),
+    ).then((res: any) => {
+      setHasMore(res?.data?.meta?.has_more ?? false);
+    });
+  }, [value?.tabname, debouncedSearch]);
 
-  setLoadingMore(true);
+  const loadMore = () => {
+    if (
+      isPaginationLoading ||
+      isLoading ||
+      isBtnLoading ||
+      !hasMore ||
+      data.length < limit
+    ) {
+      return;
+    }
 
-  dispatch(
-    getExecutiveRequestList({
-      ...value,
-      offset: newOffset,
-      limit,
-    })
-  ).then((res: any) => {
+    const newOffset = offset + limit;
 
-    const meta = res?.data?.meta;
-
-    setOffset(newOffset);
-
-    setHasMore(meta?.has_more ?? false);
-
-  }).finally(() => {
-    setLoadingMore(false);
-  });
-
-};
-
+    dispatch(
+      getExecutiveRequestList(
+        {
+          ...value,
+          search: debouncedSearch,
+          offset: newOffset,
+          limit,
+        },
+        false,
+        true,
+        ({ hasMore, offset }: any) => {
+          setHasMore(hasMore);
+          setOffset(offset);
+        },
+      ),
+    );
+  };
   // const onRefresh = useCallback(() => {
   //   dispatch(getExecutiveRequestList(value, isRefresh));
   // }, [dispatch, value, isRefresh]);
   const onRefresh = () => {
+    setOffset(0);
+    setHasMore(true);
 
-  setOffset(0);
-  setHasMore(true);
-
-  dispatch(
-    getExecutiveRequestList({
-      ...value,
-      offset: 0,
-      limit,
-    })
-  );
-
-};
-
-  const handleOnPress = (item) => {
-   NavigationService.navigate(EXECUTIVE_REQUEST_APPROVE,{
-    title:item?.name,
-    request_id : item?.myrequest_uuid,status:item?.status,
-    tabName:value?.tabname
-  })
+    dispatch(
+      getExecutiveRequestList(
+        {
+          ...value,
+          search: debouncedSearch,
+          offset: 0,
+          limit,
+        },
+        true,
+        false,
+        ({ hasMore }: any) => {
+          setHasMore(hasMore);
+        },
+      ),
+    );
   };
 
-//   const data = useMemo(() => {
-
-//     if (value.tabname == "all") return executiveRequestAllList;
-//     if (value.tabname == "pending") return executiveRequestPendingList;
-//     if (value.tabname == "approve") return executiveRequestApproveList;
-//     if (value.tabname == "reject") return executiveRequestRejectList;
-//     return [];
-//   }, [value.tabname, executiveRequestAllList, executiveRequestPendingList, executiveRequestApproveList,executiveRequestRejectList] // ✅ dependencies
-// )
-const data = useMemo(() => {
-  let list: any[] = [];
-
-  switch (value?.tabname) {
-    case 'all':
-      list = executiveRequestAllList ?? [];
-      break;
-    case 'pending':
-      list = executiveRequestPendingList ?? [];
-      break;
-    case 'approve':
-      list = executiveRequestApproveList ?? [];
-      break;
-    case 'reject':
-      list = executiveRequestRejectList ?? [];
-      break;
-    default:
-      list = [];
-  }
-
-  const keyword = value?.search?.trim().toLowerCase();
-
-  if (!keyword) {
-    return list;
-  }
-
-  return list.filter(item => {
-    return (
-      (item?.name ?? '').toLowerCase().includes(keyword) ||
-      (item?.username ?? '').toLowerCase().includes(keyword) ||
-      (item?.unique_code ?? '').toLowerCase().includes(keyword)
-    );
-  });
-}, [
-  value?.tabname,
-  value?.search,
-  executiveRequestAllList,
-  executiveRequestPendingList,
-  executiveRequestApproveList,
-  executiveRequestRejectList,
-]);
-  const renderItem = useCallback(
-    ({ item, index }:any) => {
-console.log(item,'item in request list');
-
-
-      
-      
-      return (
-        <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
-          <Card
-            item={item}
-            type="request"
-            index={index}
-            cardContainerStyle={{ width: '100%' }}
-            imageStyle={styles.imageStyle}
-            imageUrl={
-              item?.booklet
-                ? { uri: IMGE_URL + item?.booklet }
-                : defaultBookletImage
-            }
-            name={`${item?.name} (${item?.unique_code})`}
-            // price={item.price}
-            address={item?.locations?.[0]?.location ?? '---'}
-            // cardDisabled={true}
-            cardDisabled={userData?.user_type !== '1' ? true : false}
-
-            // cardDisabled={item?.status !== 'pending'}
-            handleCardOnPress={() => {
-              // if (item?.status === 'reject') {
-              //   Toast.show('Booklet has been Expired', Toast.LONG);
-              // }
-              //  else {
-                handleOnPress(item);
-              // }
-            }}
-            status={item?.status}
-
-            purchaseDate={item?.requested_date}
-          />
-        </View>
-      );
+  const handleOnPress = useCallback(
+    (item: any) => {
+      NavigationService.navigate(EXECUTIVE_REQUEST_APPROVE, {
+        title: item?.name,
+        request_id: item?.myrequest_uuid,
+        status: item?.status,
+        tabName: value?.tabname,
+      });
     },
-    [data] // dependencies
+    [value?.tabname],
+  );
+
+  const data = useMemo(() => {
+    switch (value?.tabname) {
+      case 'all':
+        return executiveRequestAllList ?? [];
+
+      case 'pending':
+        return executiveRequestPendingList ?? [];
+
+      case 'approve':
+        return executiveRequestApproveList ?? [];
+
+      case 'reject':
+        return executiveRequestRejectList ?? [];
+
+      default:
+        return [];
+    }
+  }, [
+    value?.tabname,
+    executiveRequestAllList,
+    executiveRequestPendingList,
+    executiveRequestApproveList,
+    executiveRequestRejectList,
+  ]);
+  const renderItem = useCallback(
+    ({ item, index }: any) => (
+      <View style={[styles.shadowContainer, { overflow: 'hidden' }]}>
+        <Card
+          item={item}
+          type="request"
+          index={index}
+          cardContainerStyle={{ width: '100%' }}
+          imageStyle={styles.imageStyle}
+          imageUrl={
+            item?.booklet
+              ? { uri: IMGE_URL + item?.booklet }
+              : defaultBookletImage
+          }
+          name={`${item?.name} (${item?.unique_code})`}
+          address={item?.locations?.[0]?.location ?? '---'}
+          cardDisabled={userData?.user_type !== '1'}
+          handleCardOnPress={() => handleOnPress(item)}
+          status={item?.status}
+          purchaseDate={item?.requested_date}
+        />
+      </View>
+    ),
+    [handleOnPress, userData?.user_type],
   );
 
   return (
     <View style={styles.mainContainer}>
-      {isBtnLoading && <SpinnerSecond/>}
+      {isBtnLoading && <SpinnerSecond />}
       {isLoading && !isRefresh && !isBtnLoading ? (
-        <View style={{paddingHorizontal:s(16)}}>
-        <CategoriesListShimmerLoader/>
+        <View style={{ paddingHorizontal: s(16) }}>
+          <CategoriesListShimmerLoader />
         </View>
       ) : (
         <FlatList
           data={data}
           renderItem={renderItem}
           extraData={data}
-          keyExtractor={(item, index) => item?.user_booklet_uuid ?? index.toString()}
+          keyExtractor={(item, index) =>
+            item?.user_booklet_uuid ?? index.toString()
+          }
           contentContainerStyle={styles.listContainerStyle}
           showsVerticalScrollIndicator={false}
-            onEndReached={loadMore}
-  onEndReachedThreshold={0.4}
-          ListEmptyComponent={() => <ListEmptyComponent title={'No Card Available'} />}
+          // onEndReached={loadMore}
+          onMomentumScrollBegin={() => {
+            setOnEndReachedCalledDuringMomentum(false);
+          }}
+          onEndReached={() => {
+            if (!onEndReachedCalledDuringMomentum) {
+              loadMore();
+              setOnEndReachedCalledDuringMomentum(true);
+            }
+          }}
+          onEndReachedThreshold={0.4}
+          ListEmptyComponent={() => (
+            <ListEmptyComponent title={'No Requests Available'} />
+          )}
           refreshControl={
             <RefreshControl
               refreshing={isRefresh}
@@ -228,12 +232,12 @@ console.log(item,'item in request list');
             />
           }
           ListFooterComponent={
-    loadingMore ? (
-      <View style={{ paddingVertical: 20 }}>
-        <ActivityIndicator color={colors.buttonBg} />
-      </View>
-    ) : null
-  }
+            isPaginationLoading ? (
+              <View style={{ paddingVertical: 20 }}>
+                <ActivityIndicator color={colors.buttonBg} />
+              </View>
+            ) : null
+          }
         />
       )}
     </View>

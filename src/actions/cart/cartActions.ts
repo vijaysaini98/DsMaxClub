@@ -78,7 +78,6 @@ export const updateCartQuantity =
 
       onSucess && onSucess(response?.data);
     } catch (e: any) {
-      console.log('UPDATE CART ERROR ===>', e?.response);
 
       if (e?.response?.status === 400) {
         Toast.show(
@@ -130,14 +129,12 @@ export const deleteCartItem =
 export const initiatePayment =
   (data?: any, onSuccess?: any) => async (dispatch: AppDispatch) => {
     try {
-      console.log('PAYMENT ACTION START');
-      console.log('REQUEST ===>', data);
+   
 
       dispatch(setBtnLoading(true));
 
       const response = await API.cartApi.payment_initiate(data);
 
-      console.log('FULL RESPONSE ===>', JSON.stringify(response));
 
       if (response?.status === 200) {
         console.log('STATUS 200 HIT');

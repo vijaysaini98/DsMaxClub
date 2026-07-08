@@ -27,8 +27,8 @@ const RenderTabBar = (props) => {
   return (
     <TabBar
       {...props}
-      scrollEnabled
-      renderLabel={({ route, focused }) => (
+      scrollEnabled={false}
+      renderLabel={({ route, focused }:any) => (
         <AppText
           type={EIGHTEEN}
           weight={focused ? MEDIUM : NORMAL}
@@ -61,14 +61,13 @@ const RenderTabBar = (props) => {
         borderBottomColor: colors.disTextColor,
         height: 40,
       }}
-      tabStyle={{
-        height: 40,
-        // width: 90,
-        maxWidth: s(130),
-        paddingHorizontal: s(16),
-        alignItems: 'center',
-        justifyContent: "center",
-      }}
+   tabStyle={{
+  flex: 1,
+  height: 40,
+  paddingHorizontal: 0,
+  alignItems: 'center',
+  justifyContent: 'center',
+}}
       // indicatorContainerStyle={{alignItems:'center',width:'100%',justifyContent:'center'}}
       pressColor={colors.transparent}
     />
@@ -81,12 +80,7 @@ const Requests = () => {
   const [search, setSearch] = useState('');
 
   const {
-    isRefresh,
-    isLoading,
-    executiveRequestAllList,
-    executiveRequestPendingList,
-    executiveRequestApproveList,
-    executiveRequestRejectList,
+   
     isBtnLoading } = useAppSelector((state) => state?.executiveRequest)
     
 

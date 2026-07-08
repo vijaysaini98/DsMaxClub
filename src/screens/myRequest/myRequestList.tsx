@@ -181,6 +181,7 @@ import { ms, s, vs } from 'react-native-size-matters/extend';
 
 import { IMGE_URL } from '@services/config';
 import { defaultBookletImage } from '@helper/imagesAssets';
+import moment from 'moment';
 
 const BookletList = ({ data }: { data: any[] }) => {
 
@@ -219,61 +220,64 @@ const BookletList = ({ data }: { data: any[] }) => {
     const status = getStatusStyle(item?.status);
 
     return (
-      <View style={styles.card}>
-        <Image
-  source={
-    !imageError && item?.booklet
-      ? { uri: IMGE_URL + item.booklet }
-      : defaultBookletImage
-  }
-  style={styles.image}
-  onError={() => setImageError(true)}
-/>
 
-        <View style={styles.center}>
-          <AppText
-            weight={BOLD}
-            numberOfLines={1}
-            style={styles.title}>
-            {item?.name}
-          </AppText>
+<View style={styles.card}>
+  <Image
+    source={
+      !imageError && item?.booklet
+        ? { uri: IMGE_URL + item.booklet }
+        : defaultBookletImage
+    }
+    style={styles.image}
+    onError={() => setImageError(true)}
+  />
 
-          {/* <AppText
-            color={BUTTON_TEXT}
-            style={styles.date}>
-            Valid
-            {' '}
-            {item?.start_date}
-            {' '}
-            -{' '}
-            {item?.end_date}
-          </AppText> */}
-          <AppText
-              style={{marginTop: 5}} type={TWELVE}>
-              {item?.unique_code}
-            </AppText>
+  <View style={styles.center}>
+    <AppText
+      weight={BOLD}
+      style={styles.title}>
+      {item?.name}
+    </AppText>
 
-          <View
-            style={[
-              styles.status,
-              {
-                backgroundColor: status.bg,
-              },
-            ]}>
-            <AppText
-  style={{
-    color: status.color,
-    fontSize: 11,
-  }}>
-  {item?.status
-    ? item.status.charAt(0).toUpperCase() + item.status.slice(1).toLowerCase()
-    : '--'}
-</AppText>
-          </View>
-        </View>
+    <AppText color={BUTTON_TEXT} style={styles.date}>
+      Valid {moment(item?.start_date).format('D MMMM YYYY')} -{' '}
+      {moment(item?.end_date).format('D MMMM YYYY')}
+    </AppText>
 
-       
+    {/* Code & Status Row */}
+    <View style={styles.bottomRow}>
+      <View style={styles.codeRow}>
+        <AppText type={TWELVE} weight={BOLD}>
+          Code:
+        </AppText>
+
+        <AppText type={TWELVE}>
+          {' '}
+          {item?.unique_code}
+        </AppText>
       </View>
+
+      <View
+        style={[
+          styles.status,
+          {
+            backgroundColor: status.bg,
+          },
+        ]}>
+        <AppText
+          style={{
+            color: status.color,
+            fontSize: 11,
+          }}>
+          {item?.status
+            ? item.status.charAt(0).toUpperCase() +
+              item.status.slice(1).toLowerCase()
+            : '--'}
+        </AppText>
+      </View>
+    </View>
+  </View>
+</View>
     );
   };
 
@@ -294,14 +298,73 @@ const BookletList = ({ data }: { data: any[] }) => {
 
 export default BookletList;
 
+// const styles = StyleSheet.create({
+//   card: {
+//     backgroundColor: colors.white,
+//     borderRadius: ms(18),
+//     padding: s(14),
+//     flexDirection: 'row',
+//     alignItems: 'center',
+
+//     shadowColor: '#000',
+//     shadowOffset: {
+//       width: 0,
+//       height: 2,
+//     },
+//     shadowOpacity: 0.08,
+//     shadowRadius: 6,
+//     elevation: 3,
+//   },
+
+//   image: {
+//     width: 72,
+//     height: 72,
+//     borderRadius: 14,
+//     resizeMode: 'cover',
+//   },
+
+//   center: {
+//     flex: 1,
+//     marginLeft: s(14),
+//   },
+
+//   title: {
+//     fontSize: 16,
+//     color: colors.buttonBg,
+//   },
+
+//   date: {
+//     marginTop: 4,
+//     fontSize: 12,
+//   },
+
+//   status: {
+//     marginTop: 10,
+//     alignSelf: 'flex-start',
+//     paddingHorizontal: 12,
+//     paddingVertical: 5,
+//     borderRadius: 8,
+//   },
+
+//   right: {
+//     justifyContent: 'center',
+//     alignItems: 'flex-end',
+//     marginLeft: s(10),
+//   },
+
+//   price: {
+//     // fontSize: 18,
+//     color: colors.buttonBg,
+//   },
+// });
+
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.white,
     borderRadius: ms(18),
     padding: s(14),
     flexDirection: 'row',
-    alignItems: 'center',
-
+    alignItems: 'flex-start', // Changed from center
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -313,33 +376,38 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 72,
-    height: 72,
-    borderRadius: 14,
-    resizeMode: 'cover',
+   width: 72,
+  height: 72,
+  borderRadius: 14,
+  backgroundColor: colors.white,
   },
 
   center: {
     flex: 1,
     marginLeft: s(14),
+    minWidth: 0, // Important for text wrapping
+    justifyContent: 'flex-start',
   },
 
   title: {
     fontSize: 16,
     color: colors.buttonBg,
+    flexShrink: 1,
+    flexWrap: 'wrap',
+    lineHeight: 22,
   },
 
   date: {
-    marginTop: 4,
+    marginTop: 6,
     fontSize: 12,
+    flexWrap: 'wrap',
   },
 
   status: {
-    marginTop: 10,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 8,
+  paddingHorizontal: 12,
+  paddingVertical: 5,
+  borderRadius: 8,
+  marginLeft: 10,
   },
 
   right: {
@@ -349,7 +417,18 @@ const styles = StyleSheet.create({
   },
 
   price: {
-    // fontSize: 18,
     color: colors.buttonBg,
   },
+
+  codeRow: {
+     flexDirection: 'row',
+  alignItems: 'center',
+  flex: 1,
+  },
+  bottomRow: {
+  marginTop: 10,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+},
 });

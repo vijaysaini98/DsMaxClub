@@ -1,151 +1,5 @@
-// import { StyleSheet, Text, View } from 'react-native'
-// import React, { useEffect, useState } from 'react'
-// import { AppSafeAreaView } from '@components/AppSafeAreaView'
-// import { commonStyles } from '@theme/commonStyles'
-// import { AppText, EIGHTEEN, MEDIUM, NORMAL } from '@components/AppText'
-// import ToolBar from '@components/ToolBar'
-// import { SceneMap, TabBar, TabView } from 'react-native-tab-view'
-// import { colors } from '@theme/colors'
-// import { useAppDispatch, useAppSelector } from '@redux/hooks'
-
-// import { useRoute } from '@react-navigation/native'
-// import styles from './styles'
-// import MyOrderList from './myOrderList'
-// import { getMyorderList } from '@actions/myOrders/myOrderAction'
-
-
-
-// // ✅ Make sure route keys match those in renderScene
-// const routes = [
-//   { key: 'all', title: 'All' },
-//   { key: 'completed', title: 'Completed' },
-//   { key: 'pending', title: 'Pending' },
-//   { key: 'rejected', title: 'Expired' },
-// ];
-// const RenderTabBar = (props:any) => {
-//   const { tabTextType } = props;
-//   return (
-//     <TabBar
-//       {...props}
-//       scrollEnabled
-      
-//       indicatorStyle={{
-//         backgroundColor: colors.buttonBg,
-//         height: 1,
-//         width: 100,
-//         borderRadius: 20,
-//         bottom: -1
-//       }}
-//       activeColor={colors.placeholder}
-//       inactiveColor={colors.disTextColor}
-//       style={{
-//         backgroundColor: 'transparent',
-//         elevation: 0,
-//         shadowOpacity: 0,
-//         borderBottomWidth: 0.5,
-//         borderBottomColor: colors.disTextColor,
-//         height: 40,
-//       }}
-//       tabStyle={{
-//         height: 40,
-//         width: 90,
-//       }}
-//       pressColor={colors.transparent}
-//     />
-//   );
-// };
-
-// const MyOrders = () => {
-//   const dispatch = useAppDispatch()
-//   const {tabIndex}= useRoute().params as {tabIndex:number} || 0
-//   const {
-//   myOrderAllList,
-//   myOrderCompletedList,
-//   myOrderPendingList,
-//   myOrderRejectedList,
-// } = useAppSelector(state => state.myOrder);
-//   const [index, setIndex] = useState(tabIndex ?? 0)
-// const renderScene = ({ route }: any) => {
-//   switch (route.key) {
-//     case 'all':
-//       return (
-//         <MyOrderList
-//           data={myOrderAllList}
-//           tabname="All"
-//         />
-//       );
-
-//     case 'completed':
-//       return (
-//         <MyOrderList
-//           data={myOrderCompletedList}
-//           tabname="Completed"
-//         />
-//       );
-
-//     case 'pending':
-//       return (
-//         <MyOrderList
-//           data={myOrderPendingList}
-//           tabname="Pending"
-//         />
-//       );
-
-//     case 'rejected':
-//       return (
-//         <MyOrderList
-//           data={myOrderRejectedList}
-//           tabname="failed"
-//         />
-//       );
-
-//     default:
-//       return null;
-//   }
-// };
-
-//   useEffect(() => {
-//     const value =
-//       index === 0
-//         ? {
-//           tabname: "All"
-//         }
-//         : index === 1
-//           ? {
-//             tabname: "Completed"
-//           }
-//           : index === 2
-//             ? {
-//               tabname: "Pending"
-//             }
-//             : {
-//               tabname: "failed"
-//             }
-
-//     dispatch(getMyorderList(value));
-//   }, [index]);
-
-//   return (
-//     <AppSafeAreaView style={[commonStyles.mainContainer, styles.mainContainer]}>
-//       <ToolBar isLeftIcon title={"My Orders"} />
-//       <View style={styles.containerStyle}>
-//         <TabView
-//           navigationState={{ index, routes }}
-//           renderScene={renderScene}
-//           renderTabBar={(props) => (
-//             <RenderTabBar {...props} scrollEnabled={true} index={index} tabTextType={EIGHTEEN} />
-//           )}
-//           onIndexChange={setIndex}
-//         />
-//       </View>
-//     </AppSafeAreaView>
-//   )
-// }
-
-// export default MyOrders
-
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import ToolBar from '@components/ToolBar';
@@ -158,6 +12,16 @@ import MyOrderList from './myOrderList';
 
 import { getMyorderList } from '@actions/myOrders/myOrderAction';
 import OrderStatusDropdown from '@components/OrderStatusDropdown';
+import {
+  AppText,
+  BOLD,
+  BUTTON_BG,
+  BUTTON_TEXT,
+  FOURTEEN,
+  TWELVE,
+} from '@components/AppText';
+import { colors } from '@theme/colors';
+import { filterIcon } from '@helper/imagesAssets';
 
 const orderStatusList = [
   'all',
@@ -171,8 +35,7 @@ const orderStatusList = [
 const MyOrders = () => {
   const dispatch = useAppDispatch();
 
-  const { tabIndex } =
-    (useRoute().params as { tabIndex?: number }) || {};
+  const { tabIndex } = (useRoute().params as { tabIndex?: number }) || {};
 
   const {
     myOrderAllList,
@@ -183,22 +46,19 @@ const MyOrders = () => {
     myOrderExpiredList,
   } = useAppSelector(state => state.myOrder);
 
-  console.log(myOrderCancelledList,'myOrderCancelledList');
-  
-
   const getDefaultStatus = () => {
     switch (tabIndex) {
       case 1:
-        return 'Completed';
+        return 'completed';
 
       case 2:
-        return 'Pending';
+        return 'pending';
 
       case 3:
-        return 'Failed';
+        return 'failed';
 
       default:
-        return 'All';
+        return 'all';
     }
   };
 
@@ -239,54 +99,61 @@ const MyOrders = () => {
     dispatch(
       getMyorderList({
         tabname: apiStatus,
+        offset: 0,
+        limit: 20,
       }),
     );
   }, [selectedStatus]);
 
-const getOrderData = () => {
-  switch (selectedStatus) {
-    case 'completed':
-      return myOrderCompletedList;
+  const getOrderData = () => {
+    switch (selectedStatus) {
+      case 'completed':
+        return myOrderCompletedList;
 
-    case 'pending':
-      return myOrderPendingList;
+      case 'pending':
+        return myOrderPendingList;
 
-    case 'failed':
-      return myOrderRejectedList;
+      case 'failed':
+        return myOrderRejectedList;
 
-    case 'cancelled':
-      return myOrderCancelledList;
+      case 'cancelled':
+        return myOrderCancelledList;
 
-    case 'expired':
-      return myOrderExpiredList;
+      case 'expired':
+        return myOrderExpiredList;
 
-    default:
-      return myOrderAllList;
-  }
-};
+      default:
+        return myOrderAllList;
+    }
+  };
 
   return (
-    <AppSafeAreaView
-      style={[
-        commonStyles.mainContainer,
-        styles.mainContainer,
-      ]}>
-      <ToolBar
-        isLeftIcon
-        title="My Orders"
-      />
+    <AppSafeAreaView style={[commonStyles.mainContainer, styles.mainContainer]}>
+      <ToolBar isLeftIcon title="My Orders" />
 
       <View style={styles.containerStyle}>
-        <OrderStatusDropdown
-          value={selectedStatus}
-          data={orderStatusList}
-          onSelect={setSelectedStatus}
-        />
+        <View style={styles.topRow}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Image source={filterIcon} style={styles.filterImage} />
 
-        <MyOrderList
-          data={getOrderData()}
-          tabname={selectedStatus}
-        />
+            <AppText type={FOURTEEN} weight={BOLD} style={{ marginLeft: 10 }}>
+              Filter
+            </AppText>
+          </View>
+          <OrderStatusDropdown
+            value={selectedStatus}
+            data={orderStatusList}
+            onSelect={setSelectedStatus}
+          />
+        </View>
+
+        <MyOrderList data={getOrderData()} tabname={selectedStatus} />
       </View>
     </AppSafeAreaView>
   );

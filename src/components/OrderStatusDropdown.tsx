@@ -80,31 +80,44 @@ const capitalize = (text: string) =>
 export default OrderStatusDropdown;
 
 const styles = StyleSheet.create({
-  container: {
-    zIndex: 999,
-    marginBottom: 15,
+container: {
+  zIndex: 9999,
+  elevation: 9999,
+  position: 'relative',
+},
+dropdown: {
+  width: 160,
+  height: 50,
+  borderWidth: 1,
+  borderColor: '#E5E5E5',
+  borderRadius: 10,
+  backgroundColor: '#fff',
+  paddingHorizontal: 16,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+},
+
+menu: {
+  position: 'absolute',
+  top: 55,
+  left: 0,
+  width: 160,
+
+  backgroundColor: '#fff',
+  borderRadius: 10,
+
+  elevation: 12,
+  shadowColor: '#000',
+  shadowOpacity: 0.15,
+  shadowRadius: 8,
+  shadowOffset: {
+    width: 0,
+    height: 4,
   },
 
-  dropdown: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-
-  menu: {
-    marginTop: 5,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    elevation: 5,
-    overflow: 'hidden',
-  },
-
+  zIndex: 99999,
+},
   item: {
     paddingVertical: 14,
     paddingHorizontal: 16,

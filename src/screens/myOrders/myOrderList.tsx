@@ -1,4 +1,4 @@
-import { FlatList, Image, RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, RefreshControl, StyleSheet, View } from 'react-native';
 import React, { useCallback, useState } from 'react';
 import {
   AppText,
@@ -27,19 +27,60 @@ import ListEmptyComponent from '@components/ListEmptyComponent';
 import CategoriesListShimmerLoader from '@components/ShimerLoader/categoriesListShimerLoader';
 import { getMyorderList } from '@actions/myOrders/myOrderAction';
 import TouchableOpacityView from '@components/TouchableOpacityView';
+import { setOffset } from '@actions/myOrders/myOrderSlice';
 
 const MyOrderList = ({ data, tabname }: { data: any; tabname: string }) => {
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector(state => state.myOrder);
+  const { isLoading,hasMore,offset } = useAppSelector(state => state.myOrder);
   const [refreshing, setRefreshing] = useState(false);
+  const limit = 20;
+
+const [loadingMore, setLoadingMore] = useState(false);
+const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] =
+  useState(false);
 
 const onRefresh = useCallback(() => {
   setRefreshing(true);
-  dispatch(getMyorderList({ tabname })).finally(() => {
-    setRefreshing(false);
-  });
+
+  dispatch(setOffset(0));
+
+  dispatch(
+    getMyorderList({
+      tabname,
+      offset: 0,
+      limit,
+    }),
+  )
+    .finally(() => {
+      setRefreshing(false);
+    });
 }, [dispatch, tabname]);
 
+
+const loadMore = () => {
+  if (
+    loadingMore ||
+    isLoading ||
+    !hasMore ||
+    data.length < limit
+  ) {
+    return;
+  }
+
+  const newOffset = offset + limit;
+
+  setLoadingMore(true);
+
+  dispatch(
+    getMyorderList({
+      tabname,
+      offset: newOffset,
+      limit,
+    }),
+  ).finally(() => {
+    setLoadingMore(false);
+  });
+};
 
   const renderItem = ({ item }: any) => {
 const getStatusColor = (status: string) => {
@@ -165,7 +206,7 @@ return (
           renderItem={renderItem}
           contentContainerStyle={styles.listContainerStyle}
           showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item) => item.uuid.toString()}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -177,6 +218,29 @@ return (
           ListEmptyComponent={() => (
             <ListEmptyComponent title={'No Orders Available'} />
           )}
+          onMomentumScrollBegin={() => {
+  setOnEndReachedCalledDuringMomentum(false);
+}}
+
+onEndReached={() => {
+  if (!onEndReachedCalledDuringMomentum) {
+    loadMore();
+    setOnEndReachedCalledDuringMomentum(true);
+  }
+}}
+
+onEndReachedThreshold={0.4}
+ListFooterComponent={
+  loadingMore ? (
+    <View style={{ paddingVertical: 20 }}>
+      <ActivityIndicator color={colors.buttonBg} />
+    </View>
+  ) : null
+}
+removeClippedSubviews={true}
+initialNumToRender={10}
+maxToRenderPerBatch={10}
+windowSize={10}
         />
       )}
     </View>

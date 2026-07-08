@@ -9,7 +9,8 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     flex: 1,
-    paddingTop: vs(25)
+    paddingTop: vs(25),
+
   },
   tabContainerStyle: {
     backgroundColor: 'transparent',
@@ -33,7 +34,35 @@ const styles = StyleSheet.create({
     color: focused ? colors.buttonBg : colors.disTextColor,
     textTransform: 'capitalize',
     paddingVertical: 0,
-  })
+  }),
+  filterContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 15,
+},
+
+filterText: {
+  
+  color: colors.black,
+  
+},
+
+dropdownContainer: {
+  flex: 1,
+},
+topRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 16,
+},
+filterImage:{
+  height:20,
+  width:20,
+  resizeMode:'contain'
+}
+
+
 
 })
 export default styles;

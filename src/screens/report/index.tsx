@@ -574,7 +574,6 @@ const ReportScreen = () => {
       )} 23:59:59`;
     }
 
-    console.log('PAYLOAD =>', payload);
 
     dispatch(
       getReportPdf(payload, async (res: any) => {
@@ -605,10 +604,7 @@ const ReportScreen = () => {
          const excelData = reportData.map(
   (item: any, index: number) => {
 
-    console.log(
-      `EXCEL ITEM ${index} =>`,
-      JSON.stringify(item, null, 2),
-    );
+
 
     return {
       'User Name':

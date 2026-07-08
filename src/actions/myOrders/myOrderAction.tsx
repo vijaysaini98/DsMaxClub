@@ -3,6 +3,7 @@ import { AppDispatch } from '@redux/store';
 import Toast from 'react-native-simple-toast';
 
 import {
+  setHasMore,
   setLoading,
   setMyOrderAllList,
   setMyOrderCancelledList,
@@ -10,100 +11,101 @@ import {
   setMyOrderExpiredList,
   setMyOrderPendingList,
   setMyOrderRejectedList,
+  setOffset,
 } from './myOrderSlice';
 
-// export const getMyorderList =
-//   (data?: any) => async (dispatch: AppDispatch) => {
-//     try {
-//       dispatch(setLoading(true));
-
-//       const response = await API.orderApi.myOrder_List(data);
-
-//       if (response?.status === 200) {
-
-//         switch (data?.tabname) {
-
-//           case 'All':
-//             dispatch(setMyOrderAllList(response.data));
-//             dispatch(setMyOrderCompletedList([]));
-//             dispatch(setMyOrderPendingList([]));
-//             dispatch(setMyOrderRejectedList([]));
-//             break;
-
-//           case 'Completed':
-//             dispatch(setMyOrderCompletedList(response.data));
-//             dispatch(setMyOrderAllList([]));
-//             dispatch(setMyOrderPendingList([]));
-//             dispatch(setMyOrderRejectedList([]));
-//             break;
-
-//           case 'Pending':
-//             dispatch(setMyOrderPendingList(response.data));
-//             dispatch(setMyOrderAllList([]));
-//             dispatch(setMyOrderCompletedList([]));
-//             dispatch(setMyOrderRejectedList([]));
-//             break;
-
-//           case 'failed':
-//             dispatch(setMyOrderRejectedList(response.data));
-//             dispatch(setMyOrderAllList([]));
-//             dispatch(setMyOrderCompletedList([]));
-//             dispatch(setMyOrderPendingList([]));
-//             break;
-//         }
-//       }
-//     } catch (e: any) {
-//       Toast.show(e?.response?.data?.message || 'Something went wrong');
-//     } finally {
-//       dispatch(setLoading(false));
-//     }
-//   };
 
 export const getMyorderList =
   (data?: any) => async (dispatch: AppDispatch) => {
+    const isFirstPage = (data?.offset ?? 0) === 0;
+
     try {
-      dispatch(setLoading(true));
+      // Show full screen loader only for first page
+      if (isFirstPage) {
+        dispatch(setLoading(true));
+      }
 
       const response = await API.orderApi.myOrder_List(data);
 
+      console.log(response, 'response of my order list');
+
       if (response?.status === 200) {
-        // Clear all lists first
-        dispatch(setMyOrderAllList([]));
-        dispatch(setMyOrderCompletedList([]));
-        dispatch(setMyOrderPendingList([]));
-        dispatch(setMyOrderRejectedList([]));
-        dispatch(setMyOrderCancelledList([]));
-        dispatch(setMyOrderExpiredList([]));
+        const list = response?.data?.data ?? [];
+        const meta = response?.data?.meta ?? {};
 
-      switch (data?.tabname) {
-  case 'all':
-    dispatch(setMyOrderAllList(response.data));
-    break;
+        dispatch(setHasMore(meta?.has_more ?? false));
+        dispatch(setOffset(meta?.offset ?? 0));
 
-  case 'completed':
-    dispatch(setMyOrderCompletedList(response.data));
-    break;
+        const append = !isFirstPage;
 
-  case 'pending':
-    dispatch(setMyOrderPendingList(response.data));
-    break;
+        switch (data?.tabname) {
+          case 'all':
+            dispatch(
+              setMyOrderAllList({
+                data: list,
+                append,
+              }),
+            );
+            break;
 
-  case 'failed':
-    dispatch(setMyOrderRejectedList(response.data));
-    break;
+          case 'completed':
+            dispatch(
+              setMyOrderCompletedList({
+                data: list,
+                append,
+              }),
+            );
+            break;
 
-  case 'cancelled':
-    dispatch(setMyOrderCancelledList(response.data));
-    break;
+          case 'pending':
+            dispatch(
+              setMyOrderPendingList({
+                data: list,
+                append,
+              }),
+            );
+            break;
 
-  case 'expired':
-    dispatch(setMyOrderExpiredList(response.data));
-    break;
-}
+          case 'failed':
+            dispatch(
+              setMyOrderRejectedList({
+                data: list,
+                append,
+              }),
+            );
+            break;
+
+          case 'cancelled':
+            dispatch(
+              setMyOrderCancelledList({
+                data: list,
+                append,
+              }),
+            );
+            break;
+
+          case 'expired':
+            dispatch(
+              setMyOrderExpiredList({
+                data: list,
+                append,
+              }),
+            );
+            break;
+
+          default:
+            break;
+        }
       }
+
+      return response;
     } catch (e: any) {
       Toast.show(e?.response?.data?.message || 'Something went wrong');
+      throw e;
     } finally {
-      dispatch(setLoading(false));
+      // Hide full screen loader only for first page
+      if (isFirstPage) {
+        dispatch(setLoading(false));
+      }
     }
   };

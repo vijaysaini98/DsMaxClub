@@ -10,6 +10,9 @@ const initialState = {
   myOrderRejectedList: [],
   myOrderCancelledList: [],
 myOrderExpiredList: [],
+hasMore: true,
+offset: 0,
+
 };
 
 const myOrderSlice = createSlice({
@@ -24,29 +27,78 @@ const myOrderSlice = createSlice({
       state.isBtnLoading = payload;
     },
 
-    setMyOrderAllList: (state, { payload }) => {
-      state.myOrderAllList = payload ?? [];
-    },
+setMyOrderAllList: (state, { payload }) => {
+  if (payload?.append) {
+    state.myOrderAllList = [
+      ...state.myOrderAllList,
+      ...(payload.data ?? []),
+    ];
+  } else {
+    state.myOrderAllList = payload?.data ?? [];
+  }
+},
 
-    setMyOrderCompletedList: (state, { payload }) => {
-      state.myOrderCompletedList = payload ?? [];
-    },
+setMyOrderCompletedList: (state, { payload }) => {
+  if (payload?.append) {
+    state.myOrderCompletedList = [
+      ...state.myOrderCompletedList,
+      ...(payload.data ?? []),
+    ];
+  } else {
+    state.myOrderCompletedList = payload?.data ?? [];
+  }
+},
 
     setMyOrderPendingList: (state, { payload }) => {
-      state.myOrderPendingList = payload ?? [];
+      if (payload?.append) {
+    state.myOrderPendingList = [
+      ...state.myOrderPendingList,
+      ...(payload.data ?? []),
+    ];
+  } else {
+    state.myOrderPendingList = payload?.data ?? [];
+  }
     },
 
     setMyOrderRejectedList: (state, { payload }) => {
-      state.myOrderRejectedList = payload ?? [];
+      if (payload?.append) {
+    state.myOrderRejectedList = [
+      ...state.myOrderRejectedList,
+      ...(payload.data ?? []),
+    ];
+  } else {
+    state.myOrderRejectedList = payload?.data ?? [];
+  }
     },
     setMyOrderCancelledList: (state, { payload }) => {
-  state.myOrderCancelledList = payload ?? [];
+       if (payload?.append) {
+    state.myOrderCancelledList = [
+      ...state.myOrderCancelledList,
+      ...(payload.data ?? []),
+    ];
+  } else {
+    state.myOrderCancelledList = payload?.data ?? [];
+  }
 },
 
 setMyOrderExpiredList: (state, { payload }) => {
-  state.myOrderExpiredList = payload ?? [];
+  if (payload?.append) {
+    state.myOrderExpiredList = [
+      ...state.myOrderExpiredList,
+      ...(payload.data ?? []),
+    ];
+  } else {
+    state.myOrderExpiredList = payload?.data ?? [];
+  }
+
+},
+setHasMore:(state,{payload})=>{
+   state.hasMore=payload;
 },
 
+setOffset:(state,{payload})=>{
+   state.offset=payload;
+},
     resetMyOrder: () => initialState,
   },
 });
@@ -60,6 +112,8 @@ export const {
   setMyOrderRejectedList,
    setMyOrderCancelledList,
   setMyOrderExpiredList,
+  setHasMore,
+  setOffset
 } = myOrderSlice.actions;
 
 export const myOrderReducer = myOrderSlice.reducer;

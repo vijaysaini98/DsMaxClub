@@ -150,6 +150,7 @@ export const logout =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.logout(data);
+console.log(response,'response of logout==>');
 
       if (response?.status == 200) {
         removeAccessToken();
@@ -159,6 +160,7 @@ export const logout =
         NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess();
+       dispatch(getMaintenanceStatus());
         return;
       } else {
         throw new Error('No response data received from backend.');
@@ -304,7 +306,6 @@ export const userProfile =
   (data?: any, onSucess?: any, isFirstTime?: boolean) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
-      console.log(data,'dataaaa')
       const response = await API.userApi.user_profile(data);
       if (response?.status == 200) {
         dispatch(setUserData(response?.data));
@@ -439,6 +440,7 @@ export const getMaintenanceStatus =
       const response: any =
         await API.authApi.maintenance_status();
 
+console.log(response,'response of maintenance status==>');
 
 
       if (response?.success) {

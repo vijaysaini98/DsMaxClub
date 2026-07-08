@@ -1,20 +1,58 @@
-import { underMaintenance } from "@helper/imagesAssets";
-import React from "react";
-import { Modal, View, Image, StyleSheet } from "react-native";
+import { underMaintenance } from '@helper/imagesAssets';
+import React from 'react';
+import {
+  Modal,
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import { AppText } from './AppText';
+import { colors } from '@theme/colors';
 
-const MaintenanceModal = ({ visible, imageUrl }) => {
+const MaintenanceModal = ({
+  visible,
+  imageUrl,
+  title = 'Under Maintenance',
+  message = '',
+  showMessage = false,
+  onClose,
+}:any) => {
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.container}>
-        <Image
-          style={styles.image}
-          source={
-            imageUrl
-              ? { uri: imageUrl }
-              : underMaintenance
-          }
-          resizeMode="cover"
-        />
+        <View style={styles.content}>
+          <Image
+            style={styles.image}
+            source={
+              imageUrl
+                ? { uri: imageUrl }
+                : underMaintenance
+            }
+            resizeMode="contain"
+          />
+
+          {showMessage && (
+            <>
+              <AppText style={styles.title}>
+                {title}
+              </AppText>
+
+              <AppText style={styles.message}>
+                {message}
+              </AppText>
+
+              <TouchableOpacity
+                style={styles.button}
+                onPress={onClose}
+              >
+                <AppText style={styles.buttonText}>
+                  OK
+                </AppText>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
       </View>
     </Modal>
   );
@@ -25,13 +63,43 @@ export default MaintenanceModal;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.9)",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0,0,0,0.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  content: {
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
   },
   image: {
-    width: "90%",
-    height: "60%",
-    borderRadius: 10,
+    width: '100%',
+    height: 220,
+  },
+  title: {
+    marginTop: 15,
+    fontSize: 20,
+    fontWeight: '700',
+    textAlign: 'center',
+    color: colors.buttonBg,
+  },
+  message: {
+    marginTop: 10,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  button: {
+    marginTop: 20,
+    backgroundColor: colors.buttonBg,
+    paddingHorizontal: 30,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
   },
 });
