@@ -450,8 +450,29 @@ console.log(response,'response of maintenance status==>');
       }
     } catch (e: any) {
       console.log(
-        'Maintenance Error',
+        'e',
         e?.response?.data,
       );
+    }
+  };
+
+export const announcementDismiss =
+  (onSuccess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      console.log("Dismiss API Calling...");
+
+      const response =
+        await API.authApi.announcement_dismiss();
+
+
+      if (response?.status === 200) {
+        onSuccess?.();
+      } 
+    } catch (e: any) {
+      console.log(
+        "Dismiss Error =>",
+        JSON.stringify(e, null, 2),
+      );
+
     }
   };

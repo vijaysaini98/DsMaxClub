@@ -16,6 +16,7 @@ const DELETE_ACCOUNT: string = `${BASE_URL}delete-customer-account`;
 const APP_VERSION: string = `${BASE_URL}get-userapp-version`;
 // const MAINTENANCE_STATUS: string = `${BASE_URL}maintenance/status`;
 const MAINTENANCE_STATUS: string = `${BASE_URL}app-settings`;
+const ANNOUNCEMENT_DISMISS: string = `${BASE_URL}announcement/dismiss`;
 
 // userApi
 const USER_PROFILE: string = `${BASE_URL}edit-profile`;
@@ -86,6 +87,7 @@ const config = {
 
   APP_VERSION,
   MAINTENANCE_STATUS,
+  ANNOUNCEMENT_DISMISS,
 
   USER_PROFILE,
   UPDATE_USER_PROFILE,

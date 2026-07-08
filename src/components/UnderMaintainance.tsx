@@ -1,12 +1,6 @@
 import { underMaintenance } from '@helper/imagesAssets';
 import React from 'react';
-import {
-  Modal,
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { Modal, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { AppText } from './AppText';
 import { colors } from '@theme/colors';
 
@@ -17,38 +11,27 @@ const MaintenanceModal = ({
   message = '',
   showMessage = false,
   onClose,
-}:any) => {
+}: any) => {
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.container}>
         <View style={styles.content}>
-          <Image
-            style={styles.image}
-            source={
-              imageUrl
-                ? { uri: imageUrl }
-                : underMaintenance
-            }
-            resizeMode="contain"
-          />
+          {!showMessage && (
+            <Image
+              style={styles.image}
+              source={imageUrl ? { uri: imageUrl } : underMaintenance}
+              resizeMode="contain"
+            />
+          )}
 
           {showMessage && (
             <>
-              <AppText style={styles.title}>
-                {title}
-              </AppText>
+              <AppText style={styles.title}>{title}</AppText>
 
-              <AppText style={styles.message}>
-                {message}
-              </AppText>
+              <AppText style={styles.message}>{message}</AppText>
 
-              <TouchableOpacity
-                style={styles.button}
-                onPress={onClose}
-              >
-                <AppText style={styles.buttonText}>
-                  OK
-                </AppText>
+              <TouchableOpacity style={styles.button} onPress={onClose}>
+                <AppText style={styles.buttonText}>OK</AppText>
               </TouchableOpacity>
             </>
           )}
@@ -77,7 +60,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 220,
+    height: 400,
   },
   title: {
     marginTop: 15,
@@ -103,3 +86,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
