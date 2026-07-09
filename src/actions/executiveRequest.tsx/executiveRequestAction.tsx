@@ -13,7 +13,7 @@ export const getExecutiveRequestList =
   ) =>
   async (dispatch: AppDispatch, getState: any) => {
     try {
-      // Full screen loader only for first page
+      
       if (!isLoadMore) {
         dispatch(setLoading(true));
       } else {

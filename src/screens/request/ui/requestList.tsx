@@ -46,12 +46,18 @@ const RequestList = ({ value }: any) => {
   ] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(value?.search ?? '');
-    }, 500);
+  if (value?.search === '') {
+    setDebouncedSearch('');
+    return;
+  }
 
-    return () => clearTimeout(timer);
-  }, [value?.search]);
+  const timer = setTimeout(() => {
+    setDebouncedSearch(value?.search ?? '');
+  }, 500);
+
+  return () => clearTimeout(timer);
+}, [value?.search]);
+
 
   useEffect(() => {
     setOffset(0);
@@ -106,9 +112,7 @@ const RequestList = ({ value }: any) => {
       ),
     );
   };
-  // const onRefresh = useCallback(() => {
-  //   dispatch(getExecutiveRequestList(value, isRefresh));
-  // }, [dispatch, value, isRefresh]);
+
   const onRefresh = () => {
     setOffset(0);
     setHasMore(true);

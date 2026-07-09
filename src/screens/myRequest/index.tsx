@@ -218,6 +218,8 @@ import { s, vs, ms } from 'react-native-size-matters/extend';
 
 import { getMyRequestList } from '@actions/myRequest/myRequestAction';
 import BookletList from './myRequestList';
+import { clearMyRequestDetails } from '@actions/myRequest/myRequestSlice';
+import { SpinnerSecond } from '@components/Spinner';
 
 const OrderDetails = () => {
   const dispatch = useAppDispatch();
@@ -230,7 +232,7 @@ const {
   tabname?: string;
 };
 
-  const { myRequestAllList } = useAppSelector(
+  const { myRequestAllList,isLoading } = useAppSelector(
     state => state.myRequest,
   );
 
@@ -241,9 +243,9 @@ const {
   
 
 useEffect(() => {
-  if (!order_uuid) {
-    return;
-  }
+  if (!order_uuid) return;
+
+  dispatch(clearMyRequestDetails(tabname));
 
   dispatch(
     getMyRequestList({
@@ -291,6 +293,7 @@ useEffect(() => {
         isLeftIcon
         title="Order Details"
       />
+        {isLoading && <SpinnerSecond />}
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -425,7 +428,9 @@ useEffect(() => {
         <BookletList
           data={myRequestAllList?.data || []}
         />
+        
       </ScrollView>
+      
     </AppSafeAreaView>
   );
 };

@@ -13,6 +13,7 @@ import { SpinnerSecond } from '@components/Spinner'
 import RequestList from './ui/requestList'
 import { getExecutiveRequestList } from '@actions/executiveRequest.tsx/executiveRequestAction'
 import styles from './styles'
+import { useFocusEffect } from '@react-navigation/native';
 
 // ✅ Make sure route keys match those in renderScene
 const routes = [
@@ -22,7 +23,7 @@ const routes = [
   { key: 'reject', title: ' Reject' },
 ];
 
-const RenderTabBar = (props) => {
+const RenderTabBar = (props:any) => {
   const { tabTextType } = props;
   return (
     <TabBar
@@ -83,70 +84,23 @@ const Requests = () => {
    
     isBtnLoading } = useAppSelector((state) => state?.executiveRequest)
     
+useFocusEffect(
+  useCallback(() => {
+    setSearch('');
+    setIndex(0);
 
-  useEffect(() => {
-    const value =
-      index === 0
-        ? {
-          tabname: "all"
-        }
-        : index === 1
-          ? {
-            tabname: "pending"
-          }
-          : index === 2 ?
-            {
-              tabname: "approve"
-            } :
-            {
-              tabname: "reject"
-            }
-
-    dispatch(getExecutiveRequestList(value));
-  }, [index]);
-
-  // const renderScene = useCallback(
-  //   SceneMap({
-  //     all: () => (
-  //       <RequestList
-  //         value={{
-  //           tabname: "all",
-  //           search,
-  //         }}
-  //       />
-  //     ),
-  //     pending: () => (
-  //       <RequestList
-  //         value={{ tabname: "pending",   search}}
-  //       />
-  //     ),
-  //     approve: () => (
-  //       <RequestList
-  //         value={{ tabname: "approve", search }}
-  //       />
-  //     ),
-  //     reject: () => (
-  //       <RequestList
-  //         value={{ tabname: "reject", search }}
-  //       />
-  //     ),
-  //   }),
-  //   [isRefresh,search, executiveRequestAllList, executiveRequestPendingList, executiveRequestApproveList, executiveRequestRejectList] // ✅ dependencies
-  // );
-const renderScene = useCallback(
-  ({ route }:any) => {
-    return (
-      <RequestList
-        value={{
-          tabname: route.key,
-          search,
-        }}
-      />
-    );
-  },
-  [search]
+    return () => {};
+  }, []),
 );
-
+const renderScene = ({ route }: any) => (
+  <RequestList
+    key={`${route.key}-${search}`}
+    value={{
+      tabname: route.key,
+      search,
+    }}
+  />
+);
   return (
     <AppSafeAreaView style={[commonStyles.mainContainer]}>
       <Header currentCity={true} />
@@ -154,7 +108,7 @@ const renderScene = useCallback(
 <View style={styles.searchContainer}>
   <TextInput
 
-    placeholder="Search by Booklet or User..."
+    placeholder="Search by Mobile/Booklet/User..."
     placeholderTextColor={colors.disTextColor}
     value={search}
     onChangeText={setSearch}

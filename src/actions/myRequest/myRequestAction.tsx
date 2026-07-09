@@ -52,8 +52,9 @@ export const getMyRequestList =
   async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
-
+  dispatch(setMyRequestAllList({}));
       const response = await API.myRequestApi.myRequest_List(data);
+console.log(response,'response of request list');
 
       if (response?.status === 200) {
         // 👇 NOT response.data.data

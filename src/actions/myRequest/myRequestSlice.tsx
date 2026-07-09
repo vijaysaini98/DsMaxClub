@@ -34,6 +34,25 @@ export const myRequestSlice = createSlice({
         setMyRequestCouponList: (state, { payload }) => {
             state.couponList = payload;
         },
+       clearMyRequestDetails: (state, { payload }) => {
+  switch (payload) {
+    case 'pending':
+      state.myRequestPendingList = {};
+      break;
+
+    case 'approve':
+      state.myRequestApproveList = {};
+      break;
+
+    case 'reject':
+      state.myRequestRejectList = {};
+      break;
+
+    default:
+      state.myRequestAllList = {};
+      break;
+  }
+},
         resetMyRequest: () => initialState,
     },
 });
@@ -44,6 +63,7 @@ export const {
     setMyRequestApproveList,
     setMyRequestPendingList,
     setMyRequestRejectList,
-    setMyRequestCouponList
+    setMyRequestCouponList,
+    clearMyRequestDetails
 }: any = myRequestSlice.actions;
 export const myRequestReducer = myRequestSlice.reducer;

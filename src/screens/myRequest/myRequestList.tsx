@@ -285,9 +285,9 @@ const BookletList = ({ data }: { data: any[] }) => {
     <FlatList
       data={data}
       renderItem={renderItem}
-      keyExtractor={(item, index) =>
-        item?.uuid ?? index.toString()
-      }
+       keyExtractor={(item, index) =>
+    `${item.uuid}-${index}`
+  }
       scrollEnabled={false}
       ItemSeparatorComponent={() => (
         <View style={{ height: 16 }} />

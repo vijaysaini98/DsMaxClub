@@ -132,7 +132,7 @@ let version = DeviceInfo.getVersion();
 let buildVersion = DeviceInfo.getBuildNumber();
 
 const RootComponent = ({ children }: any) => {
-  const { appInfo, maintenanceInfo } = useAppSelector(state => state.auth);
+  const { appInfo, maintenanceInfo,userData } = useAppSelector(state => state.auth);
 
   const dispatch = useAppDispatch();
 
@@ -189,7 +189,7 @@ const RootComponent = ({ children }: any) => {
    * Maintenance Check
    */
   // useEffect(() => {
-  //   if (maintenanceInfo) {
+  //   if (maintenanceInfo) { 
   //     setIsMaintainess(
   //       maintenanceInfo?.maintenance_mode === true,
   //     );
@@ -219,17 +219,6 @@ const RootComponent = ({ children }: any) => {
     }
   }, [maintenanceInfo]);
 
-  // const onCloseAnnouncement = () => {
-  //   // dispatch(
-  //   //   announcementDismiss(() => {
-  //   //     setShowAnnouncement(false);
-  //   //   }),
-  //   // );
-  //   Alert.alert(
-  //     'Announcement',
-  //     'Are you sure you want to dismiss this announcement?',
-  //   )
-  // };
   const onCloseAnnouncement = () => {
  
     dispatch(announcementDismiss());
@@ -248,17 +237,20 @@ const RootComponent = ({ children }: any) => {
 
         <ServerCheckComp visible={BaseUrlConfig.ENVIRONMENT} />
         {/* Maintenance has highest priority */}
-        {isMaintainess ? (
-          <MaintenanceModal visible={true} imageUrl={maintenanceInfo?.image} />
-        ) : showAnnouncement ? (
-          <MaintenanceModal
-            visible={true}
-            title="📢 Announcement"
-            message={announcementText}
-            showMessage={true}
-            onClose={onCloseAnnouncement}
-          />
-        ) : null}
+      {isMaintainess ? (
+  <MaintenanceModal
+    visible={true}
+    imageUrl={maintenanceInfo?.image}
+  />
+) : showAnnouncement && userData?.user_type === '2' ? (
+  <MaintenanceModal
+    visible={true}
+    title="📢 Announcement"
+    message={announcementText}
+    showMessage={true}
+    onClose={onCloseAnnouncement}
+  />
+) : null}
 
         {isUpdate && <UpdateModal isVisible={isUpdate} />}
 

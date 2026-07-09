@@ -261,7 +261,7 @@ apiClient.interceptors.request.use(
 // Response Interceptor (logs + handle error + optional refresh)
 apiClient.interceptors.response.use(
   response => {
-    logOutref = 0;
+    // logOutref = 0;
 
     // Success response
     if (response?.data?.maintenance_mode === true) {
@@ -271,37 +271,35 @@ apiClient.interceptors.response.use(
     return response.data;
   },
 
-  async error => {
-    const errorData = error?.response?.data;
+async error => {
+  const errorData = error?.response?.data;
+  const requestUrl = error?.config?.url ?? '';
 
-    // ============================
-    // GLOBAL MAINTENANCE HANDLING
-    // ============================
-    if (errorData?.maintenance_mode === true) {
-      store.dispatch(setMaintenanceInfo(errorData));
-      // Don't continue with other handling
-      return Promise.reject(error);
-    }
-
-    // ============================
-    // SESSION EXPIRED
-    // ============================
-    if (
-      error?.response?.status === 401 &&
-      errorData?.message === 'Unauthenticated.' &&
-      logOutref === 0
-    ) {
-      logOutref++;
-
-      Toast.show('Your session has expired. Please log in again.', Toast.LONG);
-
-      await removeAccessToken();
-
-      NavigationService.reset(routes.NAVIGATION_AUTH_STACK);
-    }
-
+  // Ignore logout API
+  if (requestUrl.includes(config.LOG_OUT)) {
     return Promise.reject(error);
-  },
+  }
+
+  if (
+    error?.response?.status === 401 &&
+    errorData?.message === 'Unauthenticated.' &&
+    logOutref === 0
+  ) {
+console.log(logOutref,'logOutref==>');
+    logOutref++;
+
+    Toast.show(
+      'Your session has expired. Please log in again.',
+      Toast.LONG,
+    );
+
+    await removeAccessToken();
+
+    NavigationService.reset(routes.NAVIGATION_AUTH_STACK);
+  }
+
+  return Promise.reject(error);
+}
 );
 
 export default apiClient;

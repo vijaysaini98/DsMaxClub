@@ -63,7 +63,7 @@ export const MoreTabButton = ({
 
 const Profile = () => {
   const dispatch = useAppDispatch();
-  const { userData } = useAppSelector(state => state.auth);
+  const { userData,isLoading } = useAppSelector(state => state.auth);
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] =
     React.useState(false);
   const [logoutVisible, setLogoutVisible] = React.useState(false);
@@ -180,6 +180,7 @@ const Profile = () => {
           </AppText>
         </View>
       </ScrollView>
+      
       <LogOutModal
         visible={logoutVisible}
         onClose={() => setLogoutVisible(false)}

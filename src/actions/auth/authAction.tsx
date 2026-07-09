@@ -251,6 +251,10 @@ export const verifyOtp =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.verify_otp(data);
+      console.log(
+  'remember_token =>',
+  response?.data?.user?.remember_token,
+);
       if (response?.status == 200) {
         if (response?.data?.user?.user_type == 2) {
           setAccessToken(response?.data?.user?.remember_token);
