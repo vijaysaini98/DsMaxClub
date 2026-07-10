@@ -74,8 +74,7 @@ const ExecutiveRequestBottomSheet = ({
     const onDismiss = () => {
         handleDismiss()
         setState({
-            // customerName: '',
-            // customerEmail: '',
+
             customerMobile: '',
             bookletQty: "1",
             executiveCode: ''
@@ -94,8 +93,7 @@ const ExecutiveRequestBottomSheet = ({
                 if (index === -1) {
                     Keyboard.dismiss();
                     setState({
-                        // customerName: '',
-                        // customerEmail: '',
+                   
                         customerMobile: '',
                         bookletQty: "1",
                         executiveCode: ''
@@ -110,35 +108,7 @@ const ExecutiveRequestBottomSheet = ({
                     <AppText type={SIXTEEN} weight={SEMI_BOLD} style={bottomSheetStyles.titleText}>
                         Customer Details
                     </AppText>
-                    {/* <Input
-                        label='Name'
-                        required
-                        placeholder="Enter Name"
-                        value={state?.customerName}
-                        onChangeText={(text: string) => setState({ ...state, customerName: text })}
-                        onSubmitEditing={() => {
-                            emailInputRef?.current?.focus();
-                        }}
-                        keyboardType='email-address'
-                        inputContainerStyle={bottomSheetStyles.inputContainer}
-                        inputStyle={bottomSheetStyles.inputText}
-                    /> */}
-                    {/* <Input
-                        label='Enter Email'
-                        required
-                        placeholder="Enter Email"
-                        value={state?.customerEmail}
-                        onChangeText={(text: string) => setState({ ...state, customerEmail: text.trim().toLowerCase() })}
-                        assignRef={input => {
-                            emailInputRef.current = input;
-                        }}
-                        onSubmitEditing={() => {
-                            phoneInputRef?.current?.focus();
-                        }}
-                        keyboardType='email-address'
-                        inputContainerStyle={bottomSheetStyles.inputContainer}
-                        inputStyle={bottomSheetStyles.inputText}
-                    /> */}
+                   
                     <Input
                         label='Mobile '
                         required

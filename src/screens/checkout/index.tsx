@@ -72,11 +72,6 @@ const renderItem = ({ item }:any) => {
           {item?.booklet_name}
         </AppText>
 
-        {/* <View style={styles.typeBadge}>
-          <AppText style={styles.typeBadgeText}>
-            Digital Booklet
-          </AppText>
-        </View> */}
 
         <View style={styles.priceRow}>
           <AppText style={styles.qtyText}>

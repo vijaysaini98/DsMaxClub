@@ -70,16 +70,7 @@ const CategoriesComponent = ({ data, handleSeeAll }: { data: any, handleSeeAll: 
       />
     </View>
   ) : (
-    // <Image
-    //   source={
-    //     hasError || !item?.icon
-    //       ? appIconNew
-    //       : { uri: IMGE_URL + item?.icon }
-    //   }
-    //   style={styles.cateLogoImage}
-    //   resizeMode="cover"
-    //   // onError={() => setHasError(true)}
-    // />
+  
     <Image
   source={
     imageErrors[item?.uuid] || !item?.icon

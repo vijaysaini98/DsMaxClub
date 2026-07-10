@@ -33,15 +33,7 @@ const MultiLocationSheet = ({ sheetRef, onChange, title, data,header }) => {
         return false;
     }, [sheetRef]);
 
-    // useEffect(() => {
-    //     const backHandler = BackHandler.addEventListener(
-    //         'hardwareBackPress',
-    //         handleBackButtonClick,
-    //     );
-    //     return () => backHandler.remove();
-    // }, [handleBackButtonClick]);
 
-    // Backdrop renderer
     const renderBackdrop = useCallback(
         (props) => (
             <BottomSheetBackdrop

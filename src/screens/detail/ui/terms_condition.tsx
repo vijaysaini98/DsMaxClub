@@ -10,7 +10,6 @@ import About_TermsConditionShimmer from '@components/ShimerLoader/About_TermsCon
 const Terms_Condition: React.FC<{ scrollY: any }> = ({ scrollY }) => {
   const { isLoading, bookletDetailT_C } = useAppSelector((state) => state.home);
 
-  // console.log(bookletDetailT_C,'bookletDetailT_C==>');
   
 
   return (

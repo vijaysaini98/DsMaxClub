@@ -50,8 +50,7 @@ const Deal = () => {
         <Card item={item} index={index}
           cardContainerStyle={{ width: "100%" }}
           isCompleteLocation
-          // imageStyle={{ width: s(391) }}
-          // handleCardOnPress={() => { }}
+
           imageStyle={styles.imageStyle}
           imageUrl={item?.booklet ? { uri: vendorDealBookletList?.baseurl + item?.booklet } : defaultBookletImage}
           name={item?.name}

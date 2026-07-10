@@ -24,7 +24,7 @@ import VendorPhoneDialerModal from './vendorContactModal';
 
 interface CardItem {
   id: string | number;
-  // Add other properties as needed
+
 }
 
 const All: React.FC = ({ id, from, scrollY, handleViewPress, venderId,booklet_id }: any) => {
@@ -36,18 +36,13 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress, venderId,booklet_id
 
   const [couponDetail, setCouponDetail] = useState<any>();
   const [refreshing, setRefreshing] = useState(false);
-  const viewDetailSheet = useRef<any>(null);
-  const executiveSnapPoints = useMemo(() => ['50%', '80%'], []);
+
   const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] =
     React.useState(false);
   const [selectedVendor, setSelectedVendor] = useState<any>(null);
 
   const onViewPress = useCallback((item: CardItem) => {
-    // setCouponDetail(item);
-    // setTimeout(() => {
-    //     // viewDetailSheet?.current?.open();
-    //     viewDetailSheet?.current?.expand()
-    // }, 200);
+
     handleViewPress(item);
   }, []);
 

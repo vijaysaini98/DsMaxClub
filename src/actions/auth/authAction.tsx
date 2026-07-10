@@ -461,7 +461,7 @@ console.log(response,'response of maintenance status==>');
   };
 
 export const announcementDismiss =
-  (onSuccess?: any) => async (dispatch: AppDispatch) => {
+  (onSuccess?: any) => async () => {
     try {
       console.log("Dismiss API Calling...");
 

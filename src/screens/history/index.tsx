@@ -22,9 +22,7 @@ const History = () => {
     dispatch(getVendorHistoryList())
   }, [])
 
-  // const onRedeemPress = () => {
-  //   redeemSheetRef.current?.open();
-  // };
+
 
   const onViewPress = (data) => {
     setViewData(data)
@@ -34,14 +32,7 @@ const History = () => {
     }, 200)
   }
 
-  // const handleCancel = () => {
-  //   redeemSheetRef.current?.close();
-  // };
 
-  // const handleContinue = () => {
-  //   redeemSheetRef.current?.close();
-  //   NavigationService.navigate(REDEEM_SUCCESSFULL_SCREEN)
-  // };
 
 
   const renderItem = ({ item }) => {
@@ -62,7 +53,6 @@ const History = () => {
 
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
-      {/* <ToolBar isLeftIcon title="Deals" mainContainerStyle={{ paddingHorizontal: 20 }} /> */}
       <Header currentCity />
       <FlatList
         data={vendorHistoryList}

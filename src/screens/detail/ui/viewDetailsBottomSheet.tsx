@@ -47,9 +47,7 @@ const ViewDetailsBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismis
                 <AppText type={TWENTY_EIGHT} weight={BOLD} style={styles.viewTextStyle}>View Details</AppText>
                 <AppText color={THIRD} type={EIGHTEEN} weight={SEMI_BOLD} style={{ marginTop: 20 }}>{data?.heading}</AppText>
                 <AppText color={THIRD} type={FOURTEEN} weight={MEDIUM} style={{ marginTop: 20 }}>No of Coupons: <AppText color={THIRD} type={FOURTEEN}>{data?.no_of_coupons}</AppText></AppText>
-                {/* {data?.coupon_type_id == 1 ? 
-                    <AppText color={THIRD} type={FOURTEEN} style={{ marginTop: 20 }}>{`Maximum Redeem:  ${data?.maximum_redeem}`}</AppText>
-                    : null} */}
+            
                 <AppText color={THIRD} type={FOURTEEN} weight={MEDIUM} style={{ marginTop: 10, marginBottom: 5 }}>{"Description: "} </AppText>
                 <RenderHtml
                     contentWidth={width}

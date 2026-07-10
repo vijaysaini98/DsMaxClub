@@ -29,9 +29,6 @@ const VerndorCouponList = ({ route }) => {
         ViewDetailsSheet.current.open();
     };
 
-    // useEffect(()=>{
-    // dispatch(getDealCouponList())
-    // },[])
 
     useEffect(() => {
         dispatch(getDealCouponList({ user_id, user_booklet_uuid }))

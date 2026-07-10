@@ -18,7 +18,7 @@ import { VENDOR_COUPON_LIST } from '@navigations/routes';
 import Input from '@components/Input';
 import UserListShimmer from '@components/ShimerLoader/UserShimerLoader';
 
-const UserList = ({ route }) => {
+const UserList = ({ route }:any) => {
     const { title, booklet_id } = route?.params ?? {};
     const dispatch = useAppDispatch();
     const { vendorUserList, isLoading } = useAppSelector((state) => state?.deal);

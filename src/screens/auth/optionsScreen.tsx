@@ -9,11 +9,7 @@ import FastImage from 'react-native-fast-image'
 import { ms, s, vs } from 'react-native-size-matters/extend'
 import NavigationService from '@navigations/NavigationService'
 import { LOGIN_SCREEN, SIGNUP_SCREEN } from '@navigations/routes'
-// import ReactNativeVersionInfo from 'react-native-version-info'
 
-
-// let version = ReactNativeVersionInfo.appVersion;
-// let buildVersion = ReactNativeVersionInfo.buildVersion;
 
 const OptionsScreen = () => {
     return (
@@ -47,23 +43,7 @@ const OptionsScreen = () => {
                 </TouchableOpacityView>
 
             </View>
-            {/* <View style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                paddingVertical: 10,
-            }}>
-                <AppText
-                    type={THIRTEEN}
-                    weight={MEDIUM}
-                    style={{
-                        color: colors.buttonBg,
-                    }}
-                >
-                    {" "}
-                    V-{`${version} (${buildVersion})`}
-                </AppText>
-            </View> */}
+            
         </AppSafeAreaView>
     )
 }

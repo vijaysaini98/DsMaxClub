@@ -109,9 +109,7 @@ const RequestBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss,ac
                         <AppText type={FOURTEEN} weight={SEMI_BOLD} color={WHITE}>
                             Submit
                         </AppText>
-                        {/* <AppText type={FOURTEEN} weight={SEMI_BOLD} color={WHITE}>
-                            Add to Cart
-                        </AppText> */}
+                      
                     </TouchableOpacityView>
                 </KeyBoardAware>
             </BottomSheetView>

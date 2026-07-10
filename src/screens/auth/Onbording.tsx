@@ -14,13 +14,10 @@ import { AppText, BLACK, BOLD, BUTTON_TEXT, EIGHTEEN, NORMAL, SIXTEEN, TWENTY, T
 import NavigationService from '@navigations/NavigationService';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import * as routes from '@navigations/routes';
-import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import { ms, vs } from 'react-native-size-matters/extend';
-import { First_Time, setAccessToken, setItem, USER_VISITED } from '@services/storage';
+import { setItem, USER_VISITED } from '@services/storage';
 import {Screen} from '@theme/commonStyles'
-import LinearGradient from 'react-native-linear-gradient';
 
-// const { width, height } = Dimensions.get('window');
 
 const slides = [
   {

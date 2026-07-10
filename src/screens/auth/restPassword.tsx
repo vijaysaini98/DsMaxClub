@@ -11,14 +11,13 @@ import TouchableOpacityView from '@components/TouchableOpacityView';
 import Input from '@components/Input';
 import NavigationService from '@navigations/NavigationService';
 import ToolBar from '@components/ToolBar';
-import { FORGOT_PASSWORD_SCREEN, LOGIN_SCREEN } from '@navigations/routes';
+import { LOGIN_SCREEN } from '@navigations/routes';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { resetPassword } from '@actions/auth/authAction';
-import { passwordRegex } from '@utils/index';
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import KeyBoardAware from '@components/KeyBoardAware';
 
-const ResetPassword = ({ route }) => {
+const ResetPassword = ({ route }:any) => {
     const { email } = route?.params ?? ''
     const dispatch = useAppDispatch()
     const { isLoading } = useAppSelector((state) => state.auth)

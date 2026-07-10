@@ -4,12 +4,9 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Alert,
   RefreshControl,
-  Pressable,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator,
   Modal,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
