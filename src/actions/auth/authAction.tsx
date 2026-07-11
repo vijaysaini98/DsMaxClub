@@ -1,5 +1,5 @@
 import apiClient, { API } from '@services/appClient';
-import { resetAuth, setAppinfo, setCityList, setHowToRedeem, setLoading, setMaintenanceInfo, setPrivacyPolicy, setTermCondition, setUserData } from './authSlice';
+import { resetAuth, setAppinfo, setCityList, setHowToRedeem, setLoading, setMaintenanceInfo, setPrivacyPolicy, setStaticImages, setTermCondition, setUserData } from './authSlice';
 import {
   PROFILE_COMPLETE,
   removeAccessToken,
@@ -478,5 +478,40 @@ export const announcementDismiss =
         JSON.stringify(e, null, 2),
       );
 
+    }
+  };
+
+export const getStaticImages =
+  (onSuccess?: any) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+
+      const response = await API.authApi.static_images();
+
+      console.log(response?.data, 'response of static images');
+
+      if (response?.status === 200) {
+        const imageMap = response.data.images.reduce(
+          (acc: any, item: any) => {
+            acc[item.name] = item.url;
+            return acc;
+          },
+          {},
+        );
+
+        dispatch(setStaticImages(imageMap));
+
+        onSuccess && onSuccess();
+        return;
+      } else {
+        throw new Error('No response data received from backend.');
+      }
+    } catch (e: any) {
+      console.log(
+        'Static Images Error',
+        e?.response?.data || e?.message,
+      );
+    } finally {
+      dispatch(setLoading(false));
     }
   };

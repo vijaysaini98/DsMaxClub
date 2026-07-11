@@ -30,7 +30,7 @@ import {
 import { commonStyles } from '@theme/commonStyles';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import { defaultBookletImage, rightArrowIcon } from '@helper/imagesAssets';
-import { sendOtp, userProfile, verifyOtp } from '@actions/auth/authAction';
+import { getStaticImages, sendOtp, userProfile, verifyOtp } from '@actions/auth/authAction';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import { setCategoriListData } from '@actions/home/homeSlice';
 import { Loader } from '@components/Spinner';
@@ -67,6 +67,7 @@ const Home: React.FC = () => {
     await dispatch(getComboBookletDeals());
     await dispatch(getCategoryBooklet());
     await dispatch(getBannerList({ screen_name: '1' }));
+    await dispatch(getStaticImages())
   };
 
   useFocusEffect(

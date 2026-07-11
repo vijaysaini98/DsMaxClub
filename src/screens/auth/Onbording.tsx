@@ -73,7 +73,7 @@ const OnboardingScreen = () => {
         }
     };
 
-    const renderItem = ({ item }) => (
+    const renderItem = ({ item }:any) => (
         
         <ImageBackground source={item.image} style={styles.image} resizeMode="contain">
             <View style={styles.textWrapper}>

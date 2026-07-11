@@ -10,6 +10,7 @@ export const initialState = {
   howToRedeem:{},
   appInfo:{},
   maintenanceInfo: null,
+  staticImages:{}
 };
 
 export const authSlice = createSlice({
@@ -43,9 +44,12 @@ export const authSlice = createSlice({
     setMaintenanceInfo: (state, { payload }) => {
   state.maintenanceInfo = payload;
 },
+setStaticImages: (state, action) => {
+  state.staticImages = action.payload;
+},
     resetAuth: () => initialState, 
   },
 });
 export const { setLoading, setBtnLoading, setUserData, setCityList,
-  setTermCondition,setPrivacyPolicy,setHowToRedeem, resetAuth,setAppinfo,setMaintenanceInfo }: any = authSlice.actions;
+  setTermCondition,setPrivacyPolicy,setHowToRedeem, resetAuth,setAppinfo,setMaintenanceInfo,setStaticImages }: any = authSlice.actions;
 export const authReducer = authSlice.reducer;

@@ -17,6 +17,8 @@ const APP_VERSION: string = `${BASE_URL}get-userapp-version`;
 // const MAINTENANCE_STATUS: string = `${BASE_URL}maintenance/status`;
 const MAINTENANCE_STATUS: string = `${BASE_URL}app-settings`;
 const ANNOUNCEMENT_DISMISS: string = `${BASE_URL}announcement/dismiss`;
+const STATIC_IMAGES: string = `${BASE_URL}get-static-images`;
+
 
 // userApi
 const USER_PROFILE: string = `${BASE_URL}edit-profile`;
@@ -88,6 +90,7 @@ const config = {
   APP_VERSION,
   MAINTENANCE_STATUS,
   ANNOUNCEMENT_DISMISS,
+  STATIC_IMAGES,
 
   USER_PROFILE,
   UPDATE_USER_PROFILE,

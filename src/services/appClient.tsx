@@ -321,7 +321,8 @@ export const API = {
     getAppVersion: (data?: any) => apiClient.get(config.APP_VERSION),
     maintenance_status: () => apiClient.get(config.MAINTENANCE_STATUS),
     announcement_dismiss: () => apiClient.get(config.ANNOUNCEMENT_DISMISS),
-    // refresh_token: (data: any) => apiClient.post(config.REFRESH_TOKEN, data),
+    static_images: () => apiClient.get(config.STATIC_IMAGES),
+    
   },
 
   userApi: {
