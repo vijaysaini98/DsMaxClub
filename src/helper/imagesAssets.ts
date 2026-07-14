@@ -13,25 +13,11 @@ const getImage = (name: string) => {
 // export const getStartBg2 = () => getImage('getStartBg2.png');
 // export const getStartBg3 = () => getImage('getStartBg3.png');
 // export const getStartBg4 = () => getImage('getStartBg4.png');
-// export const getStartBg1 = require('@assets/images/getStartBg1.png')
-// export const getStartBg2 = require('@assets/images/getStartBg2.png')
-// export const getStartBg3 = require('@assets/images/getStartBg3.png')
-// export const getStartBg4 = require('@assets/images/getStartBg4.png')
-export const getStartBg1 = {
-  uri: 'https://res.cloudinary.com/zygtkwew/image/upload/v1783919239/getStartBg1_vfif9r.png',
-};
+export const getStartBg1 = require('@assets/images/getStartBg1.png')
+export const getStartBg2 = require('@assets/images/getStartBg2.png')
+export const getStartBg3 = require('@assets/images/getStartBg3.png')
+export const getStartBg4 = require('@assets/images/getStartBg4.png')
 
-export const getStartBg2 = {
-  uri: 'https://res.cloudinary.com/zygtkwew/image/upload/v1783919245/getStartBg2_liqbqb.png',
-};
-
-export const getStartBg3 = {
-  uri: 'https://res.cloudinary.com/zygtkwew/image/upload/v1783919242/getStartBg3_iptax1.png',
-};
-
-export const getStartBg4 = {
-  uri: 'https://res.cloudinary.com/zygtkwew/image/upload/v1783919242/getStartBg4_wlzsdb.png',
-};
 
 
 export const backIcon = require('@assets/images/back.png');
@@ -86,17 +72,13 @@ export const salon = require('@assets/images/salon.png');
 export const waterPark = require('@assets/images/waterpark.png');
 export const hotelsDeals = require('@assets/images/hotel.png');
 
-// export const restro2 = require('@assets/images/resturantimiage2.jpg');
-// export const restro3 = require('@assets/images/restrurant3.jpg');
+
 
 // trending images
 
 //banerImages
 // export const banerImages = require('@assets/images/banerImage.png');
-// export const defaultBanner = require('@assets/images/defaultBanner.png')
-export const defaultBanner = {
-  uri: 'https://res.cloudinary.com/zygtkwew/image/upload/v1783919216/defaultBanner_dmg5hq.png',
-};
+export const defaultBanner = require('@assets/images/defaultBanner.png')
 
 export const giftIcon = require('@assets/images/giftImage.png');
 
@@ -104,10 +86,8 @@ export const mapImagge = require('@assets/images/mapImage.png');
 export const emailIcon2 = require('@assets/images/emailIcon2.png');
 export const closeIcon = require('@assets/images/closeIcon.png');
 
-// export const defaultBookletImage= require('@assets/images/default.png')
-export const defaultBookletImage = {
-  uri: 'https://res.cloudinary.com/zygtkwew/image/upload/v1783919227/default_mrzgsv.png',
-};
+export const defaultBookletImage= require('@assets/images/default.png')
+
 // export const defaultBookletImage = () => getImage('default.png');
 // console.log(defaultBookletImage(), 'defaultBookletImage');
 
@@ -122,10 +102,8 @@ export const travelBookingIcon = require('@assets/images/travelBookingIcon.png')
 export const hotelBookingIcon = require('@assets/images/hotelBookingIcon.png');
 
 export const newUpdate = require('@assets/images/NewUpdate.png');
-// export const underMaintenance = require('@assets/images/underMaintenance.png');
-export const underMaintenance = {
-  uri: 'https://res.cloudinary.com/zygtkwew/image/upload/v1784023012/underMaintenance_z6k94x.png',
-};
+export const underMaintenance = require('@assets/images/underMaintenance.png');
+
 
 export const addToCardIcon = require('@assets/images/addToCart.png');
 export const filledCartIcon = require('@assets/images/fillAddToCart.png');

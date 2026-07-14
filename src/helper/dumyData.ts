@@ -101,11 +101,11 @@ export const cardDummyData = [
   },
 ];
 
-export const banerData = [
-  { id: 1, image: banerImages }, // Your image 1
-  { id: 2, image: banerImages }, // Your image 2
-  { id: 3, image: banerImages }, // Your image 3
-];
+// export const banerData = [
+//   { id: 1, image: banerImages }, // Your image 1
+//   { id: 2, image: banerImages }, // Your image 2
+//   { id: 3, image: banerImages }, // Your image 3
+// ];
 
 export const historyViewDealsDummyData = [
   {
