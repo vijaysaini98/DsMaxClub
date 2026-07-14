@@ -25,7 +25,6 @@ import {
   defaultBookletImage,
   filledCartIcon,
   locationIcon,
-  restro2,
   helpLineIcon,
   nearByIcon,
   downArrowIcon,
@@ -105,7 +104,7 @@ const Card: React.FC<CardProps> = ({
   };
 
   const source: ImageSourcePropType =
-    imageUrl || item?.image || restro2 || defaultBookletImage;
+    imageUrl || item?.image || defaultBookletImage;
 
   const displayName = name ?? item?.name ?? '';
   const displayPrice =
