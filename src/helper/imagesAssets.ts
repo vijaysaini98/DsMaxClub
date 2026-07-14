@@ -6,17 +6,17 @@ const getImage = (name: string) => {
   return images?.[name] ?  images[name]  : undefined;
 };
 
-// export const getStartBg1 = () => getImage('getStartBg1.png');
-// console.log(getStartBg1(),'getStartBg1==>');
+export const getStartBg1 = () => getImage('getStartBg1.png');
+console.log(getStartBg1(),'getStartBg1==>');
 
 
-// export const getStartBg2 = () => getImage('getStartBg2.png');
-// export const getStartBg3 = () => getImage('getStartBg3.png');
-// export const getStartBg4 = () => getImage('getStartBg4.png');
-export const getStartBg1 = require('@assets/images/getStartBg1.png')
-export const getStartBg2 = require('@assets/images/getStartBg2.png')
-export const getStartBg3 = require('@assets/images/getStartBg3.png')
-export const getStartBg4 = require('@assets/images/getStartBg4.png')
+export const getStartBg2 = () => getImage('getStartBg2.png');
+export const getStartBg3 = () => getImage('getStartBg3.png');
+export const getStartBg4 = () => getImage('getStartBg4.png');
+// export const getStartBg1 = require('@assets/images/getStartBg1.png')
+// export const getStartBg2 = require('@assets/images/getStartBg2.png')
+// export const getStartBg3 = require('@assets/images/getStartBg3.png')
+// export const getStartBg4 = require('@assets/images/getStartBg4.png')
 
 export const backIcon = require('@assets/images/back.png');
 export const eyeOpenIcon = require('@assets/images/eyeOpenIcon.png');
@@ -71,13 +71,18 @@ export const waterPark = require('@assets/images/waterpark.png');
 export const hotelsDeals = require('@assets/images/hotel.png');
 
 export const restro2 = require('@assets/images/resturantimiage2.jpg');
-export const restro3 = require('@assets/images/restrurant3.jpg');
+// export const restro3 = require('@assets/images/restrurant3.jpg');
 
 // trending images
 
 //banerImages
-export const banerImages = require('@assets/images/banerImage.png');
-export const defaultBanner = require('@assets/images/defaultBanner.png')
+
+// export const banerImages = require('@assets/images/banerImage.png');
+export const defaultBanner = () => getImage('defaultBanner.png');
+
+
+
+// export const defaultBanner = require('@assets/images/defaultBanner.png')
 
 export const giftIcon = require('@assets/images/giftImage.png');
 
@@ -86,8 +91,7 @@ export const emailIcon2 = require('@assets/images/emailIcon2.png');
 export const closeIcon = require('@assets/images/closeIcon.png');
 
 export const defaultBookletImage= require('@assets/images/default.png')
-// export const defaultBookletImage = () => getImage('default.png');
-// console.log(defaultBookletImage(), 'defaultBookletImage');
+
 
 export const torchOfIcon = require('@assets/images/flashlightOff.png');
 export const torchOnIcon = require('@assets/images/flashlightOn.png');
@@ -100,7 +104,12 @@ export const travelBookingIcon = require('@assets/images/travelBookingIcon.png')
 export const hotelBookingIcon = require('@assets/images/hotelBookingIcon.png');
 
 export const newUpdate = require('@assets/images/NewUpdate.png');
-export const underMaintenance = require('@assets/images/underMaintenance.png');
+// export const underMaintenance = require('@assets/images/underMaintenance.png');
+export const underMaintenance = () => getImage('underMaintenance.png');
+console.log(underMaintenance(),'underMaintenance===>');
+
+
+
 
 export const addToCardIcon = require('@assets/images/addToCart.png');
 export const filledCartIcon = require('@assets/images/fillAddToCart.png');

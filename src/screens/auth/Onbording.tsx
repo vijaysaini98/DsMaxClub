@@ -22,28 +22,28 @@ import {Screen} from '@theme/commonStyles'
 const slides = [
   {
     id: '1',
-    image: getStartBg1,
+    image: getStartBg1(),
     heading: "Your Journey\n Begins Here",
     heading2: "Discover exclusive travel deals,\ncurated experiences, and smart\nplanning — all in one place.",
     subHeading: "Let DS Max Club simplify every\ntrip you take."
   },
   {
     id: '2',
-    image: getStartBg2,
+    image: getStartBg2(),
     heading: "Unlock a World \nof Adventures",
     heading2: "From flights to unforgettable \ndestinations, explore the best\nholiday options with ease.\n",
     subHeading: "Your perfect trip is just a tap away."
   },
   {
     id: '3',
-    image: getStartBg3,
+    image: getStartBg3(),
     heading: "Travel Beyond\nExpectations",
     heading2: "Plan effortlessly and explore\nhandpicked destinations tailored for\nyour comfort.",
     subHeading: "Experience travel the DS Max Club \nway."
   },
   {
     id: '4',
-    image: getStartBg4,
+    image: getStartBg4(),
     heading: "Enjoy Premium\nMember Benefits",
     heading2: "Access exclusive offers, hotel deals,\nrewards, and personalized travel\nservices.",
     subHeading: "Let’s make every trip unforgettable."
@@ -80,7 +80,7 @@ const OnboardingScreen = () => {
 
         
         
-        <ImageBackground source={item.image} style={styles.image} resizeMode="contain">
+        <ImageBackground source={{uri:item?.image}} style={styles.image} resizeMode="contain">
             <View style={styles.textWrapper}>
                 <AppText type={TWENTY} weight={BOLD} color={BLACK} style={{textAlign:'center'}}>{item?.heading.toUpperCase()}</AppText>
                 <AppText type={SIXTEEN} weight={NORMAL} style={{textAlign:'center',marginTop:vs(36)}}>{item?.heading2}</AppText>

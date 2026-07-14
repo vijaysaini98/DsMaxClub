@@ -12,6 +12,8 @@ const MaintenanceModal = ({
   showMessage = false,
   onClose,
 }: any) => {
+  console.log(imageUrl,'imageUrl==>');
+  
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.container}>
@@ -19,7 +21,8 @@ const MaintenanceModal = ({
           {!showMessage && (
             <Image
               style={styles.image}
-              source={imageUrl ? { uri: imageUrl } : underMaintenance}
+              // source={imageUrl ? { uri: imageUrl } : underMaintenance()}
+              source={imageUrl ? { uri: imageUrl } : {uri:underMaintenance()}}
               resizeMode="contain"
             />
           )}

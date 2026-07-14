@@ -36,14 +36,20 @@ const BanerComponent: React.FC<Props> = ({ data, onPressBanner }) => {
             >
               <View style={styles.imageWrapper}>
                 <FastImage
-                  source={
-                    hasError
-                      ? defaultBanner
-                      : {
-                          uri: IMGE_URL + item.banner,
-                          priority: FastImage.priority.normal,
-                        }
-                  }
+                  // source={
+                  //   hasError
+                  //     ? defaultBanner()
+                  //     : {
+                  //         uri: IMGE_URL + item.banner,
+                  //         priority: FastImage.priority.normal,
+                  //       }
+                  // }
+                  source={{
+    uri: item.hasError
+      ? defaultBanner()
+      : IMGE_URL + item.banner,
+    priority: FastImage.priority.normal,
+  }}
                   // source={defaultBanner}
 
                   style={{
@@ -59,7 +65,7 @@ const BanerComponent: React.FC<Props> = ({ data, onPressBanner }) => {
         ) : (
           <View style={styles.imageWrapper}>
             <FastImage
-              source={defaultBanner}
+              source={{uri:defaultBanner()}}
               style={styles.imageStyle}
               resizeMode={FastImage.resizeMode.cover}
             />
