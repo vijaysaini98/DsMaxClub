@@ -73,7 +73,12 @@ const OnboardingScreen = () => {
         }
     };
 
-    const renderItem = ({ item }:any) => (
+    const renderItem = ({ item }:any) => {
+        console.log(item,'item in onboarding');
+        
+        return(
+
+        
         
         <ImageBackground source={item.image} style={styles.image} resizeMode="contain">
             <View style={styles.textWrapper}>
@@ -85,7 +90,7 @@ const OnboardingScreen = () => {
             </View>
         </ImageBackground>
     );
-
+    }
     return (
         <View style={styles.container}>
     {/* //     <LinearGradient

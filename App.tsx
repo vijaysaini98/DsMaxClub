@@ -1,5 +1,5 @@
 import Navigator from '@navigations/Navigator';
-import store from '@redux/store';
+import store, { persistor } from '@redux/store';
 import { commonStyles } from '@theme/commonStyles';
 import React, { useEffect, useState } from 'react';
 
@@ -11,6 +11,7 @@ import NetInfo from '@react-native-community/netinfo';
 import RootComponent from './src/RootComponent';
 import useFcm from './src/fcm-service';
 import { PermissionsAndroid, Platform } from 'react-native';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const App = () => {
   useFcm({
@@ -54,9 +55,11 @@ const App = () => {
     <GestureHandlerRootView style={commonStyles.flex}>
       <SafeAreaProvider>
         <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
           <RootComponent isConnected={netConnected}>
             <Navigator />
           </RootComponent>
+          </PersistGate>
         </Provider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

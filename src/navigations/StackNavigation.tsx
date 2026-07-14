@@ -39,6 +39,7 @@ import Checkout from "@screens/checkout";
 import MyCard from "@screens/myCard";
 import MyOrders from "@screens/myOrders";
 import Requests from "@screens/request";
+import Home from "@screens/home";
 
 const Stack = createStackNavigator();
 
@@ -68,6 +69,7 @@ export const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigation} />
     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR_VENDOR} component={BottomNavigationVendor} />
     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR_EXECUTIVE} component={BottomNavigationExecutive} />
+    <Stack.Screen name={routes.HOME_SCREEN} component={Home} />
     <Stack.Screen name={routes.CATEGORIES_SCCREEN} component={Categories} />
     <Stack.Screen name={routes.CATEGORIES_LIST_SCCREEN} component={CategoriesList} />
     <Stack.Screen name={routes.EDIT_PROFILE_SCREEN} component={EditProfile} />

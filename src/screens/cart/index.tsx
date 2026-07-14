@@ -10,7 +10,6 @@ import {
   Modal,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { commonStyles } from '@theme/commonStyles';
@@ -245,6 +244,8 @@ const Cart = () => {
       app_version: DeviceInfo.getVersion(),
     };
 
+    console.log(deviceInfo,'deviceInfo');
+    
     const data = {
       gateway: 'phonepe',
       phone: userData?.mobile,
@@ -615,6 +616,8 @@ const Cart = () => {
                 dispatch(getCartList());
                 if (paymentStatusModal.type === 'success') {
                   NavigationService.navigate(routes.MY_CARD_SCREEN);
+                }else{
+                  NavigationService.navigate(routes.HOME_SCREEN);
                 }
               }}
             >

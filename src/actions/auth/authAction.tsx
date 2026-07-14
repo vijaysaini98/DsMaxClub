@@ -482,8 +482,15 @@ export const announcementDismiss =
   };
 
 export const getStaticImages =
-  (onSuccess?: any) => async (dispatch: AppDispatch) => {
+  (onSuccess?: any) => async (dispatch: AppDispatch, getState: any) => {
     try {
+      const { imagesSlice } = getState();
+      if (imagesSlice?.images && Object.keys(imagesSlice.images).length > 0) {
+        console.log('Static images already cached — skipping API call');
+        onSuccess && onSuccess();
+        return;
+      }
+
       dispatch(setLoading(true));
 
       const response = await API.authApi.static_images();
@@ -507,10 +514,7 @@ export const getStaticImages =
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      console.log(
-        'Static Images Error',
-        e?.response?.data || e?.message,
-      );
+      console.log('Static Images Error', e?.response?.data || e?.message);
     } finally {
       dispatch(setLoading(false));
     }

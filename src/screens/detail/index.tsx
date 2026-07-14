@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   backIcon,
   defaultBookletImage,
@@ -85,6 +85,7 @@ import {
 } from '@actions/cart/cartActions';
 import { SpinnerSecond } from '@components/Spinner';
 import { setBtnLoading } from '@actions/cart/cartSlice';
+import { useFocusEffect } from '@react-navigation/native';
 const initialLayout = { width: width };
 
 const routes = [
@@ -164,8 +165,43 @@ const Details = ({ route }: any) => {
     }
   }, [bookletDetailAllDeals?.booklet_vendor_status]);
 
-  useEffect(() => {
-    if (!data?.uuid) return;
+  // useEffect(() => {
+  //   if (!data?.uuid) return;
+
+  //   let value = {
+  //     booklet_id: data.uuid,
+  //     tabname: '',
+  //   };
+
+  //   switch (index) {
+  //     case 0:
+  //       value.tabname = 'All Deals';
+  //       break;
+  //     case 1:
+  //       value.tabname = 'About';
+  //       break;
+  //     case 2:
+  //       value.tabname = 'Termscondition';
+  //       break;
+  //     case 4:
+  //       value.tabname = 'Gallery';
+  //       break;
+  //     default:
+  //       value.tabname = '';
+  //   }
+  //   if (noApiCall) {
+  //     return;
+  //   }
+  //   if (from === 'ComboBooklet') {
+  //     dispatch(getComboBookletDetail(value));
+  //   } else {
+  //     dispatch(getBookletDetail(value));
+  //   }
+  // }, [index, data?.uuid, from, dispatch, noApiCall]);
+
+  useFocusEffect(
+  useCallback(() => {
+    if (!data?.uuid || noApiCall) return;
 
     let value = {
       booklet_id: data.uuid,
@@ -188,16 +224,16 @@ const Details = ({ route }: any) => {
       default:
         value.tabname = '';
     }
-    if (noApiCall) {
-      return;
-    }
+
+    dispatch(getCartList());
+
     if (from === 'ComboBooklet') {
       dispatch(getComboBookletDetail(value));
     } else {
       dispatch(getBookletDetail(value));
     }
-  }, [index, data?.uuid, from, dispatch, noApiCall]);
-
+  }, [data?.uuid, from, index, noApiCall]),
+);
   useEffect(() => {
     if (!data?.uuid) return;
 

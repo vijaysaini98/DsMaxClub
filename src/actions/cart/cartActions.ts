@@ -135,11 +135,13 @@ export const initiatePayment =
 
       const response = await API.cartApi.payment_initiate(data);
 
+console.log(response,'response==>');
 
       if (response?.status === 200) {
         console.log('STATUS 200 HIT');
 
         onSuccess?.(response?.data);
+
 
         return;
       } else {
@@ -149,6 +151,11 @@ export const initiatePayment =
       }
     } catch (e: any) {
       Toast.show(e?.response?.data?.message, Toast.LONG);
+       console.log('Full Error:', e);
+  console.log('API Error Response:', e?.response);
+  console.log('Status Code:', e?.response?.status);
+  console.log('Response Data:', e?.response?.data);
+  console.log('Message:', e?.response?.data?.message);
 
       dispatch(getCartList());
     } finally {
