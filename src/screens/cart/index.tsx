@@ -617,7 +617,9 @@ const Cart = () => {
                 if (paymentStatusModal.type === 'success') {
                   NavigationService.navigate(routes.MY_CARD_SCREEN);
                 }else{
-                  NavigationService.navigate(routes.HOME_SCREEN);
+               
+                    NavigationService.navigate(routes.BOTTOM_TAB_NAVIGATOR);
+                  
                 }
               }}
             >
