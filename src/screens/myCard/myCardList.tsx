@@ -32,23 +32,10 @@ const MyCardList = ({ value }: any) => {
     myCardAllBookletList,
     myCardActiveBookletList,
     myCardExpiredBookletList,
-    isBtnLoading,
   } = useAppSelector(state => state?.myCard);
   const [refreshing, setRefreshing] = useState(false);
 
-  // const onRefresh = useCallback(() => {
-  //   // setRefreshing(true);
-  //   dispatch(getMyCardBookletList(value, isRefresh));
-  // }, [dispatch, value, isRefresh]);
 
-  // const handleOnPress = (item) => {
-  //   dispatch(
-  //     getMyCardCouponList(
-  //       { user_booklet_uuid: item.user_booklet_uuid },
-  //       () => onSuccess(item) // ✅ Pass callback correctly
-  //     )
-  //   );
-  // };
   const onRefresh = useCallback(() => {
     // setRefreshing(true);
     dispatch(getMyCardBookletList(value, isRefresh));

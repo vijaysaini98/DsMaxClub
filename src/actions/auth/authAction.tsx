@@ -1,5 +1,5 @@
 import apiClient, { API } from '@services/appClient';
-import { resetAuth, setAppinfo, setCityList, setHowToRedeem, setLoading, setMaintenanceInfo, setPrivacyPolicy, setTermCondition, setUserData } from './authSlice';
+import { resetAuth, setAppinfo, setCityList, setHowToRedeem, setLoading, setMaintenanceInfo, setPrivacyPolicy, setStaticImages, setTermCondition, setUserData } from './authSlice';
 import {
   PROFILE_COMPLETE,
   removeAccessToken,
@@ -15,64 +15,120 @@ import Toast from 'react-native-simple-toast';
 import { resetDeal } from '@actions/deals/dealSlice';
 import { resetHome } from '@actions/home/homeSlice';
 
+// export const login =
+//   (data: any, onSucess?: any, callBack?: any) => async (dispatch: AppDispatch) => {
+//     try {
+//       dispatch(setLoading(true));
+//       const response = await API.authApi.login(data);
+
+//       if (response?.status == 200) {
+//         console.log(response,'response')
+//         if (response?.data?.user?.otp_verified !== 0) {
+//           setAccessToken(response?.data?.user?.remember_token);
+//           setItem(USER_ID, response?.data?.user?.uuid);
+//           setItem(USER_TYPE, response?.data?.user?.user_type);
+//         }
+
+//         dispatch(userProfile({ userid: response?.data?.user?.uuid }));
+//         dispatch(getCityList());
+//         if (response?.data?.user?.user_type == 2) {
+
+//           if (response?.data?.user?.otp_verified == 0) {
+//             setAccessToken(response?.data?.user?.remember_token);
+//             setItem(USER_ID, response?.data?.user?.uuid);
+//             setItem(USER_TYPE, response?.data?.user?.user_type);
+//             let apiData = {
+//               email: data.email,
+//               // mobile: state?.phone
+//             }
+//             callBack && callBack()
+//             // dispatch(customerVerifySendOtp(apiData))
+//             dispatch(sendOtp(apiData))
+//             // callBack && callBack()
+//           } else {
+//             onSucess && onSucess();
+//             NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+//           }
+
+//         }
+//         else if (response?.data?.user?.user_type == 1) {
+//           onSucess && onSucess();
+//           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_EXECUTIVE)
+//         }
+//         else {
+//             setAccessToken(response?.data?.user?.remember_token);
+//        setItem(USER_ID, response?.data?.user?.uuid);
+//           setItem(USER_TYPE, response?.data?.user?.user_type);
+//           onSucess && onSucess();
+//           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
+//         }
+
+//         Toast.show(response?.message, Toast.LONG);
+
+//         return;
+//       } else {
+//         throw new Error('No response data received from backend.');
+//       }
+//     } catch (e: any) {
+//       console.log('e', e);
+
+//       Toast.show(e?.response?.data?.message, Toast.LONG);
+//     } finally {
+//       dispatch(setLoading(false));
+//     }
+//   };
 export const login =
-  (data: any, onSucess?: any, callBack?: any) => async (dispatch: AppDispatch) => {
+  (data: any, onSucess?: any, callBack?: any) =>
+  async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
+
       const response = await API.authApi.login(data);
+console.log(response,'login response');
 
       if (response?.status == 200) {
-        console.log(response,'response')
-        if (response?.data?.user?.otp_verified !== 0) {
-          setAccessToken(response?.data?.user?.remember_token);
-          setItem(USER_ID, response?.data?.user?.uuid);
-          setItem(USER_TYPE, response?.data?.user?.user_type);
-        }
+        const user = response?.data?.user;
 
-        dispatch(userProfile({ userid: response?.data?.user?.uuid }));
+        // Save user data
+        setAccessToken(user?.remember_token);
+        setItem(USER_ID, user?.uuid);
+        setItem(USER_TYPE, user?.user_type);
+
+        dispatch(userProfile({ userid: user?.uuid }));
         dispatch(getCityList());
-        if (response?.data?.user?.user_type == 2) {
 
-          if (response?.data?.user?.otp_verified == 0) {
-            setAccessToken(response?.data?.user?.remember_token);
-            setItem(USER_ID, response?.data?.user?.uuid);
-            setItem(USER_TYPE, response?.data?.user?.user_type);
-            let apiData = {
-              email: data.email,
-              // mobile: state?.phone
-            }
-            callBack && callBack()
-            // dispatch(customerVerifySendOtp(apiData))
-            dispatch(sendOtp(apiData))
-            // callBack && callBack()
-          } else {
-            onSucess && onSucess();
-            NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
-          }
+        // Customer
+        if (Number(user?.user_type) === 2) {
+          const apiData = {
+            email: data.email,
+          };
 
+          callBack && callBack();
+          dispatch(sendOtp(apiData));
         }
-        else if (response?.data?.user?.user_type == 1) {
+
+        // Executive
+        else if (Number(user?.user_type) === 1) {
           onSucess && onSucess();
-          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_EXECUTIVE)
+          NavigationService.reset(routes.BOTTOM_TAB_NAVIGATOR_EXECUTIVE);
         }
+
+        // Vendor / Others
         else {
-            setAccessToken(response?.data?.user?.remember_token);
-       setItem(USER_ID, response?.data?.user?.uuid);
-          setItem(USER_TYPE, response?.data?.user?.user_type);
           onSucess && onSucess();
-          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
+          NavigationService.reset(routes.BOTTOM_TAB_NAVIGATOR_VENDOR);
         }
 
         Toast.show(response?.message, Toast.LONG);
-
-        return;
       } else {
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      console.log('e', e);
-
-      Toast.show(e?.response?.data?.message, Toast.LONG);
+      console.log('Login Error:', e);
+      Toast.show(
+        e?.response?.data?.message || 'Something went wrong',
+        Toast.LONG,
+      );
     } finally {
       dispatch(setLoading(false));
     }
@@ -86,18 +142,6 @@ export const userLogin =
       if (response?.status == 200) {
           setAccessToken(response?.data?.user?.remember_token);
 
-        // setAccessToken(response?.data?.remember_token);
-        // setItem(USER_ID, response?.data?.uuid);
-        // setItem(USER_TYPE, response?.data?.user_type);
-
-        // dispatch(userProfile({ userid: response?.data?.uuid }));
-        // dispatch(getCityList());
-
-        // if (response?.data?.user_type == 2) {
-        //   NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
-        // } else {
-        //   NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
-        // }
         Toast.show(response?.message, Toast.LONG);
 
         onSucess && onSucess();
@@ -150,6 +194,7 @@ export const logout =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.logout(data);
+console.log(response,'response of logout==>');
 
       if (response?.status == 200) {
         removeAccessToken();
@@ -159,6 +204,7 @@ export const logout =
         NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess();
+       dispatch(getMaintenanceStatus());
         return;
       } else {
         throw new Error('No response data received from backend.');
@@ -249,6 +295,12 @@ export const verifyOtp =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.verify_otp(data);
+      console.log(response,'otp response');
+      
+      console.log(
+  'remember_token =>',
+  response?.data?.user?.remember_token,
+);
       if (response?.status == 200) {
         if (response?.data?.user?.user_type == 2) {
           setAccessToken(response?.data?.user?.remember_token);
@@ -304,7 +356,6 @@ export const userProfile =
   (data?: any, onSucess?: any, isFirstTime?: boolean) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
-      console.log(data,'dataaaa')
       const response = await API.userApi.user_profile(data);
       if (response?.status == 200) {
         dispatch(setUserData(response?.data));
@@ -439,6 +490,7 @@ export const getMaintenanceStatus =
       const response: any =
         await API.authApi.maintenance_status();
 
+console.log(response,'response of maintenance status==>');
 
 
       if (response?.success) {
@@ -448,8 +500,68 @@ export const getMaintenanceStatus =
       }
     } catch (e: any) {
       console.log(
-        'Maintenance Error',
+        'e',
         e?.response?.data,
       );
+    }
+  };
+
+export const announcementDismiss =
+  (onSuccess?: any) => async () => {
+    try {
+      console.log("Dismiss API Calling...");
+
+      const response =
+        await API.authApi.announcement_dismiss();
+
+
+      if (response?.status === 200) {
+        onSuccess?.();
+      } 
+    } catch (e: any) {
+      console.log(
+        "Dismiss Error =>",
+        JSON.stringify(e, null, 2),
+      );
+
+    }
+  };
+
+export const getStaticImages =
+  (onSuccess?: any) => async (dispatch: AppDispatch, getState: any) => {
+    try {
+      const { imagesSlice } = getState();
+      if (imagesSlice?.images && Object.keys(imagesSlice.images).length > 0) {
+        console.log('Static images already cached — skipping API call');
+        onSuccess && onSuccess();
+        return;
+      }
+
+      dispatch(setLoading(true));
+
+      const response = await API.authApi.static_images();
+
+      console.log(response?.data, 'response of static images');
+
+      if (response?.status === 200) {
+        const imageMap = response.data.images.reduce(
+          (acc: any, item: any) => {
+            acc[item.name] = item.url;
+            return acc;
+          },
+          {},
+        );
+
+        dispatch(setStaticImages(imageMap));
+
+        onSuccess && onSuccess();
+        return;
+      } else {
+        throw new Error('No response data received from backend.');
+      }
+    } catch (e: any) {
+      console.log('Static Images Error', e?.response?.data || e?.message);
+    } finally {
+      dispatch(setLoading(false));
     }
   };

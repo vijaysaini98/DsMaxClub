@@ -25,7 +25,6 @@ import {
   defaultBookletImage,
   filledCartIcon,
   locationIcon,
-  restro2,
   helpLineIcon,
   nearByIcon,
   downArrowIcon,
@@ -105,7 +104,7 @@ const Card: React.FC<CardProps> = ({
   };
 
   const source: ImageSourcePropType =
-    imageUrl || item?.image || restro2 || defaultBookletImage;
+    imageUrl || item?.image || defaultBookletImage;
 
   const displayName = name ?? item?.name ?? '';
   const displayPrice =
@@ -366,26 +365,27 @@ const Card: React.FC<CardProps> = ({
                         </AppText>
 
                         <AppText type={TWELVE}>
-                          {moment(
-                            purchaseDate,
-                            'DD MMMM YYYY, HH:mm',
-                            true,
-                          ).format('DD MMM YYYY, hh:mm')}
-                        </AppText>
+  {purchaseDate
+    ? moment(
+        purchaseDate,
+        'DD MMMM YYYY, hh:mm A',
+        true,
+      ).format('DD MMM YYYY, hh:mm A')
+    : '--'}
+</AppText>
                       </View>
 
                       <View style={styles.requestIconContainer}>
-                        <TouchableOpacityView
-                          style={styles.circleBtn}
-                          onPress={() => openDropdown('location')}
-                        >
-                          <FastImage
-                            source={locationIcon}
-                            style={styles.circleIcon}
-                            tintColor={colors.white}
-                            resizeMode="contain"
-                          />
-                        </TouchableOpacityView>
+                        
+ <AppText type={TWELVE} weight={BOLD}>
+                          Requested for
+                        </AppText>
+
+                        <AppText type={TWELVE}>
+                         {item?.username ? item?.username : '--'}
+                        </AppText>
+
+
                       </View>
                     </View>
                   )}
@@ -402,6 +402,19 @@ const Card: React.FC<CardProps> = ({
                   </View>
 
                   {/* LOCATION ICON */}
+                  <View style={{alignItems:'flex-end'}}>
+                  <TouchableOpacityView
+                          style={styles.circleBtn}
+                          onPress={() => openDropdown('location')}
+                        >
+                          <FastImage
+                            source={locationIcon}
+                            style={styles.circleIcon}
+                            tintColor={colors.white}
+                            resizeMode="contain"
+                          />
+                        </TouchableOpacityView>
+                        </View>
                 </>
               )}
               {type === 'combo' && (
@@ -778,6 +791,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.buttonBg,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: vs(10),
+    
+
   },
 
   circleIcon: {

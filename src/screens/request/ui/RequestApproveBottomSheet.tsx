@@ -29,7 +29,7 @@ type StateProps = {
     btnDisabled?:boolean | undefined
 };
 
-const RequestApproveBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss,btnDisabled,requestId }) => {
+const RequestApproveBottomSheet = ({ bottomSheetRef, snapPoints, onSubmit, onDismiss,btnDisabled,requestId }:any) => {
     const dispatch = useAppDispatch();
     const { isBtnLoading ,isLoading,isImageLoading } = useAppSelector((state) => state?.executiveRequest);
     

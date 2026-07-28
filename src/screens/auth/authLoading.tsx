@@ -1,6 +1,13 @@
 import NavigationService from '@navigations/NavigationService';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
-import { Access_Token, getItem, PROFILE_COMPLETE, USER_ID, USER_TYPE, USER_VISITED } from '@services/storage';
+import {
+  Access_Token,
+  getItem,
+  PROFILE_COMPLETE,
+  USER_ID,
+  USER_TYPE,
+  USER_VISITED,
+} from '@services/storage';
 import { useEffect } from 'react';
 import * as routes from '@navigations/routes';
 import { AppSafeAreaView } from '@components/AppSafeAreaView';
@@ -11,10 +18,12 @@ import { getBannerList } from '@actions/home/homeAction';
 import FastImage from 'react-native-fast-image';
 import { logoImage } from '@helper/imagesAssets';
 import { s, vs } from 'react-native-size-matters/extend';
+import { useSelector } from 'react-redux';
+import { getStaticImages } from '@actions/staticImages/staticImagesSlice';
 
 const AuthLoading = () => {
   const dispatch = useAppDispatch();
-   const {maintenanceInfo } = useAppSelector(state => state.auth);
+  const { maintenanceInfo } = useAppSelector(state => state.auth);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -23,6 +32,13 @@ const AuthLoading = () => {
 
     return () => clearTimeout(timeoutId);
   }, []);
+  const { images, loaded } = useSelector((state: any) => state.imagesSlice);
+
+  useEffect(() => {
+    if (!loaded) {
+    }
+    dispatch(getStaticImages());
+  }, [loaded]);
 
   const bootstrapAsync = async () => {
     try {
@@ -32,20 +48,17 @@ const AuthLoading = () => {
       const userVisited = await getItem(USER_VISITED);
       const profileComplete = await getItem(PROFILE_COMPLETE);
 
-      
-
       if (customerToken) {
         dispatch(userProfile({ userid: userId }));
-        dispatch(getBannerList({ screen: '1' }))
+        dispatch(getBannerList({ screen: '1' }));
         dispatch(getCityList());
         if (userType == 1) {
-          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_EXECUTIVE)
-        }
-        else if (userType == 2) {
+          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_EXECUTIVE);
+        } else if (userType == 2) {
           if (profileComplete === '0') {
             NavigationService.reset(routes?.EDIT_PROFILE_SCREEN);
             return;
-          }else{
+          } else {
             NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
           }
           // NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
@@ -53,10 +66,9 @@ const AuthLoading = () => {
           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
         }
       } else {
-        if (userVisited === "userVisited") {
+        if (userVisited === 'userVisited') {
           NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
-        } 
-        else {
+        } else {
           NavigationService.reset(routes?.ONBOARDING);
         }
       }
@@ -66,14 +78,12 @@ const AuthLoading = () => {
   };
 
   return (
-    <AppSafeAreaView
-      style={styles.mainContainer}
-    >
-        <ActivityIndicator size={'large'} color={colors.buttonBg} />
+    <AppSafeAreaView style={styles.mainContainer}>
+      <ActivityIndicator size={'large'} color={colors.buttonBg} />
       <FastImage
-      source={logoImage}
-      style={{height:vs(200),width:s(200)}}
-      resizeMode={FastImage.resizeMode.contain}
+        source={logoImage}
+        style={{ height: vs(200), width: s(200) }}
+        resizeMode={FastImage.resizeMode.contain}
       />
     </AppSafeAreaView>
   );
@@ -87,5 +97,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
     justifyContent: 'center',
-  }
-})
+  },
+});

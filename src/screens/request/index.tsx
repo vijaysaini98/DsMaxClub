@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Keyboard, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { AppSafeAreaView } from '@components/AppSafeAreaView'
 import { commonStyles } from '@theme/commonStyles'
@@ -12,6 +12,8 @@ import { getMyCardBookletList } from '@actions/myCard/myCardAction'
 import { SpinnerSecond } from '@components/Spinner'
 import RequestList from './ui/requestList'
 import { getExecutiveRequestList } from '@actions/executiveRequest.tsx/executiveRequestAction'
+import styles from './styles'
+import { useFocusEffect } from '@react-navigation/native';
 
 // ✅ Make sure route keys match those in renderScene
 const routes = [
@@ -21,13 +23,13 @@ const routes = [
   { key: 'reject', title: ' Reject' },
 ];
 
-const RenderTabBar = (props) => {
+const RenderTabBar = (props:any) => {
   const { tabTextType } = props;
   return (
     <TabBar
       {...props}
-      scrollEnabled
-      renderLabel={({ route, focused }) => (
+      scrollEnabled={false}
+      renderLabel={({ route, focused }:any) => (
         <AppText
           type={EIGHTEEN}
           weight={focused ? MEDIUM : NORMAL}
@@ -60,14 +62,13 @@ const RenderTabBar = (props) => {
         borderBottomColor: colors.disTextColor,
         height: 40,
       }}
-      tabStyle={{
-        height: 40,
-        // width: 90,
-        maxWidth: s(130),
-        paddingHorizontal: s(16),
-        alignItems: 'center',
-        justifyContent: "center",
-      }}
+   tabStyle={{
+  flex: 1,
+  height: 40,
+  paddingHorizontal: 0,
+  alignItems: 'center',
+  justifyContent: 'center',
+}}
       // indicatorContainerStyle={{alignItems:'center',width:'100%',justifyContent:'center'}}
       pressColor={colors.transparent}
     />
@@ -77,70 +78,48 @@ const RenderTabBar = (props) => {
 const Requests = () => {
   const dispatch = useAppDispatch()
   const [index, setIndex] = useState(0)
+  const [search, setSearch] = useState('');
 
   const {
-    isRefresh,
-    isLoading,
-    executiveRequestAllList,
-    executiveRequestPendingList,
-    executiveRequestApproveList,
-    executiveRequestRejectList,
+   
     isBtnLoading } = useAppSelector((state) => state?.executiveRequest)
+    
+useFocusEffect(
+  useCallback(() => {
+    setSearch('');
+    setIndex(0);
 
-  useEffect(() => {
-    const value =
-      index === 0
-        ? {
-          tabname: "all"
-        }
-        : index === 1
-          ? {
-            tabname: "pending"
-          }
-          : index === 2 ?
-            {
-              tabname: "approve"
-            } :
-            {
-              tabname: "reject"
-            }
-
-    dispatch(getExecutiveRequestList(value));
-  }, [index]);
-
-  const renderScene = useCallback(
-    SceneMap({
-      all: () => (
-        <RequestList
-          value={{
-            tabname: "all"
-          }}
-        />
-      ),
-      pending: () => (
-        <RequestList
-          value={{ tabname: "pending" }}
-        />
-      ),
-      approve: () => (
-        <RequestList
-          value={{ tabname: "approve" }}
-        />
-      ),
-      reject: () => (
-        <RequestList
-          value={{ tabname: "reject" }}
-        />
-      ),
-    }),
-    [isRefresh, executiveRequestAllList, executiveRequestPendingList, executiveRequestApproveList, executiveRequestRejectList] // ✅ dependencies
-  );
-
-
+    return () => {};
+  }, []),
+);
+const renderScene = ({ route }: any) => (
+  <RequestList
+    key={`${route.key}-${search}`}
+    value={{
+      tabname: route.key,
+      search,
+    }}
+  />
+);
   return (
     <AppSafeAreaView style={[commonStyles.mainContainer]}>
       <Header currentCity={true} />
       {isBtnLoading && <SpinnerSecond />}
+<View style={styles.searchContainer}>
+  <TextInput
+
+    placeholder="Search by Mobile/Booklet/User..."
+    placeholderTextColor={colors.disTextColor}
+    value={search}
+    onChangeText={setSearch}
+    style={styles.searchInput}
+    returnKeyType="search"
+    clearButtonMode="while-editing"
+    onSubmitEditing={() => Keyboard.dismiss()}
+    
+  />
+</View>
+      
       <View style={{ flex: 1 }}>
         <TabView
           navigationState={{ index, routes }}

@@ -33,30 +33,7 @@ const MyCardCouponList = ({ route }:any) => {
     dispatch(getMyCardCouponList({ user_booklet_uuid })).finally(() => setRefreshing(false))
   }, [dispatch, user_booklet_uuid])
 
-  // const handleViewBtn = (item) => {
-  //   console.log(item,'item in coupon list====>');
-  //   console.log(item?.coupon_uuid,'item?.coupon_uuid');
-  //   console.log(item?.user_bookletid,'item?.user_bookletid');
-  //   console.log(item?.item?.tab_status,'item?.item?.tab_status');
-    
-    
-    
-  //   if (tab_status === 'active') {
-  //     setLoadingCouponId(item?.coupon_uuid) 
-  //     dispatch(
-  //       getCoupon(
-  //         { coupon_id: item?.coupon_uuid, user_booklet_id: item?.user_bookletid },
-  //         () => onSuccess(item)
-  //       )
-  //     ).finally(() => setLoadingCouponId(null)) // stop loader
-  //   }
-  //   // } else {
-  //   //   setViewData(item)
-  //   //   setTimeout(() => {
-  //   //     viewDetailSheet?.current?.open()
-  //   //   }, 200)
-  //   // }
-  // }
+
 
   const handleViewBtn = (item) => {
 

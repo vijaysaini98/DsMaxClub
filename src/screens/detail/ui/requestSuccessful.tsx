@@ -31,12 +31,7 @@ const RequestSuccessfull = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Navigate back when timer finishes
-  //   useEffect(() => {
-  //     if (seconds === 0) {
-  //       navigation.goBack();
-  //     }
-  //   }, [seconds, navigation]);
+
 
 
   const [isPhoneDialerModalVisible, setIsPhoneDialerModalVisible] = React.useState(false);

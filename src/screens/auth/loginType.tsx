@@ -34,6 +34,8 @@ const userType = [
 const LoginType = () => {
    const {maintenanceInfo } = useAppSelector(state => state.auth);
    const isSvg = maintenanceInfo?.logo?.endsWith('.svg');
+   console.log(maintenanceInfo?.logo,'maintenanceInfo?.logo');
+   
   return (
     <AppSafeAreaView
       isSecond

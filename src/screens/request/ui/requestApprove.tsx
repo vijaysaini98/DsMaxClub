@@ -25,6 +25,7 @@ import { executiveRequestStatusChange, getExecutiveRequestList, getExecutiveRequ
 import moment from 'moment';
 import FastImage from 'react-native-fast-image';
 import { IMGE_URL } from '@services/config';
+import { setExecutiveRequestUserDetails } from '@actions/executiveRequest.tsx/executiveRequestSlice';
 
 const RequestApprove = ({ route }) => {
     const { request_id, status, title, tabName } = route?.params || {};
@@ -38,6 +39,7 @@ const RequestApprove = ({ route }) => {
     );
 
     useEffect(() => {
+         dispatch(setExecutiveRequestUserDetails({}));
         if (request_id) {
             dispatch(getExecutiveRequestUserDetails({ request_id }));
         }

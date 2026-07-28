@@ -36,15 +36,7 @@ const NearBy = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.containerStyle}
-      // refreshControl={
-      //   <RefreshControl
-      //     refreshing={refreshing}
-      //     onRefresh={onRefresh}
-      //     colors={[colors.buttonBg]} // Android spinner color
-      //     tintColor={colors.buttonBg} // iOS spinner color
-      //   />
-      // }  
-      >
+      
         {categoryBookletData?.category?.map((item, index) => {
           if (!item?.booklets || item?.booklets.length === 0) return null;
 

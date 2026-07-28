@@ -63,7 +63,7 @@ export const MoreTabButton = ({
 
 const Profile = () => {
   const dispatch = useAppDispatch();
-  const { userData } = useAppSelector(state => state.auth);
+  const { userData,isLoading } = useAppSelector(state => state.auth);
   const [deleteAccountModalVisible, setDeleteAccountModalVisible] =
     React.useState(false);
   const [logoutVisible, setLogoutVisible] = React.useState(false);
@@ -105,9 +105,9 @@ const Profile = () => {
         {userData?.user_type == '2' && (
           <MoreTabButton
             leftIcon={myRequestIcon}
-            title={'My Request'}
+            title={'My Orders'}
             handleOnPress={() => {
-              NavigationService.navigate(routes.MY_REQUEST_SCREEN);
+              NavigationService.navigate(routes.MY_ORDERS_SCREEN);
             }}
           />
         )}
@@ -180,6 +180,7 @@ const Profile = () => {
           </AppText>
         </View>
       </ScrollView>
+      
       <LogOutModal
         visible={logoutVisible}
         onClose={() => setLogoutVisible(false)}

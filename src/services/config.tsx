@@ -16,6 +16,9 @@ const DELETE_ACCOUNT: string = `${BASE_URL}delete-customer-account`;
 const APP_VERSION: string = `${BASE_URL}get-userapp-version`;
 // const MAINTENANCE_STATUS: string = `${BASE_URL}maintenance/status`;
 const MAINTENANCE_STATUS: string = `${BASE_URL}app-settings`;
+const ANNOUNCEMENT_DISMISS: string = `${BASE_URL}announcement/dismiss`;
+const STATIC_IMAGES: string = `${BASE_URL}get-static-images`;
+
 
 // userApi
 const USER_PROFILE: string = `${BASE_URL}edit-profile`;
@@ -67,6 +70,7 @@ const UPDATE_CART_QUANTITY: string = `${BASE_URL}cart/update-quantity`;
 const REMOVE_CART: string = `${BASE_URL}cart/remove`;
 const PHONEPE_INITIATE: string = `${BASE_URL}payment/initiate`;
 const PAYMENT_STATUS: string = `${BASE_URL}payment/status`;
+const MY_ORDER_LIST: string = `${BASE_URL}myorder-list`;
 const EXECUTIVE_CART_REQUEST_SEND: string = `${BASE_URL}executive-cart-request-send`;
 
 
@@ -85,6 +89,8 @@ const config = {
 
   APP_VERSION,
   MAINTENANCE_STATUS,
+  ANNOUNCEMENT_DISMISS,
+  STATIC_IMAGES,
 
   USER_PROFILE,
   UPDATE_USER_PROFILE,
@@ -136,6 +142,7 @@ const config = {
   PHONEPE_INITIATE,
   PAYMENT_STATUS,
   EXECUTIVE_CART_REQUEST_SEND,
+  MY_ORDER_LIST,
 
 };
 

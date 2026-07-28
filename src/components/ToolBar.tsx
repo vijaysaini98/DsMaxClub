@@ -47,7 +47,7 @@ const ToolBar: React.FC<ToolBarProps> = ({
       {title && (
         <AppText
           onPress={textBack ? () => NavigationService.goBack() : () => { }}
-          numberOfLines={1}
+          // numberOfLines={1}
           type={textType ? textType : TWENTY_TWO}
           weight={textWeight ?? textWeight}
           style={[styles.titleStyle, titleStyle]}>
@@ -81,9 +81,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: "90%",
     flexShrink: 1,
-    //   textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    // textShadowOffset: {width: -1, height: 1},
-    // textShadowRadius: 10
+    flexWrap: 'wrap'
+
 
   }
 });

@@ -12,7 +12,7 @@ import { commonStyles } from '@theme/commonStyles';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { getCategoryList } from '@actions/home/homeAction';
 import { Loader } from '@components/Spinner';
-import { categaoriesIcon, defaultBookletImage } from '@helper/imagesAssets';
+import { defaultBookletImage } from '@helper/imagesAssets';
 import { getCategoryDetails } from '@utils/index';
 import { SvgImageFromUri } from '@screens/home/ui/categoriesComponent';
 import CategoriesShimmer from '@components/ShimerLoader/categoriesShimerLoader';

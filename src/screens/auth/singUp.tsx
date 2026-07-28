@@ -20,8 +20,7 @@ import { emailRegex, passwordRegex, phoneRegex } from '@utils/index';
 import KeyBoardAware from '@components/KeyBoardAware';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { customerVerifySendOtp, sendOtp, singUp, verifyOtp } from '../../actions/auth/authAction';
-import RBSheet from 'react-native-raw-bottom-sheet';
-import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
+
 import { ms, s, vs } from 'react-native-size-matters/extend';
 import CodeVerificationBottomSheet from './codeVerificationBottomSheet';
 

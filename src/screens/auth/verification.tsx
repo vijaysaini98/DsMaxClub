@@ -25,7 +25,7 @@ import { sendOtp, verifyOtp } from '@actions/auth/authAction'
 import NavigationService from '@navigations/NavigationService'
 import { RESET_PASSWORD_SCREEN } from '@navigations/routes'
 
-const Verification = ({ route }) => {
+const Verification = ({ route }:any) => {
     let { email } = route?.params ?? ''
     const dispatch = useAppDispatch()
     const { isLoading } = useAppSelector((state) => state.auth)

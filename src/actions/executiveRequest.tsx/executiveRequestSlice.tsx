@@ -4,6 +4,8 @@ export const initialState = {
     isLoading: false,
     isBtnLoading: false,
     isImageLoading:false,
+    isPaginationLoading: false,
+    isRefresh: false,
     executiveRequestAllList: [],
     executiveRequestPendingList: [],
     executiveRequestApproveList: [],
@@ -28,6 +30,9 @@ export const executiveRequestSlice = createSlice({
             
             state.executiveRequestAllList = payload;
         },
+        setPaginationLoading: (state, { payload }) => {
+  state.isPaginationLoading = payload;
+},
          setExecutiveApproveList: (state, { payload }) => {
             state.executiveRequestApproveList = payload;
         },
@@ -40,6 +45,9 @@ export const executiveRequestSlice = createSlice({
         },
         setExecutiveRequestUserDetails:(state, { payload }) => {
             state.executiveRequestUserDetails = payload;
+        },
+            setIsRefresh: (state, { payload }) => {
+            state.isRefresh = payload;
         },
         resetExecutiveRequest: () => initialState, // ✅ proper reset
     },
@@ -55,6 +63,8 @@ export const {
     setExecutiveRequestRejectList,
     setExecutiveRequestUserDetails,
     resetExecutiveRequest,
+    setIsRefresh,
+    setPaginationLoading,
 } = executiveRequestSlice.actions;
 
 export const execuitveRequestReducer = executiveRequestSlice.reducer;

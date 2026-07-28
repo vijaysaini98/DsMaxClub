@@ -14,19 +14,6 @@ const PrivacyPolicy = () => {
     const webRef = useRef();
     const { privacyPolicy, isLoading } = useAppSelector((state) => state?.auth)
 
-    //   const handleUrlNavigation = (event) => {
-    //     const url = event.url;
-
-    //     // Prevent WebView from loading external links
-    //     const isExternalLink = !url.includes('yourdomain.com'); // adjust your domain
-
-    //     if (isExternalLink) {
-    //       Linking.openURL(url); // Open in device browser
-    //       return false; // Block WebView from loading it
-    //     }
-
-    //     return true; // Allow WebView to load the URL
-    //   };
 
     useEffect(() => {
         dispatch(getPrivacy_TermCondition("privacy-policy"))

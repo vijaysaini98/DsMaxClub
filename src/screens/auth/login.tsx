@@ -44,7 +44,6 @@ const Login = ({ route }) => {
   const dispatch = useAppDispatch();
   const { isLoading,maintenanceInfo } = useAppSelector(state => state.auth);
   const sheetRef = useRef(null);
-console.log(userType,'userType')
   const passwordInputRef = React.useRef(null);
   const emailInputRef = React.useRef(null);
   const [isPhoneNumber, setIsPhoneNumber] = useState(true);

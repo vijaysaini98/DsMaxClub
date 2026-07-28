@@ -92,13 +92,11 @@
 //   },
 // });
 
-
-
 import {
   NoInternetModal,
   ServerCheckComp,
 } from '@components/NoInternetConnections';
- import { AppState } from "react-native";
+import { Alert, AppState } from 'react-native';
 import UpdateModal from '@components/UpdateModel';
 
 import MaintenanceModal from '@components/UnderMaintainance';
@@ -120,6 +118,7 @@ import { isNewerVersion } from './utils';
 import { colors } from '@theme/colors';
 
 import {
+  announcementDismiss,
   getAppVersion,
   getMaintenanceStatus,
 } from '@actions/auth/authAction';
@@ -132,23 +131,16 @@ let version = DeviceInfo.getVersion();
 
 let buildVersion = DeviceInfo.getBuildNumber();
 
-const RootComponent = ({ children }:any) => {
-  const { appInfo, maintenanceInfo } = useAppSelector(
-    state => state.auth,
-  );
+const RootComponent = ({ children }: any) => {
+  const { appInfo, maintenanceInfo,userData } = useAppSelector(state => state.auth);
 
   const dispatch = useAppDispatch();
-
-  const [netConnected, setNetConnected] = useState(true);
-
-  const [visible, setVisible] = useState(false);
 
   const netInfo = useNetInfo();
 
   const [isUpdate, setIsUpdate] = useState(false);
 
-  const [isMaintainess, setIsMaintainess] =
-    useState(false);
+  const [isMaintainess, setIsMaintainess] = useState(false);
 
   useEffect(() => {
     dispatch(getAppVersion());
@@ -156,39 +148,36 @@ const RootComponent = ({ children }:any) => {
     dispatch(getMaintenanceStatus());
   }, [dispatch]);
 
- 
+  const [announcementText, setAnnouncementText] = useState('');
+  const [showAnnouncement, setShowAnnouncement] = useState(false);
 
-useEffect(() => {
-  const subscription = AppState.addEventListener("change", state => {
-    if (state === "active") {
+  useEffect(() => {
     dispatch(getMaintenanceStatus());
+  }, [appInfo]);
 
-    }
-  });
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', state => {
+      if (state === 'active') {
+        dispatch(getMaintenanceStatus());
+      }
+    });
 
-  return () => subscription.remove();
-}, []);
+    return () => subscription.remove();
+  }, []);
   /**
    * App Update Check
    */
   useEffect(() => {
     if (appInfo && Array.isArray(appInfo)) {
-      const platform =
-        Platform.OS === 'android'
-          ? 'Android'
-          : 'IOS';
+      const platform = Platform.OS === 'android' ? 'Android' : 'IOS';
 
       const latestVersionInfo = appInfo.find(
         info => info.param_name === platform,
       );
 
-      const latestVersion =
-        latestVersionInfo?.param_description;
+      const latestVersion = latestVersionInfo?.param_description;
 
-      if (
-        latestVersion &&
-        isNewerVersion(version, latestVersion)
-      ) {
+      if (latestVersion && isNewerVersion(version, latestVersion)) {
         setIsUpdate(true);
       } else {
         setIsUpdate(false);
@@ -199,68 +188,71 @@ useEffect(() => {
   /**
    * Maintenance Check
    */
-useEffect(() => {
-  if (maintenanceInfo) {
-    setIsMaintainess(
-      maintenanceInfo?.maintenance_mode === true,
-    );
-  }
-}, [maintenanceInfo]);
+  // useEffect(() => {
+  //   if (maintenanceInfo) { 
+  //     setIsMaintainess(
+  //       maintenanceInfo?.maintenance_mode === true,
+  //     );
+  //   }
+  // }, [maintenanceInfo]);
 
   /**
    * Internet Check
    */
   useEffect(() => {
-    if (!netConnected) {
-      setVisible(true);
-    } else {
-      setVisible(false);
+    if (!maintenanceInfo) return;
+
+    const maintenance = maintenanceInfo.maintenance_mode === true;
+
+    setIsMaintainess(maintenance);
+
+    if (maintenance) {
+      setShowAnnouncement(false);
+      return;
     }
-  }, [netConnected]);
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(
-      (state: any) => {
-        setNetConnected(state?.isConnected);
-      },
-    );
+    if (maintenanceInfo.announcement?.trim()) {
+      setAnnouncementText(maintenanceInfo.announcement);
+      setShowAnnouncement(true);
+    } else {
+      setShowAnnouncement(false);
+    }
+  }, [maintenanceInfo]);
 
-    return unsubscribe;
-  }, [visible]);
+  const onCloseAnnouncement = () => {
+ 
+    dispatch(announcementDismiss());
+    setShowAnnouncement(false);
 
+    console.log('After dispatch');
+  };
   return (
     <BottomSheetModalProvider>
-      <SafeAreaView
-        style={styles.safeArea}
-        edges={['bottom']}>
-
-        <StatusBar
-          barStyle="dark-content"
-          backgroundColor={colors.white}
-        />
+      <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
 
         <NoInternetModal
-          visible={
-            !(
-              netInfo.isConnected &&
-              netInfo.isInternetReachable
-            )
-          }
+          visible={!(netInfo.isConnected && netInfo.isInternetReachable)}
         />
 
-        <ServerCheckComp
-          visible={BaseUrlConfig.ENVIRONMENT}
-        />
+        <ServerCheckComp visible={BaseUrlConfig.ENVIRONMENT} />
+        {/* Maintenance has highest priority */}
+      {isMaintainess ? (
+  <MaintenanceModal
+    visible={true}
+    imageUrl={maintenanceInfo?.image}
+  />
+) : showAnnouncement && userData?.user_type === '2' ? (
+  <MaintenanceModal
+    visible={true}
+    title="📢 Announcement"
+    message={announcementText}
+    showMessage={true}
+    onClose={onCloseAnnouncement}
+  />
+) : null}
 
-        {isMaintainess && (
-          <MaintenanceModal
-            visible={isMaintainess}
-          />
-        )}
-
-        {isUpdate && (
-          <UpdateModal isVisible={isUpdate} />
-        )}
+        {isUpdate && <UpdateModal isVisible={isUpdate} />}
 
         {children}
       </SafeAreaView>
@@ -273,7 +265,6 @@ export default RootComponent;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor:
-      colors?.white || '#FFFFFF',
+    backgroundColor: colors?.white || '#FFFFFF',
   },
 });

@@ -2,7 +2,7 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { AppText, BUTTON_TEXT, FOURTEEN, MEDIUM, SEMI_BOLD, SIXTEEN, TWELVE, TWENTY_TWO } from '@components/AppText'
 import TouchableOpacityView from '@components/TouchableOpacityView'
-import { appIconNew, categaoriesIcon } from '@helper/imagesAssets'
+import { appIconNew} from '@helper/imagesAssets'
 import { getCategoryDetails } from '@utils/index'
 import NavigationService from '@navigations/NavigationService'
 import { CATEGORIES_LIST_SCCREEN } from '@navigations/routes'
@@ -70,16 +70,7 @@ const CategoriesComponent = ({ data, handleSeeAll }: { data: any, handleSeeAll: 
       />
     </View>
   ) : (
-    // <Image
-    //   source={
-    //     hasError || !item?.icon
-    //       ? appIconNew
-    //       : { uri: IMGE_URL + item?.icon }
-    //   }
-    //   style={styles.cateLogoImage}
-    //   resizeMode="cover"
-    //   // onError={() => setHasError(true)}
-    // />
+  
     <Image
   source={
     imageErrors[item?.uuid] || !item?.icon

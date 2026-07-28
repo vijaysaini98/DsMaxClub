@@ -30,7 +30,7 @@ import {
 import { commonStyles } from '@theme/commonStyles';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import { defaultBookletImage, rightArrowIcon } from '@helper/imagesAssets';
-import { sendOtp, userProfile, verifyOtp } from '@actions/auth/authAction';
+import { getStaticImages, sendOtp, userProfile, verifyOtp } from '@actions/auth/authAction';
 import ListEmptyComponent from '@components/ListEmptyComponent';
 import { setCategoriListData } from '@actions/home/homeSlice';
 import { Loader } from '@components/Spinner';
@@ -53,13 +53,12 @@ const Home: React.FC = () => {
     bannerList,
     comboBookletDeals,
   } = useAppSelector(state => state?.home);
-  
 
   const [show, setShow] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isAddCityModal, setIsAddCityModal] = useState(false);
   const [exitModalVisible, setExitModalVisible] = useState(false);
- 
+
   const sheetRef = useRef(null);
 
   const fetchData = async () => {
@@ -68,17 +67,19 @@ const Home: React.FC = () => {
     await dispatch(getComboBookletDeals());
     await dispatch(getCategoryBooklet());
     await dispatch(getBannerList({ screen_name: '1' }));
-  
+    await dispatch(getStaticImages())
   };
 
   useFocusEffect(
-  React.useCallback(() => {
-    dispatch(getCartList());
-  }, []),
-);
+    React.useCallback(() => {
+      dispatch(getCartList());
+    }, []),
+  );
 
   useEffect(() => {
-    fetchData();
+    if (userData?.current_city_name) {
+      fetchData();
+    }
   }, [userData?.current_city_name]);
 
   useEffect(() => {
@@ -98,21 +99,21 @@ const Home: React.FC = () => {
     }
   }, [userData]);
 
-useFocusEffect(
-  React.useCallback(() => {
-    const backAction = () => {
-      setExitModalVisible(true);
-      return true; // default back prevent
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const backAction = () => {
+        setExitModalVisible(true);
+        return true; // default back prevent
+      };
 
-    const subscription = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction,
+      );
 
-    return () => subscription.remove();
-  }, []),
-);
+      return () => subscription.remove();
+    }, []),
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -133,12 +134,14 @@ useFocusEffect(
   };
 
   const handleBannerPress = (item: any, index: number) => {
+    console.log(item,'item in banner');
+    
     if (
       (item?.booklet !== null && item?.type == 'combobooklet') ||
       item?.type == 'singlebooklet'
     ) {
       if (item?.type == 'combobooklet') {
-        NavigationService.navigate(routes.DETAILS_SCREEN, {
+        NavigationService.navigate(routes.COMBO_OFFER_LIST_SCREEN, {
           data: item?.booklet,
           from: 'ComboBooklet',
         });
@@ -155,9 +158,6 @@ useFocusEffect(
     }
   };
 
-
-  
-
   return (
     <AppSafeAreaView style={commonStyles.mainContainer}>
       {!show && !refreshing ? (
@@ -167,7 +167,7 @@ useFocusEffect(
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[
             styles.containerStyle,
-            {backgroundColor: colors.white},
+            { backgroundColor: colors.white },
           ]}
           refreshControl={
             <RefreshControl
@@ -178,7 +178,7 @@ useFocusEffect(
             />
           }
         >
-          <Header userName={userData?.name}  showCart={true}/>
+          <Header userName={userData?.name} showCart={true} />
 
           <BanerComponent
             data={bannerList}
@@ -192,7 +192,6 @@ useFocusEffect(
               NavigationService.navigate(routes?.CATEGORIES_SCCREEN);
             }}
           />
-         
 
           {isLoading ? (
             <Loader />
@@ -222,7 +221,6 @@ useFocusEffect(
                     contentContainerStyle={styles.listStyle}
                   >
                     {item.booklets.map((booklet: any, i: number) => {
-                      
                       return (
                         <View
                           key={booklet.id || i}
@@ -257,9 +255,7 @@ useFocusEffect(
                             imageUrl={
                               booklet?.booklet
                                 ? {
-                                    uri:
-                                      IMGE_URL +
-                                      booklet?.booklet,
+                                    uri: IMGE_URL + booklet?.booklet,
                                   }
                                 : defaultBookletImage
                             }
@@ -271,7 +267,6 @@ useFocusEffect(
                                 ? booklet?.location[0]?.location
                                 : '---'
                             }
-                      
                           />
                         </View>
                       );
@@ -345,7 +340,6 @@ useFocusEffect(
                           comboBookletDeals?.category?.length < 2 &&
                           styles.cardImageStyle
                         }
-                        
                         handleCardOnPress={() => {
                           NavigationService.navigate(
                             routes.COMBO_OFFER_LIST_SCREEN,
@@ -355,8 +349,7 @@ useFocusEffect(
                         imageUrl={
                           booklet?.booklet
                             ? {
-                                uri:
-                                  IMGE_URL + booklet?.booklet,
+                                uri: IMGE_URL + booklet?.booklet,
                               }
                             : defaultBookletImage
                         }
@@ -367,12 +360,12 @@ useFocusEffect(
                             ? booklet?.location[0]?.location
                             : '---'
                         }
-                       
                       />
                     </View>
                   );
                 })}
               </ScrollView>
+              
             </View>
           )}
         </ScrollView>
@@ -387,17 +380,17 @@ useFocusEffect(
       />
       {/* <CodeVerificationBottomSheet ref={sheetRef} onVerify={handleVerify} /> */}
       <DeleteConfirmationModal
-  visible={exitModalVisible}
-  title="Exit App"
-  message="Are you sure you want to exit the app?"
-  confirmText="Exit"
-  cancelText="Stay"
-  onCancel={() => setExitModalVisible(false)}
-  onConfirm={() => {
-    setExitModalVisible(false);
-    BackHandler.exitApp();
-  }}
-/>
+        visible={exitModalVisible}
+        title="Exit App"
+        message="Are you sure you want to exit the app?"
+        confirmText="Exit"
+        cancelText="Stay"
+        onCancel={() => setExitModalVisible(false)}
+        onConfirm={() => {
+          setExitModalVisible(false);
+          BackHandler.exitApp();
+        }}
+      />
     </AppSafeAreaView>
   );
 };

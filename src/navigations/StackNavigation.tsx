@@ -37,6 +37,9 @@ import ComboDetailList from "@screens/home/comboDetailList";
 import MyCardComboOfferList from "@screens/myCard/myCardComboOfferList";
 import Checkout from "@screens/checkout";
 import MyCard from "@screens/myCard";
+import MyOrders from "@screens/myOrders";
+import Requests from "@screens/request";
+import Home from "@screens/home";
 
 const Stack = createStackNavigator();
 
@@ -66,6 +69,7 @@ export const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR} component={BottomNavigation} />
     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR_VENDOR} component={BottomNavigationVendor} />
     <Stack.Screen name={routes.BOTTOM_TAB_NAVIGATOR_EXECUTIVE} component={BottomNavigationExecutive} />
+    <Stack.Screen name={routes.HOME_SCREEN} component={Home} />
     <Stack.Screen name={routes.CATEGORIES_SCCREEN} component={Categories} />
     <Stack.Screen name={routes.CATEGORIES_LIST_SCCREEN} component={CategoriesList} />
     <Stack.Screen name={routes.EDIT_PROFILE_SCREEN} component={EditProfile} />
@@ -77,6 +81,7 @@ export const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.MY_CARD_COUPON_LIST_SCREEN} component={MyCardCouponList} />
     <Stack.Screen name={routes.COUPON_LIST_SCREEN} component={CouponList} />
     <Stack.Screen name={routes.MY_REQUEST_SCREEN} component={MyRequest} />
+    <Stack.Screen name={routes.REQUEST_SCREEN} component={Requests} />
     <Stack.Screen name={routes.REQUEST_COUPON_LIST_SCREEN} component={RequestCouponList} />
     <Stack.Screen name={routes.REDEEM_SUCCESSFULL_SCREEN_USER} component={UserRedeemSucessfull} />
     <Stack.Screen name={routes.REDEEM_SUCCESSFULL_SCREEN} component={RedeemSuccessfull} />
@@ -90,6 +95,7 @@ export const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.CART_SCREEN} component={Cart} />
   <Stack.Screen name={routes.REQUEST_SUCCESSFUL_SCREEN} component={RequestSuccessfull} />
     <Stack.Screen name={routes.CHECKOUT_SCREEN} component={Checkout} />
+    <Stack.Screen name={routes.MY_ORDERS_SCREEN} component={MyOrders} />
 
 
   </Stack.Navigator>
