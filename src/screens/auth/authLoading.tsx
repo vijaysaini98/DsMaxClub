@@ -32,19 +32,13 @@ const AuthLoading = () => {
 
     return () => clearTimeout(timeoutId);
   }, []);
-  const {images,loaded}  = useSelector((state: any) => state.imagesSlice);
-    console.log(images, 'images===>');
-    
-    
+  const { images, loaded } = useSelector((state: any) => state.imagesSlice);
 
-  
   useEffect(() => {
-   if(!loaded){
-   } dispatch(getStaticImages());
-
-     
+    if (!loaded) {
+    }
+    dispatch(getStaticImages());
   }, [loaded]);
- console.log(loaded,images,'loaded==>');
 
   const bootstrapAsync = async () => {
     try {

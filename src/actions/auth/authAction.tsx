@@ -15,64 +15,120 @@ import Toast from 'react-native-simple-toast';
 import { resetDeal } from '@actions/deals/dealSlice';
 import { resetHome } from '@actions/home/homeSlice';
 
+// export const login =
+//   (data: any, onSucess?: any, callBack?: any) => async (dispatch: AppDispatch) => {
+//     try {
+//       dispatch(setLoading(true));
+//       const response = await API.authApi.login(data);
+
+//       if (response?.status == 200) {
+//         console.log(response,'response')
+//         if (response?.data?.user?.otp_verified !== 0) {
+//           setAccessToken(response?.data?.user?.remember_token);
+//           setItem(USER_ID, response?.data?.user?.uuid);
+//           setItem(USER_TYPE, response?.data?.user?.user_type);
+//         }
+
+//         dispatch(userProfile({ userid: response?.data?.user?.uuid }));
+//         dispatch(getCityList());
+//         if (response?.data?.user?.user_type == 2) {
+
+//           if (response?.data?.user?.otp_verified == 0) {
+//             setAccessToken(response?.data?.user?.remember_token);
+//             setItem(USER_ID, response?.data?.user?.uuid);
+//             setItem(USER_TYPE, response?.data?.user?.user_type);
+//             let apiData = {
+//               email: data.email,
+//               // mobile: state?.phone
+//             }
+//             callBack && callBack()
+//             // dispatch(customerVerifySendOtp(apiData))
+//             dispatch(sendOtp(apiData))
+//             // callBack && callBack()
+//           } else {
+//             onSucess && onSucess();
+//             NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
+//           }
+
+//         }
+//         else if (response?.data?.user?.user_type == 1) {
+//           onSucess && onSucess();
+//           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_EXECUTIVE)
+//         }
+//         else {
+//             setAccessToken(response?.data?.user?.remember_token);
+//        setItem(USER_ID, response?.data?.user?.uuid);
+//           setItem(USER_TYPE, response?.data?.user?.user_type);
+//           onSucess && onSucess();
+//           NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
+//         }
+
+//         Toast.show(response?.message, Toast.LONG);
+
+//         return;
+//       } else {
+//         throw new Error('No response data received from backend.');
+//       }
+//     } catch (e: any) {
+//       console.log('e', e);
+
+//       Toast.show(e?.response?.data?.message, Toast.LONG);
+//     } finally {
+//       dispatch(setLoading(false));
+//     }
+//   };
 export const login =
-  (data: any, onSucess?: any, callBack?: any) => async (dispatch: AppDispatch) => {
+  (data: any, onSucess?: any, callBack?: any) =>
+  async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
+
       const response = await API.authApi.login(data);
+console.log(response,'login response');
 
       if (response?.status == 200) {
-        console.log(response,'response')
-        if (response?.data?.user?.otp_verified !== 0) {
-          setAccessToken(response?.data?.user?.remember_token);
-          setItem(USER_ID, response?.data?.user?.uuid);
-          setItem(USER_TYPE, response?.data?.user?.user_type);
-        }
+        const user = response?.data?.user;
 
-        dispatch(userProfile({ userid: response?.data?.user?.uuid }));
+        // Save user data
+        setAccessToken(user?.remember_token);
+        setItem(USER_ID, user?.uuid);
+        setItem(USER_TYPE, user?.user_type);
+
+        dispatch(userProfile({ userid: user?.uuid }));
         dispatch(getCityList());
-        if (response?.data?.user?.user_type == 2) {
 
-          if (response?.data?.user?.otp_verified == 0) {
-            setAccessToken(response?.data?.user?.remember_token);
-            setItem(USER_ID, response?.data?.user?.uuid);
-            setItem(USER_TYPE, response?.data?.user?.user_type);
-            let apiData = {
-              email: data.email,
-              // mobile: state?.phone
-            }
-            callBack && callBack()
-            // dispatch(customerVerifySendOtp(apiData))
-            dispatch(sendOtp(apiData))
-            // callBack && callBack()
-          } else {
-            onSucess && onSucess();
-            NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
-          }
+        // Customer
+        if (Number(user?.user_type) === 2) {
+          const apiData = {
+            email: data.email,
+          };
 
+          callBack && callBack();
+          dispatch(sendOtp(apiData));
         }
-        else if (response?.data?.user?.user_type == 1) {
+
+        // Executive
+        else if (Number(user?.user_type) === 1) {
           onSucess && onSucess();
-          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_EXECUTIVE)
+          NavigationService.reset(routes.BOTTOM_TAB_NAVIGATOR_EXECUTIVE);
         }
+
+        // Vendor / Others
         else {
-            setAccessToken(response?.data?.user?.remember_token);
-       setItem(USER_ID, response?.data?.user?.uuid);
-          setItem(USER_TYPE, response?.data?.user?.user_type);
           onSucess && onSucess();
-          NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
+          NavigationService.reset(routes.BOTTOM_TAB_NAVIGATOR_VENDOR);
         }
 
         Toast.show(response?.message, Toast.LONG);
-
-        return;
       } else {
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      console.log('e', e);
-
-      Toast.show(e?.response?.data?.message, Toast.LONG);
+      console.log('Login Error:', e);
+      Toast.show(
+        e?.response?.data?.message || 'Something went wrong',
+        Toast.LONG,
+      );
     } finally {
       dispatch(setLoading(false));
     }
@@ -86,18 +142,6 @@ export const userLogin =
       if (response?.status == 200) {
           setAccessToken(response?.data?.user?.remember_token);
 
-        // setAccessToken(response?.data?.remember_token);
-        // setItem(USER_ID, response?.data?.uuid);
-        // setItem(USER_TYPE, response?.data?.user_type);
-
-        // dispatch(userProfile({ userid: response?.data?.uuid }));
-        // dispatch(getCityList());
-
-        // if (response?.data?.user_type == 2) {
-        //   NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR);
-        // } else {
-        //   NavigationService.reset(routes?.BOTTOM_TAB_NAVIGATOR_VENDOR);
-        // }
         Toast.show(response?.message, Toast.LONG);
 
         onSucess && onSucess();
@@ -251,6 +295,8 @@ export const verifyOtp =
     try {
       dispatch(setLoading(true));
       const response = await API.authApi.verify_otp(data);
+      console.log(response,'otp response');
+      
       console.log(
   'remember_token =>',
   response?.data?.user?.remember_token,

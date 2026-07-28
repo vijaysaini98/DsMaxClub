@@ -134,12 +134,14 @@ const Home: React.FC = () => {
   };
 
   const handleBannerPress = (item: any, index: number) => {
+    console.log(item,'item in banner');
+    
     if (
       (item?.booklet !== null && item?.type == 'combobooklet') ||
       item?.type == 'singlebooklet'
     ) {
       if (item?.type == 'combobooklet') {
-        NavigationService.navigate(routes.DETAILS_SCREEN, {
+        NavigationService.navigate(routes.COMBO_OFFER_LIST_SCREEN, {
           data: item?.booklet,
           from: 'ComboBooklet',
         });
@@ -363,6 +365,7 @@ const Home: React.FC = () => {
                   );
                 })}
               </ScrollView>
+              
             </View>
           )}
         </ScrollView>

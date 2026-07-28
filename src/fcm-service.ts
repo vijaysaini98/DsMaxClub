@@ -25,11 +25,14 @@ async function saveToken(token: string) {
 async function fetchAndSaveToken() {
   try {
     const token = await messaging().getToken();
+    
     if (token) await saveToken(token);
   } catch (e) {
     console.warn('[FCM] getToken error:', e);
   }
 }
+
+
 
 // ─── Display via Notifee (foreground only — background handled in index.js) ──
 async function showNotification(msg: RemoteMessage) {
