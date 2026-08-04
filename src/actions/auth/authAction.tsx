@@ -14,6 +14,9 @@ import { AppDispatch } from '@redux/store';
 import Toast from 'react-native-simple-toast';
 import { resetDeal } from '@actions/deals/dealSlice';
 import { resetHome } from '@actions/home/homeSlice';
+import messaging from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FCM_TOKEN_KEY } from '@helper/Constants';
 
 // export const login =
 //   (data: any, onSucess?: any, callBack?: any) => async (dispatch: AppDispatch) => {
@@ -189,35 +192,94 @@ export const singUp =
     }
   };
 
+// export const logout =
+//   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
+//     try {
+//       dispatch(setLoading(true));
+//       const response = await API.authApi.logout(data);
+// console.log(response,'response of logout==>');
+
+//       if (response?.status == 200) {
+//         removeAccessToken();
+//         dispatch(resetAuth());
+//         dispatch(resetHome())
+//         dispatch(resetDeal())
+//         NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
+//         Toast.show(response?.message, Toast.LONG);
+//         onSucess && onSucess();
+//        dispatch(getMaintenanceStatus());
+//         return;
+//       } else {
+//         throw new Error('No response data received from backend.');
+//       }
+//     } catch (e: any) {
+//       console.log('logout error ', e);
+//       onSucess && onSucess();
+//       removeAccessToken();
+//       dispatch(resetAuth());
+//       dispatch(resetHome())
+//       dispatch(resetDeal())
+//       NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
+//       Toast.show("Logout Successfully", Toast.LONG);
+//     } finally {
+//       dispatch(setLoading(false));
+//     }
+//   };
 export const logout =
   (data?: any, onSucess?: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
-      const response = await API.authApi.logout(data);
-console.log(response,'response of logout==>');
 
-      if (response?.status == 200) {
+      const response = await API.authApi.logout(data);
+      console.log(response, 'response of logout==>');
+
+      if (response?.status === 200) {
+        // Delete FCM token
+        try {
+          await messaging().deleteToken();
+          await AsyncStorage.removeItem(FCM_TOKEN_KEY);
+          console.log('✅ FCM token deleted successfully');
+        } catch (error) {
+          console.log('❌ Error deleting FCM token:', error);
+        }
+
         removeAccessToken();
         dispatch(resetAuth());
-        dispatch(resetHome())
-        dispatch(resetDeal())
-        NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
+        dispatch(resetHome());
+        dispatch(resetDeal());
+
+        NavigationService.reset(routes.NAVIGATION_AUTH_STACK);
+
         Toast.show(response?.message, Toast.LONG);
         onSucess && onSucess();
-       dispatch(getMaintenanceStatus());
+
+        dispatch(getMaintenanceStatus());
         return;
       } else {
         throw new Error('No response data received from backend.');
       }
     } catch (e: any) {
-      console.log('logout error ', e);
+      console.log('logout error', e);
+
+      // Delete FCM token even if API fails
+      try {
+        await messaging().deleteToken();
+        await AsyncStorage.removeItem(FCM_TOKEN_KEY);
+        console.log('✅ FCM token deleted successfully');
+      } catch (error) {
+        console.log('❌ Error deleting FCM token:', error);
+      }
+
       onSucess && onSucess();
+
       removeAccessToken();
       dispatch(resetAuth());
-      dispatch(resetHome())
-      dispatch(resetDeal())
-      NavigationService.reset(routes?.NAVIGATION_AUTH_STACK);
-      Toast.show("Logout Successfully", Toast.LONG);
+      dispatch(resetHome());
+      dispatch(resetDeal());
+
+      NavigationService.reset(routes.NAVIGATION_AUTH_STACK);
+
+      Toast.show('Logout Successfully', Toast.LONG);
     } finally {
       dispatch(setLoading(false));
     }

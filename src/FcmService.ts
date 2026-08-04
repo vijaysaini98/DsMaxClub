@@ -20,6 +20,7 @@ const useFcm1 = (
 
   const getToken = async () => {
     try {
+       console.log("Getting FCM Token...");
       const fcmToken = await messaging().getToken();
       console.log('✅ FCM Token:', fcmToken);
       if (fcmToken) {
@@ -31,6 +32,7 @@ const useFcm1 = (
   };
 
   const registerAppWithFCM = async () => {
+    console.log("4. registerAppWithFCM");
     if (Platform.OS === 'ios') {
       await messaging().registerDeviceForRemoteMessages();
     }
@@ -50,21 +52,41 @@ const useFcm1 = (
     }
   };
 
+  // const checkPermission = async () => {
+  //   try {
+  //     const enabled = await messaging().hasPermission();
+  //     if (
+  //       enabled === messaging.AuthorizationStatus.AUTHORIZED ||
+  //       enabled === messaging.AuthorizationStatus.PROVISIONAL
+  //     ) {
+  //       await registerAppWithFCM();
+  //     } else {
+  //       await requestPermission();
+  //     }
+  //   } catch {
+  //     await requestPermission();
+  //   }
+  // };
   const checkPermission = async () => {
-    try {
-      const enabled = await messaging().hasPermission();
-      if (
-        enabled === messaging.AuthorizationStatus.AUTHORIZED ||
-        enabled === messaging.AuthorizationStatus.PROVISIONAL
-      ) {
-        await registerAppWithFCM();
-      } else {
-        await requestPermission();
-      }
-    } catch {
-      await requestPermission();
+    console.log("2. checkPermission called");
+  try {
+    const authStatus = await messaging().requestPermission();
+
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    console.log('Permission Status:', authStatus);
+
+    if (enabled) {
+      await registerAppWithFCM();
+    } else {
+      console.log('Notification permission denied');
     }
-  };
+  } catch (error) {
+    console.log('Permission Error:', error);
+  }
+};
 
   const createNotificationListeners = () => {
     // 1. App opened from BACKGROUND by tapping notification
@@ -95,10 +117,12 @@ const useFcm1 = (
   };
 
   useEffect(() => {
+    console.log("1. useEffect called");
     checkPermission();
     createNotificationListeners();
 
     return () => {
+          console.log("Cleanup");
       if (messageListenerRef.current) {
         messageListenerRef.current();
         messageListenerRef.current = null;

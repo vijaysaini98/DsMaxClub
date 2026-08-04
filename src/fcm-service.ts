@@ -24,8 +24,10 @@ async function saveToken(token: string) {
 
 async function fetchAndSaveToken() {
   try {
-    const token = await messaging().getToken();
+    console.log('HOOK USEEFFECT','fetchAndSaveToken');
     
+    const token = await messaging().getToken();
+     console.log('HOOK USEEFFECT',token);
     if (token) await saveToken(token);
   } catch (e) {
     console.warn('[FCM] getToken error:', e);
@@ -52,6 +54,7 @@ async function showNotification(msg: RemoteMessage) {
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 const useFcm = ({ onForeground, onOpened }: FcmHandlers = {}) => {
+  console.log("FCM FILE LOADED");
   const unsubFcm = useRef<(() => void) | null>(null);
   const unsubNotifee = useRef<(() => void) | null>(null);
 
@@ -82,8 +85,10 @@ const useFcm = ({ onForeground, onOpened }: FcmHandlers = {}) => {
   };
 
   useEffect(() => {
+    console.log("HOOK USEEFFECT");
     (async () => {
       const allowed = await ensurePermission();
+      console.log(allowed,'HOOK USEEFFECT')
       if (!allowed) return;
 
       // 1. Fetch + save token
