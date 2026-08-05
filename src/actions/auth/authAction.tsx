@@ -1,5 +1,5 @@
 import apiClient, { API } from '@services/appClient';
-import { resetAuth, setAppinfo, setCityList, setHowToRedeem, setLoading, setMaintenanceInfo, setPrivacyPolicy, setStaticImages, setTermCondition, setUserData } from './authSlice';
+import { resetAuth, setAppinfo, setCityList, setHowToRedeem, setLoading, setMaintenanceInfo, setPrivacyPolicy, setRefundPolicy, setStaticImages, setTermCondition, setUserData } from './authSlice';
 import {
   PROFILE_COMPLETE,
   removeAccessToken,
@@ -86,8 +86,26 @@ export const login =
     try {
       dispatch(setLoading(true));
 
-      const response = await API.authApi.login(data);
-console.log(response,'login response');
+      let fcmToken = await AsyncStorage.getItem(FCM_TOKEN_KEY);
+      if (!fcmToken) {
+        try {
+          const newToken = await messaging().getToken();
+          if (newToken) {
+            fcmToken = newToken;
+            await AsyncStorage.setItem(FCM_TOKEN_KEY, newToken);
+          }
+        } catch (e) {
+          console.log('[FCM] getToken (login) error:', e);
+        }
+      }
+
+      const payload = {
+        ...data,
+        ...(fcmToken ? { fcm_token: fcmToken } : {}),
+      };
+
+      const response = await API.authApi.login(payload);
+      console.log(response, 'login response');
 
       if (response?.status == 200) {
         const user = response?.data?.user;
@@ -141,7 +159,24 @@ export const userLogin =
   (data: any, onSucess?: any, callBack?: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
-      const response = await API.authApi.userLogin(data);
+      let fcmToken = await AsyncStorage.getItem(FCM_TOKEN_KEY);
+      if (!fcmToken) {
+        try {
+          const newToken = await messaging().getToken();
+          if (newToken) {
+            fcmToken = newToken;
+            await AsyncStorage.setItem(FCM_TOKEN_KEY, newToken);
+          }
+        } catch (e) {
+          console.log('[FCM] getToken (userLogin) error:', e);
+        }
+      }
+
+      const payload = {
+        ...data,
+        ...(fcmToken ? { fcm_token: fcmToken } : {}),
+      };
+      const response = await API.authApi.userLogin(payload);
       if (response?.status == 200) {
           setAccessToken(response?.data?.user?.remember_token);
 
@@ -166,7 +201,24 @@ export const singUp =
   (data: any, onSucess?: any) => async (dispatch: AppDispatch) => {
     try {
       dispatch(setLoading(true));
-      const response = await API.authApi.singUp(data);
+      let fcmToken = await AsyncStorage.getItem(FCM_TOKEN_KEY);
+      if (!fcmToken) {
+        try {
+          const newToken = await messaging().getToken();
+          if (newToken) {
+            fcmToken = newToken;
+            await AsyncStorage.setItem(FCM_TOKEN_KEY, newToken);
+          }
+        } catch (e) {
+          console.log('[FCM] getToken (singUp) error:', e);
+        }
+      }
+
+      const payload = {
+        ...data,
+        ...(fcmToken ? { fcm_token: fcmToken } : {}),
+      };
+      const response = await API.authApi.singUp(payload);
       if (response?.status == 200) {
         setAccessToken(response?.data?.remember_token);
         setItem(USER_ID, response?.data?.uuid);
@@ -533,6 +585,26 @@ export const getPrivacy_TermCondition =
       dispatch(setLoading(false));
     }
   };
+  export const getRefundPolicy =
+  (data?: any, from?: string) => async (dispatch: AppDispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const response: any = await API.authApi.refundApi(data);
+      const payload = response?.data ?? response;
+      const isSuccess = response?.status === 200 || response?.success === true;
+
+      if (isSuccess) {
+        dispatch(setRefundPolicy(payload?.data ?? payload));
+      }
+    } catch (e: any) {
+      console.log('refund policy error', e?.response?.data || e?.message);
+      // Toast.show(e?.response?.data?.message, Toast.LONG);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+
 
 export const getAppVersion = (data?: any) => async (dispatch: AppDispatch) => {
   try {

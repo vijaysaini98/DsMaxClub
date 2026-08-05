@@ -9,6 +9,7 @@ import {
   Modal,
   Linking,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {
@@ -29,6 +30,7 @@ import {
   nearByIcon,
   downArrowIcon,
   termsCondIcon,
+  refundIcon,
 } from '@helper/imagesAssets';
 import TouchableOpacityView from '@components/TouchableOpacityView';
 import { ms, s, vs } from 'react-native-size-matters/extend';
@@ -36,6 +38,8 @@ import { openPhoneDialer, width } from '@utils/index';
 import moment from 'moment';
 import MultiLocationSheet from '@screens/detail/ui/multiLoctionSheet';
 import RenderHTML from 'react-native-render-html';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
+import { getRefundPolicy } from '@actions/auth/authAction';
 
 export interface CardProps {
   item: any;
@@ -89,12 +93,53 @@ const Card: React.FC<CardProps> = ({
   showDateSection,
 }) => {
   const [activeDropdown, setActiveDropdown] = React.useState<
-    'location' | 'contact' | 'terms' | null
+    'location' | 'contact' | 'terms' | 'refund' | null
   >(null);
+  const [isRefundLoading, setIsRefundLoading] = React.useState(false);
 
   const sheetRef = useRef<any>(null);
-  const openDropdown = (type: 'location' | 'contact' | 'terms') => {
+  const dispatch = useAppDispatch();
+  const { refundPolicy } = useAppSelector(state => state.auth);
+
+  const openDropdown = (type: 'location' | 'contact' | 'terms' | 'refund') => {
     setActiveDropdown(type);
+  };
+
+  const hasRefundPolicyContent = Boolean(
+    refundPolicy?.description ||
+      refundPolicy?.content ||
+      refundPolicy?.data?.description ||
+      refundPolicy?.url ||
+      refundPolicy?.data?.url,
+  );
+
+  const handleIconPress = (type: 'location' | 'contact' | 'terms' | 'refund') => async (
+    event?: any,
+  ) => {
+    event?.stopPropagation?.();
+
+    if (type === 'refund') {
+      if (hasRefundPolicyContent || isRefundLoading) {
+        if (hasRefundPolicyContent) {
+          openDropdown(type);
+        }
+        return;
+      }
+
+      openDropdown(type);
+      setIsRefundLoading(true);
+
+      try {
+        await dispatch(getRefundPolicy());
+      } catch (error) {
+        console.log('Refund policy fetch failed', error);
+      } finally {
+        setIsRefundLoading(false);
+      }
+      return;
+    }
+
+    openDropdown(type);
   };
 
   const [hasError, setHasError] = React.useState(false);
@@ -303,23 +348,37 @@ const Card: React.FC<CardProps> = ({
                   {/* BOTTOM ICONS */}
                   <View style={styles.bottomIconRow}>
                     {/* LEFT */}
-                    <TouchableOpacityView
-                      style={styles.circleBtn}
-                      onPress={() => openDropdown('terms')}
-                    >
-                      <FastImage
-                        source={termsCondIcon}
-                        style={styles.circleIcon}
-                        tintColor={colors.white}
-                        resizeMode="contain"
-                      />
-                    </TouchableOpacityView>
+                    <View style={styles.leftIcons}>
+                      <TouchableOpacityView
+                        style={styles.circleBtn}
+                        onPress={handleIconPress('terms')}
+                      >
+                        <FastImage
+                          source={termsCondIcon}
+                          style={styles.circleIcon}
+                          tintColor={colors.white}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacityView>
+
+                      <TouchableOpacityView
+                        style={styles.circleBtn}
+                        onPress={handleIconPress('refund')}
+                      >
+                        <FastImage
+                          source={refundIcon}
+                          style={styles.circleIcon}
+                          tintColor={colors.white}
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacityView>
+                    </View>
 
                     {/* RIGHT */}
                     <View style={styles.rightIcons}>
                       <TouchableOpacityView
                         style={styles.circleBtn}
-                        onPress={() => openDropdown('location')}
+                        onPress={handleIconPress('location')}
                       >
                         <FastImage
                           source={locationIcon}
@@ -331,7 +390,7 @@ const Card: React.FC<CardProps> = ({
 
                       <TouchableOpacityView
                         style={styles.circleBtn}
-                        onPress={() => openDropdown('contact')}
+                        onPress={handleIconPress('contact')}
                       >
                         <FastImage
                           source={helpLineIcon}
@@ -512,6 +571,8 @@ const Card: React.FC<CardProps> = ({
                   ? 'Select Location'
                   : activeDropdown === 'contact'
                   ? 'Contact'
+                  : activeDropdown === 'refund'
+                  ? 'Refund Policy'
                   : item?.booklet_uniquecode
                   ? `Terms & Conditions (${item.booklet_uniquecode})`
                   : 'Terms & Conditions'}
@@ -586,7 +647,6 @@ const Card: React.FC<CardProps> = ({
             {activeDropdown === 'terms' ? (
               <ScrollView
                 showsVerticalScrollIndicator={false}
-                // style={{ maxHeight: vs(350) }}
                 contentContainerStyle={{
                   paddingHorizontal: s(16),
                 }}
@@ -602,7 +662,104 @@ const Card: React.FC<CardProps> = ({
                       item?.terms_condition ||
                       '<p>No Terms & Conditions Available</p>',
                   }}
+                  tagsStyles={{
+                    h1: {
+                      fontSize: 22,
+                      fontWeight: 'bold',
+                      color: colors.black,
+                      marginBottom: 6,
+                    },
+                    h2: {
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                      color: colors.black,
+                      marginBottom: 6,
+                    },
+                    h3: {
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      color: colors.black,
+                      marginBottom: 6,
+                    },
+                    p: {
+                      fontSize: 14,
+                      color: colors.black,
+                      marginBottom: 6,
+                      lineHeight: 20,
+                    },
+                    strong: { fontWeight: 'bold' },
+                    b: { fontWeight: 'bold' },
+                    li: { fontSize: 14, color: colors.black, marginBottom: 4 },
+                    a: {
+                      color: colors.buttonBg,
+                      textDecorationLine: 'underline',
+                    },
+                  }}
                 />
+              </ScrollView>
+            ) : activeDropdown === 'refund' ? (
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: s(16),
+                }}
+                style={{
+                  maxHeight: vs(350),
+                  backgroundColor: colors.white,
+                }}
+              >
+                {isRefundLoading ? (
+                  <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="small" color={colors.buttonBg} />
+                    <AppText style={styles.loadingText}>
+                      Loading refund policy...
+                    </AppText>
+                  </View>
+                ) : (
+                  <RenderHTML
+                    contentWidth={width - 30}
+                    source={{
+                      html:
+                        refundPolicy?.description ||
+                        refundPolicy?.content ||
+                        refundPolicy?.data?.description ||
+                        '<p>No Refund Policy Available</p>',
+                    }}
+                    tagsStyles={{
+                      h1: {
+                        fontSize: 22,
+                        fontWeight: 'bold',
+                        color: colors.black,
+                        marginBottom: 6,
+                      },
+                      h2: {
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        color: colors.black,
+                        marginBottom: 6,
+                      },
+                      h3: {
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        color: colors.black,
+                        marginBottom: 6,
+                      },
+                      p: {
+                        fontSize: 14,
+                        color: colors.black,
+                        marginBottom: 6,
+                        lineHeight: 20,
+                      },
+                      strong: { fontWeight: 'bold' },
+                      b: { fontWeight: 'bold' },
+                      li: { fontSize: 14, color: colors.black, marginBottom: 4 },
+                      a: {
+                        color: colors.buttonBg,
+                        textDecorationLine: 'underline',
+                      },
+                    }}
+                  />
+                )}
               </ScrollView>
             ) : (
               <View style={{ marginTop: vs(10) }}>
@@ -637,6 +794,15 @@ const styles = StyleSheet.create({
   },
   detailContainer: {
     padding: s(12),
+  },
+  loadingContainer: {
+    paddingVertical: vs(20),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    marginTop: vs(8),
+    color: colors.buttonBg,
   },
   priceContainer: {
     flexDirection: 'row',
@@ -799,6 +965,10 @@ const styles = StyleSheet.create({
   circleIcon: {
     width: 18,
     height: 18,
+  },
+  leftIcons: {
+    flexDirection: 'row',
+    gap: s(12),
   },
   rightIcons: {
     flexDirection: 'row',

@@ -40,6 +40,7 @@ import MyCard from "@screens/myCard";
 import MyOrders from "@screens/myOrders";
 import Requests from "@screens/request";
 import Home from "@screens/home";
+import RefundPolicy from "@screens/refundScreen";
 
 const Stack = createStackNavigator();
 
@@ -87,6 +88,7 @@ export const MyAuthLoadingStack = () => (
     <Stack.Screen name={routes.REDEEM_SUCCESSFULL_SCREEN} component={RedeemSuccessfull} />
     <Stack.Screen name={routes.PRIVACY_POLICY_SCREEN} component={PrivacyPolicy} />
     <Stack.Screen name={routes.TERMS_CONDITION_SCREEN} component={TermCondition} />
+    <Stack.Screen name={routes.REFUND_POLICY_SCREEN} component={RefundPolicy} />
     <Stack.Screen name={routes.VENDOR_COUPON_LIST} component={VerndorCouponList} />
     <Stack.Screen name={routes.VENDOR_USER_LIST} component={UserList} />
     <Stack.Screen name={routes.EXECUTIVE_REQUEST_APPROVE} component={RequestApprove} />

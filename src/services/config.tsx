@@ -35,6 +35,7 @@ const BOOKLET_DETAIL: string = `${BASE_URL}booklet-details`;
 const COMBO_BOOKLET_DETAIL: string = `${BASE_URL}combo-booklet-details`;
 const BOOKLET_REQUEST: string = `${BASE_URL}my-request`;
 const PAGE_API: string = `${BASE_URL}page`;
+const REFUND_API: string = `${BASE_URL}page/refund-policy`;
 const MY_REQUEST_LIST: string = `${BASE_URL}myrequest-list`;
 const MY_REQUEST_COUPON_LIST = `${BASE_URL}myrequest-coupon-list`;
 const MY_CARD_BOOKLET_LIST: string = `${BASE_URL}mycard-list`;
@@ -100,6 +101,7 @@ const config = {
   CATEGORY_BOOKLET,
   BANNER_API,
   PAGE_API,
+  REFUND_API,
 
   BOOKLET_LIST,
   BOOKLET_DETAIL,

@@ -18,10 +18,25 @@ notifee.createChannel({
 // No UI updates allowed — only logic + notifee display.
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('[FCM] Background/Kill:', remoteMessage);
+
+  const data = remoteMessage.data ?? {};
+  const title =
+    remoteMessage.notification?.title ??
+    data.title ??
+    data.notificationTitle ??
+    data.subject ??
+    'New notification';
+  const body =
+    remoteMessage.notification?.body ??
+    data.body ??
+    data.message ??
+    data.msg ??
+    'You have a new update';
+
   await notifee.displayNotification({
-    title: remoteMessage.notification?.title ?? '',
-    body: remoteMessage.notification?.body ?? '',
-    data: remoteMessage.data ?? {},
+    title,
+    body,
+    data,
     android: {
       channelId: 'default',
       importance: AndroidImportance.HIGH,

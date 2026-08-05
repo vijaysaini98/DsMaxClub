@@ -7,6 +7,7 @@ export const initialState = {
   cityList: [],
   termsCondition:{},
   privacyPolicy:{},
+  refundPolicy :{},
   howToRedeem:{},
   appInfo:{},
   maintenanceInfo: null,
@@ -35,6 +36,9 @@ export const authSlice = createSlice({
     setPrivacyPolicy:(state,{payload})=>{
       state.privacyPolicy = payload;
     },
+      setRefundPolicy:(state,{payload})=>{
+      state.refundPolicy = payload;
+    },
      setHowToRedeem:(state,{payload})=>{
       state.howToRedeem = payload;
     },
@@ -51,5 +55,5 @@ setStaticImages: (state, action) => {
   },
 });
 export const { setLoading, setBtnLoading, setUserData, setCityList,
-  setTermCondition,setPrivacyPolicy,setHowToRedeem, resetAuth,setAppinfo,setMaintenanceInfo,setStaticImages }: any = authSlice.actions;
+  setTermCondition,setPrivacyPolicy,setHowToRedeem, resetAuth,setAppinfo,setMaintenanceInfo,setStaticImages,setRefundPolicy }: any = authSlice.actions;
 export const authReducer = authSlice.reducer;

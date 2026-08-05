@@ -12,6 +12,7 @@ import {
   myRequestIcon,
   privacyIcon,
   proflieIcon,
+  refundIcon,
   reportIcon,
   shareIcon,
   termsCondIcon,
@@ -146,6 +147,13 @@ const Profile = () => {
           title={'Terms & Conditions'}
           handleOnPress={() => {
             NavigationService.navigate(routes.TERMS_CONDITION_SCREEN);
+          }}
+        />
+         <MoreTabButton
+          leftIcon={refundIcon}
+          title={'Refund Policy'}
+          handleOnPress={() => {
+            NavigationService.navigate(routes.REFUND_POLICY_SCREEN);
           }}
         />
         <MoreTabButton

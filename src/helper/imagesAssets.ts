@@ -122,3 +122,4 @@ export const EmptyCartImage = require('@assets/images/emptyCart.png');
 export const rightArrow = require('@assets/images/right-arrow.png');
 export const upArrow = require('@assets/images/up-arrow.png');
 export const blackDownArrow = require('@assets/images/downBlack.png');
+export const refundIcon = require('@assets/images/refund.png');

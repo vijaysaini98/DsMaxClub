@@ -70,6 +70,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import RequestBottomSheet from './ui/requestBottomSheet';
 import ExecutiveRequestBottomSheet from './ui/executiveRequestBottomSheet';
 import HowToRedeem from './ui/howToRedeem';
+import RefundPolicyTab from './ui/refundPolicy';
 import ViewDetailsBottomSheet from './ui/viewDetailsBottomSheet';
 import { commonStyles } from '@theme/commonStyles';
 import {
@@ -86,6 +87,7 @@ import {
 import { SpinnerSecond } from '@components/Spinner';
 import { setBtnLoading } from '@actions/cart/cartSlice';
 import { useFocusEffect } from '@react-navigation/native';
+import { getRefundPolicy } from '@actions/auth/authAction';
 const initialLayout = { width: width };
 
 const routes = [
@@ -93,6 +95,7 @@ const routes = [
   { key: 'about', title: 'About' },
   { key: 'tc', title: 'Rules of Use' },
   { key: 'redeemHelp', title: 'How to Use' },
+  { key: 'refundPolicy', title: 'Refund Policy' },
   { key: 'gallery', title: 'Gallery' },
 ];
 
@@ -218,6 +221,9 @@ const Details = ({ route }: any) => {
       case 2:
         value.tabname = 'Termscondition';
         break;
+      case 3:
+        dispatch(getRefundPolicy());
+        return;
       case 4:
         value.tabname = 'Gallery';
         break;
@@ -253,6 +259,9 @@ const Details = ({ route }: any) => {
       case 2:
         value.tabname = 'Termscondition';
         break;
+      case 3:
+        dispatch(getRefundPolicy());
+        return;
       case 4:
         value.tabname = 'Gallery';
         break;
@@ -299,6 +308,7 @@ const Details = ({ route }: any) => {
 
         about: () => <About from={from} scrollY={scrollY} />,
         tc: () => <Terms_Condition from={from} scrollY={scrollY} />,
+        refundPolicy: () => <RefundPolicyTab scrollY={scrollY} />,
         redeemHelp: () => (
           <HowToRedeem from={from} scrollY={scrollY} index={index} />
         ),

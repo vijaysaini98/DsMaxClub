@@ -314,7 +314,14 @@ export const API = {
     send_otp: (data: any) => apiClient.post(config.SEND_OTP, data),
     verify_otp: (data: any) => apiClient.post(config.VERIFY_OTP, data),
     reset_password: (data: any) => apiClient.post(config.REST_PASSWORD, data),
-    pageApi: (data?: any) => apiClient.get(`${config.PAGE_API}/${data}`),
+    pageApi: (data?: any) => {
+      const url = data ? `${config.PAGE_API}/${data}` : config.PAGE_API;
+      return apiClient.get(url);
+    },
+    refundApi: (data?: any) => {
+      const url = data ? `${config.REFUND_API}/${data}` : config.REFUND_API;
+      return apiClient.get(url);
+    },
     customer_send_otp_verify: (data: any) =>
       apiClient.post(config.CUSTOMER_SEND_OTP_VERIFY, data),
     delete_account: (data: any) => apiClient.post(config.DELETE_ACCOUNT, data),

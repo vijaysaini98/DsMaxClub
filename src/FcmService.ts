@@ -11,10 +11,14 @@ const useFcm1 = (
   const messageListenerRef = useRef<(() => void) | null>(null);
 
   const setToken = async (token: string) => {
+    console.log('✅ Saving FCM Token:', token);
+
+
     await AsyncStorage.setItem(FCM_TOKEN_KEY, token);
   };
 
   const setData = async (data: any) => {
+    
     await AsyncStorage.setItem(NOTIFICATION_DATA, JSON.stringify(data));
   };
 
