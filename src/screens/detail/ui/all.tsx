@@ -108,6 +108,9 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress, venderId,booklet_id
     [onViewPress],
   );
 
+  const coupons = bookletDetailAllDeals?.coupons || [];
+  const isScrollable = coupons.length > 1;
+
   return (
     <View style={{ flex: 1 }}>
       {isLoading ? (
@@ -115,10 +118,17 @@ const All: React.FC = ({ id, from, scrollY, handleViewPress, venderId,booklet_id
         <CouponsShimerLoader />
       ) : (
         <Animated.FlatList
-          data={bookletDetailAllDeals?.coupons}
+          data={coupons}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
-          contentContainerStyle={styles.containerStyle}
+          scrollEnabled={isScrollable}
+          bounces={false}
+          alwaysBounceVertical={false}
+          overScrollMode={'never'}
+          contentContainerStyle={[
+            styles.containerStyle,
+            { paddingBottom: isScrollable ? vs(80) : vs(20) },
+          ]}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl

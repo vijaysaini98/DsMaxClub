@@ -36,7 +36,7 @@ const NearBy = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.containerStyle}
-      
+      >
         {categoryBookletData?.category?.map((item, index) => {
           if (!item?.booklets || item?.booklets.length === 0) return null;
 

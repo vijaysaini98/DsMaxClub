@@ -19,9 +19,9 @@ import ListEmptyComponent from '@components/ListEmptyComponent';
 import GalleryShimmer from '@components/ShimerLoader/GalleryShimerLoader';
 import { defaultBookletImage } from '@helper/imagesAssets';
 
-const ITEM_WIDTH = (width - 30) / 2; // 16px padding each side + 16px between
+const ITEM_WIDTH = (width - 30) / 2;
 
-const Gallery = ({ id, scrollY,from }:any) => {
+const Gallery = ({ id, scrollY, from }: any) => {
   const dispatch = useAppDispatch();
   const { bookletDetailGallery, isLoading } = useAppSelector(
     (state) => state?.home
@@ -38,45 +38,48 @@ const Gallery = ({ id, scrollY,from }:any) => {
       booklet_id: id,
       tabname: "Gallery"
     };
-     if (from == "ComboBooklet") {
-      
-          dispatch(getComboBookletDetail(data));
-        } else{
-          
-          dispatch(getBookletDetail(data)).finally(() => setRefreshing(false));
-        }
+    if (from == "ComboBooklet") {
+
+      dispatch(getComboBookletDetail(data));
+    } else {
+
+      dispatch(getBookletDetail(data)).finally(() => setRefreshing(false));
+    }
   }, [dispatch, id]);
 
 
 
-const renderItem = ({ item, index }: { item: string; index: number }) => (
-  <TouchableOpacityView
-    onPress={() => {
-      setActiveIndex(index);
-      setModalVisible(true);
-    }}
-    style={{ width: s(ITEM_WIDTH - 32) }}
-  >
-    <View style={styles.imageWrapper}>
-      <FastImage
-        source={
-          hasError
-            ? defaultBookletImage
-            : {
+  const renderItem = ({ item, index }: { item: string; index: number }) => (
+    <TouchableOpacityView
+      onPress={() => {
+        setActiveIndex(index);
+        setModalVisible(true);
+      }}
+      style={{ width: s(ITEM_WIDTH - 32) }}
+    >
+      <View style={styles.imageWrapper}>
+        <FastImage
+          source={
+            hasError
+              ? defaultBookletImage
+              : {
                 uri: IMGE_URL + item,
                 priority: FastImage.priority.high,
               }
-        }
-        style={styles.image}
-        resizeMode={FastImage.resizeMode.contain}
-        onError={() => {
-          console.log('Image Error');
-          setHasError(true);
-        }}
-      />
-    </View>
-  </TouchableOpacityView>
-);
+          }
+          style={styles.image}
+          resizeMode={FastImage.resizeMode.contain}
+          onError={() => {
+            console.log('Image Error');
+            setHasError(true);
+          }}
+        />
+      </View>
+    </TouchableOpacityView>
+  );
+
+  const galleryImages = bookletDetailGallery?.gallery || [];
+  const isScrollable = galleryImages.length > 4;
 
   return (
     <View style={commonStyles.screenSize}>
@@ -85,12 +88,19 @@ const renderItem = ({ item, index }: { item: string; index: number }) => (
         <GalleryShimmer />
       ) : (
         <Animated.FlatList
-          data={bookletDetailGallery?.gallery || []}
+          data={galleryImages}
           renderItem={renderItem}
           keyExtractor={(_, index) => index.toString()}
           numColumns={2}
+          scrollEnabled={isScrollable}
+          bounces={false}
+          alwaysBounceVertical={false}
+          overScrollMode={'never'}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContainer}
+          contentContainerStyle={[
+            styles.listContainer,
+            { paddingBottom: isScrollable ? vs(80) : vs(20) },
+          ]}
           columnWrapperStyle={styles.row}
           refreshControl={
             <RefreshControl

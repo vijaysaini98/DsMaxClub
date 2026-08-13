@@ -7,30 +7,65 @@ import ListEmptyComponent from '@components/ListEmptyComponent';
 import { vs } from 'react-native-size-matters';
 import About_TermsConditionShimmer from '@components/ShimerLoader/About_TermsConditionShimerLoader';
 
+const autoHeightScript = `
+  (function() {
+    function sendHeight() {
+      var height = Math.max(
+        document.documentElement ? document.documentElement.scrollHeight : 0,
+        document.body ? document.body.scrollHeight : 0
+      );
+      if (height > 0) {
+        window.ReactNativeWebView.postMessage(height.toString());
+      }
+    }
+    window.addEventListener('load', sendHeight);
+    document.addEventListener('DOMContentLoaded', sendHeight);
+    setTimeout(sendHeight, 300);
+    setTimeout(sendHeight, 800);
+    setTimeout(sendHeight, 1500);
+    setTimeout(sendHeight, 3000);
+  })();
+  true;
+`;
+
 const About = ({
   scrollY,
   from,
 }: {
   scrollY: Animated.Value;
-  from: string;
+  from?: string;
 }) => {
   const { bookletDetailAbout, isLoading } = useAppSelector(
     state => state?.home,
   );
 
-  const htmlContent = bookletDetailAbout?.description || '';
+  const [webViewHeight, setWebViewHeight] = React.useState<number>(0);
+  const [isScrollable, setIsScrollable] = React.useState<boolean>(false);
 
-  // ✅ Wrap HTML (important)
+  const htmlContent =
+    bookletDetailAbout?.description ||
+    bookletDetailAbout?.data?.description ||
+    '';
+  const aboutUrl =
+    bookletDetailAbout?.url || bookletDetailAbout?.data?.url || '';
+  const hasContent = Boolean(htmlContent || aboutUrl);
+
   const htmlWrapper = `
+    <!DOCTYPE html>
     <html>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <style>
           body {
-            font-family: system-ui;
-            // padding: 10px;
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 10px;
+            margin: 0;
             color: #000;
+            font-size: 14px;
+            line-height: 1.6;
           }
+          img { max-width: 100%; height: auto; }
+          * { box-sizing: border-box; }
         </style>
       </head>
       <body>
@@ -39,6 +74,14 @@ const About = ({
     </html>
   `;
 
+  const onWebViewMessage = (event: any) => {
+    const contentHeight = Number(event.nativeEvent.data);
+    if (contentHeight && contentHeight > 0) {
+      setWebViewHeight(contentHeight);
+      setIsScrollable(contentHeight > 360);
+    }
+  };
+
   return (
     <Animated.ScrollView
       onScroll={Animated.event(
@@ -46,28 +89,44 @@ const About = ({
         { useNativeDriver: false },
       )}
       scrollEventThrottle={16}
+      scrollEnabled={hasContent && isScrollable}
+      bounces={false}
+      alwaysBounceVertical={false}
+      overScrollMode={'never'}
       style={{ flex: 1, marginTop: vs(10) }}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingBottom: hasContent && isScrollable ? vs(80) : vs(20),
+      }}
     >
       {isLoading ? (
         <About_TermsConditionShimmer />
       ) : htmlContent ? (
-        <View style={{ height: vs(400) }}>
+        <View style={{ height: webViewHeight || vs(300), width: '100%' }}>
           <WebView
             originWhitelist={['*']}
             source={{ html: htmlWrapper }}
+            style={{ flex: 1 }}
+            injectedJavaScript={autoHeightScript}
+            onMessage={onWebViewMessage}
+            scrollEnabled={false}
             startInLoadingState
             renderLoading={() => <Loader />}
             showsVerticalScrollIndicator={false}
           />
         </View>
-      ) : bookletDetailAbout?.url ? (
-        <View style={{ flex: 1, minHeight: vs(600) }}>
+      ) : aboutUrl ? (
+        <View style={{ height: webViewHeight || vs(300), width: '100%' }}>
           <WebView
-            source={{ uri: bookletDetailAbout.url }}
+            source={{ uri: aboutUrl }}
+            style={{ flex: 1 }}
+            injectedJavaScript={autoHeightScript}
+            onMessage={onWebViewMessage}
+            scrollEnabled={false}
             startInLoadingState
             renderLoading={() => <Loader />}
+            showsVerticalScrollIndicator={false}
           />
         </View>
       ) : (

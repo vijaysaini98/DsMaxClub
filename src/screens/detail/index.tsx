@@ -87,7 +87,7 @@ import {
 import { SpinnerSecond } from '@components/Spinner';
 import { setBtnLoading } from '@actions/cart/cartSlice';
 import { useFocusEffect } from '@react-navigation/native';
-import { getRefundPolicy } from '@actions/auth/authAction';
+import { getPrivacy_TermCondition, getRefundPolicy } from '@actions/auth/authAction';
 const initialLayout = { width: width };
 
 const routes = [
@@ -168,122 +168,112 @@ const Details = ({ route }: any) => {
     }
   }, [bookletDetailAllDeals?.booklet_vendor_status]);
 
-  // useEffect(() => {
-  //   if (!data?.uuid) return;
+  const isFirstMountRef = useRef(true);
+  const prevIndexRef = useRef<number | null>(null);
 
-  //   let value = {
-  //     booklet_id: data.uuid,
-  //     tabname: '',
-  //   };
+  const fetchTabData = useCallback(
+    (tabIndex: number) => {
+      const bId =
+        from === 'ComboBooklet'
+          ? booklet_id || data?.booklet_uuid || data?.uuid
+          : data?.uuid || data?.booklet_id || booklet_id;
 
-  //   switch (index) {
-  //     case 0:
-  //       value.tabname = 'All Deals';
-  //       break;
-  //     case 1:
-  //       value.tabname = 'About';
-  //       break;
-  //     case 2:
-  //       value.tabname = 'Termscondition';
-  //       break;
-  //     case 4:
-  //       value.tabname = 'Gallery';
-  //       break;
-  //     default:
-  //       value.tabname = '';
-  //   }
-  //   if (noApiCall) {
-  //     return;
-  //   }
-  //   if (from === 'ComboBooklet') {
-  //     dispatch(getComboBookletDetail(value));
-  //   } else {
-  //     dispatch(getBookletDetail(value));
-  //   }
-  // }, [index, data?.uuid, from, dispatch, noApiCall]);
+      const vId = String(data?.id || data?.vendor_id || '');
+
+      dispatch(getCartList());
+
+      switch (tabIndex) {
+        case 0: {
+          const value = {
+            booklet_id: bId,
+            tabname: 'All Deals',
+            vendor_id: vId,
+          };
+          if (from === 'ComboBooklet') {
+            dispatch(getComboBookletDetail(value));
+          } else if (bId) {
+            dispatch(getBookletDetail(value));
+          }
+          break;
+        }
+        case 1: {
+          const value = {
+            booklet_id: bId,
+            tabname: 'About',
+            vendor_id: vId,
+          };
+          if (from === 'ComboBooklet') {
+            dispatch(getComboBookletDetail(value));
+          } else if (bId) {
+            dispatch(getBookletDetail(value));
+          }
+          break;
+        }
+        case 2: {
+          const value = {
+            booklet_id: bId,
+            tabname: 'Termscondition',
+            vendor_id: vId,
+          };
+          if (from === 'ComboBooklet') {
+            dispatch(getComboBookletDetail(value));
+          } else if (bId) {
+            dispatch(getBookletDetail(value));
+          }
+          break;
+        }
+        case 3: {
+          dispatch(getPrivacy_TermCondition('how-to-redeem'));
+          break;
+        }
+        case 4: {
+          dispatch(getRefundPolicy());
+          break;
+        }
+        case 5: {
+          const value = {
+            booklet_id: bId,
+            tabname: 'Gallery',
+            vendor_id: vId,
+          };
+          if (from === 'ComboBooklet') {
+            dispatch(getComboBookletDetail(value));
+          } else if (bId) {
+            dispatch(getBookletDetail(value));
+          }
+          break;
+        }
+        default:
+          break;
+      }
+    },
+    [data, from, booklet_id, dispatch],
+  );
 
   useFocusEffect(
-  useCallback(() => {
-    if (!data?.uuid || noApiCall) return;
-
-    let value = {
-      booklet_id: data.uuid,
-      tabname: '',
-    };
-
-    switch (index) {
-      case 0:
-        value.tabname = 'All Deals';
-        break;
-      case 1:
-        value.tabname = 'About';
-        break;
-      case 2:
-        value.tabname = 'Termscondition';
-        break;
-      case 3:
-        dispatch(getRefundPolicy());
+    useCallback(() => {
+      if (isFirstMountRef.current && noApiCall && index === 0) {
+        isFirstMountRef.current = false;
+        prevIndexRef.current = 0;
+        dispatch(getCartList());
         return;
-      case 4:
-        value.tabname = 'Gallery';
-        break;
-      default:
-        value.tabname = '';
-    }
+      }
+      isFirstMountRef.current = false;
+      prevIndexRef.current = index;
+      fetchTabData(index);
+    }, [fetchTabData, index, noApiCall, dispatch]),
+  );
 
-    dispatch(getCartList());
-
-    if (from === 'ComboBooklet') {
-      dispatch(getComboBookletDetail(value));
-    } else {
-      dispatch(getBookletDetail(value));
-    }
-  }, [data?.uuid, from, index, noApiCall]),
-);
   useEffect(() => {
-    if (!data?.uuid) return;
-
-    let value = {
-      booklet_id: data?.booklet_uuid,
-      tabname: '',
-      vendor_id: String(data?.id),
-    };
-
-    switch (index) {
-      // case 0:
-      //   value.tabname = 'All Deals';
-      //   break;
-      case 1:
-        value.tabname = 'About';
-        break;
-      case 2:
-        value.tabname = 'Termscondition';
-        break;
-      case 3:
-        dispatch(getRefundPolicy());
-        return;
-      case 4:
-        value.tabname = 'Gallery';
-        break;
-      default:
-        value.tabname = '';
+    if (prevIndexRef.current !== index) {
+      prevIndexRef.current = index;
+      fetchTabData(index);
     }
-    if (
-      noApiCall &&
-      from === 'ComboBooklet' &&
-      value.tabname !== 'All Deals' &&
-      value.tabname
-    ) {
-      dispatch(getComboBookletDetail(value));
-
-      return;
-    }
-  }, [index, data?.uuid, from, noApiCall]);
+  }, [index, fetchTabData]);
 
   const handleViewPress = (item: any) => {
     setCouponDetail(item);
     setTimeout(() => {
-      // viewDetailSheet?.current?.open();
       viewDetailsBottomSheetRef?.current?.expand();
     }, 200);
   };
@@ -292,29 +282,35 @@ const Details = ({ route }: any) => {
     dispatch(getCartList());
   }, []);
 
-  const renderScene = useMemo(
-    () =>
-      SceneMap({
-        allDeals: () => (
-          <All
-            id={data.uuid}
-            from={from}
-            scrollY={scrollY}
-            handleViewPress={handleViewPress}
-            booklet_id={booklet_id}
-            venderId={data?.id}
-          />
-        ),
-
-        about: () => <About from={from} scrollY={scrollY} />,
-        tc: () => <Terms_Condition from={from} scrollY={scrollY} />,
-        refundPolicy: () => <RefundPolicyTab scrollY={scrollY} />,
-        redeemHelp: () => (
-          <HowToRedeem from={from} scrollY={scrollY} index={index} />
-        ),
-        gallery: () => <Gallery id={data.uuid} from={from} scrollY={scrollY} />,
-      }),
-    [data?.uuid, from, scrollY, index], // dependencies
+  const renderScene = useCallback(
+    ({ route: sceneRoute }: any) => {
+      switch (sceneRoute.key) {
+        case 'allDeals':
+          return (
+            <All
+              id={data?.uuid}
+              from={from}
+              scrollY={scrollY}
+              handleViewPress={handleViewPress}
+              booklet_id={booklet_id}
+              venderId={data?.id}
+            />
+          );
+        case 'about':
+          return <About from={from} scrollY={scrollY} />;
+        case 'tc':
+          return <Terms_Condition scrollY={scrollY} />;
+        case 'redeemHelp':
+          return <HowToRedeem scrollY={scrollY} index={index} />;
+        case 'refundPolicy':
+          return <RefundPolicyTab scrollY={scrollY} />;
+        case 'gallery':
+          return <Gallery id={data?.uuid} from={from} scrollY={scrollY} />;
+        default:
+          return null;
+      }
+    },
+    [data, from, scrollY, handleViewPress, booklet_id, index],
   );
 
   const handleOnPress = () => {
@@ -426,10 +422,10 @@ const Details = ({ route }: any) => {
       ? data.locations
       : []
     : Array.isArray(data?.location)
-    ? data.location
-    : data?.location
-    ? [data.location]
-    : [];
+      ? data.location
+      : data?.location
+        ? [data.location]
+        : [];
   const galleryImages = data?.gallery
     ? data.gallery.split(',').map(img => IMGE_URL + img.trim())
     : [];
@@ -437,12 +433,12 @@ const Details = ({ route }: any) => {
   const headerImage = hasError
     ? defaultBookletImage
     : bookletDetailAllDeals?.booklet_type === 'Combo'
-    ? galleryImages.length > 0
-      ? { uri: galleryImages[0] }
-      : defaultBookletImage
-    : data?.booklet
-    ? { uri: IMGE_URL + data?.booklet }
-    : defaultBookletImage;
+      ? galleryImages.length > 0
+        ? { uri: galleryImages[0] }
+        : defaultBookletImage
+      : data?.booklet
+        ? { uri: IMGE_URL + data?.booklet }
+        : defaultBookletImage;
 
   const status = bookletDetailAllDeals?.request_status;
 
@@ -495,17 +491,15 @@ const Details = ({ route }: any) => {
         ? moment(bookletDetailAllDeals.start_date).format('D MMM YYYY')
         : 'N/A';
 
-      return `${formattedStart} - Upto ${
-        bookletDetailAllDeals?.validity_months || 'N/A'
-      } months`;
+      return `${formattedStart} - Upto ${bookletDetailAllDeals?.validity_months || 'N/A'
+        } months`;
     }
 
     if (bookletDetailAllDeals?.date_type === 2) {
       return `${moment(bookletDetailAllDeals?.start_date).format(
         'D MMM YYYY',
-      )} - ${moment(bookletDetailAllDeals?.end_date).format('D MMM YYYY')} ${
-        isExpired ? '(Expired)' : ''
-      }`;
+      )} - ${moment(bookletDetailAllDeals?.end_date).format('D MMM YYYY')} ${isExpired ? '(Expired)' : ''
+        }`;
     }
 
     return 'N/A';
@@ -661,11 +655,10 @@ const Details = ({ route }: any) => {
         )}
 
         <AppText type={THIRTEEN} style={styles.disTextStyle}>
-          {`Free Gift Coupons Maximum Redeem: ${
-            bookletDetailAllDeals?.booklet_type === 'Combo'
-              ? bookletDetailAllDeals?.maximum_redeem
-              : data?.maximum_redeem
-          }`}
+          {`Free Gift Coupons Maximum Redeem: ${bookletDetailAllDeals?.booklet_type === 'Combo'
+            ? bookletDetailAllDeals?.maximum_redeem
+            : data?.maximum_redeem
+            }`}
         </AppText>
 
         {locationList?.length > 0 && (
@@ -710,7 +703,7 @@ const Details = ({ route }: any) => {
                 {...props}
                 scrollEnabled={true}
                 index={index}
-                tabTextType={TEN}
+                tabTextType={TWELVE}
               />
             )}
             onIndexChange={setIndex}
@@ -739,7 +732,7 @@ const Details = ({ route }: any) => {
                       <TouchableOpacityView
                         style={styles.qtyBtn}
                         onPress={handleDecrement}
-                        // onPress={()=>Alert.alert('hsgg')}
+                      // onPress={()=>Alert.alert('hsgg')}
                       >
                         <AppText weight={BOLD} type={TWENTY_FOUR}>
                           -
@@ -758,7 +751,7 @@ const Details = ({ route }: any) => {
                         style={[
                           styles.qtyBtn,
                           Number(cartItem?.quantity) >=
-                            Number(cartList?.max_quantity) && {
+                          Number(cartList?.max_quantity) && {
                             opacity: 0.2,
                           },
                         ]}
@@ -862,7 +855,7 @@ const Details = ({ route }: any) => {
           viewDetailsBottomSheetRef.current?.close();
         }}
       />
-    {(qtyLoading || isBtnLoading || viewCartLoading) && <SpinnerSecond />}
+      {(qtyLoading || isBtnLoading || viewCartLoading) && <SpinnerSecond />}
     </View>
   );
 };
