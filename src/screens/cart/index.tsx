@@ -160,12 +160,12 @@ const Cart = () => {
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [paymentStatusModal, setPaymentStatusModal] = useState({
     visible: false,
-    type: '', 
+    type: '',
     message: '',
   });
   const [paymentLoading, setPaymentLoading] = useState(false);
 
- 
+
 
   const paymentApiCall = (merchantTransactionId: string) => {
     dispatch(
@@ -174,7 +174,7 @@ const Cart = () => {
         setPaymentLoading(false);
 
         const paymentStatus = statusResponse?.data?.status?.toLowerCase();
-     
+
         setPaymentStatusModal({
           visible: true,
           type: paymentStatus,
@@ -211,7 +211,6 @@ const Cart = () => {
         },
       });
 
-      console.log('REQUEST ===>', request);
 
       const txnResult = await PhonePePaymentSDK.startTransaction(request, null);
 
@@ -244,15 +243,15 @@ const Cart = () => {
       app_version: DeviceInfo.getVersion(),
     };
 
-    console.log(deviceInfo,'deviceInfo');
-    
+    console.log(deviceInfo, 'deviceInfo');
+
     const data = {
       gateway: 'phonepe',
       phone: userData?.mobile,
       executive_code: state?.executiveCode || '',
       device_info: JSON.stringify(deviceInfo),
       type: 'app',
-      user_type:userData?.user_type
+      user_type: userData?.user_type
     };
 
     dispatch(
@@ -336,7 +335,7 @@ const Cart = () => {
       mobile: state?.mobileNumber,
       device_info: JSON.stringify(deviceInfo),
       type: 'app',
-      user_type:userData?.user_type
+      user_type: userData?.user_type
     };
     dispatch(
       executiveCartRequestSend(data, (response: any) => {
@@ -598,10 +597,10 @@ const Cart = () => {
               {paymentStatusModal.type === 'success'
                 ? '✅ Payment Successful'
                 : paymentStatusModal.type === 'pending'
-                ? '⏳ Payment Pending'
-                : paymentStatusModal.type === 'failed'
-                ? '❌ Payment Failed'
-                : 'Payment Status'}
+                  ? '⏳ Payment Pending'
+                  : paymentStatusModal.type === 'failed'
+                    ? '❌ Payment Failed'
+                    : 'Payment Status'}
             </AppText>
 
             <TouchableOpacity
@@ -616,10 +615,10 @@ const Cart = () => {
                 dispatch(getCartList());
                 if (paymentStatusModal.type === 'success') {
                   NavigationService.navigate(routes.MY_CARD_SCREEN);
-                }else{
-               
-                    NavigationService.navigate(routes.BOTTOM_TAB_NAVIGATOR);
-                  
+                } else {
+
+                  NavigationService.navigate(routes.BOTTOM_TAB_NAVIGATOR);
+
                 }
               }}
             >
