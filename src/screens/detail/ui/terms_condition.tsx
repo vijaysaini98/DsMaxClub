@@ -94,7 +94,7 @@ const Terms_Condition: React.FC<{ scrollY: any }> = ({ scrollY }) => {
         { useNativeDriver: false }
       )}
       scrollEventThrottle={16}
-      scrollEnabled={hasContent && isScrollable}
+      scrollEnabled={hasContent}
       bounces={false}
       alwaysBounceVertical={false}
       overScrollMode={'never'}

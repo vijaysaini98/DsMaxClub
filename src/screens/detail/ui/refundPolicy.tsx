@@ -10,35 +10,57 @@ import About_TermsConditionShimmer from '@components/ShimerLoader/About_TermsCon
 const autoHeightScript = `
   (function() {
     function sendHeight() {
+      var body = document.body;
+      var html = document.documentElement;
+      var container = document.getElementById('content-container') || body;
       var height = Math.max(
-        document.documentElement ? document.documentElement.scrollHeight : 0,
-        document.body ? document.body.scrollHeight : 0
+        body ? body.scrollHeight : 0,
+        body ? body.offsetHeight : 0,
+        html ? html.scrollHeight : 0,
+        html ? html.offsetHeight : 0,
+        container ? container.scrollHeight : 0
       );
       if (height > 0) {
         window.ReactNativeWebView.postMessage(height.toString());
       }
     }
+
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(function() {
+        sendHeight();
+      });
+      if (document.body) ro.observe(document.body);
+    }
+
     window.addEventListener('load', sendHeight);
     document.addEventListener('DOMContentLoaded', sendHeight);
-    setTimeout(sendHeight, 300);
-    setTimeout(sendHeight, 800);
-    setTimeout(sendHeight, 1500);
-    setTimeout(sendHeight, 3000);
+    setTimeout(sendHeight, 100);
+    setTimeout(sendHeight, 500);
+    setTimeout(sendHeight, 1000);
+    setTimeout(sendHeight, 2000);
   })();
   true;
 `;
 
-const RefundPolicyTab = ({
-  scrollY,
-}: {
-  scrollY: Animated.Value;
-}) => {
-  const { refundPolicy, isLoading } = useAppSelector(state => state.auth);
-  const [webViewHeight, setWebViewHeight] = React.useState<number>(0);
-  const [isScrollable, setIsScrollable] = React.useState<boolean>(false);
+const RefundPolicyTab = ({ scrollY }: { scrollY: Animated.Value }) => {
+  const { refundPolicy: authRefundPolicy, isLoading: authLoading } = useAppSelector(
+    state => state?.auth,
+  );
+  const { bookletDetailRefund, isLoading: homeLoading } = useAppSelector(
+    state => state?.home,
+  );
 
-  const refundUrl = refundPolicy?.url || refundPolicy?.data?.url || '';
-  const refundHtml = refundPolicy?.description || refundPolicy?.data?.description || '';
+  const isLoading = authLoading || homeLoading;
+  const policyData = authRefundPolicy || bookletDetailRefund;
+
+  const [webViewHeight, setWebViewHeight] = React.useState<number>(0);
+
+  const refundHtml =
+    policyData?.description ||
+    policyData?.data?.description ||
+    '';
+  const refundUrl =
+    policyData?.url || policyData?.data?.url || '';
   const hasContent = Boolean(refundHtml || refundUrl);
 
   const htmlWrapper = `
@@ -47,11 +69,15 @@ const RefundPolicyTab = ({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <style>
+          html, body {
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+          }
           body {
             font-family: system-ui, -apple-system, sans-serif;
-            padding: 10px;
-            margin: 0;
-            color: #000;
+            padding: 10px 10px 20px 10px;
+            color: #060505ff;
             font-size: 14px;
             line-height: 1.6;
           }
@@ -60,7 +86,7 @@ const RefundPolicyTab = ({
         </style>
       </head>
       <body>
-        ${refundHtml}
+        <div id="content-container">${refundHtml}</div>
       </body>
     </html>
   `;
@@ -69,7 +95,6 @@ const RefundPolicyTab = ({
     const contentHeight = Number(event.nativeEvent.data);
     if (contentHeight && contentHeight > 0) {
       setWebViewHeight(contentHeight);
-      setIsScrollable(contentHeight > 360);
     }
   };
 
@@ -80,21 +105,20 @@ const RefundPolicyTab = ({
         { useNativeDriver: false },
       )}
       scrollEventThrottle={16}
-      scrollEnabled={hasContent && isScrollable}
+      scrollEnabled={hasContent}
       bounces={false}
       alwaysBounceVertical={false}
       overScrollMode={'never'}
       style={{ flex: 1, marginTop: vs(10) }}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        flexGrow: 1,
-        paddingBottom: hasContent && isScrollable ? vs(80) : vs(20),
+        paddingBottom: vs(20),
       }}
     >
       {isLoading ? (
         <About_TermsConditionShimmer />
       ) : refundHtml ? (
-        <View style={{ height: webViewHeight || vs(300), width: '100%' }}>
+        <View style={{ height: webViewHeight ? webViewHeight + 10 : vs(300), width: '100%' }}>
           <WebView
             originWhitelist={['*']}
             source={{ html: htmlWrapper }}
@@ -108,7 +132,7 @@ const RefundPolicyTab = ({
           />
         </View>
       ) : refundUrl ? (
-        <View style={{ height: webViewHeight || vs(300), width: '100%' }}>
+        <View style={{ height: webViewHeight ? webViewHeight + 10 : vs(300), width: '100%' }}>
           <WebView
             source={{ uri: refundUrl }}
             style={{ flex: 1 }}
