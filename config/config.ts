@@ -1,11 +1,7 @@
 export const BaseUrlConfig = {
-  // WEBSITE_URL: `https://dev.webplanetsoft.com/api/`,
-  // IMAGE_URL:"https://dev.webplanetsoft.com/storage/",
-
-
-  WEBSITE_URL:`https://dsmaxclub.com/staging/public/api/`,
-IMAGE_URL:"https://dsmaxclub.com/staging/public/storage/",
-  IOS_CODEPUSH_DEPLOYMENT: `g89guofVvV41ZAmI2MwobMwG2_T669HmyaIyG`,
-  ANDROID_CODEPUSH_DEPLOYMENT: `rJiX4fIlJMsDEAynINN4nxEQS-0qBeF-0VGVb`,
-  ENVIRONMENT: `Staging`,
+  WEBSITE_URL: 'https://admin.dsmaxclub.com/api/',
+  IMAGE_URL: 'https://admin.dsmaxclub.com/storage/',
+  IOS_CODEPUSH_DEPLOYMENT: `auXjNZSyhVTpU3dyu9duU70HJjdRABNnENqNy`,
+  ANDROID_CODEPUSH_DEPLOYMENT: `Ez3uqlD7jn4LGnfXfWNI0QHJSMmAVnmDKc9cX`,
+  ENVIRONMENT: ``,
 };
